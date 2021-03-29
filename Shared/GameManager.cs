@@ -7,6 +7,8 @@ namespace Fishbowl.Net.Shared
 {
     public class GameManager
     {
+        public event Action<Period>? PeriodStarted;
+
         private readonly Game game;
 
         private int playerId = 0;
@@ -43,6 +45,24 @@ namespace Fishbowl.Net.Shared
             var word = this.game.ActualRound.WordList.Pop();
 
             return (period, word);
+        }
+
+        public void StartPeriod(DateTimeOffset startedAt)
+        {
+            var period = this.game.ActualRound.Periods.Last();
+
+            period.StartedAt = startedAt;
+
+            this.PeriodStarted?.Invoke(period);
+        }
+
+        public void FinishPeriod(DateTimeOffset finishedAt)
+        {
+            var period = this.game.ActualRound.Periods.Last();
+
+            period.FinishedAt = finishedAt;
+
+            this.playerId = ++this.playerId % this.game.Players.Count;
         }
     }
 }
