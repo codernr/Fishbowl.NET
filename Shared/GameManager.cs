@@ -17,8 +17,7 @@ namespace Fishbowl.Net.Shared
 
         public event Action<Score>? ScoreAdded;
 
-        public Func<IEnumerable<Player>, IEnumerable<Player>> PlayerListTransform { get; init; } =
-            SharedExtensions.Randomize<Player>;
+        public bool Randomize { get; init; } = true;
 
         public Round NextRound => this.game.NextRound;
 
@@ -28,7 +27,7 @@ namespace Fishbowl.Net.Shared
 
         public GameManager(Guid id, IEnumerable<Player> players, IEnumerable<string> roundTypes, int teamCount)
         {
-            var randomPlayersList = this.PlayerListTransform(players).ToList();
+            var randomPlayersList = this.Transform(players).ToList();
 
             if (randomPlayersList.Count < teamCount * 2)
             {
@@ -45,7 +44,7 @@ namespace Fishbowl.Net.Shared
                 .ToList();
 
             var rounds = roundTypes
-                .Select(type => new Round(type, new Stack<Word>(words.Randomize())))
+                .Select(type => new Round(type, new Stack<Word>(this.Transform(words))))
                 .ToList();
 
             this.game = new Game(id, teams, rounds);
@@ -112,5 +111,8 @@ namespace Fishbowl.Net.Shared
             this.ScoreAdded?.Invoke(score);
             return actualRound.WordList.Pop();
         }
+
+        private IEnumerable<T> Transform<T>(IEnumerable<T> enumerable) =>
+            this.Randomize ? enumerable.Randomize() : enumerable;
     }
 }
