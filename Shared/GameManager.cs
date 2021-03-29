@@ -94,14 +94,13 @@ namespace Fishbowl.Net.Shared
                 {
                     this.RoundFinished?.Invoke(actualRound);
                 }
-                
+
                 return null;
             }
 
             if (score.Timestamp > actualPeriod.StartedAt! + actualPeriod.Length)
             {
-                actualPeriod.FinishedAt = score.Timestamp;
-                this.PeriodFinished?.Invoke(actualPeriod);
+                this.FinishPeriod(score.Timestamp);
                 return null;
             }
 
