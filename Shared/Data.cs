@@ -3,15 +3,9 @@ using System.Collections.Generic;
 
 namespace Fishbowl.Net.Shared.Data
 {
-    public record Word(string Value)
-    {
-        public Guid Id { get; } = Guid.NewGuid();
-    }
+    public record Word(Guid Id, string Value);
 
-    public record Player(string Name, IEnumerable<Word> Words)
-    {
-        public Guid Id { get; } = Guid.NewGuid();
-    }
+    public record Player(Guid Id, string Name, IEnumerable<Word> Words);
 
     public record Score(Word word, DateTimeOffset timestamp);
 
