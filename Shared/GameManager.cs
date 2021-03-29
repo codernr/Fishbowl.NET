@@ -13,6 +13,8 @@ namespace Fishbowl.Net.Shared
 
         public event Action<Round>? RoundFinished;
 
+        public event Action<Game>? GameFinished;
+
         public event Action<Score>? ScoreAdded;
 
         private readonly Game game;
@@ -83,7 +85,16 @@ namespace Fishbowl.Net.Shared
             if (actualRound.WordList.Count == 0)
             {
                 actualPeriod.FinishedAt = score.Timestamp;
-                this.RoundFinished?.Invoke(actualRound);
+
+                if (this.game.Rounds.All(round => round.WordList.Count == 0))
+                {
+                    this.GameFinished?.Invoke(this.game);
+                }
+                else
+                {
+                    this.RoundFinished?.Invoke(actualRound);
+                }
+                
                 return null;
             }
 
