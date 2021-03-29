@@ -20,6 +20,8 @@ namespace Fishbowl.Net.Shared
         public Func<IEnumerable<Player>, IEnumerable<Player>> PlayerListTransform { get; init; } =
             SharedExtensions.Randomize<Player>;
 
+        public Round NextRound => this.game.NextRound;
+
         private readonly Game game;
 
         private int playerId = 0;
