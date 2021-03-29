@@ -7,17 +7,15 @@ namespace Fishbowl.Net.Shared
 {
     public class GameManager
     {
-        public event Action<Period>? PeriodStarted;
+        public event EventHandler<Period>? PeriodStarted;
 
-        public event Action<Period>? PeriodFinished;
+        public event EventHandler<Period>? PeriodFinished;
 
-        public event Action<Round>? RoundFinished;
+        public event EventHandler<Round>? RoundFinished;
 
-        public event Action<Game>? GameFinished;
+        public event EventHandler<Game>? GameFinished;
 
-        public event Action<Score>? ScoreAdded;
-
-        public bool Randomize { get; init; } = true;
+        public event EventHandler<Score>? ScoreAdded;
 
         public Round NextRound => this.game.NextRound;
 
@@ -25,9 +23,9 @@ namespace Fishbowl.Net.Shared
 
         private int playerId = 0;
 
-        public GameManager(Guid id, IEnumerable<Player> players, IEnumerable<string> roundTypes, int teamCount)
+        public GameManager(Guid id, IEnumerable<Player> players, IEnumerable<string> roundTypes, int teamCount, bool randomize = true)
         {
-            var randomPlayersList = this.Transform(players).ToList();
+            var randomPlayersList = (randomize ? players.Randomize() : players).ToList();
 
             if (randomPlayersList.Count < teamCount * 2)
             {
@@ -44,7 +42,7 @@ namespace Fishbowl.Net.Shared
                 .ToList();
 
             var rounds = roundTypes
-                .Select(type => new Round(type, new Stack<Word>(this.Transform(words))))
+                .Select(type => new Round(type, new Stack<Word>(randomize ? words.Randomize() : words)))
                 .ToList();
 
             this.game = new Game(id, teams, rounds);
@@ -65,7 +63,7 @@ namespace Fishbowl.Net.Shared
 
             period.StartedAt = startedAt;
 
-            this.PeriodStarted?.Invoke(period);
+            this.PeriodStarted?.Invoke(this, period);
         }
 
         public void FinishPeriod(DateTimeOffset finishedAt)
@@ -76,7 +74,7 @@ namespace Fishbowl.Net.Shared
 
             this.playerId = ++this.playerId % this.game.Players.Count;
 
-            this.PeriodFinished?.Invoke(period);
+            this.PeriodFinished?.Invoke(this, period);
         }
 
         public Word? AddScore(Score score)
@@ -92,11 +90,11 @@ namespace Fishbowl.Net.Shared
 
                 if (this.game.Rounds.All(round => round.WordList.Count == 0))
                 {
-                    this.GameFinished?.Invoke(this.game);
+                    this.GameFinished?.Invoke(this, this.game);
                 }
                 else
                 {
-                    this.RoundFinished?.Invoke(actualRound);
+                    this.RoundFinished?.Invoke(this, actualRound);
                 }
 
                 return null;
@@ -108,11 +106,8 @@ namespace Fishbowl.Net.Shared
                 return null;
             }
 
-            this.ScoreAdded?.Invoke(score);
+            this.ScoreAdded?.Invoke(this, score);
             return actualRound.WordList.Pop();
         }
-
-        private IEnumerable<T> Transform<T>(IEnumerable<T> enumerable) =>
-            this.Randomize ? enumerable.Randomize() : enumerable;
     }
 }
