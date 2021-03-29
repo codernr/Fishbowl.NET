@@ -36,6 +36,11 @@ namespace Fishbowl.Net.Shared.Data
 
         private TimeSpan GetNextPeriodLength()
         {
+            if (this.Periods.Count == 0)
+            {
+                return PeriodLength;
+            }
+            
             var last = this.Periods.Last();
 
             if (last.StartedAt is null || last.FinishedAt is null)
