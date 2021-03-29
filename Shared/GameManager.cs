@@ -9,6 +9,8 @@ namespace Fishbowl.Net.Shared
     {
         private readonly Game game;
 
+        private int playerId = 0;
+
         public GameManager(Guid id, IEnumerable<Player> players, IEnumerable<string> roundTypes, int teamCount)
         {
             var randomPlayersList = players.Randomize().ToList();
@@ -32,6 +34,15 @@ namespace Fishbowl.Net.Shared
                 .ToList();
 
             this.game = new Game(id, teams, rounds);
+        }
+
+        public (Period period, Word firstWord) SetupPeriod()
+        {
+            var period = this.game.ActualRound.CreatePeriod(this.game.Players[this.playerId]);
+
+            var word = this.game.ActualRound.WordList.Pop();
+
+            return (period, word);
         }
     }
 }

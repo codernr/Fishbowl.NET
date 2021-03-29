@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Fishbowl.Net.Shared.Data
 {
@@ -20,10 +21,48 @@ namespace Fishbowl.Net.Shared.Data
 
     public record Round(string Type, Stack<Word> WordList)
     {
+        private static readonly TimeSpan PeriodThreshold = TimeSpan.FromSeconds(5);
+
+        private static readonly TimeSpan PeriodLength = TimeSpan.FromSeconds(60);
+
         public ICollection<Period> Periods { get; } = new List<Period>();
+
+        public Period CreatePeriod(Player player)
+        {
+            var period = new Period(this.GetNextPeriodLength(), player);
+            this.Periods.Add(period);
+            return period;
+        }
+
+        private TimeSpan GetNextPeriodLength()
+        {
+            var last = this.Periods.Last();
+
+            if (last.StartedAt is null || last.FinishedAt is null)
+            {
+                throw new InvalidOperationException("Can't invoke when period is active");
+            }
+
+            var end = last.StartedAt.Value + last.Length - PeriodThreshold;
+
+            if (end <= last.FinishedAt)
+            {
+                return PeriodLength;
+            }
+
+            return end - last.FinishedAt.Value;
+        }
     }
 
     public record Team(int Id, IList<Player> Players);
 
-    public record Game(Guid Id, IList<Team> Teams, IList<Round> Rounds);
+    public record Game(Guid Id, IList<Team> Teams, IList<Round> Rounds)
+    {
+        public IList<Player> Players { get; } = Teams.SelectMany(team => team.Players).ToList();
+
+        public Round ActualRound
+        {
+            get => this.Rounds.First(round => round.WordList.Count > 0);
+        }
+    }
 }
