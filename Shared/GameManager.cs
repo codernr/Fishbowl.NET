@@ -17,13 +17,16 @@ namespace Fishbowl.Net.Shared
 
         public event Action<Score>? ScoreAdded;
 
+        public Func<IEnumerable<Player>, IEnumerable<Player>> PlayerListTransform { get; init; } =
+            SharedExtensions.Randomize<Player>;
+
         private readonly Game game;
 
         private int playerId = 0;
 
         public GameManager(Guid id, IEnumerable<Player> players, IEnumerable<string> roundTypes, int teamCount)
         {
-            var randomPlayersList = players.Randomize().ToList();
+            var randomPlayersList = this.PlayerListTransform(players).ToList();
 
             if (randomPlayersList.Count < teamCount * 2)
             {
