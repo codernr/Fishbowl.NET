@@ -18,7 +18,7 @@ namespace Fishbowl.Net.Shared.Data
         public ICollection<Score> Scores { get; } = new List<Score>();
     }
 
-    public record Round(string Type)
+    public record Round(string Type, Stack<Word> wordList)
     {
         public ICollection<Period> Periods { get; } = new List<Period>();
     }
