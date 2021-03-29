@@ -1,0 +1,64 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.0.0
+MinimumVisualStudioVersion = 16.0.0.0
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fishbowl.Net.Server", "Server\Fishbowl.Net.Server.csproj", "{B754FE12-64D2-4C29-98A7-E464EB92455E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fishbowl.Net.Client", "Client\Fishbowl.Net.Client.csproj", "{598875AD-3F08-431F-88DE-2965FFD2770E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fishbowl.Net.Shared", "Shared\Fishbowl.Net.Shared.csproj", "{1DC44E75-3B73-45A3-81CB-5F789D480321}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{598875AD-3F08-431F-88DE-2965FFD2770E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{598875AD-3F08-431F-88DE-2965FFD2770E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{598875AD-3F08-431F-88DE-2965FFD2770E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{598875AD-3F08-431F-88DE-2965FFD2770E}.Debug|x64.Build.0 = Debug|Any CPU
+		{598875AD-3F08-431F-88DE-2965FFD2770E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{598875AD-3F08-431F-88DE-2965FFD2770E}.Debug|x86.Build.0 = Debug|Any CPU
+		{598875AD-3F08-431F-88DE-2965FFD2770E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{598875AD-3F08-431F-88DE-2965FFD2770E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{598875AD-3F08-431F-88DE-2965FFD2770E}.Release|x64.ActiveCfg = Release|Any CPU
+		{598875AD-3F08-431F-88DE-2965FFD2770E}.Release|x64.Build.0 = Release|Any CPU
+		{598875AD-3F08-431F-88DE-2965FFD2770E}.Release|x86.ActiveCfg = Release|Any CPU
+		{598875AD-3F08-431F-88DE-2965FFD2770E}.Release|x86.Build.0 = Release|Any CPU
+		{B754FE12-64D2-4C29-98A7-E464EB92455E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B754FE12-64D2-4C29-98A7-E464EB92455E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B754FE12-64D2-4C29-98A7-E464EB92455E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{B754FE12-64D2-4C29-98A7-E464EB92455E}.Debug|x64.Build.0 = Debug|Any CPU
+		{B754FE12-64D2-4C29-98A7-E464EB92455E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B754FE12-64D2-4C29-98A7-E464EB92455E}.Debug|x86.Build.0 = Debug|Any CPU
+		{B754FE12-64D2-4C29-98A7-E464EB92455E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B754FE12-64D2-4C29-98A7-E464EB92455E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B754FE12-64D2-4C29-98A7-E464EB92455E}.Release|x64.ActiveCfg = Release|Any CPU
+		{B754FE12-64D2-4C29-98A7-E464EB92455E}.Release|x64.Build.0 = Release|Any CPU
+		{B754FE12-64D2-4C29-98A7-E464EB92455E}.Release|x86.ActiveCfg = Release|Any CPU
+		{B754FE12-64D2-4C29-98A7-E464EB92455E}.Release|x86.Build.0 = Release|Any CPU
+		{1DC44E75-3B73-45A3-81CB-5F789D480321}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1DC44E75-3B73-45A3-81CB-5F789D480321}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1DC44E75-3B73-45A3-81CB-5F789D480321}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1DC44E75-3B73-45A3-81CB-5F789D480321}.Debug|x64.Build.0 = Debug|Any CPU
+		{1DC44E75-3B73-45A3-81CB-5F789D480321}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1DC44E75-3B73-45A3-81CB-5F789D480321}.Debug|x86.Build.0 = Debug|Any CPU
+		{1DC44E75-3B73-45A3-81CB-5F789D480321}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1DC44E75-3B73-45A3-81CB-5F789D480321}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1DC44E75-3B73-45A3-81CB-5F789D480321}.Release|x64.ActiveCfg = Release|Any CPU
+		{1DC44E75-3B73-45A3-81CB-5F789D480321}.Release|x64.Build.0 = Release|Any CPU
+		{1DC44E75-3B73-45A3-81CB-5F789D480321}.Release|x86.ActiveCfg = Release|Any CPU
+		{1DC44E75-3B73-45A3-81CB-5F789D480321}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {42EE3E9C-C4E1-428F-8F0C-816F6004E011}
+	EndGlobalSection
+EndGlobal
