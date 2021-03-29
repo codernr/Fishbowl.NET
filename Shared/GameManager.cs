@@ -9,6 +9,8 @@ namespace Fishbowl.Net.Shared
     {
         public event Action<Period>? PeriodStarted;
 
+        public event Action<Period>? PeriodFinished;
+
         private readonly Game game;
 
         private int playerId = 0;
@@ -63,6 +65,8 @@ namespace Fishbowl.Net.Shared
             period.FinishedAt = finishedAt;
 
             this.playerId = ++this.playerId % this.game.Players.Count;
+
+            this.PeriodFinished?.Invoke(period);
         }
     }
 }
