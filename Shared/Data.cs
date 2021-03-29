@@ -8,7 +8,7 @@ namespace Fishbowl.Net.Shared.Data
 
     public record Player(Guid Id, string Name, IEnumerable<Word> Words);
 
-    public record Score(Word word, DateTimeOffset timestamp);
+    public record Score(Word word, DateTimeOffset Timestamp);
 
     public record Period(TimeSpan Length, Player Player)
     {
@@ -60,7 +60,17 @@ namespace Fishbowl.Net.Shared.Data
     {
         public IList<Player> Players { get; } = Teams.SelectMany(team => team.Players).ToList();
 
+        public int WordCount { get; } = Teams
+            .SelectMany(team => team.Players)
+            .SelectMany(player => player.Words)
+            .Count();
+
         public Round ActualRound
+        {
+            get => this.Rounds.Last(round => round.WordList.Count < this.WordCount);
+        }
+
+        public Round NextRound
         {
             get => this.Rounds.First(round => round.WordList.Count > 0);
         }

@@ -11,6 +11,10 @@ namespace Fishbowl.Net.Shared
 
         public event Action<Period>? PeriodFinished;
 
+        public event Action<Round>? RoundFinished;
+
+        public event Action<Score>? ScoreAdded;
+
         private readonly Game game;
 
         private int playerId = 0;
@@ -42,9 +46,9 @@ namespace Fishbowl.Net.Shared
 
         public (Period period, Word firstWord) SetupPeriod()
         {
-            var period = this.game.ActualRound.CreatePeriod(this.game.Players[this.playerId]);
+            var period = this.game.NextRound.CreatePeriod(this.game.Players[this.playerId]);
 
-            var word = this.game.ActualRound.WordList.Pop();
+            var word = this.game.NextRound.WordList.Pop();
 
             return (period, word);
         }
@@ -67,6 +71,31 @@ namespace Fishbowl.Net.Shared
             this.playerId = ++this.playerId % this.game.Players.Count;
 
             this.PeriodFinished?.Invoke(period);
+        }
+
+        public Word? AddScore(Score score)
+        {
+            var actualRound = this.game.ActualRound;
+            var actualPeriod = actualRound.Periods.Last();
+
+            actualPeriod.Scores.Add(score);
+
+            if (actualRound.WordList.Count == 0)
+            {
+                actualPeriod.FinishedAt = score.Timestamp;
+                this.RoundFinished?.Invoke(actualRound);
+                return null;
+            }
+
+            if (score.Timestamp > actualPeriod.StartedAt! + actualPeriod.Length)
+            {
+                actualPeriod.FinishedAt = score.Timestamp;
+                this.PeriodFinished?.Invoke(actualPeriod);
+                return null;
+            }
+
+            this.ScoreAdded?.Invoke(score);
+            return actualRound.WordList.Pop();
         }
     }
 }
