@@ -7,15 +7,15 @@ namespace Fishbowl.Net.Shared
 {
     public class GameManager
     {
-        public event EventHandler<Period>? PeriodStarted;
+        public event EventHandler<EventArgs<Period>>? PeriodStarted;
 
-        public event EventHandler<Period>? PeriodFinished;
+        public event EventHandler<EventArgs<Period>>? PeriodFinished;
 
-        public event EventHandler<Round>? RoundFinished;
+        public event EventHandler<EventArgs<Round>>? RoundFinished;
 
-        public event EventHandler<Game>? GameFinished;
+        public event EventHandler<EventArgs<Game>>? GameFinished;
 
-        public event EventHandler<Score>? ScoreAdded;
+        public event EventHandler<EventArgs<Score>>? ScoreAdded;
 
         public Round NextRound => this.game.NextRound;
 
@@ -63,7 +63,7 @@ namespace Fishbowl.Net.Shared
 
             period.StartedAt = startedAt;
 
-            this.PeriodStarted?.Invoke(this, period);
+            this.PeriodStarted?.Invoke(this, new EventArgs<Period>(period));
         }
 
         public void FinishPeriod(DateTimeOffset finishedAt)
@@ -74,7 +74,7 @@ namespace Fishbowl.Net.Shared
 
             this.playerId = ++this.playerId % this.game.Players.Count;
 
-            this.PeriodFinished?.Invoke(this, period);
+            this.PeriodFinished?.Invoke(this, new EventArgs<Period>(period));
         }
 
         public Word? AddScore(Score score)
@@ -90,11 +90,11 @@ namespace Fishbowl.Net.Shared
 
                 if (this.game.Rounds.All(round => round.WordList.Count == 0))
                 {
-                    this.GameFinished?.Invoke(this, this.game);
+                    this.GameFinished?.Invoke(this, new EventArgs<Game>(this.game));
                 }
                 else
                 {
-                    this.RoundFinished?.Invoke(this, actualRound);
+                    this.RoundFinished?.Invoke(this, new EventArgs<Round>(actualRound));
                 }
 
                 return null;
@@ -106,7 +106,7 @@ namespace Fishbowl.Net.Shared
                 return null;
             }
 
-            this.ScoreAdded?.Invoke(this, score);
+            this.ScoreAdded?.Invoke(this, new EventArgs<Score>(score));
             return actualRound.WordList.Pop();
         }
     }

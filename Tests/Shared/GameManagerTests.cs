@@ -33,13 +33,24 @@ namespace Fishbowl.Net.Tests.Shared
                 Guid.NewGuid(),
                 players,
                 new[] { "GameType1", "GameType2" },
-                2) { Randomize = false };
+                2,
+                false);
 
             Assert.Equal("GameType1", gameManager.NextRound.Type);
             
             var (period, firstWord) = gameManager.SetupPeriod();
 
-            Assert.Equal("Player0Word0", firstWord.Value);
+            // Stack adds list elements in order, so pops last one first
+            Assert.Equal("Player4Word1", firstWord.Value);
+
+            var now = DateTime.Now;
+
+            var periodStarted = Assert.Raises<EventArgs<Period>>(
+                a => gameManager.PeriodStarted += a,
+                a => gameManager.PeriodStarted -= a,
+                () => gameManager.StartPeriod(now));
+
+            Assert.Equal(period, periodStarted.Arguments.Data);
         }
 
         private static IEnumerable<Player> CreatePlayers(int count, int wordCount) =>
@@ -48,6 +59,8 @@ namespace Fishbowl.Net.Tests.Shared
                     Guid.NewGuid(),
                     $"Player{i}",
                     Enumerable.Range(0, wordCount)
-                        .Select(j => new Word(Guid.NewGuid(), $"Player{i}Word{j}"))));
+                        .Select(j => new Word(Guid.NewGuid(), $"Player{i}Word{j}"))
+                        .ToList()))
+                .ToList();
     }
 }

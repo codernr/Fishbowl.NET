@@ -80,4 +80,11 @@ namespace Fishbowl.Net.Shared.Data
             get => this.Rounds.First(round => round.WordList.Count > 0);
         }
     }
+
+    public class EventArgs<T> : EventArgs
+    {
+        public T Data { get; }
+
+        public EventArgs(T data) => this.Data = data;
+    }
 }
