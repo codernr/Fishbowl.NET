@@ -1,27 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Fishbowl.Net.Shared.Data;
 
 namespace Fishbowl.Net.Shared
 {
     public class GameManager
     {
-        public event EventHandler<EventArgs<Period>>? PeriodStarted;
-
-        public event EventHandler<EventArgs<Period>>? PeriodFinished;
-
-        public event EventHandler<EventArgs<Round>>? RoundFinished;
-
-        public event EventHandler<EventArgs<Game>>? GameFinished;
-
-        public event EventHandler<EventArgs<Score>>? ScoreAdded;
-
-        public Round NextRound => this.game.NextRound;
-
         private readonly Game game;
-
-        private int playerId = 0;
 
         public GameManager(Guid id, IEnumerable<Player> players, IEnumerable<string> roundTypes, int teamCount, bool randomize = true)
         {
@@ -48,66 +35,73 @@ namespace Fishbowl.Net.Shared
             this.game = new Game(id, teams, rounds);
         }
 
-        public (Period period, Word firstWord) SetupPeriod()
+        public async IAsyncEnumerable<Round> GetRounds()
         {
-            var period = this.game.NextRound.CreatePeriod(this.game.Players[this.playerId]);
-
-            var word = this.game.NextRound.WordList.Pop();
-
-            return (period, word);
-        }
-
-        public void StartPeriod(DateTimeOffset startedAt)
-        {
-            var period = this.game.ActualRound.Periods.Last();
-
-            period.StartedAt = startedAt;
-
-            this.PeriodStarted?.Invoke(this, new EventArgs<Period>(period));
-        }
-
-        public void FinishPeriod(DateTimeOffset finishedAt)
-        {
-            var period = this.game.ActualRound.Periods.Last();
-
-            period.FinishedAt = finishedAt;
-
-            this.playerId = ++this.playerId % this.game.Players.Count;
-
-            this.PeriodFinished?.Invoke(this, new EventArgs<Period>(period));
-        }
-
-        public Word? AddScore(Score score)
-        {
-            var actualRound = this.game.ActualRound;
-            var actualPeriod = actualRound.Periods.Last();
-
-            actualPeriod.Scores.Add(score);
-
-            if (actualRound.WordList.Count == 0)
+            while(this.game.RoundsEnumerator.MoveNext())
             {
-                actualPeriod.FinishedAt = score.Timestamp;
-
-                if (this.game.Rounds.All(round => round.WordList.Count == 0))
-                {
-                    this.GameFinished?.Invoke(this, new EventArgs<Game>(this.game));
-                }
-                else
-                {
-                    this.RoundFinished?.Invoke(this, new EventArgs<Round>(actualRound));
-                }
-
-                return null;
+                yield return this.game.RoundsEnumerator.Current;
             }
 
-            if (score.Timestamp > actualPeriod.StartedAt! + actualPeriod.Length)
+            await Task.CompletedTask;
+        }
+
+        public async IAsyncEnumerable<Period> GetPeriods()
+        {
+            while (this.game.RoundsEnumerator.Current.WordList.Count > 0)
             {
-                this.FinishPeriod(score.Timestamp);
-                return null;
+                yield return this.game.RoundsEnumerator.Current.CreatePeriod(
+                    this.game.TeamsEnumerator.Current.PlayersEnumerator.Current, this.game.Remaining);
             }
 
-            this.ScoreAdded?.Invoke(this, new EventArgs<Score>(score));
-            return actualRound.WordList.Pop();
+            await Task.CompletedTask;
+        }
+
+        public async IAsyncEnumerable<Word> GetWords(IAsyncEnumerable<(Word?, DateTimeOffset)> submissions)
+        {
+            var period = this.game.RoundsEnumerator.Current.Periods.Last();
+
+            await foreach (var (word, timestamp) in submissions)
+            {
+                // submission indicating start of period
+                if (period.StartedAt is null)
+                {
+                    period.StartedAt = timestamp;
+                    yield return this.game.RoundsEnumerator.Current.WordList.Pop();
+                    continue;
+                }
+
+                // submission indicating pass last guess
+                if (word is null)
+                {
+                    period.FinishedAt = timestamp;
+                    this.game.Remaining = TimeSpan.Zero;
+                    this.game.TeamsEnumerator.Current.PlayersEnumerator.MoveNext();
+                    this.game.TeamsEnumerator.MoveNext();
+                    yield break;
+                }
+
+                period.Scores.Add(new Score(word, timestamp));
+
+                // last guess over time
+                if (timestamp >= period.StartedAt + period.Length)
+                {
+                    period.FinishedAt = timestamp;
+                    this.game.Remaining = TimeSpan.Zero;
+                    this.game.TeamsEnumerator.Current.PlayersEnumerator.MoveNext();
+                    this.game.TeamsEnumerator.MoveNext();
+                    yield break;
+                }
+
+                // no more words, end round
+                if (this.game.RoundsEnumerator.Current.WordList.Count == 0)
+                {
+                    period.FinishedAt = timestamp;
+                    this.game.Remaining = period.StartedAt.Value + period.Length - timestamp;
+                    yield break;
+                }
+
+                yield return this.game.RoundsEnumerator.Current.WordList.Pop();
+            }
         }
     }
 }

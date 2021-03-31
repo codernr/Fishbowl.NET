@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -27,58 +28,27 @@ namespace Fishbowl.Net.Shared.Data
 
         public ICollection<Period> Periods { get; } = new List<Period>();
 
-        public Period CreatePeriod(Player player)
+        public Period CreatePeriod(Player player, TimeSpan remaining)
         {
-            var period = new Period(this.GetNextPeriodLength(), player);
+            var length = remaining > PeriodThreshold ? remaining : PeriodLength;
+            var period = new Period(length, player);
             this.Periods.Add(period);
             return period;
         }
-
-        private TimeSpan GetNextPeriodLength()
-        {
-            if (this.Periods.Count == 0)
-            {
-                return PeriodLength;
-            }
-            
-            var last = this.Periods.Last();
-
-            if (last.StartedAt is null || last.FinishedAt is null)
-            {
-                throw new InvalidOperationException("Can't invoke when period is active");
-            }
-
-            var end = last.StartedAt.Value + last.Length - PeriodThreshold;
-
-            if (end <= last.FinishedAt)
-            {
-                return PeriodLength;
-            }
-
-            return end - last.FinishedAt.Value;
-        }
     }
 
-    public record Team(int Id, IList<Player> Players);
+    public record Team(int Id, IList<Player> Players)
+    {
+        public CircularEnumerator<Player> PlayersEnumerator { get; } = new CircularEnumerator<Player>(Players);
+    }
 
     public record Game(Guid Id, IList<Team> Teams, IList<Round> Rounds)
     {
-        public IList<Player> Players { get; } = Teams.SelectMany(team => team.Players).ToList();
+        public CircularEnumerator<Team> TeamsEnumerator { get; } = new CircularEnumerator<Team>(Teams);
 
-        public int WordCount { get; } = Teams
-            .SelectMany(team => team.Players)
-            .SelectMany(player => player.Words)
-            .Count();
+        public IEnumerator<Round> RoundsEnumerator { get; } = Rounds.GetEnumerator();
 
-        public Round ActualRound
-        {
-            get => this.Rounds.Last(round => round.WordList.Count < this.WordCount);
-        }
-
-        public Round NextRound
-        {
-            get => this.Rounds.First(round => round.WordList.Count > 0);
-        }
+        public TimeSpan Remaining { get; set; }
     }
 
     public class EventArgs<T> : EventArgs
@@ -86,5 +56,31 @@ namespace Fishbowl.Net.Shared.Data
         public T Data { get; }
 
         public EventArgs(T data) => this.Data = data;
+    }
+
+    public class CircularEnumerator<T> : IEnumerator<T>
+    {
+        private readonly IList<T> list;
+
+        private int id = 0;
+
+        public CircularEnumerator(IList<T> list) => this.list = list;
+
+        public T Current => this.list[this.id];
+
+        object IEnumerator.Current => this.list[this.id]!;
+
+        public void Dispose() { }
+
+        public bool MoveNext()
+        {
+            this.id = (this.id + 1) % this.list.Count;
+            return true;
+        }
+
+        public void Reset()
+        {
+            this.id = 0;
+        }
     }
 }

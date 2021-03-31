@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Fishbowl.Net.Shared;
 using Fishbowl.Net.Shared.Data;
 using Xunit;
@@ -25,32 +26,88 @@ namespace Fishbowl.Net.Tests.Shared
         }
 
         [Fact]
-        public void ShouldRunToGameFinished()
+        public async Task ShouldRun()
         {
             var players = CreatePlayers(5, 2);
+
+            var rounds = new[] { "GameType1", "GameType2" };
 
             var gameManager = new GameManager(
                 Guid.NewGuid(),
                 players,
-                new[] { "GameType1", "GameType2" },
+                rounds,
                 2,
                 false);
 
-            Assert.Equal("GameType1", gameManager.NextRound.Type);
-            
-            var (period, firstWord) = gameManager.SetupPeriod();
+            int roundCount = 0;
+            int periodCount = 0;
+            int totalPeriodCount = 0;
+            int wordCount = 0;
+            int totalWordCount = 0;
 
-            // Stack adds list elements in order, so pops last one first
-            Assert.Equal("Player4Word1", firstWord.Value);
+            var guessedWords = new[]
+            {
+                new[]
+                {
+                    new[] { "Player4Word1", "Player4Word0", "Player3Word1", "Player3Word0", "Player2Word1", "Player2Word0" },
+                    new[] { "Player1Word1", "Player1Word0", "Player0Word1", "Player0Word0" }
+                },
+                new[]
+                {
+                    new[] { "Player4Word1", "Player4Word0" },
+                    new[] { "Player3Word1", "Player3Word0", "Player2Word1", "Player2Word0", "Player1Word1", "Player1Word0" },
+                    new[] { "Player0Word1", "Player0Word0" }
+                }
+            };
 
-            var now = DateTime.Now;
+            var playerList = new[] { "Player0", "Player1", "Player1", "Player2", "Player3" };
 
-            var periodStarted = Assert.Raises<EventArgs<Period>>(
-                a => gameManager.PeriodStarted += a,
-                a => gameManager.PeriodStarted -= a,
-                () => gameManager.StartPeriod(now));
+            await foreach (var round in gameManager.GetRounds())
+            {
+                Assert.Equal(rounds[roundCount], round.Type);
 
-            Assert.Equal(period, periodStarted.Arguments.Data);
+                await foreach (var period in gameManager.GetPeriods())
+                {
+                    var submissionItem = new SubmissionItem();
+
+                    var submissions = submissionItem.Submissions();
+
+                    Assert.Equal(playerList[totalPeriodCount], period.Player.Name);
+
+                    await foreach (var remoteWord in gameManager.GetWords(submissions))
+                    {
+                        Assert.Equal(guessedWords[roundCount][periodCount][wordCount++], remoteWord.Value);
+                        submissionItem.Word = remoteWord;
+                        submissionItem.Now += TimeSpan.FromSeconds(10);
+                        totalWordCount++;
+                    }
+
+                    wordCount = 0;
+                    periodCount++;
+                    totalPeriodCount++;
+                }
+
+                periodCount = 0;
+                roundCount++;
+            }
+
+            Assert.Equal(20, totalWordCount);
+        }
+
+        private class SubmissionItem
+        {
+            public DateTimeOffset Now { get; set; } = DateTimeOffset.UtcNow;
+
+            public Word? Word { get; set; } = null;
+
+            public async IAsyncEnumerable<(Word?, DateTimeOffset)> Submissions()
+            {
+                while (true)
+                {
+                    yield return (this.Word, this.Now);
+                    await Task.CompletedTask;
+                }
+            }
         }
 
         private static IEnumerable<Player> CreatePlayers(int count, int wordCount) =>
