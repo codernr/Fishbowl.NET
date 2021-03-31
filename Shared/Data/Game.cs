@@ -3,12 +3,18 @@ using System.Collections.Generic;
 
 namespace Fishbowl.Net.Shared.Data
 {
-    public record Game(Guid Id, IList<Team> Teams, IList<Round> Rounds)
+    public record Game
     {
-        public CircularEnumerator<Team> TeamsEnumerator { get; } = new CircularEnumerator<Team>(Teams);
-
-        public IEnumerator<Round> RoundsEnumerator { get; } = Rounds.GetEnumerator();
+        public Guid Id { get; init; }
+        
+        public CircularEnumeratorList<Team> Teams { get; init; }
+        
+        public EnumeratorList<Round> Rounds { get; init; }
 
         public TimeSpan Remaining { get; set; }
+
+        public Game(Guid id, IEnumerable<Team> teams, IEnumerable<Round> rounds) =>
+            (this.Id, this.Teams, this.Rounds) =
+            (id, new CircularEnumeratorList<Team>(teams), new EnumeratorList<Round>(rounds));
     }
 }

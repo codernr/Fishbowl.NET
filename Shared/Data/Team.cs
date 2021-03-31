@@ -2,8 +2,13 @@ using System.Collections.Generic;
 
 namespace Fishbowl.Net.Shared.Data
 {
-    public record Team(int Id, IList<Player> Players)
+    public record Team
     {
-        public CircularEnumerator<Player> PlayersEnumerator { get; } = new CircularEnumerator<Player>(Players);
+        public int Id { get; init; }
+
+        public CircularEnumeratorList<Player> Players;
+
+        public Team(int id, IEnumerable<Player> players) =>
+            (this.Id, this.Players) = (id, new CircularEnumeratorList<Player>(players));
     }
 }

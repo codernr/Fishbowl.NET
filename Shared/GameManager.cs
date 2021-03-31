@@ -37,9 +37,9 @@ namespace Fishbowl.Net.Shared
 
         public async IAsyncEnumerable<Round> GetRounds()
         {
-            while(this.game.RoundsEnumerator.MoveNext())
+            while(this.game.Rounds.MoveNext())
             {
-                yield return this.game.RoundsEnumerator.Current;
+                yield return this.game.Rounds.Current;
             }
 
             await Task.CompletedTask;
@@ -47,10 +47,10 @@ namespace Fishbowl.Net.Shared
 
         public async IAsyncEnumerable<Period> GetPeriods()
         {
-            while (this.game.RoundsEnumerator.Current.WordList.Count > 0)
+            while (this.game.Rounds.Current.WordList.Count > 0)
             {
-                yield return this.game.RoundsEnumerator.Current.CreatePeriod(
-                    this.game.TeamsEnumerator.Current.PlayersEnumerator.Current, this.game.Remaining);
+                yield return this.game.Rounds.Current.CreatePeriod(
+                    this.game.Teams.Current.Players.Current, this.game.Remaining);
             }
 
             await Task.CompletedTask;
@@ -58,7 +58,7 @@ namespace Fishbowl.Net.Shared
 
         public async IAsyncEnumerable<Word> GetWords(IAsyncEnumerable<(Word?, DateTimeOffset)> submissions)
         {
-            var period = this.game.RoundsEnumerator.Current.Periods.Last();
+            var period = this.game.Rounds.Current.Periods.Last();
 
             await foreach (var (word, timestamp) in submissions)
             {
@@ -66,7 +66,7 @@ namespace Fishbowl.Net.Shared
                 if (period.StartedAt is null)
                 {
                     period.StartedAt = timestamp;
-                    yield return this.game.RoundsEnumerator.Current.WordList.Pop();
+                    yield return this.game.Rounds.Current.WordList.Pop();
                     continue;
                 }
 
@@ -75,8 +75,8 @@ namespace Fishbowl.Net.Shared
                 {
                     period.FinishedAt = timestamp;
                     this.game.Remaining = TimeSpan.Zero;
-                    this.game.TeamsEnumerator.Current.PlayersEnumerator.MoveNext();
-                    this.game.TeamsEnumerator.MoveNext();
+                    this.game.Teams.Current.Players.MoveNext();
+                    this.game.Teams.MoveNext();
                     yield break;
                 }
 
@@ -87,20 +87,20 @@ namespace Fishbowl.Net.Shared
                 {
                     period.FinishedAt = timestamp;
                     this.game.Remaining = TimeSpan.Zero;
-                    this.game.TeamsEnumerator.Current.PlayersEnumerator.MoveNext();
-                    this.game.TeamsEnumerator.MoveNext();
+                    this.game.Teams.Current.Players.MoveNext();
+                    this.game.Teams.MoveNext();
                     yield break;
                 }
 
                 // no more words, end round
-                if (this.game.RoundsEnumerator.Current.WordList.Count == 0)
+                if (this.game.Rounds.Current.WordList.Count == 0)
                 {
                     period.FinishedAt = timestamp;
                     this.game.Remaining = period.StartedAt.Value + period.Length - timestamp;
                     yield break;
                 }
 
-                yield return this.game.RoundsEnumerator.Current.WordList.Pop();
+                yield return this.game.Rounds.Current.WordList.Pop();
             }
         }
     }
