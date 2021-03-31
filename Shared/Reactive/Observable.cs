@@ -1,37 +1,36 @@
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Fishbowl.Net.Shared.Reactive
 {
-    public class Observable<T>
+    public class Observable<T> : IAsyncEnumerable<T>
     {
         private readonly IAsyncEnumerable<T> source;
 
-        private readonly List<Task<T>> values = new List<Task<T>>();
+        private readonly List<Task<T>> values = new();
+
+        private readonly TaskCompletionSource start = new();
 
         private Task? readTask;
 
-        public Observable(IAsyncEnumerable<T> source) => this.source = source;
-
-        public async IAsyncEnumerable<T> GetStream()
+        private Task ReadTask
         {
-            if (this.readTask is null)
+            get
             {
-                this.readTask = this.ReadSource();
-            }
-
-            for (int i = 0; i < this.values.Count; i++)
-            {
-                await Task.WhenAny(this.values[i], this.readTask);
-                
-                if (this.readTask.IsCompletedSuccessfully)
+                if (this.readTask is null)
                 {
-                    yield break;
+                    this.readTask = this.ReadSource();
                 }
 
-                yield return await this.values[i];
+                return this.readTask;
             }
         }
+
+        public Observable(IAsyncEnumerable<T> source) => this.source = source;
+
+        public IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default) =>
+            new ObservableEnumerator<T>(this.values, this.ReadTask);
 
         private async Task ReadSource()
         {
