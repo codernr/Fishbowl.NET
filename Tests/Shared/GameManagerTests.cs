@@ -26,7 +26,7 @@ namespace Fishbowl.Net.Tests.Shared
         }
 
         [Fact]
-        public async Task ShouldRun()
+        public void ShouldRun()
         {
             var players = CreatePlayers(5, 2);
 
@@ -49,36 +49,36 @@ namespace Fishbowl.Net.Tests.Shared
             {
                 new[]
                 {
-                    new[] { "Player4Word1", "Player4Word0", "Player3Word1", "Player3Word0", "Player2Word1", "Player2Word0" },
-                    new[] { "Player1Word1", "Player1Word0", "Player0Word1", "Player0Word0" }
+                    new[] { "Player0Word0", "Player0Word1", "Player1Word0", "Player1Word1", "Player2Word0", "Player2Word1" },
+                    new[] { "Player3Word0", "Player3Word1", "Player4Word0", "Player4Word1" }
                 },
                 new[]
                 {
-                    new[] { "Player4Word1", "Player4Word0" },
-                    new[] { "Player3Word1", "Player3Word0", "Player2Word1", "Player2Word0", "Player1Word1", "Player1Word0" },
-                    new[] { "Player0Word1", "Player0Word0" }
+                    new[] { "Player0Word0", "Player0Word1" },
+                    new[] { "Player1Word0", "Player1Word1", "Player2Word0", "Player2Word1", "Player3Word0", "Player3Word1" },
+                    new[] { "Player4Word0", "Player4Word1" }
                 }
             };
 
             var playerList = new[] { "Player0", "Player1", "Player1", "Player2", "Player3" };
 
-            await foreach (var round in gameManager.GetRounds())
+            foreach (var round in gameManager.GetRounds())
             {
                 Assert.Equal(rounds[roundCount], round.Type);
 
-                await foreach (var period in gameManager.GetPeriods())
+                foreach (var period in gameManager.GetPeriods())
                 {
-                    var submissionItem = new SubmissionItem();
-
-                    var submissions = submissionItem.Submissions();
-
                     Assert.Equal(playerList[totalPeriodCount], period.Player.Name);
 
-                    await foreach (var remoteWord in gameManager.GetWords(submissions))
+                    var now = new DateTimeOffset(2021, 3, 31, 10, 0, 0, TimeSpan.Zero);
+
+                    while(gameManager.NextWord(now))
                     {
-                        Assert.Equal(guessedWords[roundCount][periodCount][wordCount++], remoteWord.word.Value);
-                        submissionItem.Word = remoteWord.word;
-                        submissionItem.Now += TimeSpan.FromSeconds(10);
+                        Assert.Equal(guessedWords[roundCount][periodCount][wordCount], gameManager.CurrentWord.Value);
+                        gameManager.AddScore(new Score(gameManager.CurrentWord, now));
+                        
+                        now += TimeSpan.FromSeconds(10);
+                        wordCount++;
                         totalWordCount++;
                     }
 
@@ -92,22 +92,6 @@ namespace Fishbowl.Net.Tests.Shared
             }
 
             Assert.Equal(20, totalWordCount);
-        }
-
-        private class SubmissionItem
-        {
-            public DateTimeOffset Now { get; set; } = DateTimeOffset.UtcNow;
-
-            public Word? Word { get; set; } = null;
-
-            public async IAsyncEnumerable<(Word?, DateTimeOffset)> Submissions()
-            {
-                while (true)
-                {
-                    yield return (this.Word, this.Now);
-                    await Task.CompletedTask;
-                }
-            }
         }
 
         private static IEnumerable<Player> CreatePlayers(int count, int wordCount) =>

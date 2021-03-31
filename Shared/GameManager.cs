@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Fishbowl.Net.Shared.Data;
 
 namespace Fishbowl.Net.Shared
@@ -9,6 +8,8 @@ namespace Fishbowl.Net.Shared
     public class GameManager
     {
         private readonly Game game;
+
+        public Word CurrentWord { get => this.game.Rounds.Current.Words.Current; }
 
         public GameManager(Guid id, IEnumerable<Player> players, IEnumerable<string> roundTypes, int teamCount, bool randomize = true)
         {
@@ -32,73 +33,51 @@ namespace Fishbowl.Net.Shared
             this.game = new Game(id, teams, rounds);
         }
 
-        public async IAsyncEnumerable<Round> GetRounds()
+        public IEnumerable<Round> GetRounds()
         {
             while(this.game.Rounds.MoveNext())
             {
                 yield return this.game.Rounds.Current;
             }
-
-            await Task.CompletedTask;
         }
 
-        public async IAsyncEnumerable<Period> GetPeriods()
+        public IEnumerable<Period> GetPeriods()
         {
             while (this.game.Rounds.Current.NextPeriod(this.game.Remaining ?? this.game.PeriodLength, this.game.Teams.Current.Players.Current))
             {
                 yield return this.game.Rounds.Current.CurrentPeriod;
             }
-
-            await Task.CompletedTask;
         }
 
-        public async IAsyncEnumerable<(Word word, Score? score)> GetWords(IAsyncEnumerable<(Word?, DateTimeOffset)> submissions)
+        public void AddScore(Score score) => this.game.Rounds.Current.CurrentPeriod.Scores.Add(score);
+
+        public bool NextWord(DateTimeOffset timestamp)
         {
             var period = this.game.Rounds.Current.CurrentPeriod;
 
-            await foreach (var (word, timestamp) in submissions)
+            if (period.StartedAt is null)
             {
-                // submission indicating start of period
-                if (period.StartedAt is null)
-                {
-                    period.StartedAt = timestamp;
-                    yield return (this.game.Rounds.Current.WordList.Pop(), null);
-                    continue;
-                }
-
-                // submission indicating pass last guess
-                if (word is null)
-                {
-                    period.FinishedAt = timestamp;
-                    this.game.Remaining = null;
-                    this.game.Teams.Current.Players.MoveNext();
-                    this.game.Teams.MoveNext();
-                    yield break;
-                }
-
-                var score = new Score(word, timestamp);
-                period.Scores.Add(score);
-
-                // last guess over time
-                if (timestamp >= period.StartedAt + period.Length)
-                {
-                    period.FinishedAt = timestamp;
-                    this.game.Remaining = null;
-                    this.game.Teams.Current.Players.MoveNext();
-                    this.game.Teams.MoveNext();
-                    yield break;
-                }
-
-                // no more words, end round
-                if (this.game.Rounds.Current.WordList.Count == 0)
-                {
-                    period.FinishedAt = timestamp;
-                    this.game.Remaining = period.StartedAt.Value + period.Length - timestamp;
-                    yield break;
-                }
-
-                yield return (this.game.Rounds.Current.WordList.Pop(), score);
+                period.StartedAt = timestamp;
+                return true;
             }
+
+            if (timestamp >= period.StartedAt + period.Length - Game.PeriodThreshold)
+            {
+                period.FinishedAt = timestamp;
+                this.game.Remaining = null;
+                this.game.Teams.Current.Players.MoveNext();
+                this.game.Teams.MoveNext();
+                return false;
+            }
+
+            if (!this.game.Rounds.Current.Words.MoveNext())
+            {
+                period.FinishedAt = timestamp;
+                this.game.Remaining = period.StartedAt + period.Length - timestamp;
+                return false;
+            }
+
+            return true;
         }
     }
 }
