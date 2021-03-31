@@ -7,17 +7,17 @@ namespace Fishbowl.Net.Shared.Data
     {
         public string Type { get; init; }
 
-        public EnumeratorList<Word> Words { get; init; }
+        public IEnumerator<Word> Words { get; init; }
 
         public Period CurrentPeriod
         { 
             get => this.periods[this.periods.Count - 1];
         }
 
-        private readonly List<Period> periods = new EnumeratorList<Period>();
+        private readonly List<Period> periods = new List<Period>();
 
         public Round(string type, IEnumerable<Word> words) =>
-            (this.Type, this.Words) = (type, new EnumeratorList<Word>(words));
+            (this.Type, this.Words) = (type, words.GetEnumerator());
 
         public bool NextPeriod(TimeSpan length, Player player)
         {

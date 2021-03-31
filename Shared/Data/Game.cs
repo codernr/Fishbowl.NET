@@ -7,9 +7,9 @@ namespace Fishbowl.Net.Shared.Data
     { 
         public Guid Id { get; init; }
         
-        public CircularEnumeratorList<Team> Teams { get; init; }
+        public CircularEnumerator<Team> Teams { get; init; }
         
-        public EnumeratorList<Round> Rounds { get; init; }
+        public IEnumerator<Round> Rounds { get; init; }
 
         public TimeSpan? Remaining { get; set; }
 
@@ -19,6 +19,6 @@ namespace Fishbowl.Net.Shared.Data
 
         public Game(Guid id, IEnumerable<Team> teams, IEnumerable<Round> rounds) =>
             (this.Id, this.Teams, this.Rounds) =
-            (id, new CircularEnumeratorList<Team>(teams), new EnumeratorList<Round>(rounds));
+            (id, new CircularEnumerator<Team>(teams), rounds.GetEnumerator());
     }
 }

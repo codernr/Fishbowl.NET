@@ -6,9 +6,9 @@ namespace Fishbowl.Net.Shared.Data
     {
         public int Id { get; init; }
 
-        public CircularEnumeratorList<Player> Players;
+        public CircularEnumerator<Player> Players;
 
         public Team(int id, IEnumerable<Player> players) =>
-            (this.Id, this.Players) = (id, new CircularEnumeratorList<Player>(players));
+            (this.Id, this.Players) = (id, new CircularEnumerator<Player>(players));
     }
 }
