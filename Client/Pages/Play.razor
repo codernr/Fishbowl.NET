@@ -48,7 +48,7 @@
     {
         var random = new Random();
         var playerName = $"Player{random.Next()}";
-        await this.connection.SendAsync("SetPlayerAsync",
+        await this.connection.InvokeAsync("SetPlayerAsync",
             playerName,
             new[] { $"Word{random.Next()}", $"Word{random.Next()}" });
 
