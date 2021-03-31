@@ -49,9 +49,7 @@ namespace Fishbowl.Net.Shared
             }
         }
 
-        public void AddScore(Score score) => this.game.Rounds.Current.CurrentPeriod.Scores.Add(score);
-
-        public bool NextWord(DateTimeOffset timestamp)
+        public bool NextWord(DateTimeOffset timestamp, Word? previousWord = null)
         {
             var period = this.game.Rounds.Current.CurrentPeriod;
 
@@ -61,12 +59,19 @@ namespace Fishbowl.Net.Shared
                 return true;
             }
 
+            if (previousWord is not null)
+            {
+                period.Scores.Add(new Score(previousWord, timestamp));
+            }
+
             if (timestamp >= period.StartedAt + period.Length - Game.PeriodThreshold)
             {
                 period.FinishedAt = timestamp;
                 this.game.Remaining = null;
                 this.game.Teams.Current.Players.MoveNext();
                 this.game.Teams.MoveNext();
+
+                if (previousWord is null) this.game.Rounds.Current.Words.MovePrevious();
                 return false;
             }
 

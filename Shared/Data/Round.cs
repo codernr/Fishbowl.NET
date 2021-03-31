@@ -7,7 +7,7 @@ namespace Fishbowl.Net.Shared.Data
     {
         public string Type { get; init; }
 
-        public IEnumerator<Word> Words { get; init; }
+        public IRewindEnumerator<Word> Words { get; init; }
 
         public Period CurrentPeriod
         { 
@@ -17,7 +17,7 @@ namespace Fishbowl.Net.Shared.Data
         private readonly List<Period> periods = new List<Period>();
 
         public Round(string type, IEnumerable<Word> words) =>
-            (this.Type, this.Words) = (type, words.GetEnumerator());
+            (this.Type, this.Words) = (type, new RewindEnumerator<Word>(words));
 
         public bool NextPeriod(TimeSpan length, Player player)
         {
