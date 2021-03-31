@@ -25,6 +25,11 @@ namespace Fishbowl.Net.Server.Services
 
         public async Task JoinGameAsync(string connectionId, IClientProxy caller)
         {
+            if (players.ContainsKey(connectionId))
+            {
+                return;
+            }
+
             players.Add(connectionId, null);
 
             if (players.Count == 1)
@@ -33,7 +38,7 @@ namespace Fishbowl.Net.Server.Services
             }
         }
 
-        public Task SetPlayer(string connectionId, string name, IEnumerable<Word> words)
+        public Task SetPlayerAsync(string connectionId, string name, IEnumerable<Word> words)
         {
             this.players[connectionId] = new Player(Guid.NewGuid(), name, words);
 
@@ -46,7 +51,7 @@ namespace Fishbowl.Net.Server.Services
             return this.playersCreated.Task;
         }
 
-        public Task SetTeamCount(IClientProxy caller, int teamCount)
+        public Task SetTeamCountAsync(IClientProxy caller, int teamCount)
         {
             this.teamCount = teamCount;
             return caller.SendAsync("GetRoundTypes");

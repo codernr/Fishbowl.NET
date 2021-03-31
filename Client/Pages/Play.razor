@@ -1,0 +1,57 @@
+@page "/play"
+@using Microsoft.AspNetCore.SignalR.Client
+@inject NavigationManager NavigationManager
+@implements IAsyncDisposable
+
+<h1>Play</h1>
+
+<button type="button" @onclick="SubmitTeamCount">TeamCount 2</button>
+<button type="button" @onclick="SubmitRoundTypes">RoundTypes</button>
+<button type="button" @onclick="SubmitPlayer">Submit player</button>
+
+@code
+{
+    private HubConnection connection = default!;
+
+    protected override Task OnInitializedAsync()
+    {
+        this.connection = new HubConnectionBuilder()
+            .WithUrl(NavigationManager.ToAbsoluteUri("/game"))
+            .Build();
+
+        this.connection.On("GetTeamCount", () =>
+        {
+            Console.WriteLine("GetTeamCount called");
+        });
+
+        this.connection.On("GetRoundTypes", () =>
+        {
+            Console.WriteLine("GetRoundTypes called");
+        });
+
+        return this.connection.StartAsync();
+    }
+
+    public ValueTask DisposeAsync() => this.connection.DisposeAsync();
+    
+    private Task SubmitTeamCount()
+    {
+        return this.connection.SendAsync("SetTeamCountAsync", 2);
+    }
+
+    private Task SubmitRoundTypes()
+    {
+        return this.connection.SendAsync("SetRoundTypes", new[] { "GameType1", "GameType2" });
+    }
+
+    private async Task SubmitPlayer()
+    {
+        var random = new Random();
+        var playerName = $"Player{random.Next()}";
+        await this.connection.SendAsync("SetPlayerAsync",
+            playerName,
+            new[] { $"Word{random.Next()}", $"Word{random.Next()}" });
+
+        Console.WriteLine($"{playerName} retuned");
+    }
+}
