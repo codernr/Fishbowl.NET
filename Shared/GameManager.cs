@@ -28,7 +28,9 @@ namespace Fishbowl.Net.Shared
                 .Select((players, id) => new Team(id, players.ToList()));
 
             var rounds = roundTypes
-                .Select(type => new Round(type, randomize ? words.Randomize() : words));
+                .Select(type => new Round(
+                    type,
+                    randomize ? new RandomEnumerator<Word>(words) : new RewindEnumerator<Word>(words)));
 
             this.game = new Game(id, teams, rounds);
         }
