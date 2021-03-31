@@ -76,8 +76,8 @@ namespace Fishbowl.Net.Tests.Shared
 
                     await foreach (var remoteWord in gameManager.GetWords(submissions))
                     {
-                        Assert.Equal(guessedWords[roundCount][periodCount][wordCount++], remoteWord.Value);
-                        submissionItem.Word = remoteWord;
+                        Assert.Equal(guessedWords[roundCount][periodCount][wordCount++], remoteWord.word.Value);
+                        submissionItem.Word = remoteWord.word;
                         submissionItem.Now += TimeSpan.FromSeconds(10);
                         totalWordCount++;
                     }
