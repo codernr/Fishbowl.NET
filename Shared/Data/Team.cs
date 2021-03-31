@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Fishbowl.Net.Shared.Data
 {
-    public record Team
+    public class Team
     {
         public int Id { get; init; }
 

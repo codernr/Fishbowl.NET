@@ -3,8 +3,8 @@ using System.Collections.Generic;
 
 namespace Fishbowl.Net.Shared.Data
 {
-    public record Game
-    {
+    public class Game
+    { 
         public Guid Id { get; init; }
         
         public CircularEnumeratorList<Team> Teams { get; init; }

@@ -3,8 +3,15 @@ using System.Collections.Generic;
 
 namespace Fishbowl.Net.Shared.Data
 {
-    public record Period(TimeSpan Length, Player Player)
+    public class Period
     {
+        public Period(TimeSpan length, Player player) =>
+            (this.Length, this.Player) = (length, player);
+            
+        public TimeSpan Length { get; init; }
+        
+        public Player Player { get; init; }
+        
         public DateTimeOffset? StartedAt { get; set; }
 
         public DateTimeOffset? FinishedAt { get; set; }
