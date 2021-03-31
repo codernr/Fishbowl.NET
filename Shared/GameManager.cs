@@ -20,17 +20,14 @@ namespace Fishbowl.Net.Shared
             }
 
             var words = randomPlayersList
-                .SelectMany(player => player.Words)
-                .ToList();
+                .SelectMany(player => player.Words);
 
             var teams = randomPlayersList
                 .Distribute(teamCount)
-                .Select((players, id) => new Team(id, players.ToList()))
-                .ToList();
+                .Select((players, id) => new Team(id, players.ToList()));
 
             var rounds = roundTypes
-                .Select(type => new Round(type, new Stack<Word>(randomize ? words.Randomize() : words)))
-                .ToList();
+                .Select(type => new Round(type, randomize ? words.Randomize() : words));
 
             this.game = new Game(id, teams, rounds);
         }
@@ -56,7 +53,7 @@ namespace Fishbowl.Net.Shared
             await Task.CompletedTask;
         }
 
-        public async IAsyncEnumerable<Word> GetWords(IAsyncEnumerable<(Word?, DateTimeOffset)> submissions)
+        public async IAsyncEnumerable<(Word word, Score? score)> GetWords(IAsyncEnumerable<(Word?, DateTimeOffset)> submissions)
         {
             var period = this.game.Rounds.Current.Periods.Last();
 
@@ -66,7 +63,7 @@ namespace Fishbowl.Net.Shared
                 if (period.StartedAt is null)
                 {
                     period.StartedAt = timestamp;
-                    yield return this.game.Rounds.Current.WordList.Pop();
+                    yield return (this.game.Rounds.Current.WordList.Pop(), null);
                     continue;
                 }
 
@@ -80,7 +77,8 @@ namespace Fishbowl.Net.Shared
                     yield break;
                 }
 
-                period.Scores.Add(new Score(word, timestamp));
+                var score = new Score(word, timestamp);
+                period.Scores.Add(score);
 
                 // last guess over time
                 if (timestamp >= period.StartedAt + period.Length)
@@ -100,7 +98,7 @@ namespace Fishbowl.Net.Shared
                     yield break;
                 }
 
-                yield return this.game.Rounds.Current.WordList.Pop();
+                yield return (this.game.Rounds.Current.WordList.Pop(), score);
             }
         }
     }
