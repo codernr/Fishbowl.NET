@@ -14,6 +14,8 @@ namespace Fishbowl.Net.Shared.Data
             get => this.periods[this.periods.Count - 1];
         }
 
+        public IEnumerable<Period> Periods => this.periods.AsReadOnly();
+
         private readonly List<Period> periods = new List<Period>();
 
         public Round(string type, IRewindEnumerator<Word> words) =>

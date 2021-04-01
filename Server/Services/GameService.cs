@@ -86,7 +86,7 @@ namespace Fishbowl.Net.Server.Services
                 this.players.Values,
                 this.RoundTypes, this.TeamCount);
 
-            await this.hubContext.Clients.All.ReceiveTeams(this.GameManager.Teams);
+            await this.hubContext.Clients.All.ReceiveTeams(this.GameManager.Game.Teams);
 
             await Task.Delay(2000);
 

@@ -6,10 +6,14 @@ namespace Fishbowl.Net.Shared.Data
     public class Game
     { 
         public Guid Id { get; init; }
+
+        public IEnumerable<Team> Teams { get; init; }
         
-        public CircularEnumerator<Team> Teams { get; init; }
+        public CircularEnumerator<Team> TeamEnumerator { get; init; }
+
+        public IEnumerable<Round> Rounds { get; init; }
         
-        public IEnumerator<Round> Rounds { get; init; }
+        public IEnumerator<Round> RoundEnumerator { get; init; }
 
         public TimeSpan? Remaining { get; set; }
 
@@ -18,7 +22,7 @@ namespace Fishbowl.Net.Shared.Data
         public static readonly TimeSpan PeriodThreshold = TimeSpan.FromSeconds(5);
 
         public Game(Guid id, IEnumerable<Team> teams, IEnumerable<Round> rounds) =>
-            (this.Id, this.Teams, this.Rounds) =
-            (id, new CircularEnumerator<Team>(teams), rounds.GetEnumerator());
+            (this.Id, this.Teams, this.TeamEnumerator, this.Rounds, this.RoundEnumerator) =
+            (id, teams, new CircularEnumerator<Team>(teams), rounds, rounds.GetEnumerator());
     }
 }

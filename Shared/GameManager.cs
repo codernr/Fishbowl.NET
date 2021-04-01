@@ -11,13 +11,7 @@ namespace Fishbowl.Net.Shared
 
         public Game Game => this.game;
 
-        public Word CurrentWord { get => this.game.Rounds.Current.Words.Current; }
-
-        public IEnumerable<Team> Teams { get; private set; }
-
-        public IEnumerator<Round> Rounds => this.game.Rounds;
-
-        public IEnumerator<Period> Periods => this.GetPeriods().GetEnumerator();
+        public Word CurrentWord { get => this.game.RoundEnumerator.Current.Words.Current; }
 
         public GameManager(Guid id, IEnumerable<Player> players, IEnumerable<string> roundTypes, int teamCount, bool randomize = true)
         {
@@ -31,7 +25,7 @@ namespace Fishbowl.Net.Shared
             var words = randomPlayersList
                 .SelectMany(player => player.Words);
 
-            this.Teams = randomPlayersList
+            var teams = randomPlayersList
                 .Distribute(teamCount)
                 .Select((players, id) => new Team(id, players.ToList()));
 
@@ -40,28 +34,28 @@ namespace Fishbowl.Net.Shared
                     type,
                     randomize ? new RandomEnumerator<Word>(words) : new RewindEnumerator<Word>(words)));
 
-            this.game = new Game(id, this.Teams, rounds);
+            this.game = new Game(id, teams, rounds);
         }
 
         public IEnumerable<Round> GetRounds()
         {
-            while(this.game.Rounds.MoveNext())
+            while(this.game.RoundEnumerator.MoveNext())
             {
-                yield return this.game.Rounds.Current;
+                yield return this.game.RoundEnumerator.Current;
             }
         }
 
         public IEnumerable<Period> GetPeriods()
         {
-            while (this.game.Rounds.Current.NextPeriod(this.game.Remaining ?? this.game.PeriodLength, this.game.Teams.Current.PlayerEnumerator.Current))
+            while (this.game.RoundEnumerator.Current.NextPeriod(this.game.Remaining ?? this.game.PeriodLength, this.game.TeamEnumerator.Current.PlayerEnumerator.Current))
             {
-                yield return this.game.Rounds.Current.CurrentPeriod;
+                yield return this.game.RoundEnumerator.Current.CurrentPeriod;
             }
         }
 
         public bool NextWord(DateTimeOffset timestamp, Word? previousWord = null)
         {
-            var period = this.game.Rounds.Current.CurrentPeriod;
+            var period = this.game.RoundEnumerator.Current.CurrentPeriod;
 
             if (period.StartedAt is null)
             {
@@ -78,14 +72,14 @@ namespace Fishbowl.Net.Shared
             {
                 period.FinishedAt = timestamp;
                 this.game.Remaining = null;
-                this.game.Teams.Current.PlayerEnumerator.MoveNext();
-                this.game.Teams.MoveNext();
+                this.game.TeamEnumerator.Current.PlayerEnumerator.MoveNext();
+                this.game.TeamEnumerator.MoveNext();
 
-                if (previousWord is null) this.game.Rounds.Current.Words.MovePrevious();
+                if (previousWord is null) this.game.RoundEnumerator.Current.Words.MovePrevious();
                 return false;
             }
 
-            if (!this.game.Rounds.Current.Words.MoveNext())
+            if (!this.game.RoundEnumerator.Current.Words.MoveNext())
             {
                 period.FinishedAt = timestamp;
                 this.game.Remaining = period.StartedAt + period.Length - timestamp;
