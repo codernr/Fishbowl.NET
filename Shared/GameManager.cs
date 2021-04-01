@@ -11,6 +11,8 @@ namespace Fishbowl.Net.Shared
 
         public Word CurrentWord { get => this.game.Rounds.Current.Words.Current; }
 
+        public IEnumerable<Team> Teams { get; private set; }
+
         public GameManager(Guid id, IEnumerable<Player> players, IEnumerable<string> roundTypes, int teamCount, bool randomize = true)
         {
             var randomPlayersList = (randomize ? players.Randomize() : players).ToList();
@@ -23,7 +25,7 @@ namespace Fishbowl.Net.Shared
             var words = randomPlayersList
                 .SelectMany(player => player.Words);
 
-            var teams = randomPlayersList
+            this.Teams = randomPlayersList
                 .Distribute(teamCount)
                 .Select((players, id) => new Team(id, players.ToList()));
 
@@ -32,7 +34,7 @@ namespace Fishbowl.Net.Shared
                     type,
                     randomize ? new RandomEnumerator<Word>(words) : new RewindEnumerator<Word>(words)));
 
-            this.game = new Game(id, teams, rounds);
+            this.game = new Game(id, this.Teams, rounds);
         }
 
         public IEnumerable<Round> GetRounds()
