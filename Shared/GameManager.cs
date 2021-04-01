@@ -53,7 +53,7 @@ namespace Fishbowl.Net.Shared
 
         public IEnumerable<Period> GetPeriods()
         {
-            while (this.game.Rounds.Current.NextPeriod(this.game.Remaining ?? this.game.PeriodLength, this.game.Teams.Current.Players.Current))
+            while (this.game.Rounds.Current.NextPeriod(this.game.Remaining ?? this.game.PeriodLength, this.game.Teams.Current.PlayerEnumerator.Current))
             {
                 yield return this.game.Rounds.Current.CurrentPeriod;
             }
@@ -78,7 +78,7 @@ namespace Fishbowl.Net.Shared
             {
                 period.FinishedAt = timestamp;
                 this.game.Remaining = null;
-                this.game.Teams.Current.Players.MoveNext();
+                this.game.Teams.Current.PlayerEnumerator.MoveNext();
                 this.game.Teams.MoveNext();
 
                 if (previousWord is null) this.game.Rounds.Current.Words.MovePrevious();
