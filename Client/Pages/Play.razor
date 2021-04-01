@@ -9,9 +9,7 @@
 
 <h1>Play</h1>
 
-<button type="button" @onclick="SubmitTeamCount">TeamCount 2</button>
-<button type="button" @onclick="SubmitRoundTypes">RoundTypes</button>
-<button type="button" @onclick="SubmitPlayer">Submit player</button>
+<button type="button" @onclick="SetPlayerAsync">Submit player</button>
 
 @code
 {
@@ -35,6 +33,12 @@
 
         this.connection.On("DefineTeamCount", this.DefineTeamCount);
         this.connection.On("DefineRoundTypes", this.DefineRoundTypes);
+        this.connection.On<IEnumerable<Team>>("ReceiveTeams", this.ReceiveTeams);
+        this.connection.On<Round>("ReceiveRound", this.ReceiveRound);
+        this.connection.On<Period>("ReceivePeriod", this.ReceivePeriod);
+        this.connection.On<Word>("ReceiveWord", this.ReceiveWord);
+        this.connection.On<Score>("ReceiveScore", this.ReceiveScore);
+        this.connection.On<Game>("ReceiveGame", this.ReceiveGame);
 
         return this.connection.StartAsync();
     }
@@ -133,14 +137,21 @@
         return this.connection.SendAsync("SetRoundTypes", new[] { "GameType1", "GameType2" });
     }
 
-    private async Task SubmitPlayer()
+    private async Task SetPlayerAsync()
     {
         var random = new Random();
         var playerName = $"Player{random.Next()}";
-        await this.connection.InvokeAsync("SetPlayerAsync",
-            playerName,
-            new[] { $"Word{random.Next()}", $"Word{random.Next()}" });
 
-        Console.WriteLine($"{playerName} retuned");
+        await this.connection.InvokeAsync("SetPlayerAsync",
+            new Player(
+                Guid.NewGuid(),
+                playerName,
+                new[]
+                { 
+                    new Word(Guid.NewGuid(), $"Word{random.Next()}"),
+                    new Word(Guid.NewGuid(), $"Word{random.Next()}")
+                }));
+
+        Console.WriteLine($"{playerName} set");
     }
 }
