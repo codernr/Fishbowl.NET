@@ -1,14 +1,13 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Fishbowl.Net.Server.Services;
 using Fishbowl.Net.Shared.Data;
+using Fishbowl.Net.Shared.SignalR;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Fishbowl.Net.Server.Hubs
 {
-    public class GameHub : Hub
+    public class GameHub : Hub<IClient>
     {
         private readonly GameService service;
 
@@ -17,14 +16,24 @@ namespace Fishbowl.Net.Server.Hubs
         public override async Task OnConnectedAsync()
         {
             await base.OnConnectedAsync();
-            await this.service.JoinGameAsync(this.Context.ConnectionId, this.Clients.Caller);
+            bool askForTeamCount = this.service.Connect(this.Context.ConnectionId);
+
+            if (askForTeamCount) await this.Clients.Caller.DefineTeamCount();
         }
 
-        public Task SetTeamCountAsync(int teamCount) => this.service.SetTeamCountAsync(this.Clients.Caller, teamCount);
+        public Task SetTeamCountAsync(int teamCount)
+        {
+            this.service.SetTeamCount(teamCount);
+            return this.Clients.Caller.DefineRoundTypes();
+        }
 
         public void SetRoundTypes(IEnumerable<string> roundTypes) => this.service.SetRoundTypes(roundTypes);
 
-        public Task SetPlayerAsync(string name, IEnumerable<string> words) =>
-            this.service.SetPlayerAsync(this.Context.ConnectionId, name, words.Select(w => new Word(Guid.NewGuid(), w)));
+        public async Task SetPlayerAsync(Player player)
+        {
+            bool isLast = this.service.SetPlayer(this.Context.ConnectionId, player);
+
+            if (isLast) await this.Clients.All.ReceiveTeams(this.service.GameManager.Teams);
+        }
     }
 }

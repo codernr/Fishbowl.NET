@@ -9,9 +9,15 @@ namespace Fishbowl.Net.Shared
     {
         private readonly Game game;
 
+        public Game Game => this.game;
+
         public Word CurrentWord { get => this.game.Rounds.Current.Words.Current; }
 
         public IEnumerable<Team> Teams { get; private set; }
+
+        public IEnumerator<Round> Rounds => this.game.Rounds;
+
+        public IEnumerator<Period> Periods => this.GetPeriods().GetEnumerator();
 
         public GameManager(Guid id, IEnumerable<Player> players, IEnumerable<string> roundTypes, int teamCount, bool randomize = true)
         {
