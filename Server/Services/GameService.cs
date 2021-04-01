@@ -97,24 +97,36 @@ namespace Fishbowl.Net.Server.Services
         {
             foreach (var round in this.GameManager.GetRounds())
             {
-                await this.hubContext.Clients.All.ReceiveRound(round);
+                await this.RunRound(round);
+            }
+        }
 
-                foreach (var period in this.GameManager.GetPeriods())
+        private async Task RunRound(Round round)
+        {
+            await this.hubContext.Clients.All.ReceiveRound(round);
+
+            foreach (var period in this.GameManager.GetPeriods())
+            {
+                await this.RunPeriod(period);
+            }
+        }
+
+        private async Task RunPeriod(Period period)
+        {
+            var connectionId = this.players.Keys.First(key => this.players[key].Id == period.Player.Id);
+
+            var (timestamp, guessedWord) = await this.input.Task;
+
+            while(this.GameManager.NextWord(timestamp, guessedWord))
+            {
+                if (guessedWord is not null)
                 {
-                    var connectionId = this.players.Keys.First(key => this.players[key].Id == period.Player.Id);
-
-                    var (timestamp, guessedWord) = await this.input.Task;
-
-                    while(this.GameManager.NextWord(timestamp, guessedWord))
-                    {
-                        if (guessedWord is not null)
-                        {
-                            await this.hubContext.Clients.AllExcept(connectionId).ReceiveScore(period.Scores.Last());
-                        }
-
-                        await this.hubContext.Clients.Clients(connectionId).ReceiveWord(this.GameManager.CurrentWord);
-                    }
+                    await this.hubContext.Clients.AllExcept(connectionId).ReceiveScore(period.Scores.Last());
                 }
+
+                await this.hubContext.Clients.Clients(connectionId).ReceiveWord(this.GameManager.CurrentWord);
+
+                (timestamp, guessedWord) = await this.input.Task;
             }
         }
 

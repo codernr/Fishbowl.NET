@@ -1,7 +1,11 @@
 @page "/play"
+@using System.Linq
 @using Microsoft.AspNetCore.SignalR.Client
+@using Fishbowl.Net.Shared.SignalR
+@using Fishbowl.Net.Shared.Data
 @inject NavigationManager NavigationManager
 @implements IAsyncDisposable
+@implements IClient
 
 <h1>Play</h1>
 
@@ -13,24 +17,109 @@
 {
     private HubConnection connection = default!;
 
+    private Player? player;
+
+    private Player Player => this.player ?? throw new InvalidOperationException();
+
+    private Team? team;
+
+    private Team Team => this.team ?? throw new InvalidOperationException();
+
+    private IEnumerable<Team>? teams;
+
     protected override Task OnInitializedAsync()
     {
         this.connection = new HubConnectionBuilder()
             .WithUrl(NavigationManager.ToAbsoluteUri("/game"))
             .Build();
 
-        this.connection.On("GetTeamCount", () =>
-        {
-            Console.WriteLine("GetTeamCount called");
-        });
-
-        this.connection.On("GetRoundTypes", () =>
-        {
-            Console.WriteLine("GetRoundTypes called");
-        });
+        this.connection.On("DefineTeamCount", this.DefineTeamCount);
+        this.connection.On("DefineRoundTypes", this.DefineRoundTypes);
 
         return this.connection.StartAsync();
     }
+
+    public Task DefineTeamCount()
+    {
+        Console.WriteLine("DefineTeamCount");
+        return this.connection.SendAsync("SetTeamCountAsync", 2);
+    }
+    
+    public Task DefineRoundTypes()
+    {
+        Console.WriteLine("DefineRoundTypes");
+        return this.connection.SendAsync("SetRoundTypes", new[] { "Round1", "Round2" });
+    }
+
+    public Task ReceiveTeams(IEnumerable<Team> teams)
+    {
+        this.teams = teams;
+        this.team = teams.First(team => team.Players.Any(player => player.Id == this.Player.Id));
+
+        Console.WriteLine($"My team id: {this.Team.Id}");
+
+        return Task.CompletedTask;
+    }
+
+    public Task ReceiveRound(Round round)
+    {
+        Console.WriteLine($"Round: {round.Type}");
+        return Task.CompletedTask;
+    }
+
+    public async Task ReceivePeriod(Period period)
+    {
+        Console.WriteLine($"Period player: {period.Player.Name}");
+
+        if (period.Player.Id == this.Player.Id)
+        {
+            Console.WriteLine("Wait two seconds, than start period");
+            await Task.Delay(2000);
+
+            await this.SetInput();
+        }
+    }
+
+    public async Task ReceiveWord(Word word)
+    {
+        Console.WriteLine($"Word: {word.Value}");
+        await Task.Delay(10000);
+        Console.WriteLine($"Send [{word.Value}] at {DateTimeOffset.UtcNow}");
+        await this.SetInput(word);
+    }
+
+    public Task ReceiveScore(Score score)
+    {
+        Console.WriteLine($"Score received: [{score.Word.Value}, {score.Timestamp}]");
+        return Task.CompletedTask;
+    }
+
+    public Task ReceiveGame(Game game)
+    {
+        var playerScores = game.Rounds
+            .SelectMany(round => round.Periods)
+            .GroupBy(period => period.Player.Id)
+            .ToDictionary(item => item.Key, item => item.ToList());
+
+        var teamScores = game.Teams
+            .ToDictionary(
+                team => team.Id,
+                team => playerScores
+                    .Where(score => team.Players
+                        .Any(player => player.Id == score.Key))
+                    .ToList());
+
+        foreach (var teamScore in teamScores)
+        {
+            Console.WriteLine($"Team {teamScore.Key} scores: {teamScore.Value.Count}");
+        }
+
+        return Task.CompletedTask;
+    }
+
+
+    private Task SetInput(Word? word = null) => this.connection.SendAsync("SetInput", DateTimeOffset.UtcNow, word);
+
 
     public ValueTask DisposeAsync() => this.connection.DisposeAsync();
     
