@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Fishbowl.Net.Server.Services;
@@ -15,10 +16,17 @@ namespace Fishbowl.Net.Server.Hubs
 
         public override async Task OnConnectedAsync()
         {
-            await base.OnConnectedAsync();
-            bool askForTeamCount = this.service.Connect(this.Context.ConnectionId);
+            var connections = this.service.RegisterConnection(this.Context.ConnectionId);
 
-            if (askForTeamCount) await this.Clients.Caller.DefineTeamCount();
+            if (connections == 1) await this.Clients.Caller.DefineTeamCount();
+
+            await base.OnConnectedAsync();
+        }
+
+        public override Task OnDisconnectedAsync(System.Exception? exception)
+        {
+            this.service.RemoveConnection(this.Context.ConnectionId);
+            return base.OnDisconnectedAsync(exception);
         }
 
         public Task SetTeamCountAsync(int teamCount)
@@ -29,11 +37,9 @@ namespace Fishbowl.Net.Server.Hubs
 
         public void SetRoundTypes(IEnumerable<string> roundTypes) => this.service.SetRoundTypes(roundTypes);
 
-        public async Task SetPlayerAsync(Player player)
-        {
-            bool isLast = this.service.SetPlayer(this.Context.ConnectionId, player);
+        public Task SetPlayerAsync(Player player) =>
+            this.service.SetPlayerAsync(this.Context.ConnectionId, player);
 
-            if (isLast) await this.Clients.All.ReceiveTeams(this.service.GameManager.Teams);
-        }
+        public void SetInput(DateTimeOffset timestamp, Word? word) => this.service.SetInput(timestamp, word);
     }
 }
