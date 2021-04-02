@@ -17,7 +17,7 @@ namespace Fishbowl.Net.Server.Services
 
         private Dictionary<string, Player> players = new();
 
-        private TaskCompletionSource<(DateTimeOffset, Word?)> input = new();
+        private TaskCompletionSource<DateTimeOffset> inputAction = new();
 
         private int? teamCount;
 
@@ -71,11 +71,27 @@ namespace Fishbowl.Net.Server.Services
             await this.StartGame();
         }
 
-        public void SetInput(DateTimeOffset timestamp, Word? word)
+        public Task StartPeriodAsync(DateTimeOffset timestamp)
         {
-            var current = this.input;
-            this.input = new();
-            current.SetResult((timestamp, word));
+            this.SetInput(timestamp);
+            return this.hubContext.Clients.All.ReceivePeriodStart(timestamp);
+        }
+
+        public void FinishPeriod(DateTimeOffset timestamp) => this.Game.FinishPeriod(timestamp);
+
+        public void NextWord(DateTimeOffset timestamp) => this.SetInput(timestamp);
+
+        public Task AddScoreAsync(Score score)
+        {
+            this.Game.AddScore(score);
+            return this.hubContext.Clients.All.ReceiveScore(score);
+        }
+
+        private void SetInput(DateTimeOffset timestamp)
+        {
+            var current = this.inputAction;
+            this.inputAction = new();
+            current.SetResult(timestamp);
         }
 
         private async Task StartGame()
@@ -121,19 +137,13 @@ namespace Fishbowl.Net.Server.Services
 
             await this.hubContext.Clients.All.ReceivePeriod(period.Player);
 
-            var (timestamp, guessedWord) = await this.input.Task;
+            var timestamp = await this.inputAction.Task;
 
             do
             {
-                if (guessedWord is not null)
-                {
-                    this.Game.AddScore(new Score(guessedWord, timestamp));
-                    await this.hubContext.Clients.All.ReceiveScore(period.Scores.Last());
-                }
-
                 await this.hubContext.Clients.Clients(connectionId).ReceiveWord(this.Game.CurrentWord());
 
-                (timestamp, guessedWord) = await this.input.Task;
+                timestamp = await this.inputAction.Task;
             }
             while (this.Game.NextWord(timestamp));
         }

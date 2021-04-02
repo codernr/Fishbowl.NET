@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Fishbowl.Net.Shared.Data;
@@ -15,6 +16,8 @@ namespace Fishbowl.Net.Shared.SignalR
         Task ReceiveRound(string roundType);
 
         Task ReceivePeriod(Player player);
+
+        Task ReceivePeriodStart(DateTimeOffset timestamp);
 
         Task ReceiveWord(Word word);
 

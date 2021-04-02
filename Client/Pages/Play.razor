@@ -36,6 +36,7 @@
         this.connection.On<IEnumerable<TeamViewModel>>("ReceiveTeams", this.ReceiveTeams);
         this.connection.On<string>("ReceiveRound", this.ReceiveRound);
         this.connection.On<Player>("ReceivePeriod", this.ReceivePeriod);
+        this.connection.On<DateTimeOffset>("ReceivePeriodStart", this.ReceivePeriodStart);
         this.connection.On<Word>("ReceiveWord", this.ReceiveWord);
         this.connection.On<Score>("ReceiveScore", this.ReceiveScore);
         this.connection.On<Dictionary<int, int>>("ReceiveResults", this.ReceiveResults);
@@ -80,8 +81,14 @@
             Console.WriteLine("Wait two seconds, than start period");
             await Task.Delay(2000);
 
-            await this.SetInput();
+            await this.StartPeriod();
         }
+    }
+
+    public Task ReceivePeriodStart(DateTimeOffset timestamp)
+    {
+        Console.WriteLine("Period started at: " + timestamp);
+        return Task.CompletedTask;
     }
 
     public async Task ReceiveWord(Word word)
@@ -89,7 +96,8 @@
         Console.WriteLine($"Word: {word.Value}");
         await Task.Delay(10000);
         Console.WriteLine($"Send [{word.Value}] at {DateTimeOffset.UtcNow}");
-        await this.SetInput(word);
+        await this.AddScore(word);
+        await this.NextWord();
     }
 
     public Task ReceiveScore(Score score)
@@ -109,8 +117,13 @@
     }
 
 
-    private Task SetInput(Word? word = null) => this.connection.SendAsync("SetInput", DateTimeOffset.UtcNow, word);
+    private Task StartPeriod() => this.connection.SendAsync("StartPeriodAsync", DateTimeOffset.UtcNow);
 
+    private Task NextWord() => this.connection.SendAsync("NextWord", DateTimeOffset.UtcNow);
+
+    private Task AddScore(Word word) => this.connection.SendAsync("AddScore", new Score(word, DateTimeOffset.UtcNow));
+
+    private Task FinishPeriod() => this.connection.SendAsync("FinishPeriod", DateTimeOffset.UtcNow);
 
     public ValueTask DisposeAsync() => this.connection.DisposeAsync();
     

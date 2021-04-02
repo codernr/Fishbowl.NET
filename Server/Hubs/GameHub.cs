@@ -40,6 +40,12 @@ namespace Fishbowl.Net.Server.Hubs
         public Task SetPlayerAsync(Player player) =>
             this.service.SetPlayerAsync(this.Context.ConnectionId, player);
 
-        public void SetInput(DateTimeOffset timestamp, Word? word) => this.service.SetInput(timestamp, word);
+        public Task StartPeriodAsync(DateTimeOffset timestamp) => this.service.StartPeriodAsync(timestamp);
+
+        public void NextWord(DateTimeOffset timestamp) => this.service.NextWord(timestamp);
+
+        public Task AddScoreAsync(Score score) => this.service.AddScoreAsync(score);
+
+        public void FinishPeriod(DateTimeOffset timestamp) => this.service.FinishPeriod(timestamp);
     }
 }
