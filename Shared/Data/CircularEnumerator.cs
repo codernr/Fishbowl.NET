@@ -11,9 +11,9 @@ namespace Fishbowl.Net.Shared.Data
 
         private int id = 0;
 
-        private readonly List<T> list;
+        private readonly IList<T> list;
 
-        public CircularEnumerator(IEnumerable<T> collection) => this.list = new List<T>(collection);
+        public CircularEnumerator(IList<T> collection) => this.list = collection;
 
         public void Dispose() { }
 

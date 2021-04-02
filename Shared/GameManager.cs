@@ -27,12 +27,14 @@ namespace Fishbowl.Net.Shared
 
             var teams = randomPlayersList
                 .Distribute(teamCount)
-                .Select((players, id) => new Team(id, players.ToList()));
+                .Select((players, id) => new Team(id, players.ToList()))
+                .ToList();
 
             var rounds = roundTypes
                 .Select(type => new Round(
                     type,
-                    randomize ? new RandomEnumerator<Word>(words) : new RewindEnumerator<Word>(words)));
+                    randomize ? new RandomEnumerator<Word>(words) : new RewindEnumerator<Word>(words)))
+                .ToList();
 
             this.game = new Game(id, teams, rounds);
         }
