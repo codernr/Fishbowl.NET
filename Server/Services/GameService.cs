@@ -86,7 +86,10 @@ namespace Fishbowl.Net.Server.Services
                 this.players.Values,
                 this.RoundTypes, this.TeamCount);
 
-            await this.hubContext.Clients.All.ReceiveTeams(this.GameManager.Game.Teams);
+            await this.hubContext.Clients.All.ReceiveTeams(
+                this.GameManager.Game.Teams
+                .Select(team => new TeamViewModel(team.Id, team.Players
+                    .Select(player => player.Id))));
 
             await Task.Delay(2000);
 
@@ -103,7 +106,7 @@ namespace Fishbowl.Net.Server.Services
 
         private async Task RunRound(Round round)
         {
-            await this.hubContext.Clients.All.ReceiveRound(round);
+            await this.hubContext.Clients.All.ReceiveRound(round.Type);
 
             foreach (var period in this.GameManager.GetPeriods())
             {
@@ -114,6 +117,8 @@ namespace Fishbowl.Net.Server.Services
         private async Task RunPeriod(Period period)
         {
             var connectionId = this.players.Keys.First(key => this.players[key].Id == period.Player.Id);
+
+            await this.hubContext.Clients.Clients(connectionId).ReceivePeriod(period.Player);
 
             var (timestamp, guessedWord) = await this.input.Task;
 
@@ -130,6 +135,22 @@ namespace Fishbowl.Net.Server.Services
             }
         }
 
-        private Task FinishGame() => this.hubContext.Clients.All.ReceiveGame(this.GameManager.Game);
+        private Task FinishGame()
+        {
+            var playerScores = this.GameManager.Game.Rounds
+                .SelectMany(round => round.Periods)
+                .GroupBy(period => period.Player.Id)
+                .ToDictionary(item => item.Key, item => item.Count());
+
+            var teamScores = this.GameManager.Game.Teams
+                .ToDictionary(
+                    team => team.Id,
+                    team => playerScores
+                        .Where(score => team.Players
+                            .Any(player => player.Id == score.Key))
+                        .Count());
+
+            return this.hubContext.Clients.All.ReceiveGame(teamScores);
+        }
     }
 }

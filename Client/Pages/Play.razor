@@ -19,11 +19,11 @@
 
     private Player Player => this.player ?? throw new InvalidOperationException();
 
-    private Team? team;
+    private TeamViewModel? team;
 
-    private Team Team => this.team ?? throw new InvalidOperationException();
+    private TeamViewModel Team => this.team ?? throw new InvalidOperationException();
 
-    private IEnumerable<Team>? teams;
+    private IEnumerable<TeamViewModel>? teams;
 
     protected override Task OnInitializedAsync()
     {
@@ -33,12 +33,12 @@
 
         this.connection.On("DefineTeamCount", this.DefineTeamCount);
         this.connection.On("DefineRoundTypes", this.DefineRoundTypes);
-        this.connection.On<IEnumerable<Team>>("ReceiveTeams", this.ReceiveTeams);
-        this.connection.On<Round>("ReceiveRound", this.ReceiveRound);
-        this.connection.On<Period>("ReceivePeriod", this.ReceivePeriod);
+        this.connection.On<IEnumerable<TeamViewModel>>("ReceiveTeams", this.ReceiveTeams);
+        this.connection.On<string>("ReceiveRound", this.ReceiveRound);
+        this.connection.On<Player>("ReceivePeriod", this.ReceivePeriod);
         this.connection.On<Word>("ReceiveWord", this.ReceiveWord);
         this.connection.On<Score>("ReceiveScore", this.ReceiveScore);
-        this.connection.On<Game>("ReceiveGame", this.ReceiveGame);
+        this.connection.On<Dictionary<int, int>>("ReceiveGame", this.ReceiveGame);
 
         return this.connection.StartAsync();
     }
@@ -55,27 +55,27 @@
         return this.connection.SendAsync("SetRoundTypes", new[] { "Round1", "Round2" });
     }
 
-    public Task ReceiveTeams(IEnumerable<Team> teams)
+    public Task ReceiveTeams(IEnumerable<TeamViewModel> teams)
     {
         this.teams = teams;
-        this.team = teams.First(team => team.Players.Any(player => player.Id == this.Player.Id));
+        this.team = teams.First(team => team.PlayerIds.Any(id => id == this.Player.Id));
 
         Console.WriteLine($"My team id: {this.Team.Id}");
 
         return Task.CompletedTask;
     }
 
-    public Task ReceiveRound(Round round)
+    public Task ReceiveRound(string roundType)
     {
-        Console.WriteLine($"Round: {round.Type}");
+        Console.WriteLine($"Round: {roundType}");
         return Task.CompletedTask;
     }
 
-    public async Task ReceivePeriod(Period period)
+    public async Task ReceivePeriod(Player player)
     {
-        Console.WriteLine($"Period player: {period.Player.Name}");
+        Console.WriteLine($"Period player: {player.Name}");
 
-        if (period.Player.Id == this.Player.Id)
+        if (player.Id == this.Player.Id)
         {
             Console.WriteLine("Wait two seconds, than start period");
             await Task.Delay(2000);
@@ -98,24 +98,11 @@
         return Task.CompletedTask;
     }
 
-    public Task ReceiveGame(Game game)
+    public Task ReceiveGame(Dictionary<int, int> scores)
     {
-        var playerScores = game.Rounds
-            .SelectMany(round => round.Periods)
-            .GroupBy(period => period.Player.Id)
-            .ToDictionary(item => item.Key, item => item.ToList());
-
-        var teamScores = game.Teams
-            .ToDictionary(
-                team => team.Id,
-                team => playerScores
-                    .Where(score => team.Players
-                        .Any(player => player.Id == score.Key))
-                    .ToList());
-
-        foreach (var teamScore in teamScores)
+        foreach (var teamScore in scores)
         {
-            Console.WriteLine($"Team {teamScore.Key} scores: {teamScore.Value.Count}");
+            Console.WriteLine($"Team {teamScore.Key} scores: {teamScore.Value}");
         }
 
         return Task.CompletedTask;
@@ -140,18 +127,18 @@
     private async Task SetPlayerAsync()
     {
         var random = new Random();
-        var playerName = $"Player{random.Next()}";
 
-        await this.connection.InvokeAsync("SetPlayerAsync",
-            new Player(
-                Guid.NewGuid(),
-                playerName,
-                new[]
-                { 
-                    new Word(Guid.NewGuid(), $"Word{random.Next()}"),
-                    new Word(Guid.NewGuid(), $"Word{random.Next()}")
-                }));
+        this.player = new Player(
+            Guid.NewGuid(),
+            $"Player{random.Next()}",
+            new[]
+            { 
+                new Word(Guid.NewGuid(), $"Word{random.Next()}"),
+                new Word(Guid.NewGuid(), $"Word{random.Next()}")
+            });
 
-        Console.WriteLine($"{playerName} set");
+        await this.connection.InvokeAsync("SetPlayerAsync", this.Player);
+
+        Console.WriteLine($"{this.player.Name} set");
     }
 }
