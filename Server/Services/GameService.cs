@@ -120,7 +120,7 @@ namespace Fishbowl.Net.Server.Services
         {
             var connectionId = this.players.Keys.First(key => this.players[key].Id == period.Player.Id);
 
-            await this.hubContext.Clients.Clients(connectionId).ReceivePeriod(period.Player);
+            await this.hubContext.Clients.All.ReceivePeriod(period.Player);
 
             var (timestamp, guessedWord) = await this.input.Task;
 
