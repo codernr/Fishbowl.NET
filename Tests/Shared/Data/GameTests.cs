@@ -1,14 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Fishbowl.Net.Shared;
 using Fishbowl.Net.Shared.Data;
 using Xunit;
 
 namespace Fishbowl.Net.Tests.Shared
 {
-    public class GameManagerTests
+    public class GameTests
     {
         [Fact]
         public void ShouldThrowWithInvalidTeamConfig()
