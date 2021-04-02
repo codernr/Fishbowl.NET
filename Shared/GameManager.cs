@@ -49,13 +49,13 @@ namespace Fishbowl.Net.Shared
         {
             while (this.game.RoundEnumerator.Current.NextPeriod(this.game.Remaining ?? this.game.PeriodLength, this.game.TeamEnumerator.Current.PlayerEnumerator.Current))
             {
-                yield return this.game.RoundEnumerator.Current.CurrentPeriod;
+                yield return this.game.RoundEnumerator.Current.CurrentPeriod();
             }
         }
 
         public bool NextWord(DateTimeOffset timestamp, Word? previousWord = null)
         {
-            var period = this.game.RoundEnumerator.Current.CurrentPeriod;
+            var period = this.game.RoundEnumerator.Current.CurrentPeriod();
 
             if (period.StartedAt is null)
             {

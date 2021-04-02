@@ -9,12 +9,9 @@ namespace Fishbowl.Net.Shared.Data
 
         public IRewindEnumerator<Word> Words { get; init; }
 
-        public Period CurrentPeriod
-        { 
-            get => this.periods[this.periods.Count - 1];
-        }
+        public Period CurrentPeriod() => this.periods[this.periods.Count - 1];
 
-        public IEnumerable<Period> Periods => this.periods.AsReadOnly();
+        public IEnumerable<Period> Periods => this.periods;
 
         private readonly List<Period> periods = new List<Period>();
 
