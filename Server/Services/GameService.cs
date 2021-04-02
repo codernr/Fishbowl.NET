@@ -142,7 +142,7 @@ namespace Fishbowl.Net.Server.Services
             var playerScores = this.GameManager.Game.Rounds
                 .SelectMany(round => round.Periods)
                 .GroupBy(period => period.Player.Id)
-                .ToDictionary(item => item.Key, item => item.Count());
+                .ToDictionary(item => item.Key, item => item.SelectMany(p => p.Scores).Count());
 
             var teamScores = this.GameManager.Game.Teams
                 .ToDictionary(
