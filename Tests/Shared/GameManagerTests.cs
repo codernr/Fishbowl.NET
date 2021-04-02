@@ -13,7 +13,7 @@ namespace Fishbowl.Net.Tests.Shared
         [Fact]
         public void ShouldThrowWithInvalidTeamConfig()
         {
-            Assert.Throws<ArgumentException>(() => new GameManager(
+            Assert.Throws<ArgumentException>(() => new Game(
                 Guid.NewGuid(),
                 new[]
                 {
@@ -32,7 +32,7 @@ namespace Fishbowl.Net.Tests.Shared
 
             var rounds = new[] { "GameType1", "GameType2" };
 
-            var gameManager = new GameManager(
+            var game = new Game(
                 Guid.NewGuid(),
                 players,
                 rounds,
@@ -62,11 +62,11 @@ namespace Fishbowl.Net.Tests.Shared
 
             var playerList = new[] { "Player0", "Player1", "Player1", "Player2", "Player3" };
 
-            foreach (var round in gameManager.GetRounds())
+            foreach (var round in game.RoundLoop())
             {
                 Assert.Equal(rounds[roundCount], round.Type);
 
-                foreach (var period in gameManager.GetPeriods())
+                foreach (var period in game.PeriodLoop())
                 {
                     Assert.Equal(playerList[totalPeriodCount], period.Player.Name);
 
@@ -74,11 +74,11 @@ namespace Fishbowl.Net.Tests.Shared
 
                     Word? previousWord = null;
 
-                    while(gameManager.NextWord(now, previousWord))
+                    while(game.NextWord(now, previousWord))
                     {
-                        Assert.Equal(guessedWords[roundCount][periodCount][wordCount], gameManager.CurrentWord.Value);
+                        Assert.Equal(guessedWords[roundCount][periodCount][wordCount], game.CurrentWord().Value);
                         
-                        previousWord = gameManager.CurrentWord;
+                        previousWord = game.CurrentWord();
                         now += TimeSpan.FromSeconds(10);
                         wordCount++;
                         totalWordCount++;
@@ -103,7 +103,7 @@ namespace Fishbowl.Net.Tests.Shared
 
             var rounds = new[] { "GameType1", "GameType2" };
 
-            var gameManager = new GameManager(
+            var game = new Game(
                 Guid.NewGuid(),
                 players,
                 rounds,
@@ -133,11 +133,11 @@ namespace Fishbowl.Net.Tests.Shared
 
             var playerList = new[] { "Player0", "Player1", "Player1", "Player2", "Player3" };
 
-            foreach (var round in gameManager.GetRounds())
+            foreach (var round in game.RoundLoop())
             {
                 Assert.Equal(rounds[roundCount], round.Type);
 
-                foreach (var period in gameManager.GetPeriods())
+                foreach (var period in game.PeriodLoop())
                 {
                     Assert.Equal(playerList[totalPeriodCount], period.Player.Name);
 
@@ -146,9 +146,9 @@ namespace Fishbowl.Net.Tests.Shared
 
                     Word? previousWord = null;
 
-                    while(gameManager.NextWord(now, previousWord))
+                    while(game.NextWord(now, previousWord))
                     {
-                        Assert.Equal(currentWord[roundCount][periodCount][wordCount], gameManager.CurrentWord.Value);
+                        Assert.Equal(currentWord[roundCount][periodCount][wordCount], game.CurrentWord().Value);
                         
                         now += TimeSpan.FromSeconds(10);
                         if (now >= start + period.Length)
@@ -157,7 +157,7 @@ namespace Fishbowl.Net.Tests.Shared
                         }
                         else
                         {
-                            previousWord = gameManager.CurrentWord;
+                            previousWord = game.CurrentWord();
                             totalWordCount++;
                         }
                         wordCount++;

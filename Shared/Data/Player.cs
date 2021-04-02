@@ -5,9 +5,9 @@ namespace Fishbowl.Net.Shared.Data
 {
     public class Player
     {
-        public Guid Id { get; init; }
+        public Guid Id { get; private set; }
         
-        public string Name { get; init; }
+        public string Name { get; private set; }
         
         public IEnumerable<Word> Words { get; init; }
         

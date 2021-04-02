@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Fishbowl.Net.Server.Hubs;
-using Fishbowl.Net.Shared;
 using Fishbowl.Net.Shared.Data;
 using Fishbowl.Net.Shared.SignalR;
 using Microsoft.AspNetCore.SignalR;
@@ -24,7 +23,7 @@ namespace Fishbowl.Net.Server.Services
 
         private IEnumerable<string>? roundTypes;
 
-        private GameManager? gameManager;
+        private Game? game;
 
         private Task? gameLoop;
 
@@ -34,7 +33,7 @@ namespace Fishbowl.Net.Server.Services
         private int TeamCount => this.teamCount ??
             throw new InvalidOperationException("Invalid game state: TeamCount is not defined");
 
-        private GameManager GameManager => this.gameManager ??
+        private Game Game => this.game ??
             throw new InvalidOperationException("Invalid game state: GameManager is not defined");
 
         public GameService(IHubContext<GameHub, IClient> hubContext) => this.hubContext = hubContext;
@@ -81,13 +80,13 @@ namespace Fishbowl.Net.Server.Services
 
         private async Task StartGame()
         {
-            this.gameManager = new GameManager(
+            this.game = new Game(
                 Guid.NewGuid(),
                 this.players.Values,
                 this.RoundTypes, this.TeamCount);
 
             await this.hubContext.Clients.All.ReceiveTeams(
-                this.GameManager.Game.Teams
+                this.Game.Teams
                 .Select(team => new TeamViewModel(team.Id, team.Players
                     .Select(player => player.Id))));
 
@@ -98,7 +97,7 @@ namespace Fishbowl.Net.Server.Services
 
         private async Task RunGame()
         {
-            foreach (var round in this.GameManager.GetRounds())
+            foreach (var round in this.Game.RoundLoop())
             {
                 await this.RunRound(round);
             }
@@ -110,7 +109,7 @@ namespace Fishbowl.Net.Server.Services
         {
             await this.hubContext.Clients.All.ReceiveRound(round.Type);
 
-            foreach (var period in this.GameManager.GetPeriods())
+            foreach (var period in this.Game.PeriodLoop())
             {
                 await this.RunPeriod(period);
             }
@@ -124,14 +123,14 @@ namespace Fishbowl.Net.Server.Services
 
             var (timestamp, guessedWord) = await this.input.Task;
 
-            while(this.GameManager.NextWord(timestamp, guessedWord))
+            while(this.Game.NextWord(timestamp, guessedWord))
             {
                 if (guessedWord is not null)
                 {
                     await this.hubContext.Clients.AllExcept(connectionId).ReceiveScore(period.Scores.Last());
                 }
 
-                await this.hubContext.Clients.Clients(connectionId).ReceiveWord(this.GameManager.CurrentWord);
+                await this.hubContext.Clients.Clients(connectionId).ReceiveWord(this.Game.CurrentWord());
 
                 (timestamp, guessedWord) = await this.input.Task;
             }
@@ -139,12 +138,12 @@ namespace Fishbowl.Net.Server.Services
 
         private Task FinishGame()
         {
-            var playerScores = this.GameManager.Game.Rounds
+            var playerScores = this.Game.Rounds
                 .SelectMany(round => round.Periods)
                 .GroupBy(period => period.Player.Id)
                 .ToDictionary(item => item.Key, item => item.SelectMany(p => p.Scores).Count());
 
-            var teamScores = this.GameManager.Game.Teams
+            var teamScores = this.Game.Teams
                 .ToDictionary(
                     team => team.Id,
                     team => playerScores

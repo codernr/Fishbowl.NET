@@ -4,14 +4,16 @@ namespace Fishbowl.Net.Shared.Data
 {
     public class Team
     {
-        public int Id { get; init; }
+        private readonly CircularEnumerator<Player> playerEnumerator;
 
-        public IEnumerable<Player> Players { get; init; }
+        public int Id { get; private set; }
 
-        public CircularEnumerator<Player> PlayerEnumerator { get; init; }
+        public IList<Player> Players { get; private set; }
 
         public Team(int id, IList<Player> players) =>
-            (this.Id, this.Players, this.PlayerEnumerator) =
+            (this.Id, this.Players, this.playerEnumerator) =
             (id, players, new CircularEnumerator<Player>(players));
+
+        public IEnumerator<Player> PlayerEnumerator() => this.playerEnumerator;
     }
 }
