@@ -102,6 +102,8 @@ namespace Fishbowl.Net.Server.Services
             {
                 await this.RunRound(round);
             }
+
+            await this.FinishGame();
         }
 
         private async Task RunRound(Round round)
@@ -150,7 +152,7 @@ namespace Fishbowl.Net.Server.Services
                             .Any(player => player.Id == score.Key))
                         .Count());
 
-            return this.hubContext.Clients.All.ReceiveGame(teamScores);
+            return this.hubContext.Clients.All.ReceiveResults(teamScores);
         }
     }
 }

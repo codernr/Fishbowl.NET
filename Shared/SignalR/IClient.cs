@@ -20,6 +20,6 @@ namespace Fishbowl.Net.Shared.SignalR
 
         Task ReceiveScore(Score score);
 
-        Task ReceiveGame(Dictionary<int, int> scores);
+        Task ReceiveResults(Dictionary<int, int> scores);
     }
 }

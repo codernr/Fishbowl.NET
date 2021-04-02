@@ -38,7 +38,7 @@
         this.connection.On<Player>("ReceivePeriod", this.ReceivePeriod);
         this.connection.On<Word>("ReceiveWord", this.ReceiveWord);
         this.connection.On<Score>("ReceiveScore", this.ReceiveScore);
-        this.connection.On<Dictionary<int, int>>("ReceiveGame", this.ReceiveGame);
+        this.connection.On<Dictionary<int, int>>("ReceiveResults", this.ReceiveResults);
 
         return this.connection.StartAsync();
     }
@@ -98,7 +98,7 @@
         return Task.CompletedTask;
     }
 
-    public Task ReceiveGame(Dictionary<int, int> scores)
+    public Task ReceiveResults(Dictionary<int, int> scores)
     {
         foreach (var teamScore in scores)
         {
