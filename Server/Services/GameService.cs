@@ -150,7 +150,8 @@ namespace Fishbowl.Net.Server.Services
                     team => playerScores
                         .Where(score => team.Players
                             .Any(player => player.Id == score.Key))
-                        .Count());
+                        .Select(item => item.Value)
+                        .Sum());
 
             return this.hubContext.Clients.All.ReceiveResults(teamScores);
         }
