@@ -121,7 +121,7 @@
 
     private Task NextWord() => this.connection.SendAsync("NextWord", DateTimeOffset.UtcNow);
 
-    private Task AddScore(Word word) => this.connection.SendAsync("AddScore", new Score(word, DateTimeOffset.UtcNow));
+    private Task AddScore(Word word) => this.connection.SendAsync("AddScoreAsync", new Score(word, DateTimeOffset.UtcNow));
 
     private Task FinishPeriod() => this.connection.SendAsync("FinishPeriod", DateTimeOffset.UtcNow);
 
