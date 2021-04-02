@@ -70,17 +70,18 @@ namespace Fishbowl.Net.Tests.Shared
 
                     var now = new DateTimeOffset(2021, 3, 31, 10, 0, 0, TimeSpan.Zero);
 
-                    Word? previousWord = null;
+                    game.StartPeriod(now);
 
-                    while(game.NextWord(now, previousWord))
+                    do
                     {
                         Assert.Equal(guessedWords[roundCount][periodCount][wordCount], game.CurrentWord().Value);
                         
-                        previousWord = game.CurrentWord();
                         now += TimeSpan.FromSeconds(10);
+                        game.AddScore(new Score(game.CurrentWord(), now));
                         wordCount++;
                         totalWordCount++;
                     }
+                    while (game.NextWord(now));
 
                     wordCount = 0;
                     periodCount++;
@@ -142,24 +143,26 @@ namespace Fishbowl.Net.Tests.Shared
                     var start = new DateTimeOffset(2021, 3, 31, 10, 0, 0, TimeSpan.Zero);
                     var now = start;
 
-                    Word? previousWord = null;
+                    game.StartPeriod(now);
 
-                    while(game.NextWord(now, previousWord))
+                    do
                     {
                         Assert.Equal(currentWord[roundCount][periodCount][wordCount], game.CurrentWord().Value);
                         
                         now += TimeSpan.FromSeconds(10);
                         if (now >= start + period.Length)
                         {
-                            previousWord = null;
+                            game.FinishPeriod(now);
+                            break;
                         }
                         else
                         {
-                            previousWord = game.CurrentWord();
+                            game.AddScore(new Score(game.CurrentWord(), now));
                             totalWordCount++;
                         }
                         wordCount++;
                     }
+                    while (game.NextWord(now));
 
                     wordCount = 0;
                     periodCount++;

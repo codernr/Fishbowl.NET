@@ -123,17 +123,19 @@ namespace Fishbowl.Net.Server.Services
 
             var (timestamp, guessedWord) = await this.input.Task;
 
-            while(this.Game.NextWord(timestamp, guessedWord))
+            do
             {
                 if (guessedWord is not null)
                 {
-                    await this.hubContext.Clients.AllExcept(connectionId).ReceiveScore(period.Scores.Last());
+                    this.Game.AddScore(new Score(guessedWord, timestamp));
+                    await this.hubContext.Clients.All.ReceiveScore(period.Scores.Last());
                 }
 
                 await this.hubContext.Clients.Clients(connectionId).ReceiveWord(this.Game.CurrentWord());
 
                 (timestamp, guessedWord) = await this.input.Task;
             }
+            while (this.Game.NextWord(timestamp));
         }
 
         private Task FinishGame()
