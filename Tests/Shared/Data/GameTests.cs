@@ -93,6 +93,9 @@ namespace Fishbowl.Net.Tests.Shared
             }
 
             Assert.Equal(20, totalWordCount);
+            var scores = game.GetTeamScores();
+            Assert.Equal(12, scores[0]);
+            Assert.Equal(8, scores[1]);
         }
 
         [Fact]
@@ -174,6 +177,9 @@ namespace Fishbowl.Net.Tests.Shared
             }
 
             Assert.Equal(20, totalWordCount);
+            var scores = game.GetTeamScores();
+            Assert.Equal(10, scores[0]);
+            Assert.Equal(10, scores[1]);
         }
 
         private static IEnumerable<Player> CreatePlayers(int count, int wordCount) =>

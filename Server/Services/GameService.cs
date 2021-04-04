@@ -119,7 +119,7 @@ namespace Fishbowl.Net.Server.Services
                 await this.RunRound(round);
             }
 
-            await this.FinishGame();
+            await this.hubContext.Clients.All.ReceiveResults(this.Game.GetTeamScores());
         }
 
         private async Task RunRound(Round round)
@@ -147,25 +147,6 @@ namespace Fishbowl.Net.Server.Services
                 timestamp = await this.inputAction.Task;
             }
             while (this.Game.NextWord(timestamp));
-        }
-
-        private Task FinishGame()
-        {
-            var playerScores = this.Game.Rounds
-                .SelectMany(round => round.Periods)
-                .GroupBy(period => period.Player.Id)
-                .ToDictionary(item => item.Key, item => item.SelectMany(p => p.Scores).Count());
-
-            var teamScores = this.Game.Teams
-                .ToDictionary(
-                    team => team.Id,
-                    team => playerScores
-                        .Where(score => team.Players
-                            .Any(player => player.Id == score.Key))
-                        .Select(item => item.Value)
-                        .Sum());
-
-            return this.hubContext.Clients.All.ReceiveResults(teamScores);
         }
     }
 }
