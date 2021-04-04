@@ -1,11 +1,9 @@
-using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Fishbowl.Net.Shared.Data;
 
-namespace Fishbowl.Net.Shared.SignalR
+namespace Fishbowl.Net.Client.Services
 {
-    public interface IClient
+    public interface IGameClient
     {
         Task DefineTeamCount();
 

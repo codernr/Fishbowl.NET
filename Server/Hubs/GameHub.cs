@@ -1,14 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Fishbowl.Net.Client.Services;
 using Fishbowl.Net.Server.Services;
 using Fishbowl.Net.Shared.Data;
-using Fishbowl.Net.Shared.SignalR;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Fishbowl.Net.Server.Hubs
 {
-    public class GameHub : Hub<IClient>
+    public class GameHub : Hub<IGameClient>
     {
         private readonly GameService service;
 

@@ -1,11 +1,11 @@
 @page "/play"
 @using System.Linq
 @using Microsoft.AspNetCore.SignalR.Client
-@using Fishbowl.Net.Shared.SignalR
+@using Fishbowl.Net.Client.Services;
 @using Fishbowl.Net.Shared.Data
 @inject NavigationManager NavigationManager
 @implements IAsyncDisposable
-@implements IClient
+@implements IGameClient
 
 <h1>Play</h1>
 

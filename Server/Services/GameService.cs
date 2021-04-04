@@ -1,12 +1,10 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using Fishbowl.Net.Client.Services;
 using Fishbowl.Net.Server.Data;
 using Fishbowl.Net.Server.Hubs;
 using Fishbowl.Net.Shared;
 using Fishbowl.Net.Shared.Data;
-using Fishbowl.Net.Shared.SignalR;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Fishbowl.Net.Server.Services
@@ -15,13 +13,13 @@ namespace Fishbowl.Net.Server.Services
     {
         public AsyncGame Game { get; } = new();
 
-        private readonly IHubContext<GameHub, IClient> hubContext;
+        private readonly IHubContext<GameHub, IGameClient> hubContext;
 
         private readonly Map<string, Player> players = new();
 
         private readonly List<string> connections = new();
 
-        public GameService(IHubContext<GameHub, IClient> hubContext)
+        public GameService(IHubContext<GameHub, IGameClient> hubContext)
         {
             this.hubContext = hubContext;
             this.SetEventHandlers();
