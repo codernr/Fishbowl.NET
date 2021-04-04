@@ -19,11 +19,11 @@
 
     private Player Player => this.player ?? throw new InvalidOperationException();
 
-    private TeamViewModel? team;
+    private Team? team;
 
-    private TeamViewModel Team => this.team ?? throw new InvalidOperationException();
+    private Team Team => this.team ?? throw new InvalidOperationException();
 
-    private IEnumerable<TeamViewModel>? teams;
+    private IEnumerable<Team>? teams;
 
     protected override Task OnInitializedAsync()
     {
@@ -33,7 +33,7 @@
 
         this.connection.On("DefineTeamCount", this.DefineTeamCount);
         this.connection.On("DefineRoundTypes", this.DefineRoundTypes);
-        this.connection.On<IEnumerable<TeamViewModel>>("ReceiveTeams", this.ReceiveTeams);
+        this.connection.On<IEnumerable<Team>>("ReceiveTeams", this.ReceiveTeams);
         this.connection.On<string>("ReceiveRound", this.ReceiveRound);
         this.connection.On<Player>("ReceivePeriod", this.ReceivePeriod);
         this.connection.On<DateTimeOffset>("ReceivePeriodStart", this.ReceivePeriodStart);
@@ -56,10 +56,11 @@
         return this.connection.SendAsync("SetRoundTypes", new[] { "Round1", "Round2" });
     }
 
-    public Task ReceiveTeams(IEnumerable<TeamViewModel> teams)
+    public Task ReceiveTeams(IEnumerable<Team> teams)
     {
         this.teams = teams;
-        this.team = teams.First(team => team.PlayerIds.Any(id => id == this.Player.Id));
+        this.team = teams.First(
+            team => team.Players.Any(player => player.Id == this.Player.Id));
 
         Console.WriteLine($"My team id: {this.Team.Id}");
 

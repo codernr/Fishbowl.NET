@@ -11,7 +11,7 @@ namespace Fishbowl.Net.Shared.SignalR
 
         Task DefineRoundTypes();
 
-        Task ReceiveTeams(IEnumerable<TeamViewModel> teams);
+        Task ReceiveTeams(IEnumerable<Team> teams);
 
         Task ReceiveRound(string roundType);
 

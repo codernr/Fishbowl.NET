@@ -102,10 +102,7 @@ namespace Fishbowl.Net.Server.Services
                 this.players.Values,
                 this.RoundTypes, this.TeamCount);
 
-            await this.hubContext.Clients.All.ReceiveTeams(
-                this.Game.Teams
-                .Select(team => new TeamViewModel(team.Id, team.Players
-                    .Select(player => player.Id))));
+            await this.hubContext.Clients.All.ReceiveTeams(this.Game.Teams);
 
             await Task.Delay(2000);
 
