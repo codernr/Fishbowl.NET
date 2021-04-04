@@ -25,7 +25,6 @@ namespace Fishbowl.Net.Server.Services
         {
             this.hubContext = hubContext;
             this.SetEventHandlers();
-            this.Game.Run();
         }
 
         public void RegisterConnection(string connectionId)
@@ -34,6 +33,8 @@ namespace Fishbowl.Net.Server.Services
             {
                 this.connections.Add(connectionId);
             }
+
+            if (this.connections.Count == 1) this.Game.Run();
         }
 
         public void RemoveConnection(string connectionId)
