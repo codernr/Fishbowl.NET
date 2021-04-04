@@ -5,22 +5,24 @@ using System.Linq;
 namespace Fishbowl.Net.Shared.Data
 {
     public class Game
-    { 
-        private readonly CircularEnumerator<Team> teamEnumerator;
+    {
+        public Guid Id { get; init; }
 
-        private readonly IEnumerator<Round> roundEnumerator;
+        public List<Team> Teams { get; init; } = default!;
+        
+        public List<Round> Rounds { get; init; } = default!;
+        
+        public TimeSpan PeriodLength { get; init; } = TimeSpan.FromSeconds(60);
+
+        public TimeSpan PeriodThreshold { get; init; } = TimeSpan.FromSeconds(5);
+        
+        private readonly CircularEnumerator<Team> teamEnumerator = default!;
+
+        private readonly IEnumerator<Round> roundEnumerator = default!;
 
         private TimeSpan? remaining;
 
-        public Guid Id { get; private set; }
-
-        public IList<Team> Teams { get; private set; }
-        
-        public IList<Round> Rounds { get; private set; }
-        
-        public TimeSpan PeriodLength { get; private set; } = TimeSpan.FromSeconds(60);
-
-        public TimeSpan PeriodThreshold { get; private set; } = TimeSpan.FromSeconds(5);
+        public Game() {}
 
         public Game(
             Guid id,
@@ -80,6 +82,19 @@ namespace Fishbowl.Net.Shared.Data
         public void StartPeriod(DateTimeOffset timestamp) =>
             this.roundEnumerator.Current.CurrentPeriod().StartedAt = timestamp;
 
+        public void FinishPeriod(DateTimeOffset timestamp) =>
+            this.FinishPeriod(timestamp, true);
+
+        private void FinishPeriod(DateTimeOffset timestamp, bool rewindWord)
+        {
+            this.roundEnumerator.Current.CurrentPeriod().FinishedAt = timestamp;
+            this.remaining = null;
+            this.teamEnumerator.Current.PlayerEnumerator().MoveNext();
+            this.teamEnumerator.MoveNext();
+
+            if (rewindWord) this.roundEnumerator.Current.WordEnumerator().MovePrevious();
+        }
+
         public void AddScore(Score score) => this.roundEnumerator.Current.CurrentPeriod().Scores.Add(score);
 
         public bool NextWord(DateTimeOffset timestamp)
@@ -119,19 +134,6 @@ namespace Fishbowl.Net.Shared.Data
                         .Sum());
 
             return teamScores;
-        }
-
-        public void FinishPeriod(DateTimeOffset timestamp) =>
-            this.FinishPeriod(timestamp, true);
-
-        private void FinishPeriod(DateTimeOffset timestamp, bool rewindWord)
-        {
-            this.roundEnumerator.Current.CurrentPeriod().FinishedAt = timestamp;
-            this.remaining = null;
-            this.teamEnumerator.Current.PlayerEnumerator().MoveNext();
-            this.teamEnumerator.MoveNext();
-
-            if (rewindWord) this.roundEnumerator.Current.WordEnumerator().MovePrevious();
         }
     }
 }
