@@ -73,6 +73,7 @@ namespace Fishbowl.Net.Server.Services
 
         public Task StartPeriodAsync(DateTimeOffset timestamp)
         {
+            this.Game.StartPeriod(timestamp);
             this.SetInput(timestamp);
             return this.hubContext.Clients.All.ReceivePeriodStart(timestamp);
         }
