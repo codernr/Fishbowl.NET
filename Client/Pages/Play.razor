@@ -31,6 +31,23 @@
         set => this.game = value;
     }
 
+    private DateTimeOffset? now;
+
+    private DateTimeOffset Now
+    {
+        get
+        {
+            if (this.now is null)
+            {
+                this.now = DateTimeOffset.UtcNow;
+                return this.now.Value;
+            }
+
+            this.now = this.now.Value + TimeSpan.FromSeconds(10);
+            return this.now.Value;
+        }
+    }
+
     protected override Task OnInitializedAsync()
     {
         this.connection = new HubConnectionBuilder()
@@ -105,9 +122,7 @@
 
         if (period.Player.Id == this.Player.Id)
         {
-            Console.WriteLine("Wait two seconds, than start period");
-            await Task.Delay(2000);
-
+            Console.WriteLine("Starting period as player");
             await this.StartPeriod();
         }
     }
@@ -127,10 +142,9 @@
     public async Task ReceiveWordSetup(Word word)
     {
         Console.WriteLine($"Word: {word.Value}");
-        await Task.Delay(10000);
-        Console.WriteLine($"Send [{word.Value}] at {DateTimeOffset.UtcNow}");
-        await this.AddScore(word);
-        await this.NextWord();
+        var timestamp = this.Now;
+        await this.AddScore(word, timestamp);
+        await this.NextWord(timestamp);
     }
 
     public Task ReceiveScoreAdded(Score score)
@@ -140,13 +154,13 @@
     }
 
 
-    private Task StartPeriod() => this.connection.SendAsync("StartPeriod", DateTimeOffset.UtcNow);
+    private Task StartPeriod() => this.connection.SendAsync("StartPeriod", this.Now);
 
-    private Task NextWord() => this.connection.SendAsync("NextWord", DateTimeOffset.UtcNow);
+    private Task NextWord(DateTimeOffset timestamp) => this.connection.SendAsync("NextWord", timestamp);
 
-    private Task AddScore(Word word) => this.connection.SendAsync("AddScore", new Score(word, DateTimeOffset.UtcNow));
+    private Task AddScore(Word word, DateTimeOffset timestamp) => this.connection.SendAsync("AddScore", new Score(word, timestamp));
 
-    private Task FinishPeriod() => this.connection.SendAsync("FinishPeriod", DateTimeOffset.UtcNow);
+    private Task FinishPeriod() => this.connection.SendAsync("FinishPeriod", this.Now);
 
     public ValueTask DisposeAsync() => this.connection.DisposeAsync();
     
