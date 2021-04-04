@@ -61,7 +61,6 @@ namespace Fishbowl.Net.Server
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();
-                endpoints.MapControllers();
                 endpoints.MapHub<GameHub>("/game");
                 endpoints.MapFallbackToFile("index.html");
             });
