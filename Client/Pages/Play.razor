@@ -25,6 +25,14 @@
 
     private IEnumerable<Team>? teams;
 
+    private Game? game;
+
+    public Game Game
+    {
+        get => this.game ?? throw new InvalidOperationException();
+        set => this.game = value;
+    }
+
     protected override Task OnInitializedAsync()
     {
         this.connection = new HubConnectionBuilder()
@@ -33,13 +41,15 @@
 
         this.connection.On("DefineTeamCount", this.DefineTeamCount);
         this.connection.On("DefineRoundTypes", this.DefineRoundTypes);
-        this.connection.On<IEnumerable<Team>>("ReceiveTeams", this.ReceiveTeams);
-        this.connection.On<string>("ReceiveRound", this.ReceiveRound);
-        this.connection.On<Player>("ReceivePeriod", this.ReceivePeriod);
-        this.connection.On<DateTimeOffset>("ReceivePeriodStart", this.ReceivePeriodStart);
-        this.connection.On<Word>("ReceiveWord", this.ReceiveWord);
-        this.connection.On<Score>("ReceiveScore", this.ReceiveScore);
-        this.connection.On<Dictionary<int, int>>("ReceiveResults", this.ReceiveResults);
+        this.connection.On<Game>("ReceiveGameStarted", this.ReceiveGameStarted);
+        this.connection.On<Game>("ReceiveGameFinished", this.ReceiveGameFinished);
+        this.connection.On<Round>("ReceiveRoundStarted", this.ReceiveRoundStarted);
+        this.connection.On<Round>("ReceiveRoundFinished", this.ReceiveRoundFinished);
+        this.connection.On<Period>("ReceivePeriodSetup", this.ReceivePeriodSetup);
+        this.connection.On<Period>("ReceivePeriodStarted", this.ReceivePeriodStarted);
+        this.connection.On<Period>("ReceivePeriodFinished", this.ReceivePeriodFinished);
+        this.connection.On<Word>("ReceiveWordSetup", this.ReceiveWordSetup);
+        this.connection.On<Score>("ReceiveScoreAdded", this.ReceiveScoreAdded);
 
         return this.connection.StartAsync();
     }
@@ -56,10 +66,10 @@
         return this.connection.SendAsync("SetRoundTypes", new[] { "Round1", "Round2" });
     }
 
-    public Task ReceiveTeams(IEnumerable<Team> teams)
+    public Task ReceiveGameStarted(Game game)
     {
-        this.teams = teams;
-        this.team = teams.First(
+        this.Game = game;
+        this.team = this.Game.Teams.First(
             team => team.Players.Any(player => player.Id == this.Player.Id));
 
         Console.WriteLine($"My team id: {this.Team.Id}");
@@ -67,17 +77,35 @@
         return Task.CompletedTask;
     }
 
-    public Task ReceiveRound(string roundType)
+    public Task ReceiveGameFinished(Game game)
     {
-        Console.WriteLine($"Round: {roundType}");
+        this.Game = game;
+
+        foreach (var teamScore in this.Game.GetTeamScores())
+        {
+            Console.WriteLine($"Team {teamScore.Key} scores: {teamScore.Value}");
+        }
+
         return Task.CompletedTask;
     }
 
-    public async Task ReceivePeriod(Player player)
+    public Task ReceiveRoundStarted(Round round)
     {
-        Console.WriteLine($"Period player: {player.Name}");
+        Console.WriteLine($"Round started: {round.Type}");
+        return Task.CompletedTask;
+    }
 
-        if (player.Id == this.Player.Id)
+    public Task ReceiveRoundFinished(Round round)
+    {
+        Console.WriteLine($"Round finished: {round.Type}");
+        return Task.CompletedTask;
+    }
+
+    public async Task ReceivePeriodSetup(Period period)
+    {
+        Console.WriteLine($"Period player: {period.Player.Name}");
+
+        if (period.Player.Id == this.Player.Id)
         {
             Console.WriteLine("Wait two seconds, than start period");
             await Task.Delay(2000);
@@ -86,13 +114,19 @@
         }
     }
 
-    public Task ReceivePeriodStart(DateTimeOffset timestamp)
+    public Task ReceivePeriodStarted(Period period)
     {
-        Console.WriteLine("Period started at: " + timestamp);
+        Console.WriteLine("Period started at: " + period);
         return Task.CompletedTask;
     }
 
-    public async Task ReceiveWord(Word word)
+    public Task ReceivePeriodFinished(Period period)
+    {
+        Console.WriteLine($"Period finished at: {period.FinishedAt}; scores ({period.Player.Name}): {period.Scores.Count}");
+        return Task.CompletedTask;
+    }
+
+    public async Task ReceiveWordSetup(Word word)
     {
         Console.WriteLine($"Word: {word.Value}");
         await Task.Delay(10000);
@@ -101,28 +135,18 @@
         await this.NextWord();
     }
 
-    public Task ReceiveScore(Score score)
+    public Task ReceiveScoreAdded(Score score)
     {
         Console.WriteLine($"Score received: [{score.Word.Value}, {score.Timestamp}]");
         return Task.CompletedTask;
     }
 
-    public Task ReceiveResults(Dictionary<int, int> scores)
-    {
-        foreach (var teamScore in scores)
-        {
-            Console.WriteLine($"Team {teamScore.Key} scores: {teamScore.Value}");
-        }
 
-        return Task.CompletedTask;
-    }
-
-
-    private Task StartPeriod() => this.connection.SendAsync("StartPeriodAsync", DateTimeOffset.UtcNow);
+    private Task StartPeriod() => this.connection.SendAsync("StartPeriod", DateTimeOffset.UtcNow);
 
     private Task NextWord() => this.connection.SendAsync("NextWord", DateTimeOffset.UtcNow);
 
-    private Task AddScore(Word word) => this.connection.SendAsync("AddScoreAsync", new Score(word, DateTimeOffset.UtcNow));
+    private Task AddScore(Word word) => this.connection.SendAsync("AddScore", new Score(word, DateTimeOffset.UtcNow));
 
     private Task FinishPeriod() => this.connection.SendAsync("FinishPeriod", DateTimeOffset.UtcNow);
 
@@ -130,7 +154,7 @@
     
     private Task SubmitTeamCount()
     {
-        return this.connection.SendAsync("SetTeamCountAsync", 2);
+        return this.connection.SendAsync("SetTeamCount", 2);
     }
 
     private Task SubmitRoundTypes()
@@ -151,7 +175,7 @@
                 new Word(Guid.NewGuid(), $"Word{random.Next()}")
             });
 
-        await this.connection.InvokeAsync("SetPlayerAsync", this.Player);
+        await this.connection.InvokeAsync("AddPlayer", this.Player);
 
         Console.WriteLine($"{this.player.Name} set");
     }
