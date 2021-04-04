@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Fishbowl.Net.Server.Data;
 using Fishbowl.Net.Server.Hubs;
+using Fishbowl.Net.Shared;
 using Fishbowl.Net.Shared.Data;
 using Fishbowl.Net.Shared.SignalR;
 using Microsoft.AspNetCore.SignalR;
@@ -11,19 +13,19 @@ namespace Fishbowl.Net.Server.Services
 {
     public class GameService
     {
+        public AsyncGame Game { get; } = new();
+
         private readonly IHubContext<GameHub, IClient> hubContext;
 
-        private readonly List<string> connections = new();
+        private readonly Map<string, Player> players = new();
 
-        private Dictionary<string, Player> players = new();
+        private readonly List<string> connections = new();
 
         private TaskCompletionSource<DateTimeOffset> inputAction = new();
 
         private int? teamCount;
 
         private IEnumerable<string>? roundTypes;
-
-        private Game? game;
 
         private Task? gameLoop;
 
@@ -33,19 +35,19 @@ namespace Fishbowl.Net.Server.Services
         private int TeamCount => this.teamCount ??
             throw new InvalidOperationException("Invalid game state: TeamCount is not defined");
 
-        private Game Game => this.game ??
-            throw new InvalidOperationException("Invalid game state: GameManager is not defined");
+        public GameService(IHubContext<GameHub, IClient> hubContext)
+        {
+            this.hubContext = hubContext;
+            this.SetEventHandlers();
+            this.Game.Run();
+        }
 
-        public GameService(IHubContext<GameHub, IClient> hubContext) => this.hubContext = hubContext;
-
-        public int RegisterConnection(string connectionId)
+        public void RegisterConnection(string connectionId)
         {
             if (!this.connections.Contains(connectionId))
             {
                 this.connections.Add(connectionId);
             }
-
-            return this.connections.Count;
         }
 
         public void RemoveConnection(string connectionId)
@@ -58,92 +60,61 @@ namespace Fishbowl.Net.Server.Services
             this.connections.Remove(connectionId);
         }
 
-        public void SetTeamCount(int teamCount) => this.teamCount = teamCount;
-
-        public void SetRoundTypes(IEnumerable<string> roundTypes) => this.roundTypes = roundTypes;
-
-        public async Task SetPlayerAsync(string connectionId, Player player)
+        public void AddPlayer(string connectionId, Player player)
         {
             this.players.Add(connectionId, player);
 
-            if (this.players.Count < this.connections.Count) return;
-            
-            await this.StartGame();
+            this.Game.AddPlayer(player);
+
+            if (this.players.Count == this.connections.Count) this.Game.PlayersSet();
         }
 
-        public Task StartPeriodAsync(DateTimeOffset timestamp)
+        private void SetEventHandlers()
         {
-            this.Game.StartPeriod(timestamp);
-            this.SetInput(timestamp);
-            return this.hubContext.Clients.All.ReceivePeriodStart(timestamp);
+            this.Game.WaitingForTeamCount += this.WaitingForTeamCount;
+            this.Game.WaitingForRoundTypes += this.WaitingForRoundTypes;
+            this.Game.GameStarted += this.GameStarted;
+            this.Game.GameFinished += this.GameFinished;
+            this.Game.RoundStarted += this.RoundStarted;
+            this.Game.RoundFinished += this.RoundFinished;
+            this.Game.PeriodSetup += this.PeriodSetup;
+            this.Game.PeriodStarted += this.PeriodStarted;
+            this.Game.PeriodFinished += this.PeriodFinished;
+            this.Game.ScoreAdded += this.ScoreAdded;
+            this.Game.WordSetup += this.WordSetup;
         }
 
-        public void FinishPeriod(DateTimeOffset timestamp) => this.Game.FinishPeriod(timestamp);
+        private async void WaitingForTeamCount() =>
+            await this.hubContext.Clients.Clients(this.connections.First()).DefineTeamCount();
 
-        public void NextWord(DateTimeOffset timestamp) => this.SetInput(timestamp);
+        private async void WaitingForRoundTypes() =>
+            await this.hubContext.Clients.Clients(this.connections.First()).DefineRoundTypes();
 
-        public Task AddScoreAsync(Score score)
-        {
-            this.Game.AddScore(score);
-            return this.hubContext.Clients.All.ReceiveScore(score);
-        }
+        private async void GameStarted(Game game) =>
+            await this.hubContext.Clients.All.ReceiveGameStarted(game);
 
-        private void SetInput(DateTimeOffset timestamp)
-        {
-            var current = this.inputAction;
-            this.inputAction = new();
-            current.SetResult(timestamp);
-        }
+        private async void GameFinished(Game game) =>
+            await this.hubContext.Clients.All.ReceiveGameFinished(game);
 
-        private async Task StartGame()
-        {
-            this.game = new Game(
-                Guid.NewGuid(),
-                this.players.Values,
-                this.RoundTypes, this.TeamCount);
+        private async void RoundStarted(Round round) =>
+            await this.hubContext.Clients.All.ReceiveRoundStarted(round);
 
-            await this.hubContext.Clients.All.ReceiveTeams(this.Game.Teams);
+        private async void RoundFinished(Round round) =>
+            await this.hubContext.Clients.All.ReceiveRoundFinished(round);
 
-            await Task.Delay(2000);
+        private async void PeriodSetup(Period period) =>
+            await this.hubContext.Clients.All.ReceivePeriodSetup(period);
 
-            this.gameLoop = this.RunGame();
-        }
+        private async void PeriodStarted(Period period) =>
+            await this.hubContext.Clients.All.ReceivePeriodStarted(period);
 
-        private async Task RunGame()
-        {
-            foreach (var round in this.Game.RoundLoop())
-            {
-                await this.RunRound(round);
-            }
+        private async void PeriodFinished(Period period) =>
+            await this.hubContext.Clients.All.ReceivePeriodFinished(period);
 
-            await this.hubContext.Clients.All.ReceiveResults(this.Game.GetTeamScores());
-        }
+        private async void ScoreAdded(Score score) =>
+            await this.hubContext.Clients.All.ReceiveScoreAdded(score);
 
-        private async Task RunRound(Round round)
-        {
-            await this.hubContext.Clients.All.ReceiveRound(round.Type);
-
-            foreach (var period in this.Game.PeriodLoop())
-            {
-                await this.RunPeriod(period);
-            }
-        }
-
-        private async Task RunPeriod(Period period)
-        {
-            var connectionId = this.players.Keys.First(key => this.players[key].Id == period.Player.Id);
-
-            await this.hubContext.Clients.All.ReceivePeriod(period.Player);
-
-            var timestamp = await this.inputAction.Task;
-
-            do
-            {
-                await this.hubContext.Clients.Clients(connectionId).ReceiveWord(this.Game.CurrentWord());
-
-                timestamp = await this.inputAction.Task;
-            }
-            while (this.Game.NextWord(timestamp));
-        }
+        private async void WordSetup(Player player, Word word) =>
+            await this.hubContext.Clients.Clients(this.players[player]).ReceiveWordSetup(word);
     }
 }

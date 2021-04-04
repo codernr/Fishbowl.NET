@@ -7,6 +7,10 @@ namespace Fishbowl.Net.Shared
 {
     public class AsyncGame
     {
+        public event Action? WaitingForTeamCount;
+
+        public event Action? WaitingForRoundTypes;
+
         public event Action<Game>? GameStarted;
 
         public event Action<Game>? GameFinished;
@@ -23,7 +27,7 @@ namespace Fishbowl.Net.Shared
 
         public event Action<Score>? ScoreAdded;
 
-        public event Action<Word>? WordSetup;
+        public event Action<Player, Word>? WordSetup;
 
         private readonly List<Player> players = new List<Player>();
 
@@ -46,16 +50,15 @@ namespace Fishbowl.Net.Shared
 
         private readonly bool randomize;
 
-        private readonly Task gameLoop;
+        private Task? gameLoop;
 
-        public AsyncGame(bool randomize = true) =>
-        (this.randomize, this.gameLoop) =
-        (randomize, this.RunAsync());
+        public AsyncGame(bool randomize = true) => this.randomize = randomize;
 
         public void SetTeamCount(int teamCount)
         {
             this.teamCount = teamCount;
             this.teamCountSet.SetResult();
+            this.WaitingForRoundTypes?.Invoke();
         }
 
         public void SetRoundTypes(IEnumerable<string> roundTypes)
@@ -90,9 +93,13 @@ namespace Fishbowl.Net.Shared
             this.Game.AddScore(score);
             this.ScoreAdded?.Invoke(score);
         }
+
+        public void Run() => this.gameLoop = this.RunAsync();
         
         private async Task RunAsync()
         {
+            this.WaitingForTeamCount?.Invoke();
+
             await Task.WhenAll(this.playersSet.Task, this.roundTypesSet.Task, this.teamCountSet.Task);
 
             if (this.roundTypes is null || this.teamCount is null)
@@ -134,7 +141,7 @@ namespace Fishbowl.Net.Shared
             
             do
             {
-                this.WordSetup?.Invoke(this.Game.CurrentWord());
+                this.WordSetup?.Invoke(period.Player, this.Game.CurrentWord());
 
                 timestamp = await this.inputReceived.Task;
             }

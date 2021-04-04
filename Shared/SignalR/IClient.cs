@@ -11,18 +11,22 @@ namespace Fishbowl.Net.Shared.SignalR
 
         Task DefineRoundTypes();
 
-        Task ReceiveTeams(IEnumerable<Team> teams);
+        Task ReceiveGameStarted(Game game);
 
-        Task ReceiveRound(string roundType);
+        Task ReceiveGameFinished(Game game);
 
-        Task ReceivePeriod(Player player);
+        Task ReceiveRoundStarted(Round round);
 
-        Task ReceivePeriodStart(DateTimeOffset timestamp);
+        Task ReceiveRoundFinished(Round round);
 
-        Task ReceiveWord(Word word);
+        Task ReceivePeriodSetup(Period period);
 
-        Task ReceiveScore(Score score);
+        Task ReceivePeriodStarted(Period period);
 
-        Task ReceiveResults(Dictionary<int, int> scores);
+        Task ReceivePeriodFinished(Period period);
+
+        Task ReceiveWordSetup(Word word);
+
+        Task ReceiveScoreAdded(Score score);
     }
 }
