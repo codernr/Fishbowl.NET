@@ -21,20 +21,6 @@ namespace Fishbowl.Net.Server.Services
 
         private readonly List<string> connections = new();
 
-        private TaskCompletionSource<DateTimeOffset> inputAction = new();
-
-        private int? teamCount;
-
-        private IEnumerable<string>? roundTypes;
-
-        private Task? gameLoop;
-
-        private IEnumerable<string> RoundTypes => this.roundTypes ??
-            throw new InvalidOperationException("Invalid game state: RoundTypes are not defined");
-
-        private int TeamCount => this.teamCount ??
-            throw new InvalidOperationException("Invalid game state: TeamCount is not defined");
-
         public GameService(IHubContext<GameHub, IClient> hubContext)
         {
             this.hubContext = hubContext;
