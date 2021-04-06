@@ -1,0 +1,55 @@
+@using Net.Shared.Data
+
+<h2>Round: @this.Round.Type</h2>
+
+@if (this.Period.StartedAt is null)
+{
+    <button type="button" @onclick="@(e => this.OnStarted.InvokeAsync(DateTimeOffset.UtcNow))">Start</button>
+}
+else
+{
+    <p>Started at @this.Period.StartedAt</p>
+
+    @if (this.Word is not null)
+    {
+        <p>@this.Word!.Value</p>
+        <div>
+            <button type="button" @onclick="this.ScoreAdded">Guessed</button>
+        </div>
+    }
+
+    @if (this.Period.StartedAt + this.Period.Length() < DateTimeOffset.UtcNow)
+    {
+        <div>
+            <p>@(this.Period.StartedAt + this.Period.Length()) @(this.Period.Length()) @this.Period.StartedAt</p>
+            <button type="button" @onclick="@(e => this.OnPeriodFinished.InvokeAsync(DateTimeOffset.UtcNow))">Pass</button>
+        </div>   
+    }
+}
+
+@code
+{
+    [Parameter]
+    public Round Round { get; set; } = default!;
+
+    [Parameter]
+    public Period Period { get; set; } = default!;
+
+    [Parameter]
+    public Word? Word { get; set; }
+
+    [Parameter]
+    public EventCallback<DateTimeOffset> OnStarted{ get; set; } = default!;
+
+    [Parameter]
+    public EventCallback<Score> OnScoreAdded { get; set; } = default!;
+
+    [Parameter]
+    public EventCallback<DateTimeOffset> OnPeriodFinished { get; set; } = default!;
+
+    private Task ScoreAdded(EventArgs e)
+    {
+        var score = new Score(this.Word!, DateTimeOffset.UtcNow);
+        return this.OnScoreAdded.InvokeAsync(score);
+    }
+}
