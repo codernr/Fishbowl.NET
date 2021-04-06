@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Fishbowl.Net.Client.Services;
 using Fishbowl.Net.Server.Data;
 using Fishbowl.Net.Server.Hubs;
@@ -32,7 +33,14 @@ namespace Fishbowl.Net.Server.Services
                 this.connections.Add(connectionId);
             }
 
-            if (this.connections.Count == 1) this.Game.Run();
+            if (this.connections.Count == 1)
+            {
+                this.Game.Run();
+            }
+            else
+            {
+                this.DefinePlayer(connectionId);
+            }
         }
 
         public void RemoveConnection(string connectionId)
@@ -54,6 +62,12 @@ namespace Fishbowl.Net.Server.Services
             if (this.players.Count == this.connections.Count) this.Game.PlayersSet();
         }
 
+        public void SetRoundTypes(IEnumerable<string> roundTypes)
+        {
+            this.Game.SetRoundTypes(roundTypes);
+            this.hubContext.Clients.Clients(this.connections.First()).DefinePlayer();
+        }
+
         private void SetEventHandlers()
         {
             this.Game.WaitingForTeamCount += this.WaitingForTeamCount;
@@ -68,6 +82,9 @@ namespace Fishbowl.Net.Server.Services
             this.Game.ScoreAdded += this.ScoreAdded;
             this.Game.WordSetup += this.WordSetup;
         }
+
+        private async void DefinePlayer(string connectionId) =>
+            await this.hubContext.Clients.Clients(connectionId).DefinePlayer();
 
         private async void WaitingForTeamCount() =>
             await this.hubContext.Clients.Clients(this.connections.First()).DefineTeamCount();

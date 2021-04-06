@@ -9,6 +9,8 @@ namespace Fishbowl.Net.Client.Services
 
         Task DefineRoundTypes();
 
+        Task DefinePlayer();
+
         Task ReceiveGameStarted(Game game);
 
         Task ReceiveGameFinished(Game game);

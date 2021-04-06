@@ -21,7 +21,7 @@
     case GameState.WaitingForRoundTypes:
         <RoundTypes OnRoundTypesSet="@this.SubmitRoundTypes" />
         break;
-    case GameState.WaitingForPlayerData:
+    case GameState.WaitingForPlayer:
         <PlayerData OnPlayerDataSet="@this.SubmitPlayerData" />
         break;
     default:
@@ -36,7 +36,7 @@
         Connecting,
         WaitingForTeamCount,
         WaitingForRoundTypes,
-        WaitingForPlayerData,
+        WaitingForPlayer,
         GameStarted,
         RoundStarted,
         PeriodSetup,
@@ -101,6 +101,7 @@
 
         this.connection.On("DefineTeamCount", this.DefineTeamCount);
         this.connection.On("DefineRoundTypes", this.DefineRoundTypes);
+        this.connection.On("DefinePlayer", this.DefinePlayer);
         this.connection.On<Game>("ReceiveGameStarted", this.ReceiveGameStarted);
         this.connection.On<Game>("ReceiveGameFinished", this.ReceiveGameFinished);
         this.connection.On<Round>("ReceiveRoundStarted", this.ReceiveRoundStarted);
@@ -112,8 +113,6 @@
         this.connection.On<Score>("ReceiveScoreAdded", this.ReceiveScoreAdded);
 
         await this.connection.StartAsync();
-
-        this.State = GameState.WaitingForPlayerData;
     }
 
     public Task DefineTeamCount()
@@ -127,6 +126,13 @@
     {
         Console.WriteLine("DefineRoundTypes");
         this.State = GameState.WaitingForRoundTypes;
+        return Task.CompletedTask;
+    }
+
+    public Task DefinePlayer()
+    {
+        Console.WriteLine("DefinePlayer");
+        this.State = GameState.WaitingForPlayer;
         return Task.CompletedTask;
     }
 

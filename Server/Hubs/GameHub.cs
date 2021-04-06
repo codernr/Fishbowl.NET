@@ -28,7 +28,7 @@ namespace Fishbowl.Net.Server.Hubs
 
         public void SetTeamCount(int teamCount) => this.service.Game.SetTeamCount(teamCount);
 
-        public void SetRoundTypes(IEnumerable<string> roundTypes) => this.service.Game.SetRoundTypes(roundTypes);
+        public void SetRoundTypes(IEnumerable<string> roundTypes) => this.service.SetRoundTypes(roundTypes);
 
         public void AddPlayer(Player player) =>
             this.service.AddPlayer(this.Context.ConnectionId, player);
