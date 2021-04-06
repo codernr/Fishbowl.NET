@@ -1,0 +1,16 @@
+<h2>Set team count</h2>
+
+<form @onsubmit="@(e => this.OnTeamCountSet.InvokeAsync(this.teamCount))" @onsubmit:preventDefault>
+    <div>
+        <input type="number" @bind="this.teamCount">
+    </div>
+    <button type="submit">Set</button>
+</form>
+
+@code
+{
+    [Parameter]
+    public EventCallback<int> OnTeamCountSet { get; set; } = default!;
+
+    private int teamCount = 2;
+}

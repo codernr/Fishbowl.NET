@@ -1,5 +1,6 @@
 @page "/play"
 @using System.Linq
+@using Fishbowl.Net.Client.Components
 @using Microsoft.AspNetCore.SignalR.Client
 @using Fishbowl.Net.Client.Services;
 @using Fishbowl.Net.Shared.Data
@@ -9,10 +10,54 @@
 
 <h1>Play</h1>
 
-<button type="button" @onclick="SetPlayerAsync">Submit player</button>
+@switch (this.State)
+{
+    case GameState.Connecting:
+        <strong>Connecting...</strong>
+        break;
+    case GameState.WaitingForTeamCount:
+        <TeamCount OnTeamCountSet="@this.SubmitTeamCount" />
+        break;
+    case GameState.WaitingForRoundTypes:
+        <RoundTypes OnRoundTypesSet="@this.SubmitRoundTypes" />
+        break;
+    case GameState.WaitingForPlayerData:
+        <PlayerData OnPlayerDataSet="@this.SubmitPlayerData" />
+        break;
+    default:
+        <p>not implemented</p>
+        break;
+}
 
 @code
 {
+    public enum GameState
+    {
+        Connecting,
+        WaitingForTeamCount,
+        WaitingForRoundTypes,
+        WaitingForPlayerData,
+        GameStarted,
+        RoundStarted,
+        PeriodSetup,
+        PeriodRunning,
+        PeriodFinished,
+        RoundFinished,
+        GameFinished
+    }
+
+    private GameState state = GameState.Connecting;
+
+    private GameState State
+    { 
+        get => this.state;
+        set
+        {
+            this.state = value;
+            this.StateHasChanged();
+        }
+    }
+    
     private HubConnection connection = default!;
 
     private Player? player;
@@ -48,7 +93,7 @@
         }
     }
 
-    protected override Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
         this.connection = new HubConnectionBuilder()
             .WithUrl(NavigationManager.ToAbsoluteUri("/game"))
@@ -66,19 +111,23 @@
         this.connection.On<Word>("ReceiveWordSetup", this.ReceiveWordSetup);
         this.connection.On<Score>("ReceiveScoreAdded", this.ReceiveScoreAdded);
 
-        return this.connection.StartAsync();
+        await this.connection.StartAsync();
+
+        this.State = GameState.WaitingForPlayerData;
     }
 
     public Task DefineTeamCount()
     {
         Console.WriteLine("DefineTeamCount");
-        return this.connection.SendAsync("SetTeamCount", 2);
+        this.State = GameState.WaitingForTeamCount;
+        return Task.CompletedTask;
     }
     
     public Task DefineRoundTypes()
     {
         Console.WriteLine("DefineRoundTypes");
-        return this.connection.SendAsync("SetRoundTypes", new[] { "Round1", "Round2" });
+        this.State = GameState.WaitingForRoundTypes;
+        return Task.CompletedTask;
     }
 
     public Task ReceiveGameStarted(Game game)
@@ -164,15 +213,13 @@
 
     public ValueTask DisposeAsync() => this.connection.DisposeAsync();
     
-    private Task SubmitTeamCount()
-    {
-        return this.connection.SendAsync("SetTeamCount", 2);
-    }
+    private Task SubmitTeamCount(int teamCount) => this.connection.SendAsync("SetTeamCount", teamCount);
 
-    private Task SubmitRoundTypes()
-    {
-        return this.connection.SendAsync("SetRoundTypes", new[] { "GameType1", "GameType2" });
-    }
+    private Task SubmitRoundTypes(IEnumerable<string> roundTypes) =>
+        this.connection.SendAsync("SetRoundTypes", roundTypes);
+
+    private Task SubmitPlayerData(Player player) =>
+        this.connection.SendAsync("AddPlayer", player);
 
     private async Task SetPlayerAsync()
     {
