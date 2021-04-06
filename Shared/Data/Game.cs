@@ -101,7 +101,7 @@ namespace Fishbowl.Net.Shared.Data
         {
             var period = this.roundEnumerator.Current.CurrentPeriod();
 
-            if (timestamp >= period.StartedAt + period.Length - this.PeriodThreshold)
+            if (timestamp >= period.StartedAt + period.Length() - this.PeriodThreshold)
             {
                 this.FinishPeriod(timestamp, false);
                 return false;
@@ -110,7 +110,7 @@ namespace Fishbowl.Net.Shared.Data
             if (!this.roundEnumerator.Current.WordEnumerator().MoveNext())
             {
                 period.FinishedAt = timestamp;
-                this.remaining = period.StartedAt + period.Length - timestamp;
+                this.remaining = period.StartedAt + period.Length() - timestamp;
                 return false;
             }
 

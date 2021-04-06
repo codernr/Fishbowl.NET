@@ -153,7 +153,7 @@ namespace Fishbowl.Net.Tests.Shared
                         Assert.Equal(currentWord[roundCount][periodCount][wordCount], game.CurrentWord().Value);
                         
                         now += TimeSpan.FromSeconds(10);
-                        if (now >= start + period.Length)
+                        if (now >= start + period.Length())
                         {
                             game.FinishPeriod(now);
                             break;
