@@ -11,6 +11,8 @@
     else
     {
         <p>@this.Period.Player.Name started at @this.Period.StartedAt with length @this.Period.Length()</p>
+
+        <Timer Start="@this.Period.StartedAt.Value" Length="@this.Period.Length()" />
     }
 }
 

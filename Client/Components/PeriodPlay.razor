@@ -10,6 +10,8 @@ else
 {
     <p>Started at @this.Period.StartedAt</p>
 
+    <Timer Start="@this.Period.StartedAt.Value" Length="@this.Period.Length()" OnExpired="@(() => this.expired = true)" />
+
     @if (this.Word is not null)
     {
         <p>@this.Word!.Value</p>
@@ -18,7 +20,7 @@ else
         </div>
     }
 
-    @if (this.Period.StartedAt + this.Period.Length() < DateTimeOffset.UtcNow)
+    @if (this.expired)
     {
         <div>
             <p>@(this.Period.StartedAt + this.Period.Length()) @(this.Period.Length()) @this.Period.StartedAt</p>
@@ -46,6 +48,8 @@ else
 
     [Parameter]
     public EventCallback<DateTimeOffset> OnPeriodFinished { get; set; } = default!;
+
+    private bool expired;
 
     private Task ScoreAdded(EventArgs e)
     {
