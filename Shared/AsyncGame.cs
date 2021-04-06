@@ -39,6 +39,8 @@ namespace Fishbowl.Net.Shared
 
         private TaskCompletionSource<DateTimeOffset> inputReceived = new TaskCompletionSource<DateTimeOffset>();
 
+        private bool finishRequested = false;
+
         private Game? game;
 
         private Game Game => this.game ??
@@ -84,7 +86,12 @@ namespace Fishbowl.Net.Shared
             this.SetInput(timestamp);
         }
 
-        public void FinishPeriod(DateTimeOffset timestamp) => this.Game.FinishPeriod(timestamp);
+        public void FinishPeriod(DateTimeOffset timestamp)
+        {
+            this.Game.FinishPeriod(timestamp);
+            this.finishRequested = true;
+            this.SetInput(timestamp);
+        }
 
         public void NextWord(DateTimeOffset timestamp) => this.SetInput(timestamp);
 
@@ -144,6 +151,12 @@ namespace Fishbowl.Net.Shared
                 this.WordSetup?.Invoke(period.Player, this.Game.CurrentWord());
 
                 timestamp = await this.inputReceived.Task;
+
+                if (this.finishRequested)
+                {
+                    this.finishRequested = false;
+                    break;
+                }
             }
             while (this.Game.NextWord(timestamp));
 
