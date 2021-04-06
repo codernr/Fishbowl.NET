@@ -11,6 +11,8 @@ namespace Fishbowl.Net.Client.Services
 
         Task DefinePlayer();
 
+        Task ReceiveWaitForPlayers();
+
         Task ReceiveGameStarted(Game game);
 
         Task ReceiveGameFinished(Game game);

@@ -59,7 +59,14 @@ namespace Fishbowl.Net.Server.Services
 
             this.Game.AddPlayer(player);
 
-            if (this.players.Count == this.connections.Count) this.Game.PlayersSet();
+            if (this.players.Count == this.connections.Count)
+            {
+                this.Game.PlayersSet();
+            }
+            else
+            {
+                this.hubContext.Clients.Clients(connectionId).ReceiveWaitForPlayers();
+            }
         }
 
         public void SetRoundTypes(IEnumerable<string> roundTypes)
