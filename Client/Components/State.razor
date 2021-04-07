@@ -1,0 +1,49 @@
+@if (this.enabled)
+{
+    @this.ChildContent;
+}
+
+@code
+{
+    [CascadingParameter]
+    public StateManager StateManager { get; set; } = default!;
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; } = default!;
+
+    [Parameter]
+    public Pages.Play.GameState StateType { get; set; }
+
+    [Parameter]
+    public TimeSpan Delay { get; set; }
+
+    private bool enabled = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Console.WriteLine("Add " + this.StateType);
+        await this.StateManager.AddStateAsync(this.StateType, this);
+        await base.OnInitializedAsync();
+    }
+
+    public async Task Enable()
+    {
+        if (this.enabled) return;
+
+        this.enabled = true;
+        this.StateHasChanged();
+
+        await Task.Delay(this.Delay);
+        Console.WriteLine("Enabled " + this.StateType);
+    }
+
+    public async Task Disable()
+    {
+        if (!this.enabled) return;
+
+        await Task.Delay(300);
+
+        this.enabled = false;
+        this.StateHasChanged();
+    }
+}

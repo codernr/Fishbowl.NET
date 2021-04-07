@@ -10,24 +10,23 @@
 
 <h1>Play</h1>
 
-@switch (this.State)
-{
-    case GameState.Connecting:
+<StateManager @ref="this.stateManager">
+    <State StateType="GameState.Connecting" Delay="@TimeSpan.FromSeconds(3)">
         <strong>Connecting...</strong>
-        break;
-    case GameState.WaitingForTeamCount:
+    </State>
+    <State StateType="GameState.WaitingForTeamCount">
         <TeamCount OnTeamCountSet="@this.SubmitTeamCount" />
-        break;
-    case GameState.WaitingForRoundTypes:
+    </State>
+    <State StateType="GameState.WaitingForRoundTypes">
         <RoundTypes OnRoundTypesSet="@this.SubmitRoundTypes" />
-        break;
-    case GameState.WaitingForPlayer:
+    </State>
+    <State StateType="GameState.WaitingForPlayer">
         <PlayerData OnPlayerDataSet="@this.SubmitPlayerData" />
-        break;
-    case GameState.WaitingForPlayers:
+    </State>
+    <State StateType="GameState.WaitingForPlayers">
         <p>Waiting for other players....</p>
-        break;
-    case GameState.PeriodPlay:
+    </State>
+    <State StateType="GameState.PeriodPlay">
         <PeriodPlay
             Round="@(this.Round!)"
             Period="@(this.Period!)"
@@ -35,19 +34,16 @@
             OnStarted="@this.StartPeriod"
             OnScoreAdded="@this.AddScore"
             OnPeriodFinished="@this.FinishPeriod" />
-        break;
-    case GameState.PeriodWatch:
+    </State>
+    <State StateType="GameState.PeriodWatch">
         <PeriodWatch
             Round="@(this.Round!)"
             Period="@(this.Period!)" />
-        break;
-    case GameState.GameFinished:
+    </State>
+    <State StateType="GameState.GameFinished">
         <GameFinished Game="@this.Game" />
-        break;
-    default:
-        <p>not implemented</p>
-        break;
-}
+    </State>
+</StateManager>
 
 @code
 {
@@ -62,6 +58,10 @@
         PeriodPlay,
         GameFinished
     }
+
+    private StateManager? stateManager;
+
+    private StateManager StateManager => this.stateManager ?? throw new InvalidOperationException();
 
     private GameState state = GameState.Connecting;
 
@@ -139,32 +139,27 @@
         await this.connection.StartAsync();
     }
 
-    public Task DefineTeamCount()
+    public async Task DefineTeamCount()
     {
-        Console.WriteLine("DefineTeamCount");
-        this.State = GameState.WaitingForTeamCount;
-        return Task.CompletedTask;
+        await this.StateManager.SetState(GameState.WaitingForTeamCount);
     }
     
     public Task DefineRoundTypes()
     {
         Console.WriteLine("DefineRoundTypes");
-        this.State = GameState.WaitingForRoundTypes;
-        return Task.CompletedTask;
+        return this.StateManager.SetState(GameState.WaitingForRoundTypes);
     }
 
     public Task DefinePlayer()
     {
         Console.WriteLine("DefinePlayer");
-        this.State = GameState.WaitingForPlayer;
-        return Task.CompletedTask;
+        return this.StateManager.SetState(GameState.WaitingForPlayer);
     }
 
     public Task ReceiveWaitForPlayers()
     {
         Console.WriteLine("ReceiveWaitForPlayers");
-        this.State = GameState.WaitingForPlayers;
-        return Task.CompletedTask;
+        return this.StateManager.SetState(GameState.WaitingForPlayers);
     }
 
     public Task ReceiveGameStarted(Game game)
@@ -187,9 +182,7 @@
             Console.WriteLine($"Team {teamScore.Key} scores: {teamScore.Value}");
         }
 
-        this.State = GameState.GameFinished;
-
-        return Task.CompletedTask;
+        return this.StateManager.SetState(GameState.GameFinished);
     }
 
     public Task ReceiveRoundStarted(Round round)
@@ -214,14 +207,13 @@
         if (period.Player.Id == this.Player.Id)
         {
             Console.WriteLine("Local player period");
-            this.State = GameState.PeriodPlay;
+            return this.StateManager.SetState(GameState.PeriodPlay);
         }
         else
         {
             Console.WriteLine("Remote player period");
-            this.State = GameState.PeriodWatch;
+            return this.StateManager.SetState(GameState.PeriodWatch);
         }
-        return Task.CompletedTask;
     }
 
     public Task ReceivePeriodStarted(Period period)

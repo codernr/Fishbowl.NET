@@ -1,0 +1,44 @@
+<CascadingValue Value="this">
+    @ChildContent
+</CascadingValue>
+
+@code
+{
+    [Parameter]
+    public RenderFragment ChildContent { get; set; } = default!;
+
+    private Dictionary<Pages.Play.GameState, State> states = new();
+
+    private Task transition = Task.CompletedTask;
+
+    private Pages.Play.GameState activeState;
+
+    public Task AddStateAsync(Pages.Play.GameState state, State item)
+    {
+        this.states.Add(state, item);
+        
+        if (state == this.activeState)
+        {
+            this.transition = this.transition
+                .ContinueWith(_ => this.states[this.activeState].Enable())
+                .Unwrap();
+        }
+
+        return this.transition;
+    }
+
+    public Task SetState(Pages.Play.GameState state)
+    {
+        this.transition = this.transition
+            .ContinueWith(_ => this.states[this.activeState].Disable())
+            .Unwrap()
+            .ContinueWith(_ =>
+            {
+                this.activeState = state;
+                return this.states[this.activeState].Enable();
+            })
+            .Unwrap();
+        
+        return this.transition;
+    }
+}
