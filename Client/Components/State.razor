@@ -1,6 +1,8 @@
 @if (this.enabled)
 {
-    @this.ChildContent;
+    <div class="container @this.ShowClass">
+        @this.ChildContent
+    </div>
 }
 
 @code
@@ -19,6 +21,12 @@
 
     private bool enabled = false;
 
+    private bool show = false;
+
+    private string ShowClass => this.show ? "show" : string.Empty;
+
+    private static readonly TimeSpan TransitionDuration = TimeSpan.FromMilliseconds(300);
+
     protected override async Task OnInitializedAsync()
     {
         Console.WriteLine("Add " + this.StateType);
@@ -33,15 +41,24 @@
         this.enabled = true;
         this.StateHasChanged();
 
+        await Task.Delay(100);
+
+        this.show = true;
+        this.StateHasChanged();
+
+        await Task.Delay(TransitionDuration);
+
         await Task.Delay(this.Delay);
-        Console.WriteLine("Enabled " + this.StateType);
     }
 
     public async Task Disable()
     {
         if (!this.enabled) return;
 
-        await Task.Delay(300);
+        this.show = false;
+        this.StateHasChanged();
+
+        await Task.Delay(TransitionDuration);
 
         this.enabled = false;
         this.StateHasChanged();
