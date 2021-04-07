@@ -7,13 +7,13 @@
     [Parameter]
     public RenderFragment ChildContent { get; set; } = default!;
 
-    private Dictionary<Pages.Play.GameState, State> states = new();
+    private Dictionary<GameState, State> states = new();
 
     private Task transition = Task.CompletedTask;
 
-    private Pages.Play.GameState activeState;
+    private GameState activeState;
 
-    public Task AddStateAsync(Pages.Play.GameState state, State item)
+    public Task AddStateAsync(GameState state, State item)
     {
         this.states.Add(state, item);
         
@@ -27,7 +27,7 @@
         return this.transition;
     }
 
-    public Task SetState(Pages.Play.GameState state)
+    public Task SetState(GameState state)
     {
         this.transition = this.transition
             .ContinueWith(_ => this.states[this.activeState].Disable())

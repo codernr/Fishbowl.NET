@@ -47,18 +47,6 @@
 
 @code
 {
-    public enum GameState
-    {
-        Connecting,
-        WaitingForTeamCount,
-        WaitingForRoundTypes,
-        WaitingForPlayer,
-        WaitingForPlayers,
-        PeriodWatch,
-        PeriodPlay,
-        GameFinished
-    }
-
     private StateManager? stateManager;
 
     private StateManager StateManager => this.stateManager ?? throw new InvalidOperationException();
