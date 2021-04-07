@@ -11,7 +11,7 @@
 <h1>Play</h1>
 
 <StateManager @ref="this.stateManager">
-    <State StateType="GameState.Connecting" Delay="@TimeSpan.FromSeconds(3)">
+    <State StateType="GameState.Connecting">
         <strong>Connecting...</strong>
     </State>
     <State StateType="GameState.WaitingForTeamCount">
@@ -25,6 +25,9 @@
     </State>
     <State StateType="GameState.WaitingForPlayers">
         <p>Waiting for other players....</p>
+    </State>
+    <State StateType="GameState.GameStarted" Delay="@TimeSpan.FromSeconds(3)">
+        <GameStarted Team="@this.Team" />
     </State>
     <State StateType="GameState.PeriodPlay">
         <PeriodPlay
@@ -158,7 +161,7 @@
 
         Console.WriteLine($"My team id: {this.Team.Id}");
 
-        return Task.CompletedTask;
+        return this.StateManager.SetState(GameState.GameStarted);
     }
 
     public Task ReceiveGameFinished(Game game)
