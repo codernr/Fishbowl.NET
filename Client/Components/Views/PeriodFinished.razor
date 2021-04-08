@@ -1,5 +1,3 @@
-@using Net.Shared.Data
-
 <h2>Period finished</h2>
 
 <p>@this.Period.Player.Name got <strong>@this.Period.Scores.Count</strong></p>
@@ -11,9 +9,3 @@
         <li>@score.Word.Value</li>
     }
 </ul>
-
-@code
-{
-    [Parameter]
-    public Period Period { get; set; } = default!;
-}

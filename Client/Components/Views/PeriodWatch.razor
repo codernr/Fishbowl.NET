@@ -1,18 +1,5 @@
-@using Net.Shared.Data
-
 <h2>Round: @this.Round.Type</h2>
 
 <p>@this.Period.Player.Name started at @this.Period.StartedAt with length @this.Period.Length()</p>
 
 <Timer Start="@StartedAt" Length="@this.Period.Length()" />
-
-@code
-{
-    [Parameter]
-    public Round Round { get; set; } = default!;
-
-    [Parameter]
-    public Period Period { get; set; } = default!;
-
-    private DateTimeOffset StartedAt => this.Period.StartedAt ?? throw new InvalidOperationException();
-}

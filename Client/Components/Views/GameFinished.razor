@@ -1,5 +1,3 @@
-@using Net.Shared.Data
-
 <h2>Results</h2>
 
 @foreach (var teamResult in this.Game.GetTeamScores())
@@ -7,10 +5,4 @@
     <ul>
         <li>Team @teamResult.Key: @teamResult.Value</li>
     </ul>
-}
-
-@code
-{
-    [Parameter]
-    public Game Game { get; set; } = default!;
 }

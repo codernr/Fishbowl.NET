@@ -1,4 +1,3 @@
-@using Net.Shared.Data
 <h2>Game started</h2>
 
 <p>Your team:</p>
@@ -8,9 +7,3 @@
         <li>@player.Name</li>
     }
 </ul>
-
-@code
-{
-    [Parameter]
-    public Team Team { get; set; } = default!;
-}

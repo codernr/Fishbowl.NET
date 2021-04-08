@@ -1,5 +1,3 @@
-@using Net.Shared.Data
-
 <h2>Round: @this.Round.Type</h2>
 
 
@@ -18,33 +16,4 @@
     <div>
         <button type="button" @onclick="@(e => this.OnPeriodFinished.InvokeAsync(DateTimeOffset.UtcNow))">Pass</button>
     </div>   
-}
-
-
-@code
-{
-    [Parameter]
-    public Round Round { get; set; } = default!;
-
-    [Parameter]
-    public Period Period { get; set; } = default!;
-
-    [Parameter]
-    public Word? Word { get; set; }
-
-    [Parameter]
-    public EventCallback<Score> OnScoreAdded { get; set; } = default!;
-
-    [Parameter]
-    public EventCallback<DateTimeOffset> OnPeriodFinished { get; set; } = default!;
-
-    private DateTimeOffset StartedAt => this.Period.StartedAt ?? throw new InvalidOperationException();
-
-    private bool expired;
-
-    private Task ScoreAdded(EventArgs e)
-    {
-        var score = new Score(this.Word!, DateTimeOffset.UtcNow);
-        return this.OnScoreAdded.InvokeAsync(score);
-    }
 }

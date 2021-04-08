@@ -1,5 +1,3 @@
-@using Fishbowl.Net.Shared.Data
-
 <h2>Set player data</h2>
 
 <form @onsubmit="this.SubmitAsync" @onsubmit:preventDefault>
@@ -16,19 +14,3 @@
     }
     <button type="submit">Set</button>
 </form>
-
-@code
-{
-    [Parameter]
-    public EventCallback<Player> OnPlayerDataSet { get; set; } = default!;
-
-    private string playerName = string.Empty;
-
-    private string[] words = new string[2];
-
-    private Task SubmitAsync(EventArgs e) =>
-        this.OnPlayerDataSet.InvokeAsync(new Player(
-            Guid.NewGuid(),
-            this.playerName,
-            this.words.Select(word => new Word(Guid.NewGuid(), word))));
-}

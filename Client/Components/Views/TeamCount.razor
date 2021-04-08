@@ -6,11 +6,3 @@
     </div>
     <button type="submit">Set</button>
 </form>
-
-@code
-{
-    [Parameter]
-    public EventCallback<int> OnTeamCountSet { get; set; } = default!;
-
-    private int teamCount = 2;
-}
