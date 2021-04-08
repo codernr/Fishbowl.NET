@@ -42,13 +42,7 @@ namespace Fishbowl.Net.Client.Pages
             set => this.period = value;
         }
 
-        private Word? word;
-
-        private Word? Word
-        { 
-            get => this.word ?? throw new InvalidOperationException();
-            set => this.word = value;
-        }
+        private Word? Word { get; set; }
 
         private Game? game;
 
