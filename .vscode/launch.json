@@ -18,10 +18,16 @@
             }
         },
         {
-            "name": "Launch and Debug Standalone Blazor WebAssembly App",
+            "name": "Blazor debug",
             "type": "blazorwasm",
+            "browser": "edge",
+            "hosted": true,
+            "program": "${workspaceFolder}/Server/bin/Debug/net5.0/Fishbowl.Net.Server.dll",
             "request": "launch",
-            "cwd": "${workspaceFolder}/Server"
+            "cwd": "${workspaceFolder}/Server",
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
         }
     ]
 }
