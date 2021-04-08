@@ -14,6 +14,7 @@ namespace Fishbowl.Net.Client.Shared
         PeriodWatch,
         PeriodPlay,
         PeriodFinished,
+        RoundFinished,
         GameFinished
     }
 }

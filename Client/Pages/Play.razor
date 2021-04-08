@@ -27,7 +27,7 @@
     <State StateType="GameState.WaitingForPlayers">
         <WaitingForPlayers />
     </State>
-    <State StateType="GameState.GameStarted" Delay="@TimeSpan.FromSeconds(3)">
+    <State StateType="GameState.GameStarted" Delay="@TimeSpan.FromSeconds(500)">
         <GameStarted Team="@this.Team" />
     </State>
     <State StateType="GameState.RoundStarted" Delay="@TimeSpan.FromMilliseconds(500)">
@@ -56,8 +56,11 @@
             Round="@this.Round"
             Period="@this.Period" />
     </State>
-    <State StateType="GameState.PeriodFinished">
+    <State StateType="GameState.PeriodFinished" Delay="@TimeSpan.FromMilliseconds(500)">
         <PeriodFinished Period="@this.Period" />
+    </State>
+    <State StateType="GameState.RoundFinished" Delay="@TimeSpan.FromMilliseconds(500)">
+        <RoundFinished Round="@this.Round" />
     </State>
     <State StateType="GameState.GameFinished">
         <GameFinished Game="@this.Game" />
@@ -196,13 +199,16 @@
     {
         Console.WriteLine($"Round started: {round.Type}");
         this.Round = round;
-        return Task.CompletedTask;
+
+        return this.StateManager.SetState(GameState.RoundStarted);
     }
 
     public Task ReceiveRoundFinished(Round round)
     {
         Console.WriteLine($"Round finished: {round.Type}");
-        return Task.CompletedTask;
+        this.Round = round;
+
+        return this.StateManager.SetState(GameState.RoundFinished);
     }
 
     public Task ReceivePeriodSetup(Period period)
@@ -256,7 +262,8 @@
 
     private Task NextWord(DateTimeOffset timestamp) => this.connection.SendAsync("NextWord", timestamp);
 
-    private async Task AddScore(Score score){
+    private async Task AddScore(Score score)
+    {
         await this.connection.SendAsync("AddScore", score);
         await this.NextWord(score.Timestamp);
     }

@@ -1,0 +1,17 @@
+@using Net.Shared.Data
+<h2>@this.Round.Type finished</h2>
+
+<p>Scores</p>
+
+<ul>
+    @foreach (var period in this.Round.Periods)
+    {
+        <li><strong>@period.Player.Name</strong> - @period.Scores.Count</li>
+    }
+</ul>
+
+@code
+{
+    [Parameter]
+    public Round Round { get; set; } = default!;
+}
