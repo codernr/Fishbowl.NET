@@ -56,6 +56,9 @@
             Round="@this.Round"
             Period="@this.Period" />
     </State>
+    <State StateType="GameState.PeriodFinished">
+        <PeriodFinished Period="@this.Period" />
+    </State>
     <State StateType="GameState.GameFinished">
         <GameFinished Game="@this.Game" />
     </State>
@@ -231,7 +234,7 @@
     public Task ReceivePeriodFinished(Period period)
     {
         Console.WriteLine($"Period finished at: {period.FinishedAt}; scores ({period.Player.Name}): {period.Scores.Count}");
-        return Task.CompletedTask;
+        return this.StateManager.SetState(GameState.PeriodFinished);
     }
 
     public Task ReceiveWordSetup(Word word)
