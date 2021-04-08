@@ -2,29 +2,24 @@
 
 <h2>Round: @this.Round.Type</h2>
 
-@if (this.Period.StartedAt is null)
-{
-    <button type="button" @onclick="@(e => this.OnStarted.InvokeAsync(DateTimeOffset.UtcNow))">Start</button>
-}
-else
-{
-    <Timer Start="@this.Period.StartedAt.Value" Length="@this.Period.Length()" OnExpired="@(() => this.expired = true)" />
 
-    @if (this.Word is not null)
-    {
-        <p>@this.Word!.Value</p>
-        <div>
-            <button type="button" @onclick="this.ScoreAdded">Guessed</button>
-        </div>
-    }
+<Timer Start="@this.StartedAt" Length="@this.Period.Length()" OnExpired="@(() => this.expired = true)" />
 
-    @if (this.expired)
-    {
-        <div>
-            <button type="button" @onclick="@(e => this.OnPeriodFinished.InvokeAsync(DateTimeOffset.UtcNow))">Pass</button>
-        </div>   
-    }
+@if (this.Word is not null)
+{
+    <p>@this.Word!.Value</p>
+    <div>
+        <button type="button" @onclick="this.ScoreAdded">Guessed</button>
+    </div>
 }
+
+@if (this.expired)
+{
+    <div>
+        <button type="button" @onclick="@(e => this.OnPeriodFinished.InvokeAsync(DateTimeOffset.UtcNow))">Pass</button>
+    </div>   
+}
+
 
 @code
 {
@@ -38,13 +33,12 @@ else
     public Word? Word { get; set; }
 
     [Parameter]
-    public EventCallback<DateTimeOffset> OnStarted{ get; set; } = default!;
-
-    [Parameter]
     public EventCallback<Score> OnScoreAdded { get; set; } = default!;
 
     [Parameter]
     public EventCallback<DateTimeOffset> OnPeriodFinished { get; set; } = default!;
+
+    private DateTimeOffset StartedAt => this.Period.StartedAt ?? throw new InvalidOperationException();
 
     private bool expired;
 

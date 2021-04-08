@@ -33,19 +33,23 @@
     <State StateType="GameState.RoundStarted" Delay="@TimeSpan.FromMilliseconds(500)">
         <RoundStarted Round="@this.Round" />
     </State>
+    <State StateType="GameState.PeriodSetupPlay">
+        <PeriodSetupPlay
+            Round="@this.Round"
+            OnStarted="@this.StartPeriod" />
+    </State>
     <State StateType="GameState.PeriodPlay">
         <PeriodPlay
-            Round="@(this.Round!)"
-            Period="@(this.Period!)"
+            Round="@this.Round"
+            Period="@this.Period"
             Word="@this.Word"
-            OnStarted="@this.StartPeriod"
             OnScoreAdded="@this.AddScore"
             OnPeriodFinished="@this.FinishPeriod" />
     </State>
     <State StateType="GameState.PeriodWatch">
         <PeriodWatch
-            Round="@(this.Round!)"
-            Period="@(this.Period!)" />
+            Round="@this.Round"
+            Period="@this.Period" />
     </State>
     <State StateType="GameState.GameFinished">
         <GameFinished Game="@this.Game" />

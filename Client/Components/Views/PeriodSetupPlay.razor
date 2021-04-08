@@ -1,0 +1,17 @@
+@using Net.Shared.Data
+
+<h2>Round: @this.Round.Type</h2>
+
+<p>Waiting for start...</p>
+
+<button type="button" @onclick="@(e => this.OnStarted.InvokeAsync(DateTimeOffset.UtcNow))">Start</button>
+
+
+@code
+{
+    [Parameter]
+    public Round Round { get; set; } = default!;
+
+    [Parameter]
+    public EventCallback<DateTimeOffset> OnStarted{ get; set; } = default!;
+}
