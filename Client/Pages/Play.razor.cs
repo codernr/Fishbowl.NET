@@ -13,8 +13,6 @@ namespace Fishbowl.Net.Client.Pages
 {
     public partial class Play : IGameClient, IAsyncDisposable
     {
-        private readonly NavigationManager navigationManager;
-
         private StateManager? stateManager;
 
         private StateManager StateManager => this.stateManager ?? throw new InvalidOperationException();
@@ -60,12 +58,10 @@ namespace Fishbowl.Net.Client.Pages
             set => this.game = value;
         }
 
-        public Play(NavigationManager navigationManager) => this.navigationManager = navigationManager;
-
         protected override async Task OnInitializedAsync()
         {
             this.connection = new HubConnectionBuilder()
-                .WithUrl(this.navigationManager.ToAbsoluteUri("/game"))
+                .WithUrl(this.NavigationManager.ToAbsoluteUri("/game"))
                 .Build();
 
             this.connection.On("DefineTeamCount", this.DefineTeamCount);
