@@ -22,7 +22,7 @@
     <State StateType="GameState.WaitingForPlayers">
         <WaitingForPlayers />
     </State>
-    <State StateType="GameState.GameStarted" Delay="@TimeSpan.FromSeconds(500)">
+    <State StateType="GameState.GameStarted" Delay="@TimeSpan.FromMilliseconds(500)">
         <GameStarted Team="@this.Team" />
     </State>
     <State StateType="GameState.RoundStarted" Delay="@TimeSpan.FromMilliseconds(500)">
