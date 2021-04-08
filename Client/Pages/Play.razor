@@ -74,16 +74,6 @@
     private StateManager StateManager => this.stateManager ?? throw new InvalidOperationException();
 
     private GameState state = GameState.Connecting;
-
-    private GameState State
-    { 
-        get => this.state;
-        set
-        {
-            this.state = value;
-            this.StateHasChanged();
-        }
-    }
     
     private HubConnection connection = default!;
 
