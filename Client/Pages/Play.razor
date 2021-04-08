@@ -30,6 +30,9 @@
     <State StateType="GameState.GameStarted" Delay="@TimeSpan.FromSeconds(3)">
         <GameStarted Team="@this.Team" />
     </State>
+    <State StateType="GameState.RoundStarted" Delay="@TimeSpan.FromMilliseconds(500)">
+        <RoundStarted Round="@this.Round" />
+    </State>
     <State StateType="GameState.PeriodPlay">
         <PeriodPlay
             Round="@(this.Round!)"

@@ -8,6 +8,7 @@ namespace Fishbowl.Net.Client.Shared
         WaitingForPlayer,
         WaitingForPlayers,
         GameStarted,
+        RoundStarted,
         PeriodWatch,
         PeriodPlay,
         GameFinished
