@@ -1,26 +1,18 @@
 @using Net.Shared.Data
 
-@if (this.Round is not null && this.Period is not null)
-{
-    <h2>Round: @this.Round.Type</h2>
+<h2>Round: @this.Round.Type</h2>
 
-    if (this.Period.StartedAt is null)
-    {
-        <p>Waiting for player @this.Period.Player.Name to start... with length @this.Period.Length()</p>
-    }
-    else
-    {
-        <p>@this.Period.Player.Name started at @this.Period.StartedAt with length @this.Period.Length()</p>
+<p>@this.Period.Player.Name started at @this.Period.StartedAt with length @this.Period.Length()</p>
 
-        <Timer Start="@this.Period.StartedAt.Value" Length="@this.Period.Length()" />
-    }
-}
+<Timer Start="@StartedAt" Length="@this.Period.Length()" />
 
 @code
 {
     [Parameter]
-    public Round? Round { get; set; }
+    public Round Round { get; set; } = default!;
 
     [Parameter]
-    public Period? Period { get; set; }
+    public Period Period { get; set; } = default!;
+
+    private DateTimeOffset StartedAt => this.Period.StartedAt ?? throw new InvalidOperationException();
 }

@@ -38,6 +38,11 @@
             Round="@this.Round"
             OnStarted="@this.StartPeriod" />
     </State>
+    <State StateType="GameState.PeriodSetupWatch">
+        <PeriodSetupWatch
+            Round="@this.Round"
+            Period="@this.Period" />
+    </State>
     <State StateType="GameState.PeriodPlay">
         <PeriodPlay
             Round="@this.Round"
@@ -203,15 +208,15 @@
         Console.WriteLine($"Period length: {period.Length()}");
         this.Period = period;
 
-        if (period.Player.Id == this.Player.Id)
+        if (period.Player == this.Player)
         {
             Console.WriteLine("Local player period");
-            return this.StateManager.SetState(GameState.PeriodPlay);
+            return this.StateManager.SetState(GameState.PeriodSetupPlay);
         }
         else
         {
             Console.WriteLine("Remote player period");
-            return this.StateManager.SetState(GameState.PeriodWatch);
+            return this.StateManager.SetState(GameState.PeriodSetupWatch);
         }
     }
 
@@ -219,8 +224,8 @@
     {
         Console.WriteLine("Period started at: " + period);
         this.Period = period;
-        this.StateHasChanged();
-        return Task.CompletedTask;
+        return this.StateManager.SetState(
+            period.Player == this.Player ? GameState.PeriodPlay : GameState.PeriodWatch);
     }
 
     public Task ReceivePeriodFinished(Period period)

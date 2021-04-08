@@ -1,0 +1,13 @@
+@using Net.Shared.Data
+<h2>Round: @this.Round.Type</h2>
+
+<p>Waiting for player @this.Period.Player.Name to start... with length @this.Period.Length()</p>
+
+@code
+{
+    [Parameter]
+    public Round Round { get; set; } = default!;
+
+    [Parameter]
+    public Period Period { get; set; } = default!;
+}
