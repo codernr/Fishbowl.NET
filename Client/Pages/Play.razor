@@ -13,7 +13,7 @@
 
 <StateManager @ref="this.stateManager">
     <State StateType="GameState.Connecting">
-        <strong>Connecting...</strong>
+        <Connecting />
     </State>
     <State StateType="GameState.WaitingForTeamCount">
         <TeamCount OnTeamCountSet="@this.SubmitTeamCount" />
@@ -25,7 +25,7 @@
         <PlayerData OnPlayerDataSet="@this.SubmitPlayerData" />
     </State>
     <State StateType="GameState.WaitingForPlayers">
-        <p>Waiting for other players....</p>
+        <WaitingForPlayers />
     </State>
     <State StateType="GameState.GameStarted" Delay="@TimeSpan.FromSeconds(3)">
         <GameStarted Team="@this.Team" />
