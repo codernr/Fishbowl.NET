@@ -6,7 +6,6 @@ using Fishbowl.Net.Client.Components;
 using Fishbowl.Net.Client.Services;
 using Fishbowl.Net.Client.Shared;
 using Fishbowl.Net.Shared.Data;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 
 namespace Fishbowl.Net.Client.Pages
@@ -28,18 +27,35 @@ namespace Fishbowl.Net.Client.Pages
         private Team Team => this.team ?? throw new InvalidOperationException();
 
         private Round? round;
+
         private Round Round
         { 
             get => this.round ?? throw new InvalidOperationException();
             set => this.round = value;
         }
 
+        private Round? previousRound;
+        
+        private Round PreviousRound
+        { 
+            get => this.previousRound ?? throw new InvalidOperationException();
+            set => this.previousRound = value;
+        }
+
         private Period? period;
 
-        private Period? Period
+        private Period Period
         {
             get => this.period ?? throw new InvalidOperationException();
             set => this.period = value;
+        }
+
+        private Period? previousPeriod;
+
+        private Period PreviousPeriod
+        {
+            get => this.previousPeriod ?? throw new InvalidOperationException();
+            set => this.previousPeriod = value;
         }
 
         private Word? Word { get; set; }
@@ -166,6 +182,7 @@ namespace Fishbowl.Net.Client.Pages
         public Task ReceivePeriodFinished(Period period)
         {
             Console.WriteLine($"Period finished at: {period.FinishedAt}; scores ({period.Player.Name}): {period.Scores.Count}");
+            this.PreviousPeriod = period;
             return this.StateManager.SetState(GameState.PeriodFinished);
         }
 

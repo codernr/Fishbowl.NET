@@ -52,10 +52,10 @@
             Period="@this.Period" />
     </State>
     <State StateType="GameState.PeriodFinished" Delay="@TimeSpan.FromMilliseconds(500)">
-        <PeriodFinished Period="@this.Period" />
+        <PeriodFinished Period="@this.PreviousPeriod" />
     </State>
     <State StateType="GameState.RoundFinished" Delay="@TimeSpan.FromMilliseconds(500)">
-        <RoundFinished Round="@this.Round" />
+        <RoundFinished Round="@this.PreviousRound" />
     </State>
     <State StateType="GameState.GameFinished">
         <GameFinished Game="@this.Game" />
