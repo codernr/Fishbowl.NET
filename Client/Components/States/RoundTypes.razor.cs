@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Components;
 
-namespace Fishbowl.Net.Client.Components.Views
+namespace Fishbowl.Net.Client.Components.States
 {
     public partial class RoundTypes
     {

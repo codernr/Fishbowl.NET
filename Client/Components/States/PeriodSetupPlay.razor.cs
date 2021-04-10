@@ -2,7 +2,7 @@ using System;
 using Fishbowl.Net.Shared.Data;
 using Microsoft.AspNetCore.Components;
 
-namespace Fishbowl.Net.Client.Components.Views
+namespace Fishbowl.Net.Client.Components.States
 {
     public partial class PeriodSetupPlay
     {

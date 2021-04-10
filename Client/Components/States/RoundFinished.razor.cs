@@ -1,8 +1,8 @@
 using Fishbowl.Net.Shared.Data;
 
-namespace Fishbowl.Net.Client.Components.Views
+namespace Fishbowl.Net.Client.Components.States
 {
-    public partial class RoundStarted
+    public partial class RoundFinished
     {
         public Round Round { get; set; } = default!;
     }
