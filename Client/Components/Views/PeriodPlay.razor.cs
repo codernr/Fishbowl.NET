@@ -31,6 +31,16 @@ namespace Fishbowl.Net.Client.Components.Views
 
         private DateTimeOffset StartedAt => this.Period.StartedAt ?? throw new InvalidOperationException();
 
+        private bool Expired
+        {
+            get => this.expired;
+            set
+            {
+                this.expired = value;
+                this.Update();
+            }
+        }
+        
         private bool expired;
 
         private Task ScoreAdded(EventArgs e)
