@@ -18,6 +18,8 @@ namespace Fishbowl.Net.Client.Pages
 
         private HubConnection connection = default!;
 
+        private string playerName = string.Empty;
+
         private Player? player;
 
         private Player Player => this.player ?? throw new InvalidOperationException();
@@ -105,7 +107,7 @@ namespace Fishbowl.Net.Client.Pages
         public Task DefinePlayer()
         {
             Console.WriteLine("DefinePlayer");
-            return this.StateManager.SetStateAsync<PlayerData>();
+            return this.StateManager.SetStateAsync<PlayerName>();
         }
 
         public Task ReceiveWaitForPlayers()
@@ -241,9 +243,18 @@ namespace Fishbowl.Net.Client.Pages
         private Task SubmitRoundTypes(IEnumerable<string> roundTypes) =>
             this.connection.SendAsync("SetRoundTypes", roundTypes);
 
-        private Task SubmitPlayerData(Player player)
+        private Task SetPlayerNameAsync(string name)
         {
-            this.player = player;
+            this.playerName = name;
+            return this.StateManager.SetStateAsync<PlayerWords>();
+        }
+
+        private Task SubmitPlayerData(string[] words)
+        {
+            this.player = new Player(
+                Guid.NewGuid(),
+                this.playerName,
+                words.Select(word => new Word(Guid.NewGuid(), word)));
             return this.connection.SendAsync("AddPlayer", player);
         }
 
