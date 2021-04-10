@@ -11,14 +11,24 @@ namespace Fishbowl.Net.Client.Components.States
         [Parameter]
         public EventCallback<Player> OnPlayerDataSet { get; set; } = default!;
 
+        private StateManager? innerStateManager;
+
+        private StateManager InnerStateManager => this.innerStateManager ?? throw new InvalidOperationException();
+
         private string playerName = string.Empty;
 
-        private string[] words = new string[2];
+        private Task SetPlayerNameAsync(string name)
+        {
+            this.playerName = name;
+            return this.InnerStateManager.SetStateAsync<PlayerWords>();
+        }
 
-        private Task SubmitAsync(EventArgs e) =>
+        private Task SetPlayerWordsAsync(string[] words) => this.SubmitAsync(this.playerName, words);
+
+        private Task SubmitAsync(string name, string[] words) =>
             this.OnPlayerDataSet.InvokeAsync(new Player(
                 Guid.NewGuid(),
-                this.playerName,
-                this.words.Select(word => new Word(Guid.NewGuid(), word))));
+                name,
+                words.Select(word => new Word(Guid.NewGuid(), word))));
     }
 }

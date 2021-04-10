@@ -1,0 +1,22 @@
+@inherits State
+
+@code
+{
+    protected override RenderFragment Content =>
+        @<div>
+            <h2>Set words</h2>
+
+            <form @onsubmit="e => this.OnPlayerWordsSet.InvokeAsync(this.words)" @onsubmit:preventDefault>
+
+                @for (int i = 0; i < this.words.Length; i++)
+                {
+                    var id = i;
+                    <div>
+                        <label for="word-@id">Word @id</label><input type="text" @bind="this.words[id]" id="word-@id">
+                    </div>
+                }
+            
+                <button type="submit">Set</button>
+            </form>
+        </div>;
+}

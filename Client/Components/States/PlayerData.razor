@@ -3,23 +3,8 @@
 @code
 {
     protected override RenderFragment Content =>
-        @<div>
-            <h2>Set player data</h2>
-
-            <form @onsubmit="this.SubmitAsync" @onsubmit:preventDefault>
-                <div>
-                    <input type="text" @bind="this.playerName" minlength="3" required>
-                </div>
-
-            @for (int i = 0; i < this.words.Length; i++)
-            {
-                var id = i;
-                <div>
-                    <label for="word-@id">Word @id</label><input type="text" @bind="this.words[id]" id="word-@id">
-                </div>
-            }
-            
-                <button type="submit">Set</button>
-            </form>
-        </div>;
+        @<StateManager @ref="this.innerStateManager">
+            <PlayerName Show="true" OnPlayerNameSet="this.SetPlayerNameAsync" />
+            <PlayerWords OnPlayerWordsSet="this.SetPlayerWordsAsync" />
+        </StateManager>;
 }

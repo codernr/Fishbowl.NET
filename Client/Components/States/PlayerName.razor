@@ -1,0 +1,17 @@
+@inherits State
+
+@code
+{
+    protected override RenderFragment Content =>
+        @<div>
+            <h2>Set player name</h2>
+
+            <form @onsubmit="e => this.OnPlayerNameSet.InvokeAsync(this.playerName)" @onsubmit:preventDefault>
+                <div>
+                    <input type="text" @bind="this.playerName" minlength="3" required>
+                </div>
+            
+                <button type="submit">Set</button>
+            </form>
+        </div>;
+}

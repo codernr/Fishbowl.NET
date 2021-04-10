@@ -12,21 +12,24 @@ namespace Fishbowl.Net.Client.Components
         [Parameter]
         public TimeSpan Delay { get; set; }
 
+        [Parameter]
+        public bool Show { get; set; } = false;
+
         public event Action? Updated;
 
         protected virtual RenderFragment Content => _ => {};
 
         private static readonly TimeSpan TransitionDuration = TimeSpan.FromMilliseconds(300);
 
-        private bool show = false;
-
-        private string ShowClass => this.show ? "show" : string.Empty;
+        private string ShowClass => this.Show ? "show" : string.Empty;
 
         public virtual async Task EnableAsync()
         {
+            if (this.Show) return;
+            
             await Task.Delay(100);
 
-            this.show = true;
+            this.Show = true;
             this.Update();
 
             await Task.Delay(TransitionDuration);
@@ -36,7 +39,7 @@ namespace Fishbowl.Net.Client.Components
 
         public virtual async Task DisableAsync()
         {
-            this.show = false;
+            this.Show = false;
             this.Update();
 
             await Task.Delay(TransitionDuration);
