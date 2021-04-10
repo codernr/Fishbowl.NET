@@ -6,7 +6,7 @@
         @<div>
             <h2>Round: @this.Round.Type</h2>
 
-            <Timer Start="@this.StartedAt" Length="@this.Period.Length()" OnExpired="@(() => this.expired = true)" />
+            <Timer Start="this.StartedAt" Length="this.Period.Length()" OnExpired="() => this.expired = true" />
 
             @if (this.Word is not null)
             {
@@ -19,7 +19,7 @@
             @if (this.expired)
             {
                 <div>
-                    <button type="button" @onclick="@(e => this.OnPeriodFinished.InvokeAsync(DateTimeOffset.UtcNow))">Pass</button>
+                    <button type="button" @onclick="e => this.OnPeriodFinished.InvokeAsync(DateTimeOffset.UtcNow)">Pass</button>
                 </div>
             }
         </div>;   

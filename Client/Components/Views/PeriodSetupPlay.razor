@@ -8,6 +8,6 @@
 
             <p>Waiting for start...</p>
 
-            <button type="button" @onclick="@(e => this.OnStarted.InvokeAsync(DateTimeOffset.UtcNow))">Start</button>
+            <button type="button" @onclick="e => this.OnStarted.InvokeAsync(DateTimeOffset.UtcNow)">Start</button>
         </div>;
 }
