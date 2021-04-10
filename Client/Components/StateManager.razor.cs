@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Fishbowl.Net.Client.Shared;
 using Microsoft.AspNetCore.Components;
 
 namespace Fishbowl.Net.Client.Components
@@ -27,9 +26,10 @@ namespace Fishbowl.Net.Client.Components
             }
         }
 
-        public Task AddAsync<TState>(TState state) where TState : State
+        public Task AddAsync(State state)
         {
-            this.states.Add(typeof(TState), state);
+            this.states.Add(state.GetType(), state);
+            state.Updated += this.StateHasChanged;
 
             if (this.states.Count == 1)
             {
