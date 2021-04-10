@@ -27,7 +27,7 @@ namespace Fishbowl.Net.Client.Components
             await Task.Delay(100);
 
             this.show = true;
-            this.Updated?.Invoke();
+            this.Update();
 
             await Task.Delay(TransitionDuration);
 
@@ -37,10 +37,12 @@ namespace Fishbowl.Net.Client.Components
         public virtual async Task DisableAsync()
         {
             this.show = false;
-            this.Updated?.Invoke();
+            this.Update();
 
             await Task.Delay(TransitionDuration);
         }
+
+        protected void Update() => this.Updated?.Invoke();
 
         protected override async Task OnInitializedAsync()
         {

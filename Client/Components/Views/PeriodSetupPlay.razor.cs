@@ -9,16 +9,6 @@ namespace Fishbowl.Net.Client.Components.Views
         [Parameter]
         public EventCallback<DateTimeOffset> OnStarted { get; set; } = default!;
         
-        public Round Round
-        {
-            get => this.round ?? throw new InvalidOperationException();
-            set
-            {
-                this.round = value;
-                this.StateHasChanged();
-            }
-        }
-
-        private Round? round;
+        public Round Round { get; set; } = default!;
     }
 }

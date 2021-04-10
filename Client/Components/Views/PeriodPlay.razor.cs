@@ -7,29 +7,15 @@ namespace Fishbowl.Net.Client.Components.Views
 {
     public partial class PeriodPlay
     {
-        public Round Round
-        {
-            get => this.round ?? throw new InvalidOperationException();
-            set
-            {
-                this.round = value;
-                this.StateHasChanged();
-            }
-        }
+        [Parameter]
+        public EventCallback<Score> OnScoreAdded { get; set; } = default!;
 
-        private Round? round;
+        [Parameter]
+        public EventCallback<DateTimeOffset> OnPeriodFinished { get; set; } = default!;
+        
+        public Round Round { get; set; } = default!;
 
-        public Period Period
-        {
-            get => this.period ?? throw new InvalidOperationException();
-            set
-            {
-                this.period = value;
-                this.StateHasChanged();
-            }
-        }
-
-        private Period? period;
+        public Period Period { get; set; } = default!;
 
         public Word? Word
         {
@@ -37,17 +23,11 @@ namespace Fishbowl.Net.Client.Components.Views
             set
             {
                 this.word = value;
-                this.StateHasChanged();
+                this.Update();
             }
         }
 
         private Word? word;
-
-        [Parameter]
-        public EventCallback<Score> OnScoreAdded { get; set; } = default!;
-
-        [Parameter]
-        public EventCallback<DateTimeOffset> OnPeriodFinished { get; set; } = default!;
 
         private DateTimeOffset StartedAt => this.Period.StartedAt ?? throw new InvalidOperationException();
 

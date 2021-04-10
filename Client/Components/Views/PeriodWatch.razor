@@ -8,6 +8,6 @@
 
             <p>@this.Period.Player.Name started at @this.Period.StartedAt with length @this.Period.Length()</p>
 
-            <Timer Start="@StartedAt" Length="@this.Period.Length()" />
+            <Timer Start="this.StartedAt" Length="this.Period.Length()" />
         </div>;
 }
