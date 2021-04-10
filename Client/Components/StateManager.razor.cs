@@ -11,8 +11,6 @@ namespace Fishbowl.Net.Client.Components
         [Parameter]
         public RenderFragment ChildContent { get; set; } = default!;
 
-        private static readonly TimeSpan TransitionDuration = TimeSpan.FromMilliseconds(300);
-
         private Dictionary<Type, State> states = new();
 
         private Task transition = Task.CompletedTask;
@@ -29,10 +27,6 @@ namespace Fishbowl.Net.Client.Components
             }
         }
 
-        private bool show = false;
-
-        private string ShowClass => this.show ? "show" : string.Empty;
-
         public Task AddAsync<TState>(TState state) where TState : State
         {
             this.states.Add(typeof(TState), state);
@@ -41,7 +35,7 @@ namespace Fishbowl.Net.Client.Components
             {
                 this.ActiveState = state;
                 this.transition = this.transition
-                    .ContinueWith(_ => this.ShowActiveStateAsync())
+                    .ContinueWith(_ => this.ActiveState.EnableAsync())
                     .Unwrap();
             }
 
@@ -70,31 +64,11 @@ namespace Fishbowl.Net.Client.Components
 
             if (newState == this.ActiveState) return;
 
-            await this.HideActiveStateAsync();
+            await this.ActiveState.DisableAsync();
 
             this.ActiveState = newState;
-
-            await this.ShowActiveStateAsync();
-
-            await Task.Delay(this.ActiveState.Delay);
-        }
-
-        private async Task HideActiveStateAsync()
-        {
-            this.show = false;
-            this.StateHasChanged();
-
-            await Task.Delay(TransitionDuration);
-        }
-
-        private async Task ShowActiveStateAsync()
-        {
-            await Task.Delay(100);
-
-            this.show = true;
-            this.StateHasChanged();
-
-            await Task.Delay(TransitionDuration);
+            
+            await this.ActiveState.EnableAsync();
         }
     }
 }

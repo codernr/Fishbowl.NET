@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace Fishbowl.Net.Client.Components
 {
-    public abstract class State : ComponentBase
+    public abstract partial class State : ComponentBase
     {
         [CascadingParameter]
         public StateManager StateManager { get; set; } = default!;
@@ -12,7 +12,33 @@ namespace Fishbowl.Net.Client.Components
         [Parameter]
         public TimeSpan Delay { get; set; }
 
-        public virtual RenderFragment Content => _ => {};
+        protected virtual RenderFragment Content => _ => {};
+
+        private static readonly TimeSpan TransitionDuration = TimeSpan.FromMilliseconds(300);
+
+        private bool show = false;
+
+        private string ShowClass => this.show ? "show" : string.Empty;
+
+        public virtual async Task EnableAsync()
+        {
+            await Task.Delay(100);
+
+            this.show = true;
+            this.StateHasChanged();
+
+            await Task.Delay(TransitionDuration);
+
+            await Task.Delay(this.Delay);
+        }
+
+        public virtual async Task DisableAsync()
+        {
+            this.show = false;
+            this.StateHasChanged();
+
+            await Task.Delay(TransitionDuration);
+        }
 
         protected override async Task OnInitializedAsync()
         {
