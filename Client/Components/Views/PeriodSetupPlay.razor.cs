@@ -7,9 +7,18 @@ namespace Fishbowl.Net.Client.Components.Views
     public partial class PeriodSetupPlay
     {
         [Parameter]
-        public Round Round { get; set; } = default!;
-
-        [Parameter]
         public EventCallback<DateTimeOffset> OnStarted { get; set; } = default!;
+        
+        public Round Round
+        {
+            get => this.round ?? throw new InvalidOperationException();
+            set
+            {
+                this.round = value;
+                this.StateHasChanged();
+            }
+        }
+
+        private Round? round;
     }
 }

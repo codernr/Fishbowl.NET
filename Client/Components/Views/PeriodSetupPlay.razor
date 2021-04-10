@@ -1,5 +1,13 @@
-<h2>Round: @this.Round.Type</h2>
+@inherits State
 
-<p>Waiting for start...</p>
+@code
+{
+    public override RenderFragment Content =>
+        @<div>
+            <h2>Round: @this.Round.Type</h2>
 
-<button type="button" @onclick="@(e => this.OnStarted.InvokeAsync(DateTimeOffset.UtcNow))">Start</button>
+            <p>Waiting for start...</p>
+
+            <button type="button" @onclick="@(e => this.OnStarted.InvokeAsync(DateTimeOffset.UtcNow))">Start</button>
+        </div>;
+}

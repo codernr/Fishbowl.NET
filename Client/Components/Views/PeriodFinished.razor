@@ -1,11 +1,19 @@
-<h2>Period finished</h2>
+@inherits State
 
-<p>@this.Period.Player.Name got <strong>@this.Period.Scores.Count</strong></p>
+@code
+{
+    public override RenderFragment Content =>
+        @<div>
+            <h2>Period finished</h2>
 
-<p>Words guessed:</p>
-<ul>
-    @foreach (var score in this.Period.Scores)
-    {
-        <li>@score.Word.Value</li>
-    }
-</ul>
+            <p>@this.Period.Player.Name got <strong>@this.Period.Scores.Count</strong></p>
+
+            <p>Words guessed:</p>
+            <ul>
+                @foreach (var score in this.Period.Scores)
+                {
+                    <li>@score.Word.Value</li>
+                }
+            </ul>
+        </div>;
+}

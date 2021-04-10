@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Fishbowl.Net.Client.Shared;
@@ -10,39 +11,90 @@ namespace Fishbowl.Net.Client.Components
         [Parameter]
         public RenderFragment ChildContent { get; set; } = default!;
 
-        private Dictionary<GameState, State> states = new();
+        private static readonly TimeSpan TransitionDuration = TimeSpan.FromMilliseconds(300);
+
+        private Dictionary<Type, State> states = new();
 
         private Task transition = Task.CompletedTask;
 
-        private GameState activeState;
+        private State? activeState;
 
-        public Task AddStateAsync(GameState state, State item)
+        private State ActiveState
         {
-            this.states.Add(state, item);
-
-            if (state == this.activeState)
+            get => this.activeState ?? throw new InvalidOperationException();
+            set
             {
+                this.activeState = value;
+                this.StateHasChanged();
+            }
+        }
+
+        private bool show = false;
+
+        private string ShowClass => this.show ? "show" : string.Empty;
+
+        public Task AddAsync<TState>(TState state) where TState : State
+        {
+            this.states.Add(typeof(TState), state);
+
+            if (this.states.Count == 1)
+            {
+                this.ActiveState = state;
                 this.transition = this.transition
-                    .ContinueWith(_ => this.states[this.activeState].Enable())
+                    .ContinueWith(_ => this.ShowActiveStateAsync())
                     .Unwrap();
             }
 
             return this.transition;
         }
 
-        public Task SetState(GameState state)
+        public void SetParameters<TState>(Action<TState> setParameters) where TState : State =>
+            setParameters(this.GetState<TState>());
+
+        public Task SetStateAsync<TState>(Action<TState>? setParameters = null) where TState : State
         {
+            if (setParameters is not null) this.SetParameters(setParameters);
+
             this.transition = this.transition
-                .ContinueWith(_ => this.states[this.activeState].Disable())
-                .Unwrap()
-                .ContinueWith(_ =>
-                {
-                    this.activeState = state;
-                    return this.states[this.activeState].Enable();
-                })
+                .ContinueWith(_ => this.TransitionAsync<TState>())
                 .Unwrap();
 
             return this.transition;
+        }
+
+        private TState GetState<TState>() where TState : State => (TState)this.states[typeof(TState)];
+
+        private async Task TransitionAsync<TState>() where TState : State
+        {
+            var newState = this.GetState<TState>();
+
+            if (newState == this.ActiveState) return;
+
+            await this.HideActiveStateAsync();
+
+            this.ActiveState = newState;
+
+            await this.ShowActiveStateAsync();
+
+            await Task.Delay(this.ActiveState.Delay);
+        }
+
+        private async Task HideActiveStateAsync()
+        {
+            this.show = false;
+            this.StateHasChanged();
+
+            await Task.Delay(TransitionDuration);
+        }
+
+        private async Task ShowActiveStateAsync()
+        {
+            await Task.Delay(100);
+
+            this.show = true;
+            this.StateHasChanged();
+
+            await Task.Delay(TransitionDuration);
         }
     }
 }

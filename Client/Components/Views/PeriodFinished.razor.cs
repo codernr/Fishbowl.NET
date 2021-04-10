@@ -1,11 +1,20 @@
+using System;
 using Fishbowl.Net.Shared.Data;
-using Microsoft.AspNetCore.Components;
 
 namespace Fishbowl.Net.Client.Components.Views
 {
     public partial class PeriodFinished
     {
-        [Parameter]
-        public Period Period { get; set; } = default!;
+        public Period Period
+        {
+            get => this.period ?? throw new InvalidOperationException();
+            set
+            {
+                this.period = value;
+                this.StateHasChanged();
+            }
+        }
+
+        private Period? period;
     }
 }

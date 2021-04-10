@@ -1,8 +1,16 @@
-<h2>Results</h2>
+@inherits State
 
-@foreach (var teamResult in this.Game.GetTeamScores())
+@code
 {
-    <ul>
-        <li>Team @teamResult.Key: @teamResult.Value</li>
-    </ul>
+    public override RenderFragment Content =>
+        @<div>
+            <h2>Results</h2>
+
+            <ul>
+            @foreach (var teamResult in this.Game.GetTeamScores())
+            {
+                <li>Team @teamResult.Key: @teamResult.Value</li>
+            }
+            </ul>
+        </div>;
 }

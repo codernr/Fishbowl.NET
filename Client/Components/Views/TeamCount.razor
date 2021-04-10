@@ -1,8 +1,16 @@
-<h2>Set team count</h2>
+@inherits State
 
-<form @onsubmit="@(e => this.OnTeamCountSet.InvokeAsync(this.teamCount))" @onsubmit:preventDefault>
-    <div>
-        <input type="number" @bind="this.teamCount">
-    </div>
-    <button type="submit">Set</button>
-</form>
+@code
+{
+    public override RenderFragment Content =>
+        @<div>
+            <h2>Set team count</h2>
+
+            <form @onsubmit="@(e => this.OnTeamCountSet.InvokeAsync(this.teamCount))" @onsubmit:preventDefault>
+                <div>
+                    <input type="number" @bind="this.teamCount">
+                </div>
+                <button type="submit">Set</button>
+            </form>
+        </div>;
+}

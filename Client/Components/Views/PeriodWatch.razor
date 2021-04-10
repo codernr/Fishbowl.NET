@@ -1,5 +1,13 @@
-<h2>Round: @this.Round.Type</h2>
+@inherits State
 
-<p>@this.Period.Player.Name started at @this.Period.StartedAt with length @this.Period.Length()</p>
+@code
+{
+    public override RenderFragment Content =>
+        @<div>
+            <h2>Round: @this.Round.Type</h2>
 
-<Timer Start="@StartedAt" Length="@this.Period.Length()" />
+            <p>@this.Period.Player.Name started at @this.Period.StartedAt with length @this.Period.Length()</p>
+
+            <Timer Start="@StartedAt" Length="@this.Period.Length()" />
+        </div>;
+}

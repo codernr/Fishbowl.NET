@@ -1,15 +1,33 @@
+using System;
 using Fishbowl.Net.Shared.Data;
-using Microsoft.AspNetCore.Components;
 
 namespace Fishbowl.Net.Client.Components.Views
 {
     public partial class PeriodSetupWatch
     {
-        [Parameter]
-        public Round Round { get; set; } = default!;
+        public Round Round
+        {
+            get => this.round ?? throw new InvalidOperationException();
+            set
+            {
+                this.round = value;
+                this.StateHasChanged();
+            }
+        }
 
-        [Parameter]
-        public Period Period { get; set; } = default!;
+        private Round? round;
+
+        public Period Period
+        {
+            get => this.period ?? throw new InvalidOperationException();
+            set
+            {
+                this.period = value;
+                this.StateHasChanged();
+            }
+        }
+
+        private Period? period;
     }
 
 }

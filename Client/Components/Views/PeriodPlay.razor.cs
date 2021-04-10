@@ -7,14 +7,41 @@ namespace Fishbowl.Net.Client.Components.Views
 {
     public partial class PeriodPlay
     {
-        [Parameter]
-        public Round Round { get; set; } = default!;
+        public Round Round
+        {
+            get => this.round ?? throw new InvalidOperationException();
+            set
+            {
+                this.round = value;
+                this.StateHasChanged();
+            }
+        }
 
-        [Parameter]
-        public Period Period { get; set; } = default!;
+        private Round? round;
 
-        [Parameter]
-        public Word? Word { get; set; }
+        public Period Period
+        {
+            get => this.period ?? throw new InvalidOperationException();
+            set
+            {
+                this.period = value;
+                this.StateHasChanged();
+            }
+        }
+
+        private Period? period;
+
+        public Word? Word
+        {
+            get => this.word;
+            set
+            {
+                this.word = value;
+                this.StateHasChanged();
+            }
+        }
+
+        private Word? word;
 
         [Parameter]
         public EventCallback<Score> OnScoreAdded { get; set; } = default!;

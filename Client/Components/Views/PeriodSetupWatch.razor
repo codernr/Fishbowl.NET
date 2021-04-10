@@ -1,3 +1,11 @@
-<h2>Round: @this.Round.Type</h2>
+@inherits State
 
-<p>Waiting for player @this.Period.Player.Name to start... with length @this.Period.Length()</p>
+@code
+{
+    public override RenderFragment Content =>
+        @<div>
+            <h2>Round: @this.Round.Type</h2>
+
+            <p>Waiting for player @this.Period.Player.Name to start... with length @this.Period.Length()</p>
+        </div>;
+}

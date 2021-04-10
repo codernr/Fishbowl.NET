@@ -1,11 +1,20 @@
+using System;
 using Fishbowl.Net.Shared.Data;
-using Microsoft.AspNetCore.Components;
 
 namespace Fishbowl.Net.Client.Components.Views
 {
     public partial class GameStarted
     {
-        [Parameter]
-        public Team Team { get; set; } = default!;
+        public Team Team
+        { 
+            get => this.team ?? throw new InvalidOperationException();
+            set
+            {
+                this.team = value;
+                this.StateHasChanged();
+            }
+        }
+
+        private Team? team;
     }
 }

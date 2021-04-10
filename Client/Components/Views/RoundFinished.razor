@@ -1,10 +1,18 @@
-<h2>@this.Round.Type finished</h2>
+@inherits State
 
-<p>Scores</p>
+@code
+{
+    public override RenderFragment Content =>
+        @<div>
+            <h2>@this.Round.Type finished</h2>
 
-<ul>
-    @foreach (var period in this.Round.Periods)
-    {
-        <li><strong>@period.Player.Name</strong> - @period.Scores.Count</li>
-    }
-</ul>
+            <p>Scores</p>
+
+            <ul>
+            @foreach (var period in this.Round.Periods)
+            {
+                <li><strong>@period.Player.Name</strong> - @period.Scores.Count</li>
+            }
+            </ul>
+        </div>;
+}

@@ -1,13 +1,21 @@
-<h2>Select round types</h2>
+@inherits State
 
-<form @onsubmit="@(e => this.OnRoundTypesSet.InvokeAsync(this.SelectedOptions))">
-    @for (int i = 0; i < this.options.Count; i++)
-    {
-        var id = i;
-        <div>
-            <label for="option-@id">@this.options[i].name</label>
-            <input type="checkbox" id="option-@id" checked @onchange="@(e => this.ToggleOption(id))">
-        </div>
-    }
-    <button type="submit">Submit</button>
-</form>
+@code
+{
+    public override RenderFragment Content =>
+        @<div>
+            <h2>Select round types</h2>
+
+            <form @onsubmit="@(e => this.OnRoundTypesSet.InvokeAsync(this.SelectedOptions))">
+                @for (int i = 0; i < this.options.Count; i++)
+                {
+                    var id = i;
+                    <div>
+                        <label for="option-@id">@this.options[i].name</label>
+                        <input type="checkbox" id="option-@id" checked @onchange="@(e => this.ToggleOption(id))">
+                    </div>
+                }
+                <button type="submit">Submit</button>
+            </form>
+        </div>;
+}

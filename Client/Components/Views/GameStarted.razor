@@ -1,9 +1,17 @@
-<h2>Game started</h2>
+@inherits State
 
-<p>Your team:</p>
-<ul>
-    @foreach (var player in this.Team.Players)
-    {
-        <li>@player.Name</li>
-    }
-</ul>
+@code
+{
+    public override RenderFragment Content =>
+        @<div>
+            <h2>Game started</h2>
+
+            <p>Your team:</p>
+            <ul>
+                @foreach (var player in this.Team.Players)
+                {
+                    <li>@player.Name</li>
+                }
+            </ul>
+        </div>;
+}

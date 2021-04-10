@@ -7,57 +7,18 @@
 <h1>Play</h1>
 
 <StateManager @ref="this.stateManager">
-    <State StateType="GameState.Connecting">
-        <Connecting />
-    </State>
-    <State StateType="GameState.WaitingForTeamCount">
-        <TeamCount OnTeamCountSet="@this.SubmitTeamCount" />
-    </State>
-    <State StateType="GameState.WaitingForRoundTypes">
-        <RoundTypes OnRoundTypesSet="@this.SubmitRoundTypes" />
-    </State>
-    <State StateType="GameState.WaitingForPlayer">
-        <PlayerData OnPlayerDataSet="@this.SubmitPlayerData" />
-    </State>
-    <State StateType="GameState.WaitingForPlayers">
-        <WaitingForPlayers />
-    </State>
-    <State StateType="GameState.GameStarted" Delay="@TimeSpan.FromMilliseconds(500)">
-        <GameStarted Team="@this.Team" />
-    </State>
-    <State StateType="GameState.RoundStarted" Delay="@TimeSpan.FromMilliseconds(500)">
-        <RoundStarted Round="@this.Round" />
-    </State>
-    <State StateType="GameState.PeriodSetupPlay">
-        <PeriodSetupPlay
-            Round="@this.Round"
-            OnStarted="@this.StartPeriod" />
-    </State>
-    <State StateType="GameState.PeriodSetupWatch">
-        <PeriodSetupWatch
-            Round="@this.Round"
-            Period="@this.Period" />
-    </State>
-    <State StateType="GameState.PeriodPlay">
-        <PeriodPlay
-            Round="@this.Round"
-            Period="@this.Period"
-            Word="@this.Word"
-            OnScoreAdded="@this.AddScore"
-            OnPeriodFinished="@this.FinishPeriod" />
-    </State>
-    <State StateType="GameState.PeriodWatch">
-        <PeriodWatch
-            Round="@this.Round"
-            Period="@this.Period" />
-    </State>
-    <State StateType="GameState.PeriodFinished" Delay="@TimeSpan.FromMilliseconds(500)">
-        <PeriodFinished Period="@this.PreviousPeriod" />
-    </State>
-    <State StateType="GameState.RoundFinished" Delay="@TimeSpan.FromMilliseconds(500)">
-        <RoundFinished Round="@this.PreviousRound" />
-    </State>
-    <State StateType="GameState.GameFinished">
-        <GameFinished Game="@this.Game" />
-    </State>
+    <Connecting />
+    <TeamCount OnTeamCountSet="@this.SubmitTeamCount" />
+    <RoundTypes OnRoundTypesSet="@this.SubmitRoundTypes" />
+    <PlayerData OnPlayerDataSet="@this.SubmitPlayerData" />
+    <WaitingForPlayers />
+    <GameStarted />
+    <RoundStarted />
+    <PeriodSetupPlay OnStarted="@this.StartPeriod" />
+    <PeriodSetupWatch />
+    <PeriodPlay OnScoreAdded="@this.AddScore" OnPeriodFinished="@this.FinishPeriod" />
+    <PeriodWatch />
+    <PeriodFinished />
+    <RoundFinished />
+    <GameFinished />
 </StateManager>

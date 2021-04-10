@@ -1,3 +1,11 @@
-<h2>Round start</h2>
+@inherits State
 
-<p>@this.Round.Type</p>
+@code
+{
+    public override RenderFragment Content =>
+        @<div>
+            <h2>Round start</h2>
+
+            <p>@this.Round.Type</p>
+        </div>;
+}

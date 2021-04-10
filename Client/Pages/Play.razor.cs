@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Fishbowl.Net.Client.Components;
+using Fishbowl.Net.Client.Components.Views;
 using Fishbowl.Net.Client.Services;
 using Fishbowl.Net.Client.Shared;
 using Fishbowl.Net.Shared.Data;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 
 namespace Fishbowl.Net.Client.Pages
@@ -93,25 +95,25 @@ namespace Fishbowl.Net.Client.Pages
 
         public async Task DefineTeamCount()
         {
-            await this.StateManager.SetState(GameState.WaitingForTeamCount);
+            await this.StateManager.SetStateAsync<TeamCount>();
         }
 
         public Task DefineRoundTypes()
         {
             Console.WriteLine("DefineRoundTypes");
-            return this.StateManager.SetState(GameState.WaitingForRoundTypes);
+            return this.StateManager.SetStateAsync<RoundTypes>();
         }
 
         public Task DefinePlayer()
         {
             Console.WriteLine("DefinePlayer");
-            return this.StateManager.SetState(GameState.WaitingForPlayer);
+            return this.StateManager.SetStateAsync<PlayerData>();
         }
 
         public Task ReceiveWaitForPlayers()
         {
             Console.WriteLine("ReceiveWaitForPlayers");
-            return this.StateManager.SetState(GameState.WaitingForPlayers);
+            return this.StateManager.SetStateAsync<WaitingForPlayers>();
         }
 
         public Task ReceiveGameStarted(Game game)
@@ -122,7 +124,8 @@ namespace Fishbowl.Net.Client.Pages
 
             Console.WriteLine($"My team id: {this.Team.Id}");
 
-            return this.StateManager.SetState(GameState.GameStarted);
+            return this.StateManager.SetStateAsync<GameStarted>(
+                state => state.Team = this.team);
         }
 
         public Task ReceiveGameFinished(Game game)
@@ -134,7 +137,7 @@ namespace Fishbowl.Net.Client.Pages
                 Console.WriteLine($"Team {teamScore.Key} scores: {teamScore.Value}");
             }
 
-            return this.StateManager.SetState(GameState.GameFinished);
+            return this.StateManager.SetStateAsync<GameFinished>(state => state.Game = game);
         }
 
         public Task ReceiveRoundStarted(Round round)
@@ -142,7 +145,7 @@ namespace Fishbowl.Net.Client.Pages
             Console.WriteLine($"Round started: {round.Type}");
             this.Round = round;
 
-            return this.StateManager.SetState(GameState.RoundStarted);
+            return this.StateManager.SetStateAsync<RoundStarted>(state => state.Round = round);
         }
 
         public Task ReceiveRoundFinished(Round round)
@@ -150,7 +153,7 @@ namespace Fishbowl.Net.Client.Pages
             Console.WriteLine($"Round finished: {round.Type}");
             this.Round = round;
 
-            return this.StateManager.SetState(GameState.RoundFinished);
+            return this.StateManager.SetStateAsync<RoundFinished>(state => state.Round = round);
         }
 
         public Task ReceivePeriodSetup(Period period)
@@ -162,12 +165,17 @@ namespace Fishbowl.Net.Client.Pages
             if (period.Player == this.Player)
             {
                 Console.WriteLine("Local player period");
-                return this.StateManager.SetState(GameState.PeriodSetupPlay);
+                return this.StateManager.SetStateAsync<PeriodSetupPlay>(state => {
+                    state.Round = this.Round;
+                });
             }
             else
             {
                 Console.WriteLine("Remote player period");
-                return this.StateManager.SetState(GameState.PeriodSetupWatch);
+                return this.StateManager.SetStateAsync<PeriodSetupWatch>(state => {
+                    state.Round = this.Round;
+                    state.Period = period;
+                });
             }
         }
 
@@ -175,22 +183,37 @@ namespace Fishbowl.Net.Client.Pages
         {
             Console.WriteLine("Period started at: " + period);
             this.Period = period;
-            return this.StateManager.SetState(
-                period.Player == this.Player ? GameState.PeriodPlay : GameState.PeriodWatch);
+
+            if (period.Player == this.Player)
+            {
+                return this.StateManager.SetStateAsync<PeriodPlay>(state => {
+                    state.Round = this.Round;
+                    state.Period = this.Period;
+                });
+            }
+            else
+            {
+                return this.StateManager.SetStateAsync<PeriodWatch>(state => {
+                    state.Round = this.Round;
+                    state.Period = this.Period;
+                });
+            }
         }
 
         public Task ReceivePeriodFinished(Period period)
         {
             Console.WriteLine($"Period finished at: {period.FinishedAt}; scores ({period.Player.Name}): {period.Scores.Count}");
             this.PreviousPeriod = period;
-            return this.StateManager.SetState(GameState.PeriodFinished);
+
+            return this.StateManager.SetStateAsync<PeriodFinished>(state => state.Period = period);
         }
 
         public Task ReceiveWordSetup(Word word)
         {
             Console.WriteLine($"Word: {word.Value}");
             this.Word = word;
-            this.StateHasChanged();
+
+            this.StateManager.SetParameters<PeriodPlay>(state => state.Word = word);
             return Task.CompletedTask;
         }
 
