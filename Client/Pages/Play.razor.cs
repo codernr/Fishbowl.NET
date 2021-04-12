@@ -91,6 +91,11 @@ namespace Fishbowl.Net.Client.Pages
             this.connection.On<Score>("ReceiveScoreAdded", this.ReceiveScoreAdded);
 
             await this.connection.StartAsync();
+
+            if (this.connection.State == HubConnectionState.Connected)
+            {
+                await this.StateManager.SetStateAsync<Password>();
+            }
         }
 
         public async Task DefineTeamCount()
@@ -237,6 +242,10 @@ namespace Fishbowl.Net.Client.Pages
         private Task FinishPeriod(DateTimeOffset timestamp) => this.connection.SendAsync("FinishPeriod", timestamp);
 
         public ValueTask DisposeAsync() => this.connection.DisposeAsync();
+
+        private Task CreateGameAsync(string password) => this.connection.SendAsync("CreateGame", password);
+
+        private Task JoinGameAsync(string password) => this.connection.SendAsync("JoinGame", password);
 
         private Task SubmitTeamCount(int teamCount) => this.connection.SendAsync("SetTeamCount", teamCount);
 

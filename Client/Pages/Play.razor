@@ -8,16 +8,17 @@
 
 <StateManager @ref="this.stateManager">
     <Connecting />
-    <TeamCount OnTeamCountSet="@this.SubmitTeamCount" />
-    <RoundTypes OnRoundTypesSet="@this.SubmitRoundTypes" />
+    <Password OnCreateGame="this.CreateGameAsync" OnJoinGame="this.JoinGameAsync" />
+    <TeamCount OnTeamCountSet="this.SubmitTeamCount" />
+    <RoundTypes OnRoundTypesSet="this.SubmitRoundTypes" />
     <PlayerName OnPlayerNameSet="this.SetPlayerNameAsync" />
     <PlayerWords OnPlayerWordsSet="this.SubmitPlayerData" />
     <WaitingForPlayers />
     <GameStarted />
     <RoundStarted />
-    <PeriodSetupPlay OnStarted="@this.StartPeriod" />
+    <PeriodSetupPlay OnStarted="this.StartPeriod" />
     <PeriodSetupWatch />
-    <PeriodPlay OnScoreAdded="@this.AddScore" OnPeriodFinished="@this.FinishPeriod" />
+    <PeriodPlay OnScoreAdded="this.AddScore" OnPeriodFinished="this.FinishPeriod" />
     <PeriodWatch />
     <PeriodFinished />
     <RoundFinished />
