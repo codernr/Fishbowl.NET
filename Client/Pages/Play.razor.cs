@@ -265,7 +265,7 @@ namespace Fishbowl.Net.Client.Pages
                 throw new InvalidOperationException("Team count is not set, can't create game");
             }
 
-            await this.connection.InvokeAsync("CreateGame", this.teamCount, roundTypes);
+            await this.connection.InvokeAsync("SetupGame", this.teamCount, roundTypes);
             await this.StateManager.SetStateAsync<PlayerName>();
         }
 
@@ -275,13 +275,14 @@ namespace Fishbowl.Net.Client.Pages
             return this.StateManager.SetStateAsync<PlayerWords>();
         }
 
-        private Task SubmitPlayerData(string[] words)
+        private async Task SubmitPlayerData(string[] words)
         {
             this.player = new Player(
                 Guid.NewGuid(),
                 this.playerName,
                 words.Select(word => new Word(Guid.NewGuid(), word)));
-            return this.connection.SendAsync("AddPlayer", player);
+            await this.connection.InvokeAsync("AddPlayer", player);
+            await this.StateManager.SetStateAsync<WaitingForPlayers>();
         }
     }
 }

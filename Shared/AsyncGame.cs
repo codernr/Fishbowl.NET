@@ -25,37 +25,24 @@ namespace Fishbowl.Net.Shared
 
         public event Action<Player, Word>? WordSetup;
 
-        private readonly List<Player> players = new List<Player>();
-
-        private readonly TaskCompletionSource playersSet = new TaskCompletionSource();
-
         private TaskCompletionSource<DateTimeOffset> inputReceived = new TaskCompletionSource<DateTimeOffset>();
 
         private bool finishRequested = false;
 
-        private Game? game;
-
-        private Game Game => this.game ??
-            throw new InvalidOperationException("Invalid game state: Game is not defined");
-
-        private int teamCount;
-
-        private IEnumerable<string> roundTypes;
-
-        private readonly bool randomize;
+        private readonly Game game;
 
         private Task? gameLoop;
 
         public AsyncGame(
             int teamCount,
             IEnumerable<string> roundTypes,
-            bool randomize = true) =>
-            (this.teamCount, this.roundTypes, this.randomize) =
-            (teamCount, roundTypes, randomize);
+            IEnumerable<Player> players,
+            bool randomize = true)
+        {
+            this.game = new Game(Guid.NewGuid(), players, roundTypes, teamCount, randomize);
+        }
 
-        public void AddPlayer(Player player) => this.players.Add(player);
-
-        public void PlayersSet() => this.playersSet.SetResult();
+        public void Run() => this.gameLoop = this.RunAsync();
 
         public void SetInput(DateTimeOffset timestamp)
         {
@@ -66,13 +53,13 @@ namespace Fishbowl.Net.Shared
 
         public void StartPeriod(DateTimeOffset timestamp)
         {
-            this.Game.StartPeriod(timestamp);
+            this.game.StartPeriod(timestamp);
             this.SetInput(timestamp);
         }
 
         public void FinishPeriod(DateTimeOffset timestamp)
         {
-            this.Game.FinishPeriod(timestamp);
+            this.game.FinishPeriod(timestamp);
             this.finishRequested = true;
             this.SetInput(timestamp);
         }
@@ -81,21 +68,15 @@ namespace Fishbowl.Net.Shared
 
         public void AddScore(Score score)
         {
-            this.Game.AddScore(score);
+            this.game.AddScore(score);
             this.ScoreAdded?.Invoke(score);
         }
 
-        public void Run() => this.gameLoop = this.RunAsync();
-        
         private async Task RunAsync()
         {
-            await this.playersSet.Task;
-
-            this.game = new Game(Guid.NewGuid(), this.players, this.roundTypes, this.teamCount, this.randomize);
-
             this.GameStarted?.Invoke(this.game);
 
-            foreach (var round in this.Game.RoundLoop())
+            foreach (var round in this.game.RoundLoop())
             {
                 await this.RunRound(round);
             }
@@ -107,7 +88,7 @@ namespace Fishbowl.Net.Shared
         {
             this.RoundStarted?.Invoke(round);
 
-            foreach (var period in this.Game.PeriodLoop())
+            foreach (var period in this.game.PeriodLoop())
             {
                 await this.RunPeriod(period);
             }
@@ -125,7 +106,7 @@ namespace Fishbowl.Net.Shared
             
             do
             {
-                this.WordSetup?.Invoke(period.Player, this.Game.CurrentWord());
+                this.WordSetup?.Invoke(period.Player, this.game.CurrentWord());
 
                 timestamp = await this.inputReceived.Task;
 
@@ -135,7 +116,7 @@ namespace Fishbowl.Net.Shared
                     break;
                 }
             }
-            while (this.Game.NextWord(timestamp));
+            while (this.game.NextWord(timestamp));
 
             this.PeriodFinished?.Invoke(period);
         }

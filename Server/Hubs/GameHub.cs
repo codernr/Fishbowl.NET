@@ -26,7 +26,7 @@ namespace Fishbowl.Net.Server.Hubs
 
         public Task JoinGameContext(string password) => this.service.JoinGameContext(this.Context.ConnectionId, password);
 
-        public void CreateGame(int teamCount, IEnumerable<string> roundTypes) => this.GameContext.CreateGame(teamCount, roundTypes);
+        public void SetupGame(int teamCount, IEnumerable<string> roundTypes) => this.GameContext.SetupGame(teamCount, roundTypes);
 
         public void AddPlayer(Player player) =>
             this.GameContext.AddPlayer(this.Context.ConnectionId, player);

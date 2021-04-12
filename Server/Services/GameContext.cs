@@ -24,6 +24,10 @@ namespace Fishbowl.Net.Server.Services
 
         private readonly List<string> connections = new();
 
+        private int? teamCount;
+
+        private IEnumerable<string>? roundTypes;
+
         public GameContext(string password, IHubContext<GameHub, IGameClient> hubContext)
         {
             this.hubContext = hubContext;
@@ -38,17 +42,15 @@ namespace Fishbowl.Net.Server.Services
             }
         }
 
-        public void CreateGame(int teamCount, IEnumerable<string> roundTypes)
+        public void SetupGame(int teamCount, IEnumerable<string> roundTypes)
         {
             if (this.game is not null)
             {
                 throw new InvalidOperationException("The game is already created");
             }
 
-            this.game = new AsyncGame(teamCount, roundTypes);
-            this.SetEventHandlers();
-
-            this.Game.Run();
+            this.teamCount = teamCount;
+            this.roundTypes = roundTypes;
         }
 
         public void RemoveConnection(string connectionId)
@@ -65,12 +67,22 @@ namespace Fishbowl.Net.Server.Services
         {
             this.players.Add(connectionId, player);
 
-            this.Game.AddPlayer(player);
-
             if (this.players.Count == this.connections.Count)
             {
-                this.Game.PlayersSet();
+                if (this.teamCount is null || this.roundTypes is null)
+                {
+                    throw new InvalidOperationException("Game is not setup properly, start failed.");
+                }
+
+                this.StartGame(this.teamCount.Value, this.roundTypes, this.players.Items2);
             }
+        }
+
+        private void StartGame(int teamCount, IEnumerable<string> roundTypes, IEnumerable<Player> players)
+        {
+            this.game = new AsyncGame(teamCount, roundTypes, players);
+            this.SetEventHandlers();
+            this.Game.Run();
         }
 
         private void SetEventHandlers()
