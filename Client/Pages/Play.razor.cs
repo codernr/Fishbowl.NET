@@ -70,11 +70,9 @@ namespace Fishbowl.Net.Client.Pages
             set => this.game = value;
         }
 
-        private int? teamCount;
+        private GameContextSetup gameContextSetup = new();
 
-        private string? password;
-
-        private int? wordCount;
+        private GameSetup gameSetup = new();
 
         protected override async Task OnInitializedAsync()
         {
@@ -224,44 +222,36 @@ namespace Fishbowl.Net.Client.Pages
 
         private Task SetPassword(string password)
         {
-            this.password = password;
+            this.gameContextSetup.Password = password;
             return this.StateManager.SetStateAsync<WordCount>();
         }
 
         private async Task SetWordCount(int wordCount)
         {
-            if (this.password is null)
-            {
-                throw new InvalidOperationException("Password is null");
-            }
+            this.gameContextSetup.WordCount = wordCount;
 
-            this.wordCount = wordCount;
-
-            await this.connection.InvokeAsync("CreateGameContext", password, wordCount);
+            await this.connection.InvokeAsync("CreateGameContext", this.gameContextSetup);
             await this.StateManager.SetStateAsync<TeamCount>();
         }
 
         private async Task JoinGameContext(string password)
         {
             await this.connection.InvokeAsync("JoinGameContext", password);
-            this.wordCount = await this.connection.InvokeAsync<int>("GetWordCount");
+            this.gameContextSetup.Password = password;
+            this.gameContextSetup.WordCount = await this.connection.InvokeAsync<int>("GetWordCount");
             await this.StateManager.SetStateAsync<PlayerName>();
         }
 
         private Task SetTeamCount(int teamCount)
         {
-            this.teamCount = teamCount;
+            this.gameSetup.TeamCount = teamCount;
             return this.StateManager.SetStateAsync<RoundTypes>();
         }
 
-        private async Task SetRoundTypes(IEnumerable<string> roundTypes)
+        private async Task SetRoundTypes(string[] roundTypes)
         {
-            if (this.teamCount is null)
-            {
-                throw new InvalidOperationException("Team count is not set, can't create game");
-            }
-
-            await this.connection.InvokeAsync("SetupGame", this.teamCount, roundTypes);
+            this.gameSetup.RoundTypes = roundTypes;
+            await this.connection.InvokeAsync("SetupGame", this.gameSetup);
             await this.StateManager.SetStateAsync<PlayerName>();
         }
 

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Fishbowl.Net.Client.Services;
 using Fishbowl.Net.Server.Data;
 using Fishbowl.Net.Server.Hubs;
@@ -28,15 +27,13 @@ namespace Fishbowl.Net.Server.Services
 
         private readonly List<string> connections = new();
 
-        private int? teamCount;
+        private GameSetup? setup;
 
-        private IEnumerable<string>? roundTypes;
-
-        public GameContext(string password, int wordCount, IHubContext<GameHub, IGameClient> hubContext)
+        public GameContext(GameContextSetup request, IHubContext<GameHub, IGameClient> hubContext)
         {
             this.hubContext = hubContext;
-            this.WordCount = wordCount;
-            this.Password = password;
+            this.WordCount = request.WordCount;
+            this.Password = request.Password;
         }
 
         public void RegisterConnection(string connectionId)
@@ -47,11 +44,7 @@ namespace Fishbowl.Net.Server.Services
             }
         }
 
-        public void SetupGame(int teamCount, IEnumerable<string> roundTypes)
-        {
-            this.teamCount = teamCount;
-            this.roundTypes = roundTypes;
-        }
+        public void SetupGame(GameSetup request) => this.setup = request;
 
         public void RemoveConnection(string connectionId)
         {
@@ -69,12 +62,12 @@ namespace Fishbowl.Net.Server.Services
 
             if (this.players.Count == this.connections.Count)
             {
-                if (this.teamCount is null || this.roundTypes is null)
+                if (this.setup is null)
                 {
                     throw new InvalidOperationException("Game is not setup properly, start failed.");
                 }
 
-                this.StartGame(this.teamCount.Value, this.roundTypes, this.players.Items2);
+                this.StartGame(this.setup.TeamCount, this.setup.RoundTypes, this.players.Items2);
             }
         }
 

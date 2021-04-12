@@ -7,7 +7,7 @@ namespace Fishbowl.Net.Client.Components.States
     public partial class RoundTypes
     {
         [Parameter]
-        public EventCallback<IEnumerable<string>> OnRoundTypesSet { get; set; } = default!;
+        public EventCallback<string[]> OnRoundTypesSet { get; set; } = default!;
 
         private List<(string name, bool selected)> options = new()
         {
@@ -17,10 +17,11 @@ namespace Fishbowl.Net.Client.Components.States
             ("Humming", true)
         };
 
-        private IEnumerable<string> SelectedOptions =>
+        private string[] SelectedOptions =>
             this.options
                 .Where(option => option.selected)
-                .Select(option => option.name);
+                .Select(option => option.name)
+                .ToArray();
 
         private void ToggleOption(int id) =>
             this.options[id] = (this.options[id].name, !this.options[id].selected);

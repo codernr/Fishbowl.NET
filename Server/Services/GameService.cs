@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Fishbowl.Net.Client.Services;
 using Fishbowl.Net.Server.Hubs;
+using Fishbowl.Net.Shared.Data;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Fishbowl.Net.Server.Services
@@ -18,15 +19,15 @@ namespace Fishbowl.Net.Server.Services
 
         public GameService(IHubContext<GameHub, IGameClient> hubContext) => this.hubContext = hubContext;
 
-        public async Task CreateGameContext(string connectionId, string password, int wordCount)
+        public async Task CreateGameContext(string connectionId, GameContextSetup request)
         {
-            if (this.connectionMap.ContainsKey(connectionId) || this.contexts.Any(context => context.Password == password))
+            if (this.connectionMap.ContainsKey(connectionId) || this.contexts.Any(context => context.Password == request.Password))
             {
                 throw new InvalidOperationException();
             }
 
-            await this.hubContext.Groups.AddToGroupAsync(connectionId, password);
-            var context = new GameContext(password, wordCount, this.hubContext);
+            await this.hubContext.Groups.AddToGroupAsync(connectionId, request.Password);
+            var context = new GameContext(request, this.hubContext);
             context.GameFinished += this.RemoveGameContext;
 
             this.contexts.Add(context);
