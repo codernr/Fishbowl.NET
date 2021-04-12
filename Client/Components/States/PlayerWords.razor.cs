@@ -7,6 +7,15 @@ namespace Fishbowl.Net.Client.Components.States
         [Parameter]
         public EventCallback<string[]> OnPlayerWordsSet { get; set; } = default!;
 
-        private string[] words = new string[2];
+        [Parameter]
+        public int? WordCount { get; set; }
+
+        private string[] words = default!;
+
+        protected override void OnParametersSet()
+        {
+            this.words = new string[this.WordCount ?? 2];
+            base.OnParametersSet();
+        }
     }
 }

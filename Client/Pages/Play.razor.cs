@@ -72,6 +72,10 @@ namespace Fishbowl.Net.Client.Pages
 
         private int? teamCount;
 
+        private string? password;
+
+        private int? wordCount;
+
         protected override async Task OnInitializedAsync()
         {
             this.connection = new HubConnectionBuilder()
@@ -94,29 +98,6 @@ namespace Fishbowl.Net.Client.Pages
             {
                 await this.StateManager.SetStateAsync<Password>();
             }
-        }
-
-        public async Task DefineTeamCount()
-        {
-            await this.StateManager.SetStateAsync<TeamCount>();
-        }
-
-        public Task DefineRoundTypes()
-        {
-            Console.WriteLine("DefineRoundTypes");
-            return this.StateManager.SetStateAsync<RoundTypes>();
-        }
-
-        public Task DefinePlayer()
-        {
-            Console.WriteLine("DefinePlayer");
-            return this.StateManager.SetStateAsync<PlayerName>();
-        }
-
-        public Task ReceiveWaitForPlayers()
-        {
-            Console.WriteLine("ReceiveWaitForPlayers");
-            return this.StateManager.SetStateAsync<WaitingForPlayers>();
         }
 
         public Task ReceiveGameStarted(Game game)
@@ -241,14 +222,29 @@ namespace Fishbowl.Net.Client.Pages
 
         public ValueTask DisposeAsync() => this.connection.DisposeAsync();
 
-        private async Task CreateGameContext(string password)
+        private Task SetPassword(string password)
         {
-            await this.connection.InvokeAsync("CreateGameContext", password);
+            this.password = password;
+            return this.StateManager.SetStateAsync<WordCount>();
+        }
+
+        private async Task SetWordCount(int wordCount)
+        {
+            if (this.password is null)
+            {
+                throw new InvalidOperationException("Password is null");
+            }
+
+            this.wordCount = wordCount;
+
+            await this.connection.InvokeAsync("CreateGameContext", password, wordCount);
             await this.StateManager.SetStateAsync<TeamCount>();
         }
+
         private async Task JoinGameContext(string password)
         {
             await this.connection.InvokeAsync("JoinGameContext", password);
+            this.wordCount = await this.connection.InvokeAsync<int>("GetWordCount");
             await this.StateManager.SetStateAsync<PlayerName>();
         }
 

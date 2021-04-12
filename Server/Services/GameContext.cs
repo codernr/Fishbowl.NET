@@ -18,6 +18,8 @@ namespace Fishbowl.Net.Server.Services
 
         public string Password { get; private set; }
 
+        public int WordCount { get; private set; } = 2;
+
         private readonly IHubContext<GameHub, IGameClient> hubContext;
 
         private readonly Map<string, Player> players = new();
@@ -28,9 +30,10 @@ namespace Fishbowl.Net.Server.Services
 
         private IEnumerable<string>? roundTypes;
 
-        public GameContext(string password, IHubContext<GameHub, IGameClient> hubContext)
+        public GameContext(string password, int wordCount, IHubContext<GameHub, IGameClient> hubContext)
         {
             this.hubContext = hubContext;
+            this.WordCount = wordCount;
             this.Password = password;
         }
 
@@ -44,11 +47,6 @@ namespace Fishbowl.Net.Server.Services
 
         public void SetupGame(int teamCount, IEnumerable<string> roundTypes)
         {
-            if (this.game is not null)
-            {
-                throw new InvalidOperationException("The game is already created");
-            }
-
             this.teamCount = teamCount;
             this.roundTypes = roundTypes;
         }

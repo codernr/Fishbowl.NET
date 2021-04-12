@@ -18,7 +18,7 @@ namespace Fishbowl.Net.Server.Services
 
         public GameService(IHubContext<GameHub, IGameClient> hubContext) => this.hubContext = hubContext;
 
-        public async Task CreateGameContext(string connectionId, string password)
+        public async Task CreateGameContext(string connectionId, string password, int wordCount)
         {
             if (this.connectionMap.ContainsKey(connectionId) || this.contexts.Any(context => context.Password == password))
             {
@@ -26,7 +26,7 @@ namespace Fishbowl.Net.Server.Services
             }
 
             await this.hubContext.Groups.AddToGroupAsync(connectionId, password);
-            var context = new GameContext(password, this.hubContext);
+            var context = new GameContext(password, wordCount, this.hubContext);
 
             this.contexts.Add(context);
             this.connectionMap.Add(connectionId, context);
