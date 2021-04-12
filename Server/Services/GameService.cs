@@ -27,6 +27,7 @@ namespace Fishbowl.Net.Server.Services
 
             await this.hubContext.Groups.AddToGroupAsync(connectionId, password);
             var context = new GameContext(password, wordCount, this.hubContext);
+            context.GameFinished += this.RemoveGameContext;
 
             this.contexts.Add(context);
             this.connectionMap.Add(connectionId, context);
@@ -61,5 +62,20 @@ namespace Fishbowl.Net.Server.Services
         }
 
         public GameContext GetContext(string connectionId) => this.connectionMap[connectionId];
+
+        private async void RemoveGameContext(GameContext gameContext)
+        {
+            this.contexts.Remove(gameContext);
+            var connections = this.connectionMap
+                .Where(item => item.Value == gameContext)
+                .Select(item => item.Key)
+                .ToList();
+
+            foreach (var connectionId in connections)
+            {
+                this.connectionMap.Remove(connectionId);
+                await this.hubContext.Groups.RemoveFromGroupAsync(gameContext.Password, connectionId);
+            }
+        }
     }
 }

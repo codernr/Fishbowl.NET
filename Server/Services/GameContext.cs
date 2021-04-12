@@ -20,6 +20,8 @@ namespace Fishbowl.Net.Server.Services
 
         public int WordCount { get; private set; } = 2;
 
+        public event Action<GameContext>? GameFinished;
+
         private readonly IHubContext<GameHub, IGameClient> hubContext;
 
         private readonly Map<string, Player> players = new();
@@ -86,7 +88,7 @@ namespace Fishbowl.Net.Server.Services
         private void SetEventHandlers()
         {
             this.Game.GameStarted += this.GameStarted;
-            this.Game.GameFinished += this.GameFinished;
+            this.Game.GameFinished += this.OnGameFinished;
             this.Game.RoundStarted += this.RoundStarted;
             this.Game.RoundFinished += this.RoundFinished;
             this.Game.PeriodSetup += this.PeriodSetup;
@@ -99,8 +101,11 @@ namespace Fishbowl.Net.Server.Services
         private async void GameStarted(Game game) =>
             await this.hubContext.Clients.Group(this.Password).ReceiveGameStarted(game);
 
-        private async void GameFinished(Game game) =>
+        private async void OnGameFinished(Game game)
+        {
             await this.hubContext.Clients.Group(this.Password).ReceiveGameFinished(game);
+            this.GameFinished?.Invoke(this);
+        }
 
         private async void RoundStarted(Round round) =>
             await this.hubContext.Clients.Group(this.Password).ReceiveRoundStarted(round);
