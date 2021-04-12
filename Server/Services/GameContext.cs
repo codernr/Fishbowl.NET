@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Fishbowl.Net.Client.Services;
 using Fishbowl.Net.Server.Data;
 using Fishbowl.Net.Server.Hubs;
@@ -10,7 +9,7 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace Fishbowl.Net.Server.Services
 {
-    public class GameService
+    public class GameContext
     {
         public AsyncGame Game { get; } = new();
 
@@ -20,7 +19,7 @@ namespace Fishbowl.Net.Server.Services
 
         private readonly List<string> connections = new();
 
-        public GameService(IHubContext<GameHub, IGameClient> hubContext)
+        public GameContext(IHubContext<GameHub, IGameClient> hubContext)
         {
             this.hubContext = hubContext;
             this.SetEventHandlers();
