@@ -44,6 +44,7 @@ namespace Fishbowl.Net.Server.Services
             }
 
             await this.hubContext.Groups.AddToGroupAsync(connectionId, password);
+            this.connectionMap.Add(connectionId, context);
             context.RegisterConnection(connectionId);
         }
 
