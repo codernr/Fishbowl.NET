@@ -70,16 +70,14 @@ namespace Fishbowl.Net.Client.Pages
             set => this.game = value;
         }
 
+        private int? teamCount;
+
         protected override async Task OnInitializedAsync()
         {
             this.connection = new HubConnectionBuilder()
                 .WithUrl(this.NavigationManager.ToAbsoluteUri("/game"))
                 .Build();
 
-            this.connection.On("DefineTeamCount", this.DefineTeamCount);
-            this.connection.On("DefineRoundTypes", this.DefineRoundTypes);
-            this.connection.On("DefinePlayer", this.DefinePlayer);
-            this.connection.On("ReceiveWaitForPlayers", this.ReceiveWaitForPlayers);
             this.connection.On<Game>("ReceiveGameStarted", this.ReceiveGameStarted);
             this.connection.On<Game>("ReceiveGameFinished", this.ReceiveGameFinished);
             this.connection.On<Round>("ReceiveRoundStarted", this.ReceiveRoundStarted);
@@ -243,16 +241,35 @@ namespace Fishbowl.Net.Client.Pages
 
         public ValueTask DisposeAsync() => this.connection.DisposeAsync();
 
-        private Task CreateGameAsync(string password) => this.connection.SendAsync("CreateGame", password);
+        private async Task CreateGameContext(string password)
+        {
+            await this.connection.InvokeAsync("CreateGameContext", password);
+            await this.StateManager.SetStateAsync<TeamCount>();
+        }
+        private async Task JoinGameContext(string password)
+        {
+            await this.connection.InvokeAsync("JoinGameContext", password);
+            await this.StateManager.SetStateAsync<PlayerName>();
+        }
 
-        private Task JoinGameAsync(string password) => this.connection.SendAsync("JoinGame", password);
+        private Task SetTeamCount(int teamCount)
+        {
+            this.teamCount = teamCount;
+            return this.StateManager.SetStateAsync<RoundTypes>();
+        }
 
-        private Task SubmitTeamCount(int teamCount) => this.connection.SendAsync("SetTeamCount", teamCount);
+        private async Task SetRoundTypes(IEnumerable<string> roundTypes)
+        {
+            if (this.teamCount is null)
+            {
+                throw new InvalidOperationException("Team count is not set, can't create game");
+            }
 
-        private Task SubmitRoundTypes(IEnumerable<string> roundTypes) =>
-            this.connection.SendAsync("SetRoundTypes", roundTypes);
+            await this.connection.InvokeAsync("CreateGame", this.teamCount, roundTypes);
+            await this.StateManager.SetStateAsync<PlayerName>();
+        }
 
-        private Task SetPlayerNameAsync(string name)
+        private Task SetPlayerName(string name)
         {
             this.playerName = name;
             return this.StateManager.SetStateAsync<PlayerWords>();
@@ -265,24 +282,6 @@ namespace Fishbowl.Net.Client.Pages
                 this.playerName,
                 words.Select(word => new Word(Guid.NewGuid(), word)));
             return this.connection.SendAsync("AddPlayer", player);
-        }
-
-        private async Task SetPlayerAsync()
-        {
-            var random = new Random();
-
-            this.player = new Player(
-                Guid.NewGuid(),
-                $"Player{random.Next()}",
-                new[]
-                {
-                new Word(Guid.NewGuid(), $"Word{random.Next()}"),
-                new Word(Guid.NewGuid(), $"Word{random.Next()}")
-                });
-
-            await this.connection.InvokeAsync("AddPlayer", this.Player);
-
-            Console.WriteLine($"{this.player.Name} set");
         }
     }
 }

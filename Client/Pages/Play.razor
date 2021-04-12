@@ -8,10 +8,10 @@
 
 <StateManager @ref="this.stateManager">
     <Connecting />
-    <Password OnCreateGame="this.CreateGameAsync" OnJoinGame="this.JoinGameAsync" />
-    <TeamCount OnTeamCountSet="this.SubmitTeamCount" />
-    <RoundTypes OnRoundTypesSet="this.SubmitRoundTypes" />
-    <PlayerName OnPlayerNameSet="this.SetPlayerNameAsync" />
+    <Password OnCreateGame="this.CreateGameContext" OnJoinGame="this.JoinGameContext" />
+    <TeamCount OnTeamCountSet="this.SetTeamCount" />
+    <RoundTypes OnRoundTypesSet="this.SetRoundTypes" />
+    <PlayerName OnPlayerNameSet="this.SetPlayerName" />
     <PlayerWords OnPlayerWordsSet="this.SubmitPlayerData" />
     <WaitingForPlayers />
     <GameStarted />

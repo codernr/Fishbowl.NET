@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Fishbowl.Net.Client.Services;
@@ -11,7 +12,9 @@ namespace Fishbowl.Net.Server.Services
 {
     public class GameContext
     {
-        public AsyncGame Game { get; } = new();
+        public AsyncGame Game => this.game ?? throw new InvalidOperationException();
+
+        private AsyncGame? game;
 
         public string Password { get; private set; }
 
@@ -34,15 +37,18 @@ namespace Fishbowl.Net.Server.Services
             {
                 this.connections.Add(connectionId);
             }
+        }
 
-            if (this.connections.Count == 1)
+        public void CreateGame(int teamCount, IEnumerable<string> roundTypes)
+        {
+            if (this.game is not null)
             {
-                this.Game.Run();
+                throw new InvalidOperationException("The game is already created");
             }
-            else
-            {
-                this.DefinePlayer(connectionId);
-            }
+
+            this.game = new AsyncGame(teamCount, roundTypes);
+
+            this.Game.Run();
         }
 
         public void RemoveConnection(string connectionId)
@@ -65,22 +71,10 @@ namespace Fishbowl.Net.Server.Services
             {
                 this.Game.PlayersSet();
             }
-            else
-            {
-                this.hubContext.Clients.Clients(connectionId).ReceiveWaitForPlayers();
-            }
-        }
-
-        public void SetRoundTypes(IEnumerable<string> roundTypes)
-        {
-            this.Game.SetRoundTypes(roundTypes);
-            this.hubContext.Clients.Clients(this.connections.First()).DefinePlayer();
         }
 
         private void SetEventHandlers()
         {
-            this.Game.WaitingForTeamCount += this.WaitingForTeamCount;
-            this.Game.WaitingForRoundTypes += this.WaitingForRoundTypes;
             this.Game.GameStarted += this.GameStarted;
             this.Game.GameFinished += this.GameFinished;
             this.Game.RoundStarted += this.RoundStarted;
@@ -91,15 +85,6 @@ namespace Fishbowl.Net.Server.Services
             this.Game.ScoreAdded += this.ScoreAdded;
             this.Game.WordSetup += this.WordSetup;
         }
-
-        private async void DefinePlayer(string connectionId) =>
-            await this.hubContext.Clients.Clients(connectionId).DefinePlayer();
-
-        private async void WaitingForTeamCount() =>
-            await this.hubContext.Clients.Clients(this.connections.First()).DefineTeamCount();
-
-        private async void WaitingForRoundTypes() =>
-            await this.hubContext.Clients.Clients(this.connections.First()).DefineRoundTypes();
 
         private async void GameStarted(Game game) =>
             await this.hubContext.Clients.Group(this.Password).ReceiveGameStarted(game);

@@ -7,10 +7,6 @@ namespace Fishbowl.Net.Shared
 {
     public class AsyncGame
     {
-        public event Action? WaitingForTeamCount;
-
-        public event Action? WaitingForRoundTypes;
-
         public event Action<Game>? GameStarted;
 
         public event Action<Game>? GameFinished;
@@ -33,10 +29,6 @@ namespace Fishbowl.Net.Shared
 
         private readonly TaskCompletionSource playersSet = new TaskCompletionSource();
 
-        private readonly TaskCompletionSource teamCountSet = new TaskCompletionSource();
-
-        private readonly TaskCompletionSource roundTypesSet = new TaskCompletionSource();
-
         private TaskCompletionSource<DateTimeOffset> inputReceived = new TaskCompletionSource<DateTimeOffset>();
 
         private bool finishRequested = false;
@@ -44,30 +36,22 @@ namespace Fishbowl.Net.Shared
         private Game? game;
 
         private Game Game => this.game ??
-            throw new InvalidOperationException("Invalid game state: GameManager is not defined");
+            throw new InvalidOperationException("Invalid game state: Game is not defined");
 
-        private int? teamCount;
+        private int teamCount;
 
-        private IEnumerable<string>? roundTypes;
+        private IEnumerable<string> roundTypes;
 
         private readonly bool randomize;
 
         private Task? gameLoop;
 
-        public AsyncGame(bool randomize = true) => this.randomize = randomize;
-
-        public void SetTeamCount(int teamCount)
-        {
-            this.teamCount = teamCount;
-            this.teamCountSet.SetResult();
-            this.WaitingForRoundTypes?.Invoke();
-        }
-
-        public void SetRoundTypes(IEnumerable<string> roundTypes)
-        {
-            this.roundTypes = roundTypes;
-            this.roundTypesSet.SetResult();
-        }
+        public AsyncGame(
+            int teamCount,
+            IEnumerable<string> roundTypes,
+            bool randomize = true) =>
+            (this.teamCount, this.roundTypes, this.randomize) =
+            (teamCount, roundTypes, randomize);
 
         public void AddPlayer(Player player) => this.players.Add(player);
 
@@ -105,16 +89,9 @@ namespace Fishbowl.Net.Shared
         
         private async Task RunAsync()
         {
-            this.WaitingForTeamCount?.Invoke();
+            await this.playersSet.Task;
 
-            await Task.WhenAll(this.playersSet.Task, this.roundTypesSet.Task, this.teamCountSet.Task);
-
-            if (this.roundTypes is null || this.teamCount is null)
-            {
-                throw new InvalidOperationException("Round types or team count is not set");
-            }
-
-            this.game = new Game(Guid.NewGuid(), this.players, this.roundTypes, this.teamCount.Value, this.randomize);
+            this.game = new Game(Guid.NewGuid(), this.players, this.roundTypes, this.teamCount, this.randomize);
 
             this.GameStarted?.Invoke(this.game);
 

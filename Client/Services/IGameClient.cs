@@ -5,14 +5,6 @@ namespace Fishbowl.Net.Client.Services
 {
     public interface IGameClient
     {
-        Task DefineTeamCount();
-
-        Task DefineRoundTypes();
-
-        Task DefinePlayer();
-
-        Task ReceiveWaitForPlayers();
-
         Task ReceiveGameStarted(Game game);
 
         Task ReceiveGameFinished(Game game);

@@ -22,13 +22,11 @@ namespace Fishbowl.Net.Server.Hubs
             await base.OnDisconnectedAsync(exception);
         }
 
-        public Task CreateGame(string password) => this.service.CreateGame(this.Context.ConnectionId, password);
+        public Task CreateGameContext(string password) => this.service.CreateGameContext(this.Context.ConnectionId, password);
 
-        public Task JoinGame(string password) => this.service.JoinGame(this.Context.ConnectionId, password);
+        public Task JoinGameContext(string password) => this.service.JoinGameContext(this.Context.ConnectionId, password);
 
-        public void SetTeamCount(int teamCount) => this.GameContext.Game.SetTeamCount(teamCount);
-
-        public void SetRoundTypes(IEnumerable<string> roundTypes) => this.GameContext.SetRoundTypes(roundTypes);
+        public void CreateGame(int teamCount, IEnumerable<string> roundTypes) => this.GameContext.CreateGame(teamCount, roundTypes);
 
         public void AddPlayer(Player player) =>
             this.GameContext.AddPlayer(this.Context.ConnectionId, player);
