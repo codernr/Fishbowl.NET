@@ -28,7 +28,6 @@ namespace Fishbowl.Net.Server.Services
         {
             this.hubContext = hubContext;
             this.Password = password;
-            this.SetEventHandlers();
         }
 
         public void RegisterConnection(string connectionId)
@@ -47,6 +46,7 @@ namespace Fishbowl.Net.Server.Services
             }
 
             this.game = new AsyncGame(teamCount, roundTypes);
+            this.SetEventHandlers();
 
             this.Game.Run();
         }
