@@ -14,31 +14,31 @@ namespace Fishbowl.Net.Server.Hubs
 
         public GameHub(GameService service) => this.service = service;
 
-        public override Task OnConnectedAsync()
+        private GameContext GameContext => this.service.GetContext(this.Context.ConnectionId);
+
+        public override async Task OnDisconnectedAsync(System.Exception? exception)
         {
-            this.service.RegisterConnection(this.Context.ConnectionId);
-            return base.OnConnectedAsync();
+            await this.service.RemoveConnection(this.Context.ConnectionId);
+            await base.OnDisconnectedAsync(exception);
         }
 
-        public override Task OnDisconnectedAsync(System.Exception? exception)
-        {
-            this.service.RemoveConnection(this.Context.ConnectionId);
-            return base.OnDisconnectedAsync(exception);
-        }
+        public Task CreateGame(string password) => this.service.CreateGame(this.Context.ConnectionId, password);
 
-        public void SetTeamCount(int teamCount) => this.service.Game.SetTeamCount(teamCount);
+        public Task JoinGame(string password) => this.service.JoinGame(this.Context.ConnectionId, password);
 
-        public void SetRoundTypes(IEnumerable<string> roundTypes) => this.service.SetRoundTypes(roundTypes);
+        public void SetTeamCount(int teamCount) => this.GameContext.Game.SetTeamCount(teamCount);
+
+        public void SetRoundTypes(IEnumerable<string> roundTypes) => this.GameContext.SetRoundTypes(roundTypes);
 
         public void AddPlayer(Player player) =>
-            this.service.AddPlayer(this.Context.ConnectionId, player);
+            this.GameContext.AddPlayer(this.Context.ConnectionId, player);
 
-        public void StartPeriod(DateTimeOffset timestamp) => this.service.Game.StartPeriod(timestamp);
+        public void StartPeriod(DateTimeOffset timestamp) => this.GameContext.Game.StartPeriod(timestamp);
 
-        public void NextWord(DateTimeOffset timestamp) => this.service.Game.NextWord(timestamp);
+        public void NextWord(DateTimeOffset timestamp) => this.GameContext.Game.NextWord(timestamp);
 
-        public void AddScore(Score score) => this.service.Game.AddScore(score);
+        public void AddScore(Score score) => this.GameContext.Game.AddScore(score);
 
-        public void FinishPeriod(DateTimeOffset timestamp) => this.service.Game.FinishPeriod(timestamp);
+        public void FinishPeriod(DateTimeOffset timestamp) => this.GameContext.Game.FinishPeriod(timestamp);
     }
 }

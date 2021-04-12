@@ -13,15 +13,18 @@ namespace Fishbowl.Net.Server.Services
     {
         public AsyncGame Game { get; } = new();
 
+        public string Password { get; private set; }
+
         private readonly IHubContext<GameHub, IGameClient> hubContext;
 
         private readonly Map<string, Player> players = new();
 
         private readonly List<string> connections = new();
 
-        public GameContext(IHubContext<GameHub, IGameClient> hubContext)
+        public GameContext(string password, IHubContext<GameHub, IGameClient> hubContext)
         {
             this.hubContext = hubContext;
+            this.Password = password;
             this.SetEventHandlers();
         }
 
@@ -99,28 +102,28 @@ namespace Fishbowl.Net.Server.Services
             await this.hubContext.Clients.Clients(this.connections.First()).DefineRoundTypes();
 
         private async void GameStarted(Game game) =>
-            await this.hubContext.Clients.All.ReceiveGameStarted(game);
+            await this.hubContext.Clients.Group(this.Password).ReceiveGameStarted(game);
 
         private async void GameFinished(Game game) =>
-            await this.hubContext.Clients.All.ReceiveGameFinished(game);
+            await this.hubContext.Clients.Group(this.Password).ReceiveGameFinished(game);
 
         private async void RoundStarted(Round round) =>
-            await this.hubContext.Clients.All.ReceiveRoundStarted(round);
+            await this.hubContext.Clients.Group(this.Password).ReceiveRoundStarted(round);
 
         private async void RoundFinished(Round round) =>
-            await this.hubContext.Clients.All.ReceiveRoundFinished(round);
+            await this.hubContext.Clients.Group(this.Password).ReceiveRoundFinished(round);
 
         private async void PeriodSetup(Period period) =>
-            await this.hubContext.Clients.All.ReceivePeriodSetup(period);
+            await this.hubContext.Clients.Group(this.Password).ReceivePeriodSetup(period);
 
         private async void PeriodStarted(Period period) =>
-            await this.hubContext.Clients.All.ReceivePeriodStarted(period);
+            await this.hubContext.Clients.Group(this.Password).ReceivePeriodStarted(period);
 
         private async void PeriodFinished(Period period) =>
-            await this.hubContext.Clients.All.ReceivePeriodFinished(period);
+            await this.hubContext.Clients.Group(this.Password).ReceivePeriodFinished(period);
 
         private async void ScoreAdded(Score score) =>
-            await this.hubContext.Clients.All.ReceiveScoreAdded(score);
+            await this.hubContext.Clients.Group(this.Password).ReceiveScoreAdded(score);
 
         private async void WordSetup(Player player, Word word) =>
             await this.hubContext.Clients.Clients(this.players[player]).ReceiveWordSetup(word);
