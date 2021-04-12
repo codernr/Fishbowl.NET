@@ -1,0 +1,16 @@
+@inherits State
+
+@code
+{
+    protected override RenderFragment Content =>
+        @<div>
+            <h2>Set word count per player</h2>
+
+            <form @onsubmit="e => this.OnWordCountSet.InvokeAsync(this.wordCount)" @onsubmit:preventDefault>
+                <div>
+                    <input type="number" @bind="this.wordCount">
+                </div>
+                <button type="submit">Set</button>
+            </form>
+        </div>;
+}
