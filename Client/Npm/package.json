@@ -6,7 +6,8 @@
     "css-compile": "sass styles.scss ./../wwwroot/css/styles.css --load-path=node_modules --style compressed",
     "css-prefix": "postcss --replace ./../wwwroot/css/styles.css --use autoprefixer --map",
     "css-purge": "purgecss -c ./purgecss.config.js",
-    "css": "npm-run-all css-compile css-prefix css-purge"
+    "css": "npm-run-all css-compile css-prefix css-purge",
+    "css-debug": "npm-run-all css-compile css-prefix"
   },
   "dependencies": {
     "bootstrap": "^5.0.0-beta3"

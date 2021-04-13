@@ -9,7 +9,10 @@
     <Content Remove="$(NpmRoot)**" />
   </ItemGroup>
 
-  <Target Name="BuildCss" BeforeTargets="Build" Condition="'$(Configuration)' == 'Debug'">
+  <Target Name="BuildCssDebug" BeforeTargets="Build" Condition="'$(Configuration)' == 'Debug'">
+    <Exec WorkingDirectory="$(NpmRoot)" Command="npm run css-debug" />
+  </Target>
+   <Target Name="BuildCssRelease" BeforeTargets="Build" Condition="'$(Configuration)' == 'Release'">
     <Exec WorkingDirectory="$(NpmRoot)" Command="npm run build" />
   </Target>
 
