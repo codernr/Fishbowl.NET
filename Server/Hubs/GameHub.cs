@@ -26,7 +26,18 @@ namespace Fishbowl.Net.Server.Hubs
 
         public bool GameContextExists(string password) => this.service.GameContextExists(password);
 
-        public Task JoinGameContext(string password) => this.service.JoinGameContext(this.Context.ConnectionId, password);
+        public async Task<bool> JoinGameContext(string password)
+        {
+            try
+            {
+                await this.service.JoinGameContext(this.Context.ConnectionId, password);
+                return true;
+            }
+            catch (InvalidOperationException)
+            {
+                return false;
+            }
+        }
 
         public int GetWordCount() => this.GameContext.WordCount;
 

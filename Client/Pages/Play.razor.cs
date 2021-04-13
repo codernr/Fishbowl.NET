@@ -5,6 +5,7 @@ using Fishbowl.Net.Client.Components;
 using Fishbowl.Net.Client.Components.States;
 using Fishbowl.Net.Client.Services;
 using Fishbowl.Net.Shared.Data;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.SignalR.Client;
 
 namespace Fishbowl.Net.Client.Pages
@@ -216,10 +217,20 @@ namespace Fishbowl.Net.Client.Pages
 
         private async Task JoinGameContext(string password)
         {
-            await this.connection.InvokeAsync("JoinGameContext", password);
-            this.gameContextSetup.Password = password;
-            this.gameContextSetup.WordCount = await this.connection.InvokeAsync<int>("GetWordCount");
-            await this.StateManager.SetStateAsync<PlayerName>();
+            var success = await this.connection.InvokeAsync<bool>("JoinGameContext", password);
+            
+            if (success)
+            {
+                this.gameContextSetup.Password = password;
+                this.gameContextSetup.WordCount = await this.connection.InvokeAsync<int>("GetWordCount");
+                await this.StateManager.SetStateAsync<PlayerName>();
+            }
+            else
+            {
+                await this.StateManager.SetStateAsync<Error>(
+                    state => state.Message = "User is already connected or password is invalid. Try reload the game.");
+                await this.StateManager.SetStateAsync<Password>();
+            }
         }
 
         private Task SetTeamCount(int teamCount)
