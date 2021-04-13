@@ -31,6 +31,10 @@ form:invalid {
     }
 }
 
+.card.timer {
+    transition: background-color 300ms, color 300ms;
+}
+
 #blazor-error-ui {
     background: lightyellow;
     bottom: 0;
