@@ -3,20 +3,32 @@
 @code
 {
     protected override RenderFragment Content =>
-        @<div>
-            <h2>Set words</h2>
-
+        @<div class="col my-auto">
+            <div class="row mb-5">
+                <div class="col">
+                    <h2>Set player words</h2>
+                </div>
+            </div>
             <form @onsubmit="e => this.OnPlayerWordsSet.InvokeAsync(this.words)" @onsubmit:preventDefault>
 
                 @for (int i = 0; i < this.words.Length; i++)
                 {
                     var id = i;
-                    <div>
-                        <label for="word-@id">Word @id</label><input type="text" @bind="this.words[id]" id="word-@id">
+                    <div class="row mb-3">
+                        <div class="col">
+                            <div class="form-floating text-dark">
+                                <input type="text" class="form-control" id="word-input-@id" placeholder="Word @id" @bind="this.words[id]">
+                                <label for="word-input-@id">Word @id</label>
+                            </div>
+                        </div>
                     </div>
                 }
             
-                <button type="submit">Set</button>
+                <div class="row mb-3">
+                    <div class="d-grid col">
+                        <button class="btn btn-success btn-lg" type="submit">Set</button>
+                    </div>
+                </div>
             </form>
         </div>;
 }
