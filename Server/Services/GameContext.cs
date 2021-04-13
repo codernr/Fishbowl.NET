@@ -66,7 +66,9 @@ namespace Fishbowl.Net.Server.Services
             {
                 if (this.setup is null)
                 {
-                    throw new InvalidOperationException("Game is not setup properly, start failed.");
+                    this.hubContext.Clients.Group(this.Password).ReceiveGameAborted("Game setup is missing.");
+                    this.GameFinished?.Invoke(this);
+                    return;
                 }
 
                 this.StartGame(this.setup.TeamCount, this.setup.RoundTypes, this.players.Items2);
@@ -75,9 +77,17 @@ namespace Fishbowl.Net.Server.Services
 
         private void StartGame(int teamCount, IEnumerable<string> roundTypes, IEnumerable<Player> players)
         {
-            this.game = new AsyncGame(teamCount, roundTypes, players);
-            this.SetEventHandlers();
-            this.Game.Run();
+            try
+            {
+                this.game = new AsyncGame(teamCount, roundTypes, players);
+                this.SetEventHandlers();
+                this.Game.Run();
+            }
+            catch (ArgumentException e)
+            {
+                this.hubContext.Clients.Group(this.Password).ReceiveGameAborted(e.Message);
+                this.GameFinished?.Invoke(this);
+            }
         }
 
         private void SetEventHandlers()

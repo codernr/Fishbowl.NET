@@ -46,6 +46,7 @@ namespace Fishbowl.Net.Client.Pages
                 .WithUrl(this.NavigationManager.ToAbsoluteUri("/game"))
                 .Build();
 
+            this.connection.On<string>("ReceiveGameAborted", this.ReceiveGameAborted);
             this.connection.On<Game>("ReceiveGameStarted", this.ReceiveGameStarted);
             this.connection.On<Game>("ReceiveGameFinished", this.ReceiveGameFinished);
             this.connection.On<Round>("ReceiveRoundStarted", this.ReceiveRoundStarted);
@@ -62,6 +63,13 @@ namespace Fishbowl.Net.Client.Pages
             {
                 await this.StateManager.SetStateAsync<Password>();
             }
+        }
+
+        public async Task ReceiveGameAborted(string message)
+        {
+            await this.StateManager.SetStateAsync<Error>(state => state.Message = message);
+            await this.connection.StopAsync();
+            this.NavigationManager.NavigateTo(this.NavigationManager.Uri, true);
         }
 
         public Task ReceiveGameStarted(Game game)
