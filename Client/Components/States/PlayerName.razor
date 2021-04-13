@@ -3,15 +3,26 @@
 @code
 {
     protected override RenderFragment Content =>
-        @<div>
-            <h2>Set player name</h2>
-
-            <form @onsubmit="e => this.OnPlayerNameSet.InvokeAsync(this.playerName)" @onsubmit:preventDefault>
-                <div>
-                    <input type="text" @bind="this.playerName" minlength="3" required>
+        @<div class="col my-auto">
+            <div class="row mb-5">
+                <div class="col">
+                    <h2>Set player name</h2>
                 </div>
-            
-                <button type="submit">Set</button>
+            </div>
+            <form @onsubmit="e => this.OnPlayerNameSet.InvokeAsync(this.playerName)" @onsubmit:preventDefault>
+                <div class="row mb-3">
+                    <div class="col">
+                        <div class="form-floating text-dark">
+                            <input type="text" class="form-control" id="name-input" placeholder="Name" @bind="this.playerName" minlength="3" required>
+                            <label for="name-input">Player name</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="d-grid col">
+                        <button class="btn btn-success btn-lg" type="submit">Set</button>
+                    </div>
+                </div>
             </form>
         </div>;
 }
