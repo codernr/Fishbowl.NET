@@ -3,14 +3,26 @@
 @code
 {
     protected override RenderFragment Content =>
-        @<div>
-            <h2>Set word count per player</h2>
-
-            <form @onsubmit="e => this.OnWordCountSet.InvokeAsync(this.wordCount)" @onsubmit:preventDefault>
-                <div>
-                    <input type="number" @bind="this.wordCount">
+        @<div class="col my-auto">
+            <div class="row mb-5">
+                <div class="col">
+                    <h2>Set word count per player</h2>
                 </div>
-                <button type="submit">Set</button>
+            </div>
+            <form @onsubmit="e => this.OnWordCountSet.InvokeAsync(this.wordCount)" @onsubmit:preventDefault>
+                <div class="row mb-3">
+                    <div class="col">
+                        <div class="form-floating text-dark">
+                            <input class="form-control" id="word-count-input" placeholder="Word count" type="number" min="2" required @bind="this.wordCount">
+                            <label for="word-count-input">Set game password</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="d-grid col">
+                        <button class="btn btn-success btn-lg" type="submit">Set</button>
+                    </div>
+                </div>
             </form>
         </div>;
 }
