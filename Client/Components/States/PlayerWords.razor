@@ -1,14 +1,10 @@
+@using Fishbowl.Net.Client.Components.Templates
 @inherits State
 
 @code
 {
     protected override RenderFragment Content =>
-        @<div class="col my-auto">
-            <div class="row mb-5">
-                <div class="col">
-                    <h2>Set player words</h2>
-                </div>
-            </div>
+        @<StateContainer Title="Set player words">
             <form @onsubmit="e => this.OnPlayerWordsSet.InvokeAsync(this.words)" @onsubmit:preventDefault>
 
                 @for (int i = 0; i < this.words.Length; i++)
@@ -30,5 +26,5 @@
                     </div>
                 </div>
             </form>
-        </div>;
+        </StateContainer>;
 }

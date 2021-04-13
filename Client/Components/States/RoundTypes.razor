@@ -1,15 +1,10 @@
+@using Fishbowl.Net.Client.Components.Templates
 @inherits State
 
 @code
 {
     protected override RenderFragment Content =>
-        @<div class="col my-auto">
-            <div class="row mb-5">
-                <div class="col">
-                    <h2>Select round types</h2>
-                </div>
-            </div>
-
+        @<StateContainer Title="Select round types">
             <form @onsubmit="e => this.OnRoundTypesSet.InvokeAsync(this.SelectedOptions)">
                 <div class="row mb-3">
                     <div class="col d-grid gap-3">
@@ -27,5 +22,5 @@
                     </div>
                 </div>
             </form>
-        </div>;
+        </StateContainer>;
 }

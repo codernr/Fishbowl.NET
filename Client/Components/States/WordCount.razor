@@ -1,14 +1,10 @@
+@using Fishbowl.Net.Client.Components.Templates
 @inherits State
 
 @code
 {
     protected override RenderFragment Content =>
-        @<div class="col my-auto">
-            <div class="row mb-5">
-                <div class="col">
-                    <h2>Set word count per player</h2>
-                </div>
-            </div>
+        @<StateContainer Title="Set word count per player">
             <form @onsubmit="e => this.OnWordCountSet.InvokeAsync(this.wordCount)" @onsubmit:preventDefault>
                 <div class="row mb-3">
                     <div class="col">
@@ -24,5 +20,5 @@
                     </div>
                 </div>
             </form>
-        </div>;
+        </StateContainer>;
 }
