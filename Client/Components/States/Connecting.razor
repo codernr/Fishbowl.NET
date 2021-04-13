@@ -1,7 +1,14 @@
+@using Fishbowl.Net.Client.Components.Templates
 @inherits State
 
 @code
 {
     protected override RenderFragment Content =>
-        @<strong>Connecting...</strong>;
+        @<StateContainer Title="Connecting...">
+            <div class="row">
+                <div class="col">
+                    Waiting for server
+                </div>
+            </div>
+        </StateContainer>;
 }

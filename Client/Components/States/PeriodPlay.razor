@@ -1,26 +1,42 @@
+@using Fishbowl.Net.Client.Components.Templates
 @inherits State
 
 @code
 {
     protected override RenderFragment Content =>
-        @<div>
-            <h2>Round: @this.Round.Type</h2>
-
-            <Timer Start="this.StartedAt" Length="this.Period.Length()" OnExpired="() => this.expired = true" />
+        @<StateContainer Title="@this.Round.Type">
+            <div class="row mb-3">
+                <div class="col">
+                    <Timer Start="this.StartedAt" Length="this.Period.Length()" OnExpired="() => this.expired = true" />
+                </div>
+            </div>
 
             @if (this.Word is not null)
             {
-                <p>@this.Word!.Value</p>
-                <div>
-                    <button type="button" @onclick="this.ScoreAdded">Guessed</button>
+                <div class="row mb-3">
+                    <div class="col">
+                        <div class="card text-white bg-primary">
+                            <div class="card-body fs-2">
+                                @this.Word!.Value
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col d-grid">
+                        <button class="btn btn-success btn-lg" type="button" @onclick="this.ScoreAdded">Guessed</button>
+                    </div>
                 </div>
             }
 
             @if (this.expired)
             {
-                <div>
-                    <button type="button" @onclick="e => this.OnPeriodFinished.InvokeAsync(DateTimeOffset.UtcNow)">Pass</button>
+                <div class="row mb-3">
+                    <div class="col d-grid">
+                        <button class="btn btn-success btn-lg" type="button" @onclick="e => this.OnPeriodFinished.InvokeAsync(DateTimeOffset.UtcNow)">Pass</button>
+                    </div>
                 </div>
             }
-        </div>;   
+        </StateContainer>;   
 }

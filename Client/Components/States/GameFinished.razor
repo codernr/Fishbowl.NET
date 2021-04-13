@@ -1,16 +1,21 @@
+@using Fishbowl.Net.Client.Components.Templates
 @inherits State
 
 @code
 {
     protected override RenderFragment Content =>
-        @<div>
-            <h2>Results</h2>
+        @<StateContainer Title="Game results">
 
-            <ul>
-            @foreach (var teamResult in this.Game.GetTeamScores())
-            {
-                <li>Team @teamResult.Key: @teamResult.Value</li>
-            }
-            </ul>
-        </div>;
+            <div class="row">
+                <div class="col">
+                    <h4>Team scores</h4>
+                    <ul class="list-group">
+                        @foreach (var teamResult in this.Game.GetTeamScores())
+                        {
+                            <li class="list-group-item">Team @teamResult.Key: @teamResult.Value</li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </StateContainer>;
 }

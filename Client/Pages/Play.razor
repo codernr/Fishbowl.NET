@@ -13,7 +13,7 @@
     <PlayerName OnPlayerNameSet="this.SetPlayerName" />
     <PlayerWords WordCount="this.gameContextSetup.WordCount" OnPlayerWordsSet="this.SubmitPlayerData" />
     <WaitingForPlayers />
-    <GameStarted />
+    <GameStarted Delay="@TimeSpan.FromSeconds(1)" />
     <RoundStarted />
     <PeriodSetupPlay OnStarted="this.StartPeriod" />
     <PeriodSetupWatch />

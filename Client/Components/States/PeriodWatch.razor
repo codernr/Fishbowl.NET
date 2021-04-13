@@ -1,13 +1,22 @@
+@using Fishbowl.Net.Client.Components.Templates
 @inherits State
 
 @code
 {
     protected override RenderFragment Content =>
-        @<div>
-            <h2>Round: @this.Round.Type</h2>
+        @<StateContainer Title="@this.Round.Type">
 
-            <p>@this.Period.Player.Name started at @this.Period.StartedAt with length @this.Period.Length()</p>
+            <div class="row">
+                <div class="col">
+                    <h4>Playing</h4>
+                    <p>@this.Period.Player.Name</p>
+                </div>
+            </div>
 
-            <Timer Start="this.StartedAt" Length="this.Period.Length()" />
-        </div>;
+            <div class="row mb-3">
+                <div class="col">
+                    <Timer Start="this.StartedAt" Length="this.Period.Length()" />
+                </div>
+            </div>
+        </StateContainer>;
 }

@@ -1,11 +1,14 @@
+@using Fishbowl.Net.Client.Components.Templates
 @inherits State
 
 @code
 {
     protected override RenderFragment Content =>
-        @<div>
-            <h2>Round start</h2>
-
-            <p>@this.Round.Type</p>
-        </div>;
+        @<StateContainer Title="Round start">
+            <div class="row">
+                <div class="col">
+                    Round type: <strong>@this.Round.Type</strong>
+                </div>
+            </div>
+        </StateContainer>;
 }
