@@ -13,13 +13,13 @@
     <PlayerName OnPlayerNameSet="this.SetPlayerName" />
     <PlayerWords WordCount="this.gameContextSetup.WordCount" OnPlayerWordsSet="this.SubmitPlayerData" />
     <WaitingForPlayers />
-    <GameStarted Delay="@TimeSpan.FromSeconds(1)" />
-    <RoundStarted />
+    <GameStarted Delay="@TimeSpan.FromSeconds(4)" />
+    <RoundStarted Delay="@TimeSpan.FromSeconds(4)" />
     <PeriodSetupPlay OnStarted="this.StartPeriod" />
     <PeriodSetupWatch />
     <PeriodPlay OnScoreAdded="this.AddScore" OnPeriodFinished="this.FinishPeriod" />
     <PeriodWatch />
-    <PeriodFinished />
-    <RoundFinished />
+    <PeriodFinished Delay="@TimeSpan.FromSeconds(4)" />
+    <RoundFinished Delay="@TimeSpan.FromSeconds(4)" />
     <GameFinished />
 </StateManager>
