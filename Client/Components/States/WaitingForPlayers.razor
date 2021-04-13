@@ -4,5 +4,11 @@
 @code
 {
     protected override RenderFragment Content =>
-        @<StateContainer Title="Waiting for other players"></StateContainer>;
+        @<StateContainer Title="Waiting...">
+            <div class="row">
+                <div class="col">
+                    Other players are still working...
+                </div>
+            </div>
+        </StateContainer>;
 }
