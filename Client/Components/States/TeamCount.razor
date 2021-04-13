@@ -8,18 +8,12 @@
             <form @onsubmit="e => this.OnTeamCountSet.InvokeAsync(this.teamCount)" @onsubmit:preventDefault>
                 <div class="row mb-3">
                     <div class="col">
-                        <div class="form-floating text-dark">
-                            <input
-                                class="form-control"
-                                id="team-count-input"
-                                placeholder="Team count"
-                                type="number"
-                                min="2"
-                                max="5"
-                                required
-                                @bind="this.teamCount">
-                            <label for="word-count-input">Number of teams</label>
-                        </div>
+                        <select class="form-select form-select-lg mb-3" @bind="this.teamCount">
+                            <option selected value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
                     </div>
                 </div>
                 <div class="row mb-3">
