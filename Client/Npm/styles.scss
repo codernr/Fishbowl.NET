@@ -11,6 +11,15 @@
 
 @import "bootstrap/scss/utilities/api";
 
+.fade-container {
+    opacity: 0;
+    transition: opacity 300ms;
+
+    &.show {
+        opacity: 1;
+    }
+}
+
 #blazor-error-ui {
     background: lightyellow;
     bottom: 0;
