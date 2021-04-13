@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Components;
 
 namespace Fishbowl.Net.Client.Components.States
@@ -11,5 +12,9 @@ namespace Fishbowl.Net.Client.Components.States
         public EventCallback<string> OnCreateGame { get; set; } = default!;
 
         private string password = string.Empty;
+
+        private bool create = false;
+
+        private EventCallback<string> Callback => this.create ? this.OnCreateGame : this.OnJoinGame;
     }
 }

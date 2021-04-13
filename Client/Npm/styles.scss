@@ -24,6 +24,13 @@
     }
 }
 
+form:invalid {
+    button[type=submit] {
+        pointer-events: none;
+        opacity: 0.7;
+    }
+}
+
 #blazor-error-ui {
     background: lightyellow;
     bottom: 0;
