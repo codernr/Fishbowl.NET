@@ -187,8 +187,17 @@ namespace Fishbowl.Net.Client.Pages
         {
             this.gameContextSetup.WordCount = wordCount;
 
-            await this.connection.InvokeAsync("CreateGameContext", this.gameContextSetup);
-            await this.StateManager.SetStateAsync<TeamCount>();
+            var passwordExists = await this.connection.InvokeAsync<bool>("GameContextExists", this.gameContextSetup.Password);
+
+            if (passwordExists)
+            {
+                Console.WriteLine("Error, pass exists");
+            }
+            else
+            {
+                await this.connection.InvokeAsync("CreateGameContext", this.gameContextSetup);
+                await this.StateManager.SetStateAsync<TeamCount>();
+            }
         }
 
         private async Task JoinGameContext(string password)

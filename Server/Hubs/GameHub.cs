@@ -24,6 +24,8 @@ namespace Fishbowl.Net.Server.Hubs
         public Task CreateGameContext(GameContextSetup request) =>
             this.service.CreateGameContext(this.Context.ConnectionId, request);
 
+        public bool GameContextExists(string password) => this.service.GameContextExists(password);
+
         public Task JoinGameContext(string password) => this.service.JoinGameContext(this.Context.ConnectionId, password);
 
         public int GetWordCount() => this.GameContext.WordCount;

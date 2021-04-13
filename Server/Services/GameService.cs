@@ -36,6 +36,8 @@ namespace Fishbowl.Net.Server.Services
             context.RegisterConnection(connectionId);
         }
 
+        public bool GameContextExists(string password) => this.contexts.Any(context => context.Password == password);
+
         public async Task JoinGameContext(string connectionId, string password)
         {
             var context = this.contexts.FirstOrDefault(game => game.Password == password);
