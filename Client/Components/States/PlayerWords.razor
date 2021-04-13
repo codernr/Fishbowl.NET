@@ -13,7 +13,14 @@
                     <div class="row mb-3">
                         <div class="col">
                             <div class="form-floating text-dark">
-                                <input type="text" class="form-control" id="word-input-@id" placeholder="Word @id" @bind="this.words[id]">
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    id="word-input-@id"
+                                    placeholder="Word @id"
+                                    @bind="this.words[id]"
+                                    minlength="2"
+                                    required>
                                 <label for="word-input-@id">Word @id</label>
                             </div>
                         </div>
