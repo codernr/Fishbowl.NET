@@ -1,0 +1,14 @@
+@using Fishbowl.Net.Client.Components.Templates
+@inherits State
+
+@code
+{
+    protected override RenderFragment Content =>
+        @<StateContainer Title="Error!">
+            <div class="row">
+                <div class="col">
+                    @this.Message
+                </div>
+            </div>
+        </StateContainer>;
+}

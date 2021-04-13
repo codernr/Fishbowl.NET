@@ -177,10 +177,22 @@ namespace Fishbowl.Net.Client.Pages
 
         public ValueTask DisposeAsync() => this.connection.DisposeAsync();
 
-        private Task SetPassword(string password)
+        private async Task SetPassword(string password)
         {
             this.gameContextSetup.Password = password;
-            return this.StateManager.SetStateAsync<WordCount>();
+
+            var passwordExists = await this.connection.InvokeAsync<bool>("GameContextExists", this.gameContextSetup.Password);
+
+            if (passwordExists)
+            {
+                await this.StateManager.SetStateAsync<Error>(
+                    state => state.Message = "The password is already in use, choose another one.");
+                await this.StateManager.SetStateAsync<Password>();
+            }
+            else
+            {
+                await this.StateManager.SetStateAsync<WordCount>();
+            }
         }
 
         private async Task SetWordCount(int wordCount)
@@ -191,7 +203,9 @@ namespace Fishbowl.Net.Client.Pages
 
             if (passwordExists)
             {
-                Console.WriteLine("Error, pass exists");
+                await this.StateManager.SetStateAsync<Error>(
+                    state => state.Message = "The password is already in use, choose another one.");
+                await this.StateManager.SetStateAsync<Password>();
             }
             else
             {
