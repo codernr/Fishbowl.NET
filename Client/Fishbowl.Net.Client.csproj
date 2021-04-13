@@ -2,7 +2,17 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <Nullable>enable</Nullable>
+    <NpmRoot>Npm\</NpmRoot>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Remove="$(NpmRoot)**" />
+  </ItemGroup>
+
+  <Target Name="BuildCss" BeforeTargets="Build" Condition="'$(Configuration)' == 'Debug'">
+    <Exec WorkingDirectory="$(NpmRoot)" Command="npm run build" />
+  </Target>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="5.0.4"/>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="5.0.4" PrivateAssets="all"/>
