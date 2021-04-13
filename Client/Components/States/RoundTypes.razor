@@ -3,19 +3,29 @@
 @code
 {
     protected override RenderFragment Content =>
-        @<div>
-            <h2>Select round types</h2>
+        @<div class="col my-auto">
+            <div class="row mb-5">
+                <div class="col">
+                    <h2>Select round types</h2>
+                </div>
+            </div>
 
             <form @onsubmit="e => this.OnRoundTypesSet.InvokeAsync(this.SelectedOptions)">
-                @for (int i = 0; i < this.options.Count; i++)
-                {
-                    var id = i;
-                    <div>
-                        <label for="option-@id">@this.options[i].name</label>
-                        <input type="checkbox" id="option-@id" checked @onchange="e => this.ToggleOption(id)">
+                <div class="row mb-3">
+                    <div class="col d-grid gap-3">
+                        @for (int i = 0; i < this.options.Count; i++)
+                        {
+                            var id = i;
+                            <input type="checkbox" class="btn-check" id="option-@id" checked="@this.options[i].selected" @onchange="e => this.ToggleOption(id)">
+                            <label for="option-@id" class="btn btn-outline-primary btn-lg">@this.options[i].name</label>
+                        }
                     </div>
-                }
-                <button type="submit">Submit</button>
+                </div>
+                <div class="row mb-3">
+                    <div class="d-grid col">
+                        <button class="btn btn-success btn-lg" type="submit">Set</button>
+                    </div>
+                </div>
             </form>
         </div>;
 }
