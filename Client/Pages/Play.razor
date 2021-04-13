@@ -4,8 +4,6 @@
 
 @inject NavigationManager NavigationManager
 
-<h1>Play</h1>
-
 <StateManager @ref="this.stateManager">
     <Connecting />
     <Password OnCreateGame="this.SetPassword" OnJoinGame="this.JoinGameContext" />
