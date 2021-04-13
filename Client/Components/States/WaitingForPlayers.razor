@@ -1,7 +1,8 @@
+@using Fishbowl.Net.Client.Components.Templates
 @inherits State
 
 @code
 {
     protected override RenderFragment Content =>
-        @<p>Waiting for other players....</p>;
+        @<StateContainer Title="Waiting for other players"></StateContainer>;
 }
