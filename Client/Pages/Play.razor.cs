@@ -228,7 +228,8 @@ namespace Fishbowl.Net.Client.Pages
             else
             {
                 await this.StateManager.SetStateAsync<Error>(
-                    state => state.Message = "User is already connected or password is invalid. Try reload the game.");
+                    state => state.Message = 
+                    "User is already connected or password is invalid, or game is already running. Try reloading the page.");
                 await this.StateManager.SetStateAsync<Password>();
             }
         }

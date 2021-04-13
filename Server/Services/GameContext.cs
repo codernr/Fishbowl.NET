@@ -15,6 +15,8 @@ namespace Fishbowl.Net.Server.Services
 
         private AsyncGame? game;
 
+        public bool Running => this.game is not null;
+
         public string Password { get; private set; }
 
         public int WordCount { get; private set; } = 2;

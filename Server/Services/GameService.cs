@@ -40,7 +40,7 @@ namespace Fishbowl.Net.Server.Services
 
         public async Task JoinGameContext(string connectionId, string password)
         {
-            var context = this.contexts.FirstOrDefault(game => game.Password == password);
+            var context = this.contexts.FirstOrDefault(game => game.Password == password && !game.Running);
 
             if (this.connectionMap.ContainsKey(connectionId) || context is null)
             {
