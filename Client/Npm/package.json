@@ -5,7 +5,8 @@
     "build": "npm run css",
     "css-compile": "sass styles.scss ./../wwwroot/css/styles.css --load-path=node_modules --style compressed",
     "css-prefix": "postcss --replace ./../wwwroot/css/styles.css --use autoprefixer --map",
-    "css": "npm-run-all css-compile css-prefix"
+    "css-purge": "purgecss --keyframes --css ./../wwwroot/css/styles.css --content ./../wwwroot/index.html ./../Shared/**/*.razor ./../Pages/**/*.razor ./../Components/**/*.razor --output ./../wwwroot/css/",
+    "css": "npm-run-all css-compile css-prefix css-purge"
   },
   "dependencies": {
     "bootstrap": "^5.0.0-beta3"
@@ -15,6 +16,7 @@
     "npm-run-all": "^4.1.5",
     "postcss": "^8.2.10",
     "postcss-cli": "^8.3.1",
+    "purgecss": "^4.0.3",
     "sass": "^1.32.8"
   }
 }
