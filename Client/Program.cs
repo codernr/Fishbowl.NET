@@ -18,8 +18,10 @@ namespace Fishbowl.Net.Client
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
 
-            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-            builder.Services.AddSingleton<IStorageService, StorageService>();
+            builder.Services
+                .AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) })
+                .AddSingleton<IStorageService, StorageService>()
+                .AddSingleton<IUserIdProvider, UserIdProvider>();
 
             await builder.Build().RunAsync();
         }
