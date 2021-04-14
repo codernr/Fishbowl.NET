@@ -5,7 +5,7 @@ namespace Fishbowl.Net.Client.Services
 {
     public interface IUserIdProvider
     {
-        ValueTask<Guid> GetUserId();
+        Guid GetUserId();
     }
 
     public class UserIdProvider : IUserIdProvider
@@ -17,16 +17,16 @@ namespace Fishbowl.Net.Client.Services
         public UserIdProvider(IStorageService storageService) =>
             this.storageService = storageService;
 
-        public async ValueTask<Guid> GetUserId()
+        public Guid GetUserId()
         {
             Guid id;
 
-            var storedId = await this.storageService.GetItem(UserIdKey);
+            var storedId = this.storageService.GetItem(UserIdKey);
 
             if (storedId is null)
             {
                 id = Guid.NewGuid();
-                await this.storageService.SetItem(UserIdKey, id.ToString());
+                this.storageService.SetItem(UserIdKey, id.ToString());
                 return id;
             }
 

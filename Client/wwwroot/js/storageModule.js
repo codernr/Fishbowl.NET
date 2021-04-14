@@ -1,4 +1,4 @@
-export const storageModule = {
+window.StorageModule = {
     setItem: function (key, value) {
         window.localStorage.setItem(key, value);
     },

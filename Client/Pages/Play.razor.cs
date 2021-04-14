@@ -42,6 +42,8 @@ namespace Fishbowl.Net.Client.Pages
 
         protected override async Task OnInitializedAsync()
         {
+            var id = this.UserIdProvider.GetUserId();
+            Console.WriteLine(id);
             this.connection = new HubConnectionBuilder()
                 .WithUrl(this.NavigationManager.ToAbsoluteUri("/game"))
                 .Build();
