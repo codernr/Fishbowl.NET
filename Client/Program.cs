@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Fishbowl.Net.Client.Services;
 
 namespace Fishbowl.Net.Client
 {
@@ -18,6 +19,7 @@ namespace Fishbowl.Net.Client
             builder.RootComponents.Add<App>("#app");
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+            builder.Services.AddSingleton<IStorageService, StorageService>();
 
             await builder.Build().RunAsync();
         }
