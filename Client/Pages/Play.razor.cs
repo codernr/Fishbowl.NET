@@ -42,10 +42,9 @@ namespace Fishbowl.Net.Client.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            var id = this.UserIdProvider.GetUserId();
-            Console.WriteLine(id);
             this.connection = new HubConnectionBuilder()
                 .WithUrl(this.NavigationManager.ToAbsoluteUri("/game"))
+                .WithAutomaticReconnect()
                 .Build();
 
             this.connection.On<string>("ReceiveGameAborted", this.ReceiveGameAborted);
@@ -266,7 +265,7 @@ namespace Fishbowl.Net.Client.Pages
         private async Task SubmitPlayerData(string[] words)
         {
             this.Player = new Player(
-                Guid.NewGuid(),
+                this.UserIdProvider.GetUserId(),
                 this.playerName,
                 words.Select(word => new Word(Guid.NewGuid(), word)));
             await this.connection.InvokeAsync("AddPlayer", this.Player);
