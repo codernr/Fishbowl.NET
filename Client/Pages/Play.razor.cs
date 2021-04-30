@@ -5,7 +5,6 @@ using Fishbowl.Net.Client.Components;
 using Fishbowl.Net.Client.Components.States;
 using Fishbowl.Net.Client.Services;
 using Fishbowl.Net.Shared.Data;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.SignalR.Client;
 
 namespace Fishbowl.Net.Client.Pages
@@ -36,16 +35,21 @@ namespace Fishbowl.Net.Client.Pages
 
         private Round? round;
 
-        private GameContextSetup gameContextSetup = new();
+        private readonly GameContextSetup gameContextSetup = new();
 
         private GameSetup gameSetup = new();
 
         protected override async Task OnInitializedAsync()
         {
+            this.gameContextSetup.UserId = this.UserIdProvider.GetUserId();
+
             this.connection = new HubConnectionBuilder()
                 .WithUrl(this.NavigationManager.ToAbsoluteUri("/game"))
                 .WithAutomaticReconnect()
                 .Build();
+
+            this.connection.Reconnecting += this.Reconnecting;
+            this.connection.Reconnected += this.Reconnected;
 
             this.connection.On<string>("ReceiveGameAborted", this.ReceiveGameAborted);
             this.connection.On<Game>("ReceiveGameStarted", this.ReceiveGameStarted);
@@ -64,6 +68,25 @@ namespace Fishbowl.Net.Client.Pages
             {
                 await this.StateManager.SetStateAsync<Password>();
             }
+        }
+
+        public Task Reconnecting(Exception exception) =>
+            this.StateManager.SetStateAsync<Error>(state =>
+                state.Message = "Connection lost, reconnecting...");
+
+        public async Task Reconnected(string connectionId)
+        {
+            var exists = await this.connection.InvokeAsync<bool>("GameContextExists", this.gameContextSetup.Password);
+
+            if (!exists)
+            {
+                await this.StateManager.SetStateAsync<Password>();
+                return;
+            }
+
+            var game = await this.connection.InvokeAsync<Game>("ReconnectGameContext", this.gameContextSetup);
+
+            await this.RestoreState(game);
         }
 
         public async Task ReceiveGameAborted(string message)
@@ -226,7 +249,10 @@ namespace Fishbowl.Net.Client.Pages
 
         private async Task JoinGameContext(string password)
         {
-            var success = await this.connection.InvokeAsync<bool>("JoinGameContext", password);
+            this.gameContextSetup.Password = password;
+
+            var success = await this.connection.InvokeAsync<bool>(
+                "JoinGameContext", this.gameContextSetup);
             
             if (success)
             {
@@ -270,6 +296,28 @@ namespace Fishbowl.Net.Client.Pages
                 words.Select(word => new Word(Guid.NewGuid(), word)));
             await this.connection.InvokeAsync("AddPlayer", this.Player);
             await this.StateManager.SetStateAsync<WaitingForPlayers>();
+        }
+
+        private async Task RestoreState(Game game)
+        {
+            this.Player = game.Teams
+                .SelectMany(team => team.Players)
+                .First(player => player.Id == this.gameContextSetup.UserId);
+
+            this.Round = game.Rounds.Last();
+
+            if (this.Round.Periods.Count == 0) return;
+
+            var period = this.Round.Periods.Last();
+
+            var task = period switch
+            {
+                { StartedAt: null }     => this.ReceivePeriodSetup(period),
+                { FinishedAt: null }    => this.ReceivePeriodStarted(period),
+                _                       => this.ReceiveGameFinished(game)
+            };
+
+            await task;
         }
     }
 }

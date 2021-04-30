@@ -39,6 +39,9 @@ namespace Fishbowl.Net.Server.Hubs
             }
         }
 
+        public Task<Game> ReconnectGameContext(GameContextJoin request) =>
+            this.service.ReconnectGameContext(this.Context.ConnectionId, request);
+
         public int GetWordCount() => this.GameContext.WordCount;
 
         public void SetupGame(GameSetup request) =>

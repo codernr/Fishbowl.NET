@@ -57,6 +57,8 @@ namespace Fishbowl.Net.Server.Services
             }
         }
 
+        public Game GetGameData() => this.Game.Game;
+
         private void StartGame(int teamCount, IEnumerable<string> roundTypes, IEnumerable<Player> players)
         {
             try

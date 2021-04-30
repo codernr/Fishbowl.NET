@@ -52,6 +52,13 @@ namespace Fishbowl.Net.Server.Services
             this.connectionContextMap.Add(connectionId, context);
         }
 
+        public async Task<Game> ReconnectGameContext(string connectionId, GameContextJoin request)
+        {
+            await this.JoinGameContext(connectionId, request);
+
+            return this.contexts[request.Password].GetGameData();
+        }
+
         public async Task RemoveConnection(string connectionId)
         {
             if (!this.connectionContextMap.ContainsKey(connectionId))

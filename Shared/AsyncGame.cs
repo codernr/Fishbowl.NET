@@ -29,6 +29,8 @@ namespace Fishbowl.Net.Shared
 
         private bool finishRequested = false;
 
+        public Game Game => this.game;
+
         private readonly Game game;
 
         private Task? gameLoop;
