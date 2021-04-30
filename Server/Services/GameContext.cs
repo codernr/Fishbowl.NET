@@ -1,77 +1,59 @@
 using System;
 using System.Collections.Generic;
-using Fishbowl.Net.Client.Services;
-using Fishbowl.Net.Server.Data;
-using Fishbowl.Net.Server.Hubs;
+using System.Threading.Tasks;
 using Fishbowl.Net.Shared;
 using Fishbowl.Net.Shared.Data;
-using Microsoft.AspNetCore.SignalR;
 
 namespace Fishbowl.Net.Server.Services
 {
-    public class GameContext
+    public class GameContext : IAsyncDisposable
     {
         public AsyncGame Game => this.game ?? throw new InvalidOperationException();
 
-        private AsyncGame? game;
-
         public bool Running => this.game is not null;
-
-        public string Password { get; private set; }
 
         public int WordCount { get; private set; } = 2;
 
         public event Action<GameContext>? GameFinished;
 
-        private readonly IHubContext<GameHub, IGameClient> hubContext;
+        private readonly List<Player> players = new();
 
-        private readonly Map<string, Player> players = new();
+        private readonly IGroupHubContext groupHubContext;
 
-        private readonly List<string> connections = new();
+        private AsyncGame? game;
 
         private GameSetup? setup;
 
-        public GameContext(GameContextSetup request, IHubContext<GameHub, IGameClient> hubContext)
-        {
-            this.hubContext = hubContext;
-            this.WordCount = request.WordCount;
-            this.Password = request.Password;
-        }
-
-        public void RegisterConnection(string connectionId)
-        {
-            if (!this.connections.Contains(connectionId))
-            {
-                this.connections.Add(connectionId);
-            }
-        }
+        public GameContext(int wordCount, IGroupHubContext groupHubContext) =>
+            (this.WordCount, this.groupHubContext) = (wordCount, groupHubContext);
 
         public void SetupGame(GameSetup request) => this.setup = request;
 
-        public void RemoveConnection(string connectionId)
+        public Task RegisterConnection(Guid playerId, string connectionId) =>
+            this.groupHubContext.RegisterConnection(playerId, connectionId);
+
+        public Task RemoveConnection(string connectionId) =>
+            this.groupHubContext.RemoveConnection(connectionId);
+
+        public void AddPlayer(Player player)
         {
-            if (this.players.ContainsKey(connectionId))
+            if (!this.groupHubContext.ContainsKey(player.Id))
             {
-                this.players.Remove(connectionId);
+                throw new InvalidOperationException("Invalid player connection");
             }
 
-            this.connections.Remove(connectionId);
-        }
+            this.players.Add(player);
 
-        public void AddPlayer(string connectionId, Player player)
-        {
-            this.players.Add(connectionId, player);
-
-            if (this.players.Count == this.connections.Count)
+            if (this.players.Count == this.groupHubContext.ConnectionCount)
             {
                 if (this.setup is null)
                 {
-                    this.hubContext.Clients.Group(this.Password).ReceiveGameAborted("Game setup is missing.");
+                    this.groupHubContext.Group().ReceiveGameAborted("Game setup is missing.");
                     this.GameFinished?.Invoke(this);
                     return;
                 }
 
-                this.StartGame(this.setup.TeamCount, this.setup.RoundTypes, this.players.Items2);
+                this.StartGame(this.setup.TeamCount, this.setup.RoundTypes, this.players);
             }
         }
 
@@ -85,7 +67,7 @@ namespace Fishbowl.Net.Server.Services
             }
             catch (ArgumentException e)
             {
-                this.hubContext.Clients.Group(this.Password).ReceiveGameAborted(e.Message);
+                this.groupHubContext.Group().ReceiveGameAborted(e.Message);
                 this.GameFinished?.Invoke(this);
             }
         }
@@ -104,33 +86,37 @@ namespace Fishbowl.Net.Server.Services
         }
 
         private async void GameStarted(Game game) =>
-            await this.hubContext.Clients.Group(this.Password).ReceiveGameStarted(game);
+            await this.groupHubContext.Group().ReceiveGameStarted(game);
 
         private async void OnGameFinished(Game game)
         {
-            await this.hubContext.Clients.Group(this.Password).ReceiveGameFinished(game);
+            await this.groupHubContext.Group().ReceiveGameFinished(game);
             this.GameFinished?.Invoke(this);
         }
 
         private async void RoundStarted(Round round) =>
-            await this.hubContext.Clients.Group(this.Password).ReceiveRoundStarted(round);
+            await this.groupHubContext.Group().ReceiveRoundStarted(round);
 
         private async void RoundFinished(Round round) =>
-            await this.hubContext.Clients.Group(this.Password).ReceiveRoundFinished(round);
+            await this.groupHubContext.Group().ReceiveRoundFinished(round);
 
         private async void PeriodSetup(Period period) =>
-            await this.hubContext.Clients.Group(this.Password).ReceivePeriodSetup(period);
+            await this.groupHubContext.Group().ReceivePeriodSetup(period);
 
         private async void PeriodStarted(Period period) =>
-            await this.hubContext.Clients.Group(this.Password).ReceivePeriodStarted(period);
+            await this.groupHubContext.Group().ReceivePeriodStarted(period);
 
         private async void PeriodFinished(Period period) =>
-            await this.hubContext.Clients.Group(this.Password).ReceivePeriodFinished(period);
+            await this.groupHubContext.Group().ReceivePeriodFinished(period);
 
         private async void ScoreAdded(Score score) =>
-            await this.hubContext.Clients.Group(this.Password).ReceiveScoreAdded(score);
+            await this.groupHubContext.Group().ReceiveScoreAdded(score);
 
         private async void WordSetup(Player player, Word word) =>
-            await this.hubContext.Clients.Clients(this.players[player]).ReceiveWordSetup(word);
+            await this.groupHubContext.Client(player.Id).ReceiveWordSetup(word);
+
+        public ValueTask DisposeAsync() => this.DisposeAsyncCore();
+
+        protected virtual ValueTask DisposeAsyncCore() => this.groupHubContext.DisposeAsync();
     }
 }

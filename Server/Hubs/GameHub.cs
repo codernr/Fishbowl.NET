@@ -26,11 +26,11 @@ namespace Fishbowl.Net.Server.Hubs
 
         public bool GameContextExists(string password) => this.service.GameContextExists(password);
 
-        public async Task<bool> JoinGameContext(string password)
+        public async Task<bool> JoinGameContext(GameContextJoin request)
         {
             try
             {
-                await this.service.JoinGameContext(this.Context.ConnectionId, password);
+                await this.service.JoinGameContext(this.Context.ConnectionId, request);
                 return true;
             }
             catch (InvalidOperationException)
@@ -45,7 +45,7 @@ namespace Fishbowl.Net.Server.Hubs
             this.GameContext.SetupGame(request);
 
         public void AddPlayer(Player player) =>
-            this.GameContext.AddPlayer(this.Context.ConnectionId, player);
+            this.GameContext.AddPlayer(player);
 
         public void StartPeriod(DateTimeOffset timestamp) => this.GameContext.Game.StartPeriod(timestamp);
 

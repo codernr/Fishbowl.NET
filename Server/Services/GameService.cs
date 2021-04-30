@@ -11,74 +11,80 @@ namespace Fishbowl.Net.Server.Services
 {
     public class GameService
     {
-        private List<GameContext> contexts = new();
+        private Dictionary<string, GameContext> contexts = new();
 
-        private readonly Dictionary<string, GameContext> connectionMap = new();
+        private readonly Dictionary<string, GameContext> connectionContextMap = new();
 
         private readonly IHubContext<GameHub, IGameClient> hubContext;
 
         public GameService(IHubContext<GameHub, IGameClient> hubContext) => this.hubContext = hubContext;
 
-        public async Task CreateGameContext(string connectionId, GameContextSetup request)
+        public bool GameContextExists(string password) => this.contexts.ContainsKey(password);
+
+        public Task CreateGameContext(string connectionId, GameContextSetup request)
         {
-            if (this.connectionMap.ContainsKey(connectionId) || this.contexts.Any(context => context.Password == request.Password))
+            if (this.connectionContextMap.ContainsKey(connectionId) || this.contexts.ContainsKey(request.Password))
             {
                 throw new InvalidOperationException();
             }
 
-            await this.hubContext.Groups.AddToGroupAsync(connectionId, request.Password);
-            var context = new GameContext(request, this.hubContext);
-            context.GameFinished += this.RemoveGameContext;
+            var groupHubContext = new GroupHubContext(this.hubContext, request.Password);
+            var context = new GameContext(request.WordCount, groupHubContext);
+            context.GameFinished += context => this.RemoveGameContext(request.Password);
 
-            this.contexts.Add(context);
-            this.connectionMap.Add(connectionId, context);
+            this.contexts.Add(request.Password, context);
+            this.connectionContextMap.Add(connectionId, context);
 
-            context.RegisterConnection(connectionId);
+            return context.RegisterConnection(request.UserId, connectionId);
         }
 
-        public bool GameContextExists(string password) => this.contexts.Any(context => context.Password == password);
-
-        public async Task JoinGameContext(string connectionId, string password)
+        public async Task JoinGameContext(string connectionId, GameContextJoin request)
         {
-            var context = this.contexts.FirstOrDefault(game => game.Password == password && !game.Running);
+            var context = this.contexts[request.Password];
 
-            if (this.connectionMap.ContainsKey(connectionId) || context is null)
+            if (this.connectionContextMap.ContainsKey(connectionId) || context is null)
             {
                 throw new InvalidOperationException();
             }
 
-            await this.hubContext.Groups.AddToGroupAsync(connectionId, password);
-            this.connectionMap.Add(connectionId, context);
-            context.RegisterConnection(connectionId);
+            await context.RegisterConnection(request.UserId, connectionId);
+
+            this.connectionContextMap.Add(connectionId, context);
         }
 
         public async Task RemoveConnection(string connectionId)
         {
-            if (this.connectionMap.ContainsKey(connectionId))
+            if (!this.connectionContextMap.ContainsKey(connectionId))
             {
-                var context = this.connectionMap[connectionId];
-                context.RemoveConnection(connectionId);
-                this.connectionMap.Remove(connectionId);
-
-                await this.hubContext.Groups.RemoveFromGroupAsync(context.Password, connectionId);
+                return;
             }
+
+            var context = this.connectionContextMap[connectionId];
+            
+            await context.RemoveConnection(connectionId);
+
+            this.connectionContextMap.Remove(connectionId);
         }
 
-        public GameContext GetContext(string connectionId) => this.connectionMap[connectionId];
+        public GameContext GetContext(string connectionId) => this.connectionContextMap[connectionId];
 
-        private async void RemoveGameContext(GameContext gameContext)
+        private async void RemoveGameContext(string password)
         {
-            this.contexts.Remove(gameContext);
-            var connections = this.connectionMap
-                .Where(item => item.Value == gameContext)
+            var context = this.contexts[password];
+
+            var connections = this.connectionContextMap
+                .Where(item => item.Value == context)
                 .Select(item => item.Key)
                 .ToList();
 
             foreach (var connectionId in connections)
             {
-                this.connectionMap.Remove(connectionId);
-                await this.hubContext.Groups.RemoveFromGroupAsync(gameContext.Password, connectionId);
+                this.connectionContextMap.Remove(connectionId);
             }
+
+            this.contexts.Remove(password);
+
+            await context.DisposeAsync();
         }
     }
 }
