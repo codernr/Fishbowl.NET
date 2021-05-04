@@ -46,7 +46,6 @@ namespace Fishbowl.Net.Client.Components
 
         protected override async Task OnInitializedAsync()
         {
-            Console.WriteLine("Add " + this.GetType().Name);
             await this.StateManager.AddAsync(this);
             await base.OnInitializedAsync();
         }

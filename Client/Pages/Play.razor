@@ -1,9 +1,11 @@
 @page "/play"
+@using Microsoft.Extensions.Logging
 @using Fishbowl.Net.Client.Components
 @using Fishbowl.Net.Client.Components.States
 
 @inject NavigationManager NavigationManager
 @inject IUserIdProvider UserIdProvider
+@inject ILogger<Play> Logger
 
 <StateManager @ref="this.stateManager">
     <Connecting />

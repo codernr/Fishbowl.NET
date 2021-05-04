@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Logging;
 
 namespace Fishbowl.Net.Client.Components
 {
@@ -28,6 +29,7 @@ namespace Fishbowl.Net.Client.Components
 
         public Task AddAsync(State state)
         {
+            this.Logger.LogInformation("Add state: {StateType}", state.GetType().Name);
             this.states.Add(state.GetType(), state);
             state.Updated += this.StateHasChanged;
 

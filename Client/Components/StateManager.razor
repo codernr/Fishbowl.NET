@@ -1,3 +1,7 @@
+@using Microsoft.Extensions.Logging;
+
+@inject ILogger<StateManager> Logger;
+
 <CascadingValue Value="this">
     @ChildContent
 
