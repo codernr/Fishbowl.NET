@@ -61,19 +61,19 @@ namespace Fishbowl.Net.Server.Services
                 "JoinGameContext: {{ConnectionId: {ConnectionId}, Password: {Password}}}",
                 connectionId, request.Password);
             
-            var context = this.contexts[request.Password];
-
             if (this.connectionContextMap.ContainsKey(connectionId))
             {
                 this.logger.LogError("Connection is already assigned to a GameContext");
                 throw new InvalidOperationException();
             }
 
-            if (context is null)
+            if (!this.contexts.ContainsKey(request.Password))
             {
                 this.logger.LogError("GameContext doesn't exist");
                 throw new InvalidOperationException();
             }
+
+            var context = this.contexts[request.Password];
 
             await context.RegisterConnection(request.UserId, connectionId);
 
