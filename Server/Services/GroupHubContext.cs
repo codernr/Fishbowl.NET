@@ -54,7 +54,7 @@ namespace Fishbowl.Net.Server.Services
 
         public Task RegisterConnection(Guid playerId, string connectionId)
         {
-            this.idConnectionMap.Add(playerId, connectionId);
+            this.idConnectionMap[playerId] = connectionId;
 
             return this.hubContext.Groups.AddToGroupAsync(connectionId, this.password);
         }
