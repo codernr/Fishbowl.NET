@@ -6,6 +6,7 @@ using Fishbowl.Net.Client.Services;
 using Fishbowl.Net.Server.Hubs;
 using Fishbowl.Net.Shared.Data;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Logging;
 
 namespace Fishbowl.Net.Server.Services
 {
@@ -17,14 +18,30 @@ namespace Fishbowl.Net.Server.Services
 
         private readonly IHubContext<GameHub, IGameClient> hubContext;
 
-        public GameService(IHubContext<GameHub, IGameClient> hubContext) => this.hubContext = hubContext;
+        private readonly ILogger<GameService> logger;
+
+        public GameService(
+            IHubContext<GameHub, IGameClient> hubContext,
+            ILogger<GameService> logger) =>
+            (this.hubContext, this.logger) = (hubContext, logger);
 
         public bool GameContextExists(string password) => this.contexts.ContainsKey(password);
 
         public Task CreateGameContext(string connectionId, GameContextSetup request)
         {
-            if (this.connectionContextMap.ContainsKey(connectionId) || this.contexts.ContainsKey(request.Password))
+            this.logger.LogInformation(
+                "CreateGameContext: {{ConnectionId: {ConnectionId}, Password: {Password}}}",
+                connectionId, request.Password);
+            
+            if (this.connectionContextMap.ContainsKey(connectionId))
             {
+                this.logger.LogError("Connection is already assigned to a GameContext");
+                throw new InvalidOperationException();
+            }
+
+            if (this.contexts.ContainsKey(request.Password))
+            {
+                this.logger.LogError("GameContext already exists");
                 throw new InvalidOperationException();
             }
 
@@ -40,10 +57,21 @@ namespace Fishbowl.Net.Server.Services
 
         public async Task JoinGameContext(string connectionId, GameContextJoin request)
         {
+            this.logger.LogInformation(
+                "JoinGameContext: {{ConnectionId: {ConnectionId}, Password: {Password}}}",
+                connectionId, request.Password);
+            
             var context = this.contexts[request.Password];
 
-            if (this.connectionContextMap.ContainsKey(connectionId) || context is null)
+            if (this.connectionContextMap.ContainsKey(connectionId))
             {
+                this.logger.LogError("Connection is already assigned to a GameContext");
+                throw new InvalidOperationException();
+            }
+
+            if (context is null)
+            {
+                this.logger.LogError("GameContext doesn't exist");
                 throw new InvalidOperationException();
             }
 
@@ -61,8 +89,11 @@ namespace Fishbowl.Net.Server.Services
 
         public async Task RemoveConnection(string connectionId)
         {
+            this.logger.LogInformation("RemoveConnection: {ConnectionId}", connectionId);
+
             if (!this.connectionContextMap.ContainsKey(connectionId))
             {
+                this.logger.LogInformation("Connection not found");
                 return;
             }
 
