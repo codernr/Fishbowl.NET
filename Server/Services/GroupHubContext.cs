@@ -79,6 +79,12 @@ namespace Fishbowl.Net.Server.Services
 
         private class NullGameClient : IGameClient
         {
+            public Task ReceiveSetupPlayer(GameSetup gameSetup) => Task.CompletedTask;
+
+            public Task ReceiveWaitForOtherPlayers(Player player) => Task.CompletedTask;
+
+            public Task ReceiveGameState(Game game) => Task.CompletedTask;
+            
             public Task ReceiveGameAborted(string message) => Task.CompletedTask;
 
             public Task ReceiveGameFinished(Game game) => Task.CompletedTask;

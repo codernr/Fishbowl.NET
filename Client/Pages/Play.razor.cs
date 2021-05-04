@@ -38,11 +38,9 @@ namespace Fishbowl.Net.Client.Pages
 
         private readonly GameContextSetup gameContextSetup = new();
 
-        private GameSetup gameSetup = new();
-
         protected override async Task OnInitializedAsync()
         {
-            this.gameContextSetup.UserId = this.UserIdProvider.GetUserId();
+            this.gameContextSetup.GameContextJoin.UserId = this.UserIdProvider.GetUserId();
 
             this.connection = new HubConnectionBuilder()
                 .WithUrl(this.NavigationManager.ToAbsoluteUri("/game"))
@@ -52,6 +50,9 @@ namespace Fishbowl.Net.Client.Pages
             this.connection.Reconnecting += this.Reconnecting;
             this.connection.Reconnected += this.Reconnected;
 
+            this.connection.On<GameSetup>("ReceiveSetupPlayer", this.ReceiveSetupPlayer);
+            this.connection.On<Player>("ReceiveWaitForOtherPlayers", this.ReceiveWaitForOtherPlayers);
+            this.connection.On<Game>("ReceiveGameState", this.ReceiveGameState);
             this.connection.On<string>("ReceiveGameAborted", this.ReceiveGameAborted);
             this.connection.On<Game>("ReceiveGameStarted", this.ReceiveGameStarted);
             this.connection.On<Game>("ReceiveGameFinished", this.ReceiveGameFinished);
@@ -71,23 +72,56 @@ namespace Fishbowl.Net.Client.Pages
             }
         }
 
-        public Task Reconnecting(Exception exception) =>
+        private Task Reconnecting(Exception exception) =>
             this.StateManager.SetStateAsync<Error>(state =>
                 state.Message = "Connection lost, reconnecting...");
 
-        public async Task Reconnected(string connectionId)
+        private Task Reconnected(string connectionId) => this.JoinGameContext(this.gameContextSetup.GameContextJoin);
+
+        public async Task ReceiveSetupPlayer(GameSetup gameSetup)
         {
-            var exists = await this.connection.InvokeAsync<bool>("GameContextExists", this.gameContextSetup.Password);
+            this.Logger.LogInformation(
+                "ReceiveSetupPlayer: {{WordCount: {WordCount}, TeamCount: {TeamCount}, RoundTypes: {RoundTypes}}}",
+                gameSetup.WordCount, gameSetup.TeamCount, (object)gameSetup.RoundTypes);
+            
+            this.gameContextSetup.GameSetup = gameSetup;
 
-            if (!exists)
+            await this.StateManager.SetStateAsync<PlayerName>();
+        }
+
+        public async Task ReceiveWaitForOtherPlayers(Player player)
+        {
+            this.Logger.LogInformation(
+                "ReceiveWaitForOtherPlayers: {{PlayerName: {PlayerName}, Words: {Words}}}",
+                player.Name, (object)player.Words.Select(word => word.Value));
+            
+            this.player = player;
+
+            await this.StateManager.SetStateAsync<WaitingForPlayers>();
+        }
+
+        public async Task ReceiveGameState(Game game)
+        {
+            this.Logger.LogInformation("ReceiveGameState");
+
+            this.Player = game.Teams
+                .SelectMany(team => team.Players)
+                .First(player => player.Id == this.gameContextSetup.GameContextJoin.UserId);
+
+            this.Round = game.Rounds.Last();
+
+            if (this.Round.Periods.Count == 0) return;
+
+            var period = this.Round.Periods.Last();
+
+            var task = period switch
             {
-                await this.StateManager.SetStateAsync<Password>();
-                return;
-            }
+                { StartedAt: null }     => this.ReceivePeriodSetup(period),
+                { FinishedAt: null }    => this.ReceivePeriodStarted(period),
+                _                       => this.ReceiveGameFinished(game)
+            };
 
-            var game = await this.connection.InvokeAsync<Game>("ReconnectGameContext", this.gameContextSetup);
-
-            await this.RestoreState(game);
+            await task;
         }
 
         public async Task ReceiveGameAborted(string message)
@@ -199,11 +233,11 @@ namespace Fishbowl.Net.Client.Pages
 
         public ValueTask DisposeAsync() => this.connection.DisposeAsync();
 
-        private async Task SetPassword(string password)
+        private async Task CreateGame(string password)
         {
-            this.gameContextSetup.Password = password;
+            this.gameContextSetup.GameContextJoin.Password = password;
 
-            var passwordExists = await this.connection.InvokeAsync<bool>("GameContextExists", this.gameContextSetup.Password);
+            var passwordExists = await this.connection.InvokeAsync<bool>("GameContextExists", password);
 
             if (passwordExists)
             {
@@ -219,9 +253,10 @@ namespace Fishbowl.Net.Client.Pages
 
         private async Task SetWordCount(int wordCount)
         {
-            this.gameContextSetup.WordCount = wordCount;
+            this.gameContextSetup.GameSetup.WordCount = wordCount;
 
-            var passwordExists = await this.connection.InvokeAsync<bool>("GameContextExists", this.gameContextSetup.Password);
+            var passwordExists = await this.connection.InvokeAsync<bool>(
+                "GameContextExists", this.gameContextSetup.GameContextJoin.Password);
 
             if (passwordExists)
             {
@@ -231,44 +266,43 @@ namespace Fishbowl.Net.Client.Pages
             }
             else
             {
-                await this.connection.InvokeAsync("CreateGameContext", this.gameContextSetup);
                 await this.StateManager.SetStateAsync<TeamCount>();
             }
         }
 
-        private async Task JoinGameContext(string password)
+        private Task JoinGame(string password)
         {
-            this.gameContextSetup.Password = password;
+            this.gameContextSetup.GameContextJoin.Password = password;
 
+            return this.JoinGameContext(this.gameContextSetup.GameContextJoin);
+        }
+
+        private async Task JoinGameContext(GameContextJoin gameContextJoin)
+        {
             var success = await this.connection.InvokeAsync<bool>(
-                "JoinGameContext", this.gameContextSetup);
+                "JoinGameContext", gameContextJoin);
             
             if (success)
             {
-                this.gameContextSetup.Password = password;
-                this.gameContextSetup.WordCount = await this.connection.InvokeAsync<int>("GetWordCount");
-                await this.StateManager.SetStateAsync<PlayerName>();
+                return;
             }
-            else
-            {
-                await this.StateManager.SetStateAsync<Error>(
-                    state => state.Message = 
-                    "User is already connected or password is invalid, or game is already running. Try reloading the page.");
-                await this.StateManager.SetStateAsync<Password>();
-            }
+            
+            await this.StateManager.SetStateAsync<Error>(
+                state => state.Message = 
+                "User is already connected or password is invalid, or game is already running. Try reloading the page.");
+            await this.StateManager.SetStateAsync<Password>();
         }
 
         private Task SetTeamCount(int teamCount)
         {
-            this.gameSetup.TeamCount = teamCount;
+            this.gameContextSetup.GameSetup.TeamCount = teamCount;
             return this.StateManager.SetStateAsync<RoundTypes>();
         }
 
         private async Task SetRoundTypes(string[] roundTypes)
         {
-            this.gameSetup.RoundTypes = roundTypes;
-            await this.connection.InvokeAsync("SetupGame", this.gameSetup);
-            await this.StateManager.SetStateAsync<PlayerName>();
+            this.gameContextSetup.GameSetup.RoundTypes = roundTypes;
+            await this.connection.InvokeAsync("CreateGameContext", this.gameContextSetup);
         }
 
         private Task SetPlayerName(string name)
@@ -284,29 +318,6 @@ namespace Fishbowl.Net.Client.Pages
                 this.playerName,
                 words.Select(word => new Word(Guid.NewGuid(), word)));
             await this.connection.InvokeAsync("AddPlayer", this.Player);
-            await this.StateManager.SetStateAsync<WaitingForPlayers>();
-        }
-
-        private async Task RestoreState(Game game)
-        {
-            this.Player = game.Teams
-                .SelectMany(team => team.Players)
-                .First(player => player.Id == this.gameContextSetup.UserId);
-
-            this.Round = game.Rounds.Last();
-
-            if (this.Round.Periods.Count == 0) return;
-
-            var period = this.Round.Periods.Last();
-
-            var task = period switch
-            {
-                { StartedAt: null }     => this.ReceivePeriodSetup(period),
-                { FinishedAt: null }    => this.ReceivePeriodStarted(period),
-                _                       => this.ReceiveGameFinished(game)
-            };
-
-            await task;
         }
     }
 }

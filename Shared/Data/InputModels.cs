@@ -9,8 +9,10 @@ namespace Fishbowl.Net.Shared.Data
         public Guid UserId { get; set; }
     }
     
-    public class GameContextSetup : GameContextJoin
+    public class GameContextSetup
     {
-        public int WordCount { get; set; } = 2;
+        public GameContextJoin GameContextJoin { get; set; } = new();
+
+        public GameSetup GameSetup { get; set; } = new();
     }
 }

@@ -5,6 +5,12 @@ namespace Fishbowl.Net.Client.Services
 {
     public interface IGameClient
     {
+        Task ReceiveSetupPlayer(GameSetup setup);
+
+        Task ReceiveWaitForOtherPlayers(Player player);
+
+        Task ReceiveGameState(Game game);
+
         Task ReceiveGameAborted(string message);
 
         Task ReceiveGameStarted(Game game);

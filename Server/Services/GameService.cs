@@ -29,9 +29,11 @@ namespace Fishbowl.Net.Server.Services
 
         public Task CreateGameContext(string connectionId, GameContextSetup request)
         {
+            var password = request.GameContextJoin.Password;
+
             this.logger.LogInformation(
                 "CreateGameContext: {{ConnectionId: {ConnectionId}, Password: {Password}}}",
-                connectionId, request.Password);
+                connectionId, password);
             
             if (this.connectionContextMap.ContainsKey(connectionId))
             {
@@ -39,20 +41,20 @@ namespace Fishbowl.Net.Server.Services
                 throw new InvalidOperationException();
             }
 
-            if (this.contexts.ContainsKey(request.Password))
+            if (this.contexts.ContainsKey(password))
             {
                 this.logger.LogError("GameContext already exists");
                 throw new InvalidOperationException();
             }
 
-            var groupHubContext = new GroupHubContext(this.hubContext, request.Password);
-            var context = new GameContext(request.WordCount, groupHubContext);
-            context.GameFinished += context => this.RemoveGameContext(request.Password);
+            var groupHubContext = new GroupHubContext(this.hubContext, password);
+            var context = new GameContext(request.GameSetup, groupHubContext);
+            context.GameFinished += context => this.RemoveGameContext(password);
 
-            this.contexts.Add(request.Password, context);
+            this.contexts.Add(password, context);
             this.connectionContextMap.Add(connectionId, context);
 
-            return context.RegisterConnection(request.UserId, connectionId);
+            return context.RegisterConnection(request.GameContextJoin.UserId, connectionId);
         }
 
         public async Task JoinGameContext(string connectionId, GameContextJoin request)
@@ -78,13 +80,6 @@ namespace Fishbowl.Net.Server.Services
             await context.RegisterConnection(request.UserId, connectionId);
 
             this.connectionContextMap.Add(connectionId, context);
-        }
-
-        public async Task<Game> ReconnectGameContext(string connectionId, GameContextJoin request)
-        {
-            await this.JoinGameContext(connectionId, request);
-
-            return this.contexts[request.Password].GetGameData();
         }
 
         public async Task RemoveConnection(string connectionId)

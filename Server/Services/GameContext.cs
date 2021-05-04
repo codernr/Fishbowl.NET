@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Fishbowl.Net.Shared;
 using Fishbowl.Net.Shared.Data;
@@ -10,27 +11,43 @@ namespace Fishbowl.Net.Server.Services
     {
         public AsyncGame Game => this.game ?? throw new InvalidOperationException();
 
-        public bool Running => this.game is not null;
+        public Game? GameData => this.game?.Game;
 
-        public int WordCount { get; private set; } = 2;
+        public int WordCount => this.gameSetup.WordCount;
 
         public event Action<GameContext>? GameFinished;
 
         private readonly List<Player> players = new();
 
+        private readonly GameSetup gameSetup;
+
         private readonly IGroupHubContext groupHubContext;
 
         private AsyncGame? game;
 
-        private GameSetup? setup;
+        public GameContext(GameSetup gameSetup, IGroupHubContext groupHubContext) =>
+            (this.gameSetup, this.groupHubContext) = (gameSetup, groupHubContext);
 
-        public GameContext(int wordCount, IGroupHubContext groupHubContext) =>
-            (this.WordCount, this.groupHubContext) = (wordCount, groupHubContext);
+        public async Task RegisterConnection(Guid playerId, string connectionId)
+        {
+            await this.groupHubContext.RegisterConnection(playerId, connectionId);
 
-        public void SetupGame(GameSetup request) => this.setup = request;
+            if (this.game is not null)
+            {
+                await this.groupHubContext.Client(playerId).ReceiveGameState(this.game.Game);
+                return;
+            }
 
-        public Task RegisterConnection(Guid playerId, string connectionId) =>
-            this.groupHubContext.RegisterConnection(playerId, connectionId);
+            var existingPlayer = this.players.SingleOrDefault(player => player.Id == playerId);
+
+            if (existingPlayer is not null)
+            {
+                await this.groupHubContext.Client(playerId).ReceiveWaitForOtherPlayers(existingPlayer);
+                return;
+            }
+
+            await this.groupHubContext.Client(playerId).ReceiveSetupPlayer(this.gameSetup);
+        }
 
         public Task RemoveConnection(string connectionId) =>
             this.groupHubContext.RemoveConnection(connectionId);
@@ -44,20 +61,14 @@ namespace Fishbowl.Net.Server.Services
 
             this.players.Add(player);
 
-            if (this.players.Count == this.groupHubContext.ConnectionCount)
+            if (this.players.Count != this.groupHubContext.ConnectionCount)
             {
-                if (this.setup is null)
-                {
-                    this.groupHubContext.Group().ReceiveGameAborted("Game setup is missing.");
-                    this.GameFinished?.Invoke(this);
-                    return;
-                }
-
-                this.StartGame(this.setup.TeamCount, this.setup.RoundTypes, this.players);
+                this.groupHubContext.Client(player.Id).ReceiveWaitForOtherPlayers(player);
+                return;
             }
-        }
 
-        public Game GetGameData() => this.Game.Game;
+            this.StartGame(this.gameSetup.TeamCount, this.gameSetup.RoundTypes, this.players);
+        }
 
         private void StartGame(int teamCount, IEnumerable<string> roundTypes, IEnumerable<Player> players)
         {
