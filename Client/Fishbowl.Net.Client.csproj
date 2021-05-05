@@ -4,25 +4,23 @@
     <Nullable>enable</Nullable>
     <NpmRoot>Npm\</NpmRoot>
   </PropertyGroup>
-
   <ItemGroup>
-    <Content Remove="$(NpmRoot)**" />
+    <Content Remove="$(NpmRoot)**"/>
   </ItemGroup>
-
-  <Target Name="BuildCssDebug" BeforeTargets="Build" Condition="'$(Configuration)' == 'Debug'">
-    <Exec WorkingDirectory="$(NpmRoot)" Command="npm run css-debug" />
-  </Target>
-   <Target Name="BuildCssRelease" BeforeTargets="Build" Condition="'$(Configuration)' == 'Release'">
-    <Exec WorkingDirectory="$(NpmRoot)" Command="npm run build" />
-  </Target>
-
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="5.0.4"/>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="5.0.4" PrivateAssets="all"/>
     <PackageReference Include="System.Net.Http.Json" Version="5.0.0"/>
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="5.0.4"/>
+    <PackageReference Include="Microsoft.Extensions.Localization" Version="5.0.5"/>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Shared\Fishbowl.Net.Shared.csproj"/>
   </ItemGroup>
+  <Target Name="BuildCssDebug" BeforeTargets="Build" Condition="'$(Configuration)' == 'Debug'">
+    <Exec WorkingDirectory="$(NpmRoot)" Command="npm run css-debug"/>
+  </Target>
+  <Target Name="BuildCssRelease" BeforeTargets="Build" Condition="'$(Configuration)' == 'Release'">
+    <Exec WorkingDirectory="$(NpmRoot)" Command="npm run build"/>
+  </Target>
 </Project>
