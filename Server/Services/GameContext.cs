@@ -11,8 +11,6 @@ namespace Fishbowl.Net.Server.Services
     {
         public AsyncGame Game => this.game ?? throw new InvalidOperationException();
 
-        public Game? GameData => this.game?.Game;
-
         public int WordCount => this.gameSetup.WordCount;
 
         public event Action<GameContext>? GameFinished;
@@ -32,21 +30,21 @@ namespace Fishbowl.Net.Server.Services
         {
             await this.groupHubContext.RegisterConnection(playerId, connectionId);
 
-            if (this.game is not null)
+            var existingPlayer = this.players.SingleOrDefault(player => player.Id == playerId);
+
+            if (existingPlayer is null)
             {
-                await this.groupHubContext.Client(playerId).ReceiveGameState(this.game.Game);
+                await this.groupHubContext.Client(playerId).ReceiveSetupPlayer(this.gameSetup);
                 return;
             }
 
-            var existingPlayer = this.players.SingleOrDefault(player => player.Id == playerId);
-
-            if (existingPlayer is not null)
+            if (this.game is null)
             {
                 await this.groupHubContext.Client(playerId).ReceiveWaitForOtherPlayers(existingPlayer);
                 return;
             }
 
-            await this.groupHubContext.Client(playerId).ReceiveSetupPlayer(this.gameSetup);
+            await this.Restore(existingPlayer, this.game);
         }
 
         public Task RemoveConnection(string connectionId) =>
@@ -127,6 +125,28 @@ namespace Fishbowl.Net.Server.Services
 
         private async void WordSetup(Player player, Word word) =>
             await this.groupHubContext.Client(player.Id).ReceiveWordSetup(word);
+
+        private async Task Restore(Player player, AsyncGame game)
+        {
+            var round = game.Game.CurrentRound();
+            var period = round.CurrentPeriod();
+            var client = this.groupHubContext.Client(player.Id);
+
+            await client.RestoreGameState(player, round);
+
+            if (period.StartedAt is null)
+            {
+                await client.ReceivePeriodSetup(period);
+                return;
+            }
+
+            await client.ReceivePeriodStarted(period);
+
+            if (player == period.Player)
+            {
+                await client.ReceiveWordSetup(game.Game.CurrentWord());
+            }
+        }
 
         public ValueTask DisposeAsync() => this.DisposeAsyncCore();
 

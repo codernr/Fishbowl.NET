@@ -9,7 +9,7 @@ namespace Fishbowl.Net.Client.Services
 
         Task ReceiveWaitForOtherPlayers(Player player);
 
-        Task ReceiveGameState(Game game);
+        Task RestoreGameState(Player player, Round round);
 
         Task ReceiveGameAborted(string message);
 

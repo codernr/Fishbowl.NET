@@ -83,7 +83,7 @@ namespace Fishbowl.Net.Server.Services
 
             public Task ReceiveWaitForOtherPlayers(Player player) => Task.CompletedTask;
 
-            public Task ReceiveGameState(Game game) => Task.CompletedTask;
+            public Task RestoreGameState(Player player, Round round) => Task.CompletedTask;
             
             public Task ReceiveGameAborted(string message) => Task.CompletedTask;
 

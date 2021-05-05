@@ -52,7 +52,7 @@ namespace Fishbowl.Net.Client.Pages
 
             this.connection.On<GameSetup>("ReceiveSetupPlayer", this.ReceiveSetupPlayer);
             this.connection.On<Player>("ReceiveWaitForOtherPlayers", this.ReceiveWaitForOtherPlayers);
-            this.connection.On<Game>("ReceiveGameState", this.ReceiveGameState);
+            this.connection.On<Player, Round>("RestoreGameState", this.RestoreGameState);
             this.connection.On<string>("ReceiveGameAborted", this.ReceiveGameAborted);
             this.connection.On<Game>("ReceiveGameStarted", this.ReceiveGameStarted);
             this.connection.On<Game>("ReceiveGameFinished", this.ReceiveGameFinished);
@@ -100,28 +100,11 @@ namespace Fishbowl.Net.Client.Pages
             await this.StateManager.SetStateAsync<WaitingForPlayers>();
         }
 
-        public async Task ReceiveGameState(Game game)
+        public Task RestoreGameState(Player player, Round round)
         {
-            this.Logger.LogInformation("ReceiveGameState");
-
-            this.Player = game.Teams
-                .SelectMany(team => team.Players)
-                .First(player => player.Id == this.gameContextSetup.GameContextJoin.UserId);
-
-            this.Round = game.Rounds.Last();
-
-            if (this.Round.Periods.Count == 0) return;
-
-            var period = this.Round.Periods.Last();
-
-            var task = period switch
-            {
-                { StartedAt: null }     => this.ReceivePeriodSetup(period),
-                { FinishedAt: null }    => this.ReceivePeriodStarted(period),
-                _                       => this.ReceiveGameFinished(game)
-            };
-
-            await task;
+            this.Player = player;
+            this.Round = round;
+            return Task.CompletedTask;
         }
 
         public async Task ReceiveGameAborted(string message)

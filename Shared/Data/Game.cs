@@ -77,6 +77,8 @@ namespace Fishbowl.Net.Shared.Data
             }
         }
 
+        public Round CurrentRound() => this.roundEnumerator.Current;
+        
         public Word CurrentWord() => this.roundEnumerator.Current.WordEnumerator().Current;
 
         public void StartPeriod(DateTimeOffset timestamp) =>
