@@ -40,8 +40,6 @@ namespace Fishbowl.Net.Client.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            this.gameContextSetup.GameContextJoin.UserId = this.UserIdProvider.GetUserId();
-
             this.connection = new HubConnectionBuilder()
                 .WithUrl(this.NavigationManager.ToAbsoluteUri("/game"))
                 .WithAutomaticReconnect()
@@ -68,8 +66,30 @@ namespace Fishbowl.Net.Client.Pages
 
             if (this.connection.State == HubConnectionState.Connected)
             {
-                await this.StateManager.SetStateAsync<Password>();
+                await this.Connected();
             }
+        }
+
+        private async Task Connected()
+        {
+            var userId = this.StorageService.UserId;
+            this.gameContextSetup.GameContextJoin.UserId = userId ?? Guid.NewGuid();
+            
+            if (userId is null)
+            {
+                this.StorageService.UserId = this.gameContextSetup.GameContextJoin.UserId;
+            }
+
+            var password = this.StorageService.Password;
+
+            if (password is not null && await this.connection.InvokeAsync<bool>("GameContextExists", password))
+            {
+                this.gameContextSetup.GameContextJoin.Password = password;
+                await this.JoinGameContext(this.gameContextSetup.GameContextJoin);
+                return;
+            }
+
+            await this.StateManager.SetStateAsync<Password>();
         }
 
         private Task Reconnecting(Exception exception) =>
@@ -219,6 +239,7 @@ namespace Fishbowl.Net.Client.Pages
         private async Task CreateGame(string password)
         {
             this.gameContextSetup.GameContextJoin.Password = password;
+            this.StorageService.Password = password;
 
             var passwordExists = await this.connection.InvokeAsync<bool>("GameContextExists", password);
 
@@ -256,6 +277,7 @@ namespace Fishbowl.Net.Client.Pages
         private Task JoinGame(string password)
         {
             this.gameContextSetup.GameContextJoin.Password = password;
+            this.StorageService.Password = password;
 
             return this.JoinGameContext(this.gameContextSetup.GameContextJoin);
         }
@@ -297,7 +319,7 @@ namespace Fishbowl.Net.Client.Pages
         private async Task SubmitPlayerData(string[] words)
         {
             this.Player = new Player(
-                this.UserIdProvider.GetUserId(),
+                this.gameContextSetup.GameContextJoin.UserId,
                 this.playerName,
                 words.Select(word => new Word(Guid.NewGuid(), word)));
             await this.connection.InvokeAsync("AddPlayer", this.Player);
