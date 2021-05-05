@@ -82,7 +82,7 @@ namespace Fishbowl.Net.Client.Pages
 
             var password = this.StorageService.Password;
 
-            if (password is not null && await this.connection.InvokeAsync<bool>("GameContextExists", password))
+            if (password is not null && await this.connection.GameContextExists(password))
             {
                 this.gameContextSetup.GameContextJoin.Password = password;
                 await this.JoinGameContext(this.gameContextSetup.GameContextJoin);
@@ -241,7 +241,7 @@ namespace Fishbowl.Net.Client.Pages
             this.gameContextSetup.GameContextJoin.Password = password;
             this.StorageService.Password = password;
 
-            var passwordExists = await this.connection.InvokeAsync<bool>("GameContextExists", password);
+            var passwordExists = await this.connection.GameContextExists(password);
 
             if (passwordExists)
             {
@@ -259,8 +259,7 @@ namespace Fishbowl.Net.Client.Pages
         {
             this.gameContextSetup.GameSetup.WordCount = wordCount;
 
-            var passwordExists = await this.connection.InvokeAsync<bool>(
-                "GameContextExists", this.gameContextSetup.GameContextJoin.Password);
+            var passwordExists = await this.connection.GameContextExists(this.gameContextSetup.GameContextJoin.Password);
 
             if (passwordExists)
             {
@@ -284,8 +283,7 @@ namespace Fishbowl.Net.Client.Pages
 
         private async Task JoinGameContext(GameContextJoin gameContextJoin)
         {
-            var success = await this.connection.InvokeAsync<bool>(
-                "JoinGameContext", gameContextJoin);
+            var success = await this.connection.JoinGameContext(gameContextJoin);
             
             if (success)
             {
@@ -307,7 +305,7 @@ namespace Fishbowl.Net.Client.Pages
         private async Task SetRoundTypes(string[] roundTypes)
         {
             this.gameContextSetup.GameSetup.RoundTypes = roundTypes;
-            await this.connection.InvokeAsync("CreateGameContext", this.gameContextSetup);
+            await this.connection.CreateGameContext(this.gameContextSetup);
         }
 
         private Task SetPlayerName(string name)
@@ -322,7 +320,7 @@ namespace Fishbowl.Net.Client.Pages
                 this.gameContextSetup.GameContextJoin.UserId,
                 this.playerName,
                 words.Select(word => new Word(Guid.NewGuid(), word)));
-            await this.connection.InvokeAsync("AddPlayer", this.Player);
+            await this.connection.AddPlayer(this.Player);
         }
     }
 }
