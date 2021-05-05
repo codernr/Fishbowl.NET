@@ -3,6 +3,7 @@
     <TargetFramework>net5.0</TargetFramework>
     <Nullable>enable</Nullable>
     <NpmRoot>Npm\</NpmRoot>
+    <BlazorWebAssemblyLoadAllGlobalizationData>true</BlazorWebAssemblyLoadAllGlobalizationData>
   </PropertyGroup>
   <ItemGroup>
     <Content Remove="$(NpmRoot)**"/>
@@ -13,7 +14,7 @@
     <PackageReference Include="System.Net.Http.Json" Version="*"/>
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="*"/>
     <PackageReference Include="Microsoft.Extensions.Localization" Version="*"/>
-  </ItemGroup>
+  </ItemGroup>  
   <ItemGroup>
     <ProjectReference Include="..\Shared\Fishbowl.Net.Shared.csproj"/>
   </ItemGroup>

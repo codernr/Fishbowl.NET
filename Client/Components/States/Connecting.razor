@@ -1,13 +1,14 @@
 @using Fishbowl.Net.Client.Components.Templates
 @inherits State
+@inject IStringLocalizer<Connecting> L
 
 @code
 {
     protected override RenderFragment Content =>
-        @<StateContainer Title="Connecting...">
+        @<StateContainer Title="@(L["Connecting..."])">
             <div class="row">
                 <div class="col">
-                    Waiting for server
+                    @L["Waiting for server"]
                 </div>
             </div>
         </StateContainer>;

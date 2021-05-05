@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Fishbowl.Net.Client.Services;
+using System.Globalization;
 
 namespace Fishbowl.Net.Client
 {
@@ -20,7 +21,12 @@ namespace Fishbowl.Net.Client
 
             builder.Services
                 .AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) })
-                .AddSingleton<IStorageService, StorageService>();
+                .AddSingleton<IStorageService, StorageService>()
+                .AddLocalization();
+
+            var culture = new CultureInfo("hu");
+            CultureInfo.DefaultThreadCurrentCulture = culture;
+            CultureInfo.DefaultThreadCurrentUICulture = culture;
 
             await builder.Build().RunAsync();
         }
