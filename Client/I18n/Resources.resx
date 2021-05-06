@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <data name="Components.States.Connecting.Title">
+        <value>Connecting...</value>
+    </data>
+    <data name="Components.States.Connecting.Description">
+        <value>Waiting for server</value>
+    </data>
+</root>

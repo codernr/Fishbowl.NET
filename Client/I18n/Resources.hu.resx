@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-    <data name="Connecting...">
+    <data name="Components.States.Connecting.Title">
         <value>Kapcsolódás...</value>
     </data>
-    <data name="Waiting for server">
+    <data name="Components.States.Connecting.Description">
         <value>Várakozás a szerverre</value>
     </data>
 </root>
