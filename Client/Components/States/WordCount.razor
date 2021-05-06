@@ -1,10 +1,11 @@
 @using Fishbowl.Net.Client.Components.Templates
 @inherits State
+@inject IStringLocalizer<Resources> L
 
 @code
 {
     protected override RenderFragment Content =>
-        @<StateContainer Title="Set word count per player">
+        @<StateContainer Title="@(L["Components.States.WordCount.Title"])">
             <form @onsubmit="e => this.OnWordCountSet.InvokeAsync(this.wordCount)" @onsubmit:preventDefault>
                 <div class="row mb-3">
                     <div class="col">
@@ -18,7 +19,9 @@
                 </div>
                 <div class="row mb-3">
                     <div class="d-grid col">
-                        <button class="btn btn-success btn-lg" type="submit">Set</button>
+                        <button class="btn btn-success btn-lg" type="submit">
+                            @L["Components.States.WordCount.SubmitButton"]
+                        </button>
                     </div>
                 </div>
             </form>

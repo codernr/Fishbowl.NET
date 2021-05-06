@@ -108,4 +108,22 @@
     <data name="Components.States.RoundTypes.Types.Humming">
         <value>Humming</value>
     </data>
+    <data name="Components.States.TeamCount.Title">
+        <value>Set team count</value>
+    </data>
+    <data name="Components.States.TeamCount.SubmitButton">
+        <value>Set</value>
+    </data>
+    <data name="Components.States.WaitingForPlayers.Title">
+        <value>Waiting...</value>
+    </data>
+    <data name="Components.States.WaitingForPlayers.Message">
+        <value>Other players are still working...</value>
+    </data>
+    <data name="Components.States.WordCount.Title">
+        <value>Set word count per player</value>
+    </data>
+    <data name="Components.States.WordCount.SubmitButton">
+        <value>Set</value>
+    </data>
 </root>
