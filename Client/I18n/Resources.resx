@@ -6,4 +6,10 @@
     <data name="Components.States.Connecting.Description">
         <value>Waiting for server</value>
     </data>
+    <data name="Components.States.Error.Title">
+        <value>Error!</value>
+    </data>
+    <data name="Components.States.Error.UnknownError">
+        <value>Unknown error</value>
+    </data>
 </root>

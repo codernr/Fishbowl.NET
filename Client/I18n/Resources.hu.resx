@@ -6,4 +6,10 @@
     <data name="Components.States.Connecting.Description">
         <value>Várakozás a szerverre</value>
     </data>
+    <data name="Components.States.Error.Title">
+        <value>Hiba!</value>
+    </data>
+    <data name="Components.States.Error.UnknownError">
+        <value>Ismeretlen hiba</value>
+    </data>
 </root>

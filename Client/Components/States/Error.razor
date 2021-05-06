@@ -1,4 +1,5 @@
 @inherits State
+@inject IStringLocalizer<Resources> L
 
 @code
 {
@@ -6,7 +7,7 @@
         @<div class="h-100 container-fluid bg-danger">
             <div class="row h-100">
                 <div class="col my-auto">
-                    <h2 class="mb-5">Error!</h2>
+                    <h2 class="mb-5">@L["Components.States.Error.Title"]</h2>
                     @this.Message
                 </div>
             </div>

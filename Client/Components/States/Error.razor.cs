@@ -4,7 +4,7 @@ namespace Fishbowl.Net.Client.Components.States
     {
         public string Message
         {
-            get => this.message ?? "Unknown error";
+            get => this.message ?? L?["Components.States.Error.UnknownError"] ?? "Unknown error";
             set => this.message = value;
         }
 
