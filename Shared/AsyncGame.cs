@@ -23,6 +23,8 @@ namespace Fishbowl.Net.Shared
 
         public event Action<Score>? ScoreAdded;
 
+        public event Action<Score>? LastScoreRevoked;
+
         public event Action<Player, Word>? WordSetup;
 
         private TaskCompletionSource<DateTimeOffset> inputReceived = new TaskCompletionSource<DateTimeOffset>();
@@ -72,6 +74,13 @@ namespace Fishbowl.Net.Shared
         {
             this.game.AddScore(score);
             this.ScoreAdded?.Invoke(score);
+        }
+
+        public void RevokeLastScore()
+        {
+            var score = this.Game.RevokeLastScore();
+
+            if (score is not null) this.LastScoreRevoked?.Invoke(score);
         }
 
         private async Task RunAsync()

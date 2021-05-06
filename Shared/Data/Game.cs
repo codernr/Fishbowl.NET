@@ -103,6 +103,15 @@ namespace Fishbowl.Net.Shared.Data
 
         public void AddScore(Score score) => this.roundEnumerator.Current.CurrentPeriod().Scores.Add(score);
 
+        public Score? RevokeLastScore()
+        {
+            var score = this.CurrentRound().CurrentPeriod().RevokeLastScore();
+
+            if (score is not null) this.CurrentRound().WordEnumerator().Return(score.Word);
+
+            return score;
+        }
+
         public bool NextWord(DateTimeOffset timestamp)
         {
             var period = this.roundEnumerator.Current.CurrentPeriod();

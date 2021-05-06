@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Fishbowl.Net.Shared.Data
 {
@@ -27,5 +28,17 @@ namespace Fishbowl.Net.Shared.Data
             (this.length, this.Player) = (length, player);
 
         public TimeSpan Length() => this.length;
+
+        public Score? RevokeLastScore()
+        {
+            var lastIndex = this.Scores.Count - 1;
+
+            if (lastIndex < 0) return null;
+
+            var score = this.Scores[lastIndex];
+            this.Scores.RemoveAt(lastIndex);
+
+            return score;
+        }
     }
 }
