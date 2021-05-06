@@ -3,11 +3,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Fishbowl.Net.Client.Components;
 using Fishbowl.Net.Client.Components.States;
-using Fishbowl.Net.Client.I18n;
 using Fishbowl.Net.Client.Services;
 using Fishbowl.Net.Shared.Data;
 using Microsoft.AspNetCore.SignalR.Client;
-using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 
 namespace Fishbowl.Net.Client.Pages
