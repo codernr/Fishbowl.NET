@@ -40,7 +40,7 @@ namespace Fishbowl.Net.Shared.Data
                 throw new ArgumentException("Player count should be at least (team count) * 2.");
             }
 
-            this.Teams = players
+            this.Teams = playerList
                 .Distribute(teamCount)
                 .Select((players, id) => new Team(id, players.ToList()))
                 .ToList();
