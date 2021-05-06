@@ -5,7 +5,7 @@ namespace Fishbowl.Net.Shared.Data
 {
     public class Round
     {
-        private readonly IRewindEnumerator<Word>? wordEnumerator;
+        private readonly IReturnEnumerator<Word>? wordEnumerator;
 
         public string Type { get; init; } = default!;
 
@@ -19,10 +19,10 @@ namespace Fishbowl.Net.Shared.Data
 
         public Round() {}
 
-        public Round(string type, IRewindEnumerator<Word> wordEnumerator) =>
+        public Round(string type, IReturnEnumerator<Word> wordEnumerator) =>
             (this.Type, this.wordEnumerator) = (type, wordEnumerator);
 
-        public IRewindEnumerator<Word> WordEnumerator() => this.wordEnumerator ?? throw new InvalidOperationException();
+        public IReturnEnumerator<Word> WordEnumerator() => this.wordEnumerator ?? throw new InvalidOperationException();
 
         public Period CurrentPeriod() => this.periods[this.periods.Count - 1];
         

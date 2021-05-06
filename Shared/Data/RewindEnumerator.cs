@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Fishbowl.Net.Shared.Data
 {
-    public class RewindEnumerator<T> : IRewindEnumerator<T>
+    public class RewindEnumerator<T> : IReturnEnumerator<T>
     {
         public T Current => this.list[id];
 
@@ -42,6 +42,14 @@ namespace Fishbowl.Net.Shared.Data
         public void Reset()
         {
             this.id = -1;
+        }
+
+        public void Return(T item)
+        {
+            if (this.id > -1)
+            {
+                this.id--;
+            }
         }
     }
 }

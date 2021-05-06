@@ -94,7 +94,11 @@ namespace Fishbowl.Net.Shared.Data
             this.teamEnumerator.Current.PlayerEnumerator().MoveNext();
             this.teamEnumerator.MoveNext();
 
-            if (rewindWord) this.roundEnumerator.Current.WordEnumerator().MovePrevious();
+            if (rewindWord)
+            {
+                var enumerator = this.roundEnumerator.Current.WordEnumerator();
+                enumerator.Return(enumerator.Current);
+            }
         }
 
         public void AddScore(Score score) => this.roundEnumerator.Current.CurrentPeriod().Scores.Add(score);

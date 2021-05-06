@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Fishbowl.Net.Shared.Data
 {
-    public class RandomEnumerator<T> : IRewindEnumerator<T>
+    public class RandomEnumerator<T> : IReturnEnumerator<T>
     {
         public T Current { get; private set; } = default!;
 
@@ -46,6 +46,17 @@ namespace Fishbowl.Net.Shared.Data
         public void Reset()
         {
             this.stack = new Stack<T>(this.list.Randomize());
+        }
+
+        public void Return(T item)
+        {
+            if (this.stack.Contains(item) || !this.list.Contains(item))
+            {
+                throw new ArgumentException();
+            }
+
+            this.stack.Push(item);
+            this.stack = new Stack<T>(this.stack.Randomize());
         }
     }
 }
