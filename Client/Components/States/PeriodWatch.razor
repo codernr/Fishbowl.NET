@@ -1,5 +1,6 @@
 @using Fishbowl.Net.Client.Components.Templates
 @inherits State
+@inject IStringLocalizer<Resources> L
 
 @code
 {
@@ -8,7 +9,7 @@
 
             <div class="row">
                 <div class="col">
-                    <h4>Playing</h4>
+                    <h4>@L["Components.States.PeriodWatch.Playing"]</h4>
                     <p>@this.Period.Player.Name</p>
                 </div>
             </div>

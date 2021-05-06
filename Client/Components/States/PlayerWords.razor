@@ -1,10 +1,11 @@
 @using Fishbowl.Net.Client.Components.Templates
 @inherits State
+@inject IStringLocalizer<Resources> L
 
 @code
 {
     protected override RenderFragment Content =>
-        @<StateContainer Title="Set player words">
+        @<StateContainer Title="@(L["Components.States.PlayerWords.Title"])">
             <form @onsubmit="e => this.OnPlayerWordsSet.InvokeAsync(this.words)" @onsubmit:preventDefault>
 
                 @for (int i = 0; i < this.words.Length; i++)
@@ -17,11 +18,11 @@
                                     type="text"
                                     class="form-control"
                                     id="word-input-@id"
-                                    placeholder="Word @id"
+                                    placeholder="@(L["Components.States.PlayerWords.InputPlaceholder"]) @id"
                                     @bind="this.words[id]"
                                     minlength="2"
                                     required>
-                                <label for="word-input-@id">Word @id</label>
+                                <label for="word-input-@id">@L["Components.States.PlayerWords.InputPlaceholder"] @id</label>
                             </div>
                         </div>
                     </div>
@@ -29,7 +30,9 @@
             
                 <div class="row mb-3">
                     <div class="d-grid col">
-                        <button class="btn btn-success btn-lg" type="submit">Set</button>
+                        <button class="btn btn-success btn-lg" type="submit">
+                            @L["Components.States.PlayerWords.SubmitButton"]
+                        </button>
                     </div>
                 </div>
             </form>

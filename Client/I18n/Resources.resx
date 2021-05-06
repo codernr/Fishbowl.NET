@@ -57,4 +57,25 @@
     <data name="Components.States.PeriodSetupWatch.PeriodLength">
         <value>Period length</value>
     </data>
+    <data name="Components.States.PeriodWatch.Playing">
+        <value>Playing</value>
+    </data>
+    <data name="Components.States.PlayerName.Title">
+        <value>Set player name</value>
+    </data>
+    <data name="Components.States.PlayerName.InputPlaceholder">
+        <value>Name</value>
+    </data>
+    <data name="Components.States.PlayerName.SubmitButton">
+        <value>Set</value>
+    </data>
+    <data name="Components.States.PlayerWords.Title">
+        <value>Set player words</value>
+    </data>
+    <data name="Components.States.PlayerWords.InputPlaceholder">
+        <value>Word</value>
+    </data>
+    <data name="Components.States.PlayerWords.SubmitButton">
+        <value>Set</value>
+    </data>
 </root>
