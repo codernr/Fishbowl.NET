@@ -12,6 +12,9 @@ namespace Fishbowl.Net.Client.Components.States
 
         [Parameter]
         public EventCallback<DateTimeOffset> OnPeriodFinished { get; set; } = default!;
+
+        [Parameter]
+        public EventCallback OnLastScoreRevoked { get; set; } = default!;
         
         public Round Round { get; set; } = default!;
 

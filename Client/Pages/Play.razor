@@ -21,7 +21,10 @@
     <RoundStarted Delay="@TimeSpan.FromSeconds(4)" />
     <PeriodSetupPlay OnStarted="this.StartPeriod" />
     <PeriodSetupWatch />
-    <PeriodPlay OnScoreAdded="this.AddScore" OnPeriodFinished="this.FinishPeriod" />
+    <PeriodPlay
+        OnScoreAdded="this.AddScore"
+        OnPeriodFinished="this.FinishPeriod"
+        OnLastScoreRevoked="this.RevokeLastScore" />
     <PeriodWatch />
     <PeriodFinished Delay="@TimeSpan.FromSeconds(4)" />
     <RoundFinished Delay="@TimeSpan.FromSeconds(4)" />

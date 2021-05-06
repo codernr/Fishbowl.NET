@@ -243,6 +243,8 @@ namespace Fishbowl.Net.Client.Pages
             await this.NextWord(score.Timestamp);
         }
 
+        private Task RevokeLastScore() => this.connection.SendAsync("RevokeLastScore");
+
         private Task FinishPeriod(DateTimeOffset timestamp) => this.connection.SendAsync("FinishPeriod", timestamp);
 
         public ValueTask DisposeAsync() => this.connection.DisposeAsync();

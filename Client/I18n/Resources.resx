@@ -48,6 +48,9 @@
     <data name="Components.States.PeriodPlay.PassButton">
         <value>Pass</value>
     </data>
+    <data name="Components.States.PeriodPlay.RevokeButton">
+        <value>Revoke</value>
+    </data>
     <data name="Components.States.PeriodSetupPlay.Subtitle">
         <value>Start period by clicking button</value>
     </data>

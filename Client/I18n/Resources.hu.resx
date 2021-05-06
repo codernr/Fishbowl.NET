@@ -48,6 +48,9 @@
     <data name="Components.States.PeriodPlay.PassButton">
         <value>Passz</value>
     </data>
+    <data name="Components.States.PeriodPlay.RevokeButton">
+        <value>Visszavonás</value>
+    </data>
     <data name="Components.States.PeriodSetupPlay.Subtitle">
         <value>Nyomd meg a kör kezdéséhez</value>
     </data>
