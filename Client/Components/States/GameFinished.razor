@@ -1,10 +1,11 @@
 @using Fishbowl.Net.Client.Components.Templates
 @inherits State
+@inject IStringLocalizer<Resources> L
 
 @code
 {
     protected override RenderFragment Content =>
-        @<StateContainer Title="Game results">
+        @<StateContainer Title="@(L["Components.States.GameFinished.Title"])">
 
             <div class="row">
                 <div class="col">

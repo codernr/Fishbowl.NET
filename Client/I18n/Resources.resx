@@ -12,4 +12,25 @@
     <data name="Components.States.Error.UnknownError">
         <value>Unknown error</value>
     </data>
+    <data name="Components.States.GameFinished.Title">
+        <value>Results</value>
+    </data>
+    <data name="Components.States.GameStarted.Title">
+        <value>Your team</value>
+    </data>
+    <data name="Components.States.Password.Title">
+        <value>Set game password</value>
+    </data>
+    <data name="Components.States.Password.InputPlaceholder">
+        <value>Password</value>
+    </data>
+    <data name="Components.States.Password.InputTitle">
+        <value>Lowercase, dash and numbers between 3 and 30 characters</value>
+    </data>
+    <data name="Components.States.Password.CreateButton">
+        <value>Create</value>
+    </data>
+    <data name="Components.States.Password.JoinButton">
+        <value>Join</value>
+    </data>
 </root>
