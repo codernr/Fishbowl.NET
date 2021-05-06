@@ -78,4 +78,34 @@
     <data name="Components.States.PlayerWords.SubmitButton">
         <value>Set</value>
     </data>
+    <data name="Components.States.RoundFinished.Title">
+        <value>Round finished</value>
+    </data>
+    <data name="Components.States.RoundFinished.Scores">
+        <value>Scores</value>
+    </data>
+    <data name="Components.States.RoundStarted.Title">
+        <value>Round started</value>
+    </data>
+    <data name="Components.States.RoundStarted.RoundType">
+        <value>Round type</value>
+    </data>
+    <data name="Components.States.RoundTypes.Title">
+        <value>Select round types</value>
+    </data>
+    <data name="Components.States.RoundTypes.SubmitButton">
+        <value>Set</value>
+    </data>
+    <data name="Components.States.RoundTypes.Types.Taboo">
+        <value>Taboo</value>
+    </data>
+    <data name="Components.States.RoundTypes.Types.Charades">
+        <value>Charades</value>
+    </data>
+    <data name="Components.States.RoundTypes.Types.Password">
+        <value>Password</value>
+    </data>
+    <data name="Components.States.RoundTypes.Types.Humming">
+        <value>Humming</value>
+    </data>
 </root>

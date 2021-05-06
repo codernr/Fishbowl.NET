@@ -1,13 +1,14 @@
 @using Fishbowl.Net.Client.Components.Templates
 @inherits State
+@inject IStringLocalizer<Resources> L
 
 @code
 {
     protected override RenderFragment Content =>
-        @<StateContainer Title="Round finished">
+        @<StateContainer Title="@(L["Components.States.RoundFinished.Title"])">
             <div class="row">
                 <div class="col">
-                    <h4>Scores</h4>
+                    <h4>@L["Components.States.RoundFinished.Scores"]</h4>
                     <ul class="list-group">
                         @foreach (var period in this.Round.Periods)
                         {

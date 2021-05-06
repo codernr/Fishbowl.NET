@@ -1,10 +1,11 @@
 @using Fishbowl.Net.Client.Components.Templates
 @inherits State
+@inject IStringLocalizer<Resources> L
 
 @code
 {
     protected override RenderFragment Content =>
-        @<StateContainer Title="Select round types">
+        @<StateContainer Title="@(L["Components.States.RoundTypes.Title"])">
             <form @onsubmit="e => this.OnRoundTypesSet.InvokeAsync(this.SelectedOptions)">
                 <div class="row mb-3">
                     <div class="col d-grid gap-3">
@@ -18,7 +19,9 @@
                 </div>
                 <div class="row mb-3">
                     <div class="d-grid col">
-                        <button class="btn btn-success btn-lg" type="submit" disabled="@(!this.IsValid)">Set</button>
+                        <button class="btn btn-success btn-lg" type="submit" disabled="@(!this.IsValid)">
+                            @L["Components.States.RoundTypes.SubmitButton"]
+                        </button>
                     </div>
                 </div>
             </form>

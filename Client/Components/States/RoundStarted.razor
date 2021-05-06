@@ -1,13 +1,14 @@
 @using Fishbowl.Net.Client.Components.Templates
 @inherits State
+@inject IStringLocalizer<Resources> L
 
 @code
 {
     protected override RenderFragment Content =>
-        @<StateContainer Title="Round start">
+        @<StateContainer Title="@(L["Components.States.RoundStarted.Title"])">
             <div class="row">
                 <div class="col">
-                    Round type: <strong>@this.Round.Type</strong>
+                    @L["Components.States.RoundStarted.RoundType"]: <strong>@this.Round.Type</strong>
                 </div>
             </div>
         </StateContainer>;
