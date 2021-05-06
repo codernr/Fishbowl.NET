@@ -52,20 +52,20 @@ namespace Fishbowl.Net.Client.Pages
             this.connection.Reconnecting += this.Reconnecting;
             this.connection.Reconnected += this.Reconnected;
 
-            this.connection.On<GameSetup>("ReceiveSetupPlayer", this.ReceiveSetupPlayer);
-            this.connection.On<Player>("ReceiveWaitForOtherPlayers", this.ReceiveWaitForOtherPlayers);
-            this.connection.On<Player, Round>("RestoreGameState", this.RestoreGameState);
-            this.connection.On<string>("ReceiveGameAborted", this.ReceiveGameAborted);
-            this.connection.On<Game>("ReceiveGameStarted", this.ReceiveGameStarted);
-            this.connection.On<Game>("ReceiveGameFinished", this.ReceiveGameFinished);
-            this.connection.On<Round>("ReceiveRoundStarted", this.ReceiveRoundStarted);
-            this.connection.On<Round>("ReceiveRoundFinished", this.ReceiveRoundFinished);
-            this.connection.On<Period>("ReceivePeriodSetup", this.ReceivePeriodSetup);
-            this.connection.On<Period>("ReceivePeriodStarted", this.ReceivePeriodStarted);
-            this.connection.On<Period>("ReceivePeriodFinished", this.ReceivePeriodFinished);
-            this.connection.On<Word>("ReceiveWordSetup", this.ReceiveWordSetup);
-            this.connection.On<Score>("ReceiveScoreAdded", this.ReceiveScoreAdded);
-            this.connection.On<Score>("ReceiveLastScoreRevoked", this.ReceiveLastScoreRevoked);
+            this.connection.On<GameSetup>(nameof(this.ReceiveSetupPlayer), this.ReceiveSetupPlayer);
+            this.connection.On<Player>(nameof(this.ReceiveWaitForOtherPlayers), this.ReceiveWaitForOtherPlayers);
+            this.connection.On<Player, Round>(nameof(this.RestoreGameState), this.RestoreGameState);
+            this.connection.On<string>(nameof(this.ReceiveGameAborted), this.ReceiveGameAborted);
+            this.connection.On<Game>(nameof(this.ReceiveGameStarted), this.ReceiveGameStarted);
+            this.connection.On<Game>(nameof(this.ReceiveGameFinished), this.ReceiveGameFinished);
+            this.connection.On<Round>(nameof(this.ReceiveRoundStarted), this.ReceiveRoundStarted);
+            this.connection.On<Round>(nameof(this.ReceiveRoundFinished), this.ReceiveRoundFinished);
+            this.connection.On<Period>(nameof(this.ReceivePeriodSetup), this.ReceivePeriodSetup);
+            this.connection.On<Period>(nameof(this.ReceivePeriodStarted), this.ReceivePeriodStarted);
+            this.connection.On<Period>(nameof(this.ReceivePeriodFinished), this.ReceivePeriodFinished);
+            this.connection.On<Word>(nameof(this.ReceiveWordSetup), this.ReceiveWordSetup);
+            this.connection.On<Score>(nameof(this.ReceiveScoreAdded), this.ReceiveScoreAdded);
+            this.connection.On<Score>(nameof(this.ReceiveLastScoreRevoked), this.ReceiveLastScoreRevoked);
 
             await this.connection.StartAsync();
 
