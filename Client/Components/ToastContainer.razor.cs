@@ -7,7 +7,7 @@ namespace Fishbowl.Net.Client.Components
     {
         private readonly List<string> messages = new();
 
-        public int animating = 0;
+        private int animating = 0;
 
         public void DisplayToast(string message)
         {

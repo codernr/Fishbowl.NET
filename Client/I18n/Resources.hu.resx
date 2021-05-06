@@ -141,4 +141,10 @@
     <data name="Pages.Play.JoinGameContextError">
         <value>Ez a felhasználó már kapcsolódott egy játékhoz. Próbáld meg újratölteni az oldalt!</value>
     </data>
+    <data name="Pages.Play.Scored">
+        <value>Pontszerzés</value>
+    </data>
+    <data name="Pages.Play.ScoreRevoked">
+        <value>Visszavont pont</value>
+    </data>
 </root>

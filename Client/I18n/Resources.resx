@@ -141,4 +141,10 @@
     <data name="Pages.Play.JoinGameContextError">
         <value>User is already connected to a game. Try reloading the page.</value>
     </data>
+    <data name="Pages.Play.Scored">
+        <value>Score</value>
+    </data>
+    <data name="Pages.Play.ScoreRevoked">
+        <value>Score revoked</value>
+    </data>
 </root>
