@@ -1,5 +1,6 @@
 @using Fishbowl.Net.Client.Components.Templates
 @inherits State
+@inject IStringLocalizer<Resources> L
 
 @code
 {
@@ -7,12 +8,15 @@
         @<StateContainer Title="@this.Round.Type">
             <div class="row">
                 <div class="col">
-                    <h4>Start period by clicking button</h4>
+                    <h4>@L["Components.States.PeriodSetupPlay.Subtitle"]</h4>
                 </div>
             </div>
             <div class="row">
                 <div class="col d-grid">
-                    <button class="btn btn-success btn-lg" type="button" @onclick="e => this.OnStarted.InvokeAsync(DateTimeOffset.UtcNow)">Start</button>
+                    <button class="btn btn-success btn-lg" type="button"
+                        @onclick="e => this.OnStarted.InvokeAsync(DateTimeOffset.UtcNow)">
+                        @L["Components.States.PeriodSetupPlay.StartButton"]
+                    </button>
                 </div>
             </div>
         </StateContainer>;

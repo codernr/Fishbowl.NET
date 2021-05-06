@@ -33,4 +33,28 @@
     <data name="Components.States.Password.JoinButton">
         <value>Join</value>
     </data>
+    <data name="Components.States.PeriodFinished.Title">
+        <value>Period finished</value>
+    </data>
+    <data name="Components.States.PeriodFinished.Scores">
+        <value>scores</value>
+    </data>
+    <data name="Components.States.PeriodPlay.GuessedButton">
+        <value>Guessed</value>
+    </data>
+    <data name="Components.States.PeriodPlay.PassButton">
+        <value>Pass</value>
+    </data>
+    <data name="Components.States.PeriodSetupPlay.Subtitle">
+        <value>Start period by clicking button</value>
+    </data>
+    <data name="Components.States.PeriodSetupPlay.StartButton">
+        <value>Start</value>
+    </data>
+    <data name="Components.States.PeriodSetupWatch.WaitingForPlayer">
+        <value>Waiting for player</value>
+    </data>
+    <data name="Components.States.PeriodSetupWatch.PeriodLength">
+        <value>Period length</value>
+    </data>
 </root>

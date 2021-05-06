@@ -1,5 +1,6 @@
 @using Fishbowl.Net.Client.Components.Templates
 @inherits State
+@inject IStringLocalizer<Resources> L
 
 @code
 {
@@ -25,7 +26,9 @@
 
                 <div class="row mb-3">
                     <div class="col d-grid">
-                        <button class="btn btn-success btn-lg" type="button" @onclick="this.ScoreAdded">Guessed</button>
+                        <button class="btn btn-success btn-lg" type="button" @onclick="this.ScoreAdded">
+                            @L["Components.States.PeriodPlay.GuessedButton"]
+                        </button>
                     </div>
                 </div>
             }
@@ -34,7 +37,10 @@
             {
                 <div class="row mb-3">
                     <div class="col d-grid">
-                        <button class="btn btn-danger btn-lg" type="button" @onclick="e => this.OnPeriodFinished.InvokeAsync(DateTimeOffset.UtcNow)">Pass</button>
+                        <button class="btn btn-danger btn-lg" type="button"
+                            @onclick="e => this.OnPeriodFinished.InvokeAsync(DateTimeOffset.UtcNow)">
+                            @L["Components.States.PeriodPlay.PassButton"]
+                        </button>
                     </div>
                 </div>
             }
