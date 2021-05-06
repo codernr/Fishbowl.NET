@@ -129,4 +129,13 @@
     <data name="Components.States.WordCount.SubmitButton">
         <value>Set</value>
     </data>
+    <data name="Pages.Play.Reconnecting">
+        <value>Connection lost, reconnecting...</value>
+    </data>
+    <data name="Pages.Play.PasswordIsInUse">
+        <value>The password is already in use, choose another one.</value>
+    </data>
+    <data name="Pages.Play.JoinGameContextError">
+        <value>User is already connected to a game. Try reloading the page.</value>
+    </data>
 </root>

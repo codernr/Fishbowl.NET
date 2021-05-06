@@ -129,4 +129,13 @@
     <data name="Components.States.WordCount.SubmitButton">
         <value>Beállít</value>
     </data>
+    <data name="Pages.Play.Reconnecting">
+        <value>Megszakadt a kapcsolat, újracsatlakozás...</value>
+    </data>
+    <data name="Pages.Play.PasswordIsInUse">
+        <value>A jelszó már foglalt, válassz másikat!</value>
+    </data>
+    <data name="Pages.Play.JoinGameContextError">
+        <value>Ez a felhasználó már kapcsolódott egy játékhoz. Próbáld meg újratölteni az oldalt!</value>
+    </data>
 </root>

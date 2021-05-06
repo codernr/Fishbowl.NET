@@ -3,9 +3,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Fishbowl.Net.Client.Components;
 using Fishbowl.Net.Client.Components.States;
+using Fishbowl.Net.Client.I18n;
 using Fishbowl.Net.Client.Services;
 using Fishbowl.Net.Shared.Data;
 using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 
 namespace Fishbowl.Net.Client.Pages
@@ -37,6 +39,8 @@ namespace Fishbowl.Net.Client.Pages
         private Round? round;
 
         private readonly GameContextSetup gameContextSetup = new();
+
+        private string L(string key) => this.StringLocalizer[key] ?? key;
 
         protected override async Task OnInitializedAsync()
         {
@@ -94,7 +98,7 @@ namespace Fishbowl.Net.Client.Pages
 
         private Task Reconnecting(Exception exception) =>
             this.StateManager.SetStateAsync<Error>(state =>
-                state.Message = "Connection lost, reconnecting...");
+                state.Message = L("Pages.Play.Reconnecting"));
 
         private Task Reconnected(string connectionId) => this.JoinGameContext(this.gameContextSetup.GameContextJoin);
 
@@ -264,7 +268,7 @@ namespace Fishbowl.Net.Client.Pages
             if (passwordExists)
             {
                 await this.StateManager.SetStateAsync<Error>(
-                    state => state.Message = "The password is already in use, choose another one.");
+                    state => state.Message = L("Pages.Play.PasswordIsInUse"));
                 await this.StateManager.SetStateAsync<Password>();
             }
             else
@@ -290,9 +294,7 @@ namespace Fishbowl.Net.Client.Pages
                 return;
             }
             
-            await this.StateManager.SetStateAsync<Error>(
-                state => state.Message = 
-                "User is already connected or password is invalid, or game is already running. Try reloading the page.");
+            await this.StateManager.SetStateAsync<Error>(state => state.Message = L("Pages.Play.JoinGameContextError"));
             await this.StateManager.SetStateAsync<Password>();
         }
 
