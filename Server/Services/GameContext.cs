@@ -123,6 +123,9 @@ namespace Fishbowl.Net.Server.Services
         private async void ScoreAdded(Score score) =>
             await this.groupHubContext.Group().ReceiveScoreAdded(score);
 
+        private async void LastScoreRevoked(Score score) =>
+            await this.groupHubContext.Group().ReceiveLastScoreRevoked(score);
+
         private async void WordSetup(Player player, Word word) =>
             await this.groupHubContext.Client(player.Id).ReceiveWordSetup(word);
 

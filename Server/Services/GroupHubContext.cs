@@ -103,6 +103,8 @@ namespace Fishbowl.Net.Server.Services
 
             public Task ReceiveScoreAdded(Score score) => Task.CompletedTask;
 
+            public Task ReceiveLastScoreRevoked(Score score) => Task.CompletedTask;
+
             public Task ReceiveWordSetup(Word word) => Task.CompletedTask;
         }
     }

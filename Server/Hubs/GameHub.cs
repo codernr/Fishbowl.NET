@@ -50,6 +50,8 @@ namespace Fishbowl.Net.Server.Hubs
 
         public void AddScore(Score score) => this.GameContext.Game.AddScore(score);
 
+        public void RevokeLastScore() => this.GameContext.Game.RevokeLastScore();
+
         public void FinishPeriod(DateTimeOffset timestamp) => this.GameContext.Game.FinishPeriod(timestamp);
     }
 }

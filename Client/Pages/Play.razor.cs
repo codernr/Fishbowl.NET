@@ -65,6 +65,7 @@ namespace Fishbowl.Net.Client.Pages
             this.connection.On<Period>("ReceivePeriodFinished", this.ReceivePeriodFinished);
             this.connection.On<Word>("ReceiveWordSetup", this.ReceiveWordSetup);
             this.connection.On<Score>("ReceiveScoreAdded", this.ReceiveScoreAdded);
+            this.connection.On<Score>("ReceiveLastScoreRevoked", this.ReceiveLastScoreRevoked);
 
             await this.connection.StartAsync();
 
@@ -225,6 +226,14 @@ namespace Fishbowl.Net.Client.Pages
             return Task.CompletedTask;
         }
 
+        public Task ReceiveLastScoreRevoked(Score score)
+        {
+            this.Logger.LogInformation(
+                "Last score revoked: {{Word: {Word}, Timestamp: {Timestamp}}}",
+                score.Word.Value,
+                score.Timestamp);
+            return Task.CompletedTask;
+        }
 
         private Task StartPeriod(DateTimeOffset timestamp) => this.connection.SendAsync("StartPeriod", timestamp);
 

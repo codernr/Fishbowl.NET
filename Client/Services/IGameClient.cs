@@ -30,5 +30,7 @@ namespace Fishbowl.Net.Client.Services
         Task ReceiveWordSetup(Word word);
 
         Task ReceiveScoreAdded(Score score);
+
+        Task ReceiveLastScoreRevoked(Score score);
     }
 }
