@@ -93,6 +93,7 @@ namespace Fishbowl.Net.Server.Services
             this.Game.PeriodStarted += this.PeriodStarted;
             this.Game.PeriodFinished += this.PeriodFinished;
             this.Game.ScoreAdded += this.ScoreAdded;
+            this.Game.LastScoreRevoked += this.LastScoreRevoked;
             this.Game.WordSetup += this.WordSetup;
         }
 
