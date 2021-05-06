@@ -12,4 +12,118 @@
     <data name="Components.States.Error.UnknownError">
         <value>Ismeretlen hiba</value>
     </data>
+    <data name="Components.States.GameFinished.Title">
+        <value>Eredmények</value>
+    </data>
+    <data name="Components.States.GameStarted.Title">
+        <value>A csapatod</value>
+    </data>
+    <data name="Components.States.Password.Title">
+        <value>Add meg a játék jelszavát</value>
+    </data>
+    <data name="Components.States.Password.InputPlaceholder">
+        <value>Jelszó</value>
+    </data>
+    <data name="Components.States.Password.InputTitle">
+        <value>3 és 30 közötti hosszúság, csak kisbetűk, kötőjelek és számok</value>
+    </data>
+    <data name="Components.States.Password.CreateButton">
+        <value>Új játék</value>
+    </data>
+    <data name="Components.States.Password.JoinButton">
+        <value>Csatlakozás</value>
+    </data>
+    <data name="Components.States.PeriodFinished.Title">
+        <value>Kör vége</value>
+    </data>
+    <data name="Components.States.PeriodFinished.Scores">
+        <value>pontjai</value>
+    </data>
+    <data name="Components.States.PeriodPlay.GuessedButton">
+        <value>Kitaláltuk!</value>
+    </data>
+    <data name="Components.States.PeriodPlay.PassButton">
+        <value>Passz</value>
+    </data>
+    <data name="Components.States.PeriodSetupPlay.Subtitle">
+        <value>Nyomd meg a kör kezdéséhez</value>
+    </data>
+    <data name="Components.States.PeriodSetupPlay.StartButton">
+        <value>Indítás</value>
+    </data>
+    <data name="Components.States.PeriodSetupWatch.WaitingForPlayer">
+        <value>Várakozás a következő játékosra</value>
+    </data>
+    <data name="Components.States.PeriodSetupWatch.PeriodLength">
+        <value>Kör hossza</value>
+    </data>
+    <data name="Components.States.PeriodWatch.Playing">
+        <value>Aktuális játékos</value>
+    </data>
+    <data name="Components.States.PlayerName.Title">
+        <value>Add meg a neved</value>
+    </data>
+    <data name="Components.States.PlayerName.InputPlaceholder">
+        <value>Név</value>
+    </data>
+    <data name="Components.States.PlayerName.SubmitButton">
+        <value>Beállít</value>
+    </data>
+    <data name="Components.States.PlayerWords.Title">
+        <value>Add meg a szavaidat</value>
+    </data>
+    <data name="Components.States.PlayerWords.InputPlaceholder">
+        <value>Szó</value>
+    </data>
+    <data name="Components.States.PlayerWords.SubmitButton">
+        <value>Beállít</value>
+    </data>
+    <data name="Components.States.RoundFinished.Title">
+        <value>Szakasz vége</value>
+    </data>
+    <data name="Components.States.RoundFinished.Scores">
+        <value>Pontok</value>
+    </data>
+    <data name="Components.States.RoundStarted.Title">
+        <value>Új szakasz</value>
+    </data>
+    <data name="Components.States.RoundStarted.RoundType">
+        <value>Szakasz</value>
+    </data>
+    <data name="Components.States.RoundTypes.Title">
+        <value>Válaszd ki a szakaszokat</value>
+    </data>
+    <data name="Components.States.RoundTypes.SubmitButton">
+        <value>Beállít</value>
+    </data>
+    <data name="Components.States.RoundTypes.Types.Taboo">
+        <value>Körülírás</value>
+    </data>
+    <data name="Components.States.RoundTypes.Types.Charades">
+        <value>Mutogatás</value>
+    </data>
+    <data name="Components.States.RoundTypes.Types.Password">
+        <value>Egy szó</value>
+    </data>
+    <data name="Components.States.RoundTypes.Types.Humming">
+        <value>Hümmögés</value>
+    </data>
+    <data name="Components.States.TeamCount.Title">
+        <value>Állítsd be a csapatok számát</value>
+    </data>
+    <data name="Components.States.TeamCount.SubmitButton">
+        <value>Beállít</value>
+    </data>
+    <data name="Components.States.WaitingForPlayers.Title">
+        <value>Várakozás...</value>
+    </data>
+    <data name="Components.States.WaitingForPlayers.Message">
+        <value>A többiek még pötyögnek...</value>
+    </data>
+    <data name="Components.States.WordCount.Title">
+        <value>Állítsd be a szavak számát játékosonként</value>
+    </data>
+    <data name="Components.States.WordCount.SubmitButton">
+        <value>Beállít</value>
+    </data>
 </root>
