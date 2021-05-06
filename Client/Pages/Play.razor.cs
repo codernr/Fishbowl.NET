@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Fishbowl.Net.Client.Components;
@@ -37,6 +38,8 @@ namespace Fishbowl.Net.Client.Pages
         private Round? round;
 
         private readonly GameContextSetup gameContextSetup = new();
+
+        private readonly List<Score> periodScores = new();
 
         private string L(string key) => this.StringLocalizer[key] ?? key;
 
@@ -184,6 +187,7 @@ namespace Fishbowl.Net.Client.Pages
         public Task ReceivePeriodStarted(Period period)
         {
             this.Logger.LogInformation("Period started at: {PeriodStartTime}", period.StartedAt);
+            this.periodScores.Clear();
 
             return period.Player == this.Player ?
                 this.StateManager.SetStateAsync<PeriodPlay>(state => {
@@ -221,6 +225,9 @@ namespace Fishbowl.Net.Client.Pages
                 "Score received: {{Word: {Word}, Timestamp: {Timestamp}}}",
                 score.Word.Value,
                 score.Timestamp);
+
+            this.periodScores.Add(score);
+            this.StateManager.SetParameters<PeriodPlay>(state => state.ScoreCount = this.periodScores.Count);
             return Task.CompletedTask;
         }
 
@@ -230,6 +237,9 @@ namespace Fishbowl.Net.Client.Pages
                 "Last score revoked: {{Word: {Word}, Timestamp: {Timestamp}}}",
                 score.Word.Value,
                 score.Timestamp);
+                
+            this.periodScores.Remove(score);
+            this.StateManager.SetParameters<PeriodPlay>(state => state.ScoreCount = this.periodScores.Count);
             return Task.CompletedTask;
         }
 

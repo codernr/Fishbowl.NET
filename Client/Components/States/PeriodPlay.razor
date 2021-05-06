@@ -45,13 +45,16 @@
                 </div>
             }
 
-            <div class="row mt-5">
-                <div class="col d-grid">
-                    <button class="btn btn-danger" type="button"
-                        @onclick="e => this.OnLastScoreRevoked.InvokeAsync()">
-                        @L["Components.States.PeriodPlay.RevokeButton"]
-                    </button>
+            @if (this.showRevoke)
+            {
+                <div class="row mt-5">
+                    <div class="col d-grid">
+                        <button class="btn btn-danger" type="button"
+                            @onclick="e => this.OnLastScoreRevoked.InvokeAsync()">
+                            @L["Components.States.PeriodPlay.RevokeButton"]
+                        </button>
+                    </div>
                 </div>
-            </div>
+            }
         </StateContainer>;   
 }

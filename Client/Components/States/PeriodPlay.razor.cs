@@ -20,6 +20,19 @@ namespace Fishbowl.Net.Client.Components.States
 
         public Period Period { get; set; } = default!;
 
+        public int ScoreCount
+        {
+            get => this.scoreCount;
+            set
+            {
+                this.showRevoke = value > this.scoreCount;
+                this.scoreCount = value;
+                this.Update();
+            }
+        }
+
+        private int scoreCount = 0;
+
         public Word? Word
         {
             get => this.word;
@@ -33,6 +46,8 @@ namespace Fishbowl.Net.Client.Components.States
         private Word? word;
 
         private DateTimeOffset StartedAt => this.Period.StartedAt ?? throw new InvalidOperationException();
+
+        private bool showRevoke = false;
 
         private bool Expired
         {
