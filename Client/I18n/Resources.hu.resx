@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
+    <data name="Components.Timer.Remaining">
+        <value>Hátralévő idő</value>
+    </data>
     <data name="Components.States.Connecting.Title">
         <value>Kapcsolódás...</value>
     </data>

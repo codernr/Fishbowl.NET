@@ -1,8 +1,9 @@
 @implements IAsyncDisposable
+@inject IStringLocalizer<Resources> L
 
 <div class="card timer @this.Classes">
     <div class="card-header">
-        Remaining
+        @L["Components.Timer.Remaining"]
     </div>
     <div class="card-body fs-3">
         @this.TimeFormat
