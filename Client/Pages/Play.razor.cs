@@ -45,7 +45,7 @@ namespace Fishbowl.Net.Client.Pages
 
         private string L(string key) => this.StringLocalizer[key] ?? key;
 
-        private void Notify(string message) => this.toastContainer?.DisplayToast(message);
+        private void Notify(string message, Toast.ToastType type) => this.toastContainer?.DisplayToast(message, type);
 
         protected override async Task OnInitializedAsync()
         {
@@ -231,7 +231,7 @@ namespace Fishbowl.Net.Client.Pages
                 score.Timestamp);
 
             this.periodScores.Add(score);
-            this.Notify($"{this.L("Pages.Play.Scored")}: {score.Word.Value}");
+            this.Notify($"{this.L("Pages.Play.Scored")}: {score.Word.Value}", Toast.ToastType.Primary);
             this.StateManager.SetParameters<PeriodPlay>(state => state.ScoreCount = this.periodScores.Count);
             return Task.CompletedTask;
         }
@@ -244,7 +244,7 @@ namespace Fishbowl.Net.Client.Pages
                 score.Timestamp);
                 
             this.periodScores.Remove(score);
-            this.Notify($"{this.L("Pages.Play.ScoreRevoked")}: {score.Word.Value}");
+            this.Notify($"{this.L("Pages.Play.ScoreRevoked")}: {score.Word.Value}", Toast.ToastType.Warning);
             this.StateManager.SetParameters<PeriodPlay>(state => state.ScoreCount = this.periodScores.Count);
             return Task.CompletedTask;
         }

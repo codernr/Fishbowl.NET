@@ -1,8 +1,8 @@
 <div class="position-fixed bottom-0 start-50 translate-middle-x mb-1 pb-2">
     <div class="toast-container">
-        @foreach (var message in messages)
+        @foreach (var toast in toasts)
         {
-            <Toast Message="@message" AnimationFinished="@this.AnimationFinished" />
+            <Toast Message="@toast.message" Type="@toast.type" AnimationFinished="@this.AnimationFinished" />
         }
     </div>
 </div>
