@@ -11,9 +11,10 @@
                     <div class="col">
                         <select class="form-select form-select-lg mb-3" @bind="this.teamCount">
                             <option selected value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
+                            @for (var i = 3; i <= this.MaxTeamCount; i++)
+                            {
+                                <option value="@i">@i</option>
+                            }
                         </select>
                     </div>
                 </div>
