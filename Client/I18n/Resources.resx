@@ -66,6 +66,12 @@
     <data name="Components.States.PeriodWatch.Playing">
         <value>Playing</value>
     </data>
+    <data name="Components.States.PlayerCount.Title">
+        <value>Set player count</value>
+    </data>
+    <data name="Components.States.PlayerCount.SubmitButton">
+        <value>Set</value>
+    </data>
     <data name="Components.States.PlayerName.Title">
         <value>Set player name</value>
     </data>

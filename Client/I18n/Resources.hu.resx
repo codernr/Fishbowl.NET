@@ -66,6 +66,12 @@
     <data name="Components.States.PeriodWatch.Playing">
         <value>Aktuális játékos</value>
     </data>
+    <data name="Components.States.PlayerCount.Title">
+        <value>Játékosok száma</value>
+    </data>
+    <data name="Components.States.PlayerCount.SubmitButton">
+        <value>Beállít</value>
+    </data>
     <data name="Components.States.PlayerName.Title">
         <value>Add meg a neved</value>
     </data>
