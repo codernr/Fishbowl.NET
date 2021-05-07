@@ -35,7 +35,11 @@ namespace Fishbowl.Net.Client.Components
         [Parameter]
         public EventCallback AnimationFinished { get; set; } = default!;
 
+        private bool Visible => this.animationClass.Contains("show");
+
         private string animationClass = "hide";
+
+        private Task transition = Task.CompletedTask;
 
         protected override async Task OnInitializedAsync()
         {
@@ -50,25 +54,43 @@ namespace Fishbowl.Net.Client.Components
             await this.AnimationFinished.InvokeAsync();
         }
 
-        public async Task Show()
+        public Task Show()
         {
-            await Task.Delay(100);
-            this.animationClass = "showing show";
-            this.StateHasChanged();
+            if (this.Visible) return Task.CompletedTask;
 
-            await Task.Delay(TransitionDuration);
-            this.animationClass = "show";
-            this.StateHasChanged();
+            this.transition = this.transition
+                .ContinueWith(async _ =>
+                {
+                    await Task.Delay(100);
+                    this.animationClass = "showing show";
+                    this.StateHasChanged();
+
+                    await Task.Delay(TransitionDuration);
+                    this.animationClass = "show";
+                    this.StateHasChanged();
+                })
+                .Unwrap();
+
+            return this.transition;
         }
 
-        public async Task Hide()
+        public Task Hide()
         {
-            this.animationClass = string.Empty;
-            this.StateHasChanged();
-            await Task.Delay(TransitionDuration);
+            if (!this.Visible) return Task.CompletedTask;
+            
+            this.transition = this.transition
+                .ContinueWith(async _ =>
+                {
+                    this.animationClass = string.Empty;
+                    this.StateHasChanged();
+                    await Task.Delay(TransitionDuration);
 
-            this.animationClass = "hide";
-            this.StateHasChanged();
+                    this.animationClass = "hide";
+                    this.StateHasChanged();
+                })
+                .Unwrap();
+
+            return this.transition;
         }
     }
 }
