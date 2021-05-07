@@ -12,7 +12,7 @@
     <Toast @ref="this.connectionCountDisplay" Auto="false" Message="@($"{L("Pages.Play.ConnectionCount")}: {this.connectionCount}")" />
 </div>
 
-<StateManager @ref="this.stateManager">
+<StateManager @ref="this.stateManager" TransitionStarted="this.OnStateTransition">
     <Connecting />
     <Password OnCreateGame="this.CreateGame" OnJoinGame="this.JoinGame" />
     <WordCount OnWordCountSet="this.SetWordCount" />

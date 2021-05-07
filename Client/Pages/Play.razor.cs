@@ -87,6 +87,11 @@ namespace Fishbowl.Net.Client.Pages
             }
         }
 
+        private Task OnStateTransition(State newState) =>
+            (newState is PlayerName || newState is PlayerWords || newState is WaitingForPlayers) ?
+            this.ConnectionCountDisplay.Show() :
+            this.ConnectionCountDisplay.Hide();
+
         private async Task Connected()
         {
             var userId = this.StorageService.UserId;
@@ -123,9 +128,7 @@ namespace Fishbowl.Net.Client.Pages
             
             this.gameContextSetup.GameSetup = gameSetup;
 
-            await Task.WhenAll(
-                this.StateManager.SetStateAsync<PlayerName>(),
-                this.ConnectionCountDisplay.Show());
+            await this.StateManager.SetStateAsync<PlayerName>();
         }
 
         public Task ReceiveConnectionCount(int connectionCount)
@@ -168,9 +171,7 @@ namespace Fishbowl.Net.Client.Pages
 
             this.Logger.LogInformation("My team id: {TeamId}", playerTeam.Id);
 
-            return Task.WhenAll(
-                this.StateManager.SetStateAsync<GameStarted>(state => state.Team = playerTeam),
-                this.ConnectionCountDisplay.Hide());
+            return this.StateManager.SetStateAsync<GameStarted>(state => state.Team = playerTeam);
         }
 
         public Task ReceiveGameFinished(Game game) =>

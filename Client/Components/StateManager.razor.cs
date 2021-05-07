@@ -11,6 +11,9 @@ namespace Fishbowl.Net.Client.Components
         [Parameter]
         public RenderFragment ChildContent { get; set; } = default!;
 
+        [Parameter]
+        public EventCallback<State> TransitionStarted { get; set; }
+
         private Dictionary<Type, State> states = new();
 
         private Task transition = Task.CompletedTask;
@@ -65,6 +68,8 @@ namespace Fishbowl.Net.Client.Components
             var newState = this.GetState<TState>();
 
             if (newState == this.ActiveState) return;
+
+            await this.TransitionStarted.InvokeAsync(newState);
 
             await this.ActiveState.DisableAsync();
 
