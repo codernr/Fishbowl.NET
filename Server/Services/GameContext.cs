@@ -29,6 +29,7 @@ namespace Fishbowl.Net.Server.Services
         public async Task RegisterConnection(Guid playerId, string connectionId)
         {
             await this.groupHubContext.RegisterConnection(playerId, connectionId);
+            await this.groupHubContext.Group().ReceiveConnectionCount(this.groupHubContext.ConnectionCount);
 
             var existingPlayer = this.players.SingleOrDefault(player => player.Id == playerId);
 
@@ -47,8 +48,11 @@ namespace Fishbowl.Net.Server.Services
             await this.Restore(existingPlayer, this.game);
         }
 
-        public Task RemoveConnection(string connectionId) =>
-            this.groupHubContext.RemoveConnection(connectionId);
+        public async Task RemoveConnection(string connectionId)
+        {
+            await this.groupHubContext.RemoveConnection(connectionId);
+            await this.groupHubContext.Group().ReceiveConnectionCount(this.groupHubContext.ConnectionCount);
+        }
 
         public void AddPlayer(Player player)
         {

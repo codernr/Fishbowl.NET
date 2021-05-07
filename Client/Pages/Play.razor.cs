@@ -64,6 +64,7 @@ namespace Fishbowl.Net.Client.Pages
             this.connection.Reconnected += this.Reconnected;
 
             this.connection.On<GameSetup>(nameof(this.ReceiveSetupPlayer), this.ReceiveSetupPlayer);
+            this.connection.On<int>(nameof(this.ReceiveConnectionCount), this.ReceiveConnectionCount);
             this.connection.On<Player>(nameof(this.ReceiveWaitForOtherPlayers), this.ReceiveWaitForOtherPlayers);
             this.connection.On<Player, Round>(nameof(this.RestoreGameState), this.RestoreGameState);
             this.connection.On<string>(nameof(this.ReceiveGameAborted), this.ReceiveGameAborted);
@@ -129,6 +130,7 @@ namespace Fishbowl.Net.Client.Pages
 
         public Task ReceiveConnectionCount(int connectionCount)
         {
+            this.Logger.LogInformation($"ReceiveConnectionCount: {connectionCount}");
             this.connectionCount = connectionCount;
             this.StateHasChanged();
             return Task.CompletedTask;
