@@ -7,6 +7,6 @@ namespace Fishbowl.Net.Client.Components.States
         [Parameter]
         public EventCallback<int> OnPlayerCountSet { get; set; } = default!;
 
-        private int playerCount = 2;
+        private int playerCount = 4;
     }
 }
