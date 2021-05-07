@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using Fishbowl.Net.Shared.Data;
+using Fishbowl.Net.Shared.Data.ViewModels;
 
 namespace Fishbowl.Net.Client.Services
 {
@@ -7,7 +8,7 @@ namespace Fishbowl.Net.Client.Services
     {
         Task ReceiveSetupPlayer(GameSetup setup);
 
-        Task ReceiveConnectionCount(int connectionCount);
+        Task ReceivePlayerCount(PlayerCountViewModel playerCount);
 
         Task ReceiveWaitForOtherPlayers(Player player);
 

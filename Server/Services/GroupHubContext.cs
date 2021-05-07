@@ -5,14 +5,13 @@ using System.Threading.Tasks;
 using Fishbowl.Net.Client.Services;
 using Fishbowl.Net.Server.Hubs;
 using Fishbowl.Net.Shared.Data;
+using Fishbowl.Net.Shared.Data.ViewModels;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Fishbowl.Net.Server.Services
 {
     public interface IGroupHubContext : IAsyncDisposable
     {
-        int ConnectionCount { get; }
-
         bool ContainsKey(Guid id);
 
         IGameClient Group();
@@ -26,8 +25,6 @@ namespace Fishbowl.Net.Server.Services
 
     public class GroupHubContext : IGroupHubContext
     {
-        public int ConnectionCount => this.idConnectionMap.Count;
-
         private static readonly IGameClient NullClient = new NullGameClient();
 
         private readonly Dictionary<Guid, string?> idConnectionMap = new();
@@ -81,7 +78,7 @@ namespace Fishbowl.Net.Server.Services
         {
             public Task ReceiveSetupPlayer(GameSetup gameSetup) => Task.CompletedTask;
 
-            public Task ReceiveConnectionCount(int connectionCount) => Task.CompletedTask;
+            public Task ReceivePlayerCount(PlayerCountViewModel playerCount) => Task.CompletedTask;
 
             public Task ReceiveWaitForOtherPlayers(Player player) => Task.CompletedTask;
 

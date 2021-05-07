@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Fishbowl.Net.Shared;
 using Fishbowl.Net.Shared.Data;
+using Fishbowl.Net.Shared.Data.ViewModels;
 
 namespace Fishbowl.Net.Server.Services
 {
@@ -29,7 +30,8 @@ namespace Fishbowl.Net.Server.Services
         public async Task RegisterConnection(Guid playerId, string connectionId)
         {
             await this.groupHubContext.RegisterConnection(playerId, connectionId);
-            await this.groupHubContext.Group().ReceiveConnectionCount(this.groupHubContext.ConnectionCount);
+            await this.groupHubContext.Group().ReceivePlayerCount(
+                new PlayerCountViewModel(this.players.Count, this.gameSetup.PlayerCount));
 
             var existingPlayer = this.players.SingleOrDefault(player => player.Id == playerId);
 
@@ -51,10 +53,9 @@ namespace Fishbowl.Net.Server.Services
         public async Task RemoveConnection(string connectionId)
         {
             await this.groupHubContext.RemoveConnection(connectionId);
-            await this.groupHubContext.Group().ReceiveConnectionCount(this.groupHubContext.ConnectionCount);
         }
 
-        public void AddPlayer(Player player)
+        public async Task AddPlayer(Player player)
         {
             if (!this.groupHubContext.ContainsKey(player.Id))
             {
@@ -63,9 +64,12 @@ namespace Fishbowl.Net.Server.Services
 
             this.players.Add(player);
 
-            if (this.players.Count != this.groupHubContext.ConnectionCount)
+            await this.groupHubContext.Group().ReceivePlayerCount(
+                new PlayerCountViewModel(this.players.Count, this.gameSetup.PlayerCount));
+
+            if (this.players.Count != this.gameSetup.PlayerCount)
             {
-                this.groupHubContext.Client(player.Id).ReceiveWaitForOtherPlayers(player);
+                await this.groupHubContext.Client(player.Id).ReceiveWaitForOtherPlayers(player);
                 return;
             }
 

@@ -41,7 +41,7 @@ namespace Fishbowl.Net.Server.Hubs
 
         public int GetWordCount() => this.GameContext.WordCount;
 
-        public void AddPlayer(Player player) =>
+        public Task AddPlayer(Player player) =>
             this.GameContext.AddPlayer(player);
 
         public void StartPeriod(DateTimeOffset timestamp) => this.GameContext.Game.StartPeriod(timestamp);

@@ -6,6 +6,7 @@ using Fishbowl.Net.Client.Components;
 using Fishbowl.Net.Client.Components.States;
 using Fishbowl.Net.Client.Services;
 using Fishbowl.Net.Shared.Data;
+using Fishbowl.Net.Shared.Data.ViewModels;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Logging;
 
@@ -17,15 +18,15 @@ namespace Fishbowl.Net.Client.Pages
 
         private StateManager StateManager => this.stateManager ?? throw new InvalidOperationException();
 
-        private Toast? connectionCountDisplay;
+        private Toast? playerCountDisplay;
 
-        private Toast ConnectionCountDisplay => this.connectionCountDisplay ?? throw new InvalidOperationException();
+        private Toast PlayerCountDisplay => this.playerCountDisplay ?? throw new InvalidOperationException();
 
         private ToastContainer? toastContainer;
 
         private HubConnection connection = default!;
 
-        private int connectionCount = 0;
+        private PlayerCountViewModel playerCount = new PlayerCountViewModel(0, 0);
 
         private string playerName = string.Empty;
 
@@ -64,7 +65,7 @@ namespace Fishbowl.Net.Client.Pages
             this.connection.Reconnected += this.Reconnected;
 
             this.connection.On<GameSetup>(nameof(this.ReceiveSetupPlayer), this.ReceiveSetupPlayer);
-            this.connection.On<int>(nameof(this.ReceiveConnectionCount), this.ReceiveConnectionCount);
+            this.connection.On<PlayerCountViewModel>(nameof(this.ReceivePlayerCount), this.ReceivePlayerCount);
             this.connection.On<Player>(nameof(this.ReceiveWaitForOtherPlayers), this.ReceiveWaitForOtherPlayers);
             this.connection.On<Player, Round>(nameof(this.RestoreGameState), this.RestoreGameState);
             this.connection.On<string>(nameof(this.ReceiveGameAborted), this.ReceiveGameAborted);
@@ -89,8 +90,8 @@ namespace Fishbowl.Net.Client.Pages
 
         private Task OnStateTransition(State newState) =>
             (newState is PlayerName || newState is PlayerWords || newState is WaitingForPlayers) ?
-            this.ConnectionCountDisplay.Show() :
-            this.ConnectionCountDisplay.Hide();
+            this.PlayerCountDisplay.Show() :
+            this.PlayerCountDisplay.Hide();
 
         private async Task Connected()
         {
@@ -131,10 +132,10 @@ namespace Fishbowl.Net.Client.Pages
             await this.StateManager.SetStateAsync<PlayerName>();
         }
 
-        public Task ReceiveConnectionCount(int connectionCount)
+        public Task ReceivePlayerCount(PlayerCountViewModel playerCount)
         {
-            this.Logger.LogInformation($"ReceiveConnectionCount: {connectionCount}");
-            this.connectionCount = connectionCount;
+            this.Logger.LogInformation($"ReceiveConnectionCount: {this.playerCount}");
+            this.playerCount = playerCount;
             this.StateHasChanged();
             return Task.CompletedTask;
         }
