@@ -5,7 +5,10 @@
 @code
 {
     protected override RenderFragment Content =>
-        @<StepContainer Subtitle="@(L["Components.States.RoundTypes.Title"])" Step="4">
+        @<StepContainer
+            Title="@(L["Components.States.Common.SetupGame"])"
+            Subtitle="@(L["Components.States.RoundTypes.Title"])"
+            TotalSteps="4" Step="4">
             <form @onsubmit="e => this.OnRoundTypesSet.InvokeAsync(this.SelectedOptions)">
                 <div class="row mb-3">
                     <div class="col d-grid gap-3">

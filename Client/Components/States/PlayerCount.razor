@@ -5,7 +5,10 @@
 @code
 {
     protected override RenderFragment Content =>
-        @<StepContainer Subtitle="@(L["Components.States.PlayerCount.Title"])" Step="1">
+        @<StepContainer
+            Title="@(L["Components.States.Common.SetupGame"])"
+            Subtitle="@(L["Components.States.PlayerCount.Title"])"
+            TotalSteps="4" Step="1">
             <form @onsubmit="e => this.OnPlayerCountSet.InvokeAsync(this.playerCount)" @onsubmit:preventDefault>
                 <div class="row mb-3">
                     <div class="col">

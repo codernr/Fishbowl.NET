@@ -1,6 +1,6 @@
 @inject IStringLocalizer<Resources> L
 
-<StateContainer Title="@($"{L["Components.States.Common.SetupGame"]} ({this.Step}/4)")">
+<StateContainer Title="@($"{this.Title} ({this.Step}/{this.TotalSteps})")">
     <div class="row mb-3">
         <div class="col">
             <h3>@this.Subtitle</h3>
