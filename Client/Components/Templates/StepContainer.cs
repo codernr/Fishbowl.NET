@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace Fishbowl.Net.Client.Components.Templates
 {
-    public partial class SetupGameContainer
+    public partial class StepContainer
     {
         [Parameter]
         public string Subtitle { get; set; } = default!;
