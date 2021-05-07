@@ -284,29 +284,30 @@ namespace Fishbowl.Net.Client.Pages
 
         public ValueTask DisposeAsync() => this.connection.DisposeAsync();
 
-        private async Task CreateGame(string password)
+        private Task CreateGame(string password) =>
+            this.AfterPasswordCheck<PlayerCount>(() =>
+            {
+                this.gameContextSetup.GameContextJoin.Password = password;
+                this.StorageService.Password = password;
+            });
+
+        private Task SetPlayerCount(int playerCount) =>
+            this.AfterPasswordCheck<WordCount>(() => this.gameContextSetup.GameSetup.PlayerCount = playerCount);
+
+        private Task SetWordCount(int wordCount) =>
+            this.AfterPasswordCheck<TeamCount>(() => this.gameContextSetup.GameSetup.WordCount = wordCount);
+
+        private Task SetTeamCount(int teamCount) =>
+            this.AfterPasswordCheck<RoundTypes>(() => this.gameContextSetup.GameSetup.TeamCount = teamCount);
+
+        private async Task SetRoundTypes(string[] roundTypes)
         {
-            this.gameContextSetup.GameContextJoin.Password = password;
-            this.StorageService.Password = password;
-
-            var passwordExists = await this.connection.GameContextExists(password);
-
-            if (passwordExists)
-            {
-                await this.StateManager.SetStateAsync<Error>(
-                    state => state.Message = "The password is already in use, choose another one.");
-                await this.StateManager.SetStateAsync<Password>();
-            }
-            else
-            {
-                await this.StateManager.SetStateAsync<WordCount>();
-            }
+            this.gameContextSetup.GameSetup.RoundTypes = roundTypes;
+            await this.connection.CreateGameContext(this.gameContextSetup);
         }
 
-        private async Task SetWordCount(int wordCount)
+        private async Task AfterPasswordCheck<TNextState>(Action setup) where TNextState : State
         {
-            this.gameContextSetup.GameSetup.WordCount = wordCount;
-
             var passwordExists = await this.connection.GameContextExists(this.gameContextSetup.GameContextJoin.Password);
 
             if (passwordExists)
@@ -317,7 +318,8 @@ namespace Fishbowl.Net.Client.Pages
             }
             else
             {
-                await this.StateManager.SetStateAsync<TeamCount>();
+                setup();
+                await this.StateManager.SetStateAsync<TNextState>();
             }
         }
 
@@ -340,18 +342,6 @@ namespace Fishbowl.Net.Client.Pages
             
             await this.StateManager.SetStateAsync<Error>(state => state.Message = L("Pages.Play.JoinGameContextError"));
             await this.StateManager.SetStateAsync<Password>();
-        }
-
-        private Task SetTeamCount(int teamCount)
-        {
-            this.gameContextSetup.GameSetup.TeamCount = teamCount;
-            return this.StateManager.SetStateAsync<RoundTypes>();
-        }
-
-        private async Task SetRoundTypes(string[] roundTypes)
-        {
-            this.gameContextSetup.GameSetup.RoundTypes = roundTypes;
-            await this.connection.CreateGameContext(this.gameContextSetup);
         }
 
         private Task SetPlayerName(string name)

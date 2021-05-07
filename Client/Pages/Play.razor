@@ -15,6 +15,7 @@
 <StateManager @ref="this.stateManager" TransitionStarted="this.OnStateTransition">
     <Connecting />
     <Password OnCreateGame="this.CreateGame" OnJoinGame="this.JoinGame" />
+    <PlayerCount OnPlayerCountSet="this.SetPlayerCount" />
     <WordCount OnWordCountSet="this.SetWordCount" />
     <TeamCount OnTeamCountSet="this.SetTeamCount" />
     <RoundTypes OnRoundTypesSet="this.SetRoundTypes" />
