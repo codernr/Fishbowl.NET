@@ -3,6 +3,9 @@
     <data name="Components.Timer.Remaining">
         <value>Hátralévő idő</value>
     </data>
+    <data name="Components.States.Common.SetupGame">
+        <value>Játék beállítása</value>
+    </data>
     <data name="Components.States.Connecting.Title">
         <value>Kapcsolódás...</value>
     </data>
@@ -67,7 +70,7 @@
         <value>Aktuális játékos</value>
     </data>
     <data name="Components.States.PlayerCount.Title">
-        <value>Játékosok száma</value>
+        <value>Add meg a játékosok számát</value>
     </data>
     <data name="Components.States.PlayerCount.SubmitButton">
         <value>Beállít</value>
@@ -121,7 +124,7 @@
         <value>Hümmögés</value>
     </data>
     <data name="Components.States.TeamCount.Title">
-        <value>Állítsd be a csapatok számát</value>
+        <value>Add meg a csapatok számát</value>
     </data>
     <data name="Components.States.TeamCount.SubmitButton">
         <value>Beállít</value>
@@ -133,7 +136,7 @@
         <value>A többiek még pötyögnek...</value>
     </data>
     <data name="Components.States.WordCount.Title">
-        <value>Állítsd be a szavak számát játékosonként</value>
+        <value>Add meg a szavak számát játékosonként</value>
     </data>
     <data name="Components.States.WordCount.SubmitButton">
         <value>Beállít</value>
