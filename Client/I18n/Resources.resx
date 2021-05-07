@@ -21,6 +21,9 @@
     <data name="Components.States.GameFinished.Title">
         <value>Results</value>
     </data>
+    <data name="Components.States.GameFinished.Team">
+        <value>Team</value>
+    </data>
     <data name="Components.States.GameStarted.Title">
         <value>Your team</value>
     </data>

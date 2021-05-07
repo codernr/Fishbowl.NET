@@ -21,6 +21,9 @@
     <data name="Components.States.GameFinished.Title">
         <value>Eredmények</value>
     </data>
+    <data name="Components.States.GameFinished.Team">
+        <value>Csapat</value>
+    </data>
     <data name="Components.States.GameStarted.Title">
         <value>A csapatod</value>
     </data>

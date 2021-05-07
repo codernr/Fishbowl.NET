@@ -146,7 +146,9 @@ namespace Fishbowl.Net.Shared.Data
                         .Where(score => team.Players
                             .Any(player => player.Id == score.Key))
                         .Select(item => item.Value)
-                        .Sum());
+                        .Sum())
+                .OrderByDescending(entry => entry.Value)
+                .ToDictionary(entry => entry.Key, entry => entry.Value);
 
             return teamScores;
         }
