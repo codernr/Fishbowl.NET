@@ -6,6 +6,9 @@
     <data name="Components.States.Common.SetupGame">
         <value>Játék beállítása</value>
     </data>
+    <data name="Components.States.Common.SetupPlayer">
+        <value>Játékos beállítása</value>
+    </data>
     <data name="Components.States.Connecting.Title">
         <value>Kapcsolódás...</value>
     </data>

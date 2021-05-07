@@ -6,6 +6,9 @@
     <data name="Components.States.Common.SetupGame">
         <value>Setup game</value>
     </data>
+    <data name="Components.States.Common.SetupPlayer">
+        <value>Setup player</value>
+    </data>
     <data name="Components.States.Connecting.Title">
         <value>Connecting...</value>
     </data>

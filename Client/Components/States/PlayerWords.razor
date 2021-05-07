@@ -5,7 +5,10 @@
 @code
 {
     protected override RenderFragment Content =>
-        @<StateContainer Title="@(L["Components.States.PlayerWords.Title"])">
+        @<StepContainer
+            Title="@(L["Components.States.Common.SetupPlayer"])"
+            Subtitle="@(L["Components.States.PlayerWords.Title"])"
+            TotalSteps="2" Step="2">
             <form @onsubmit="e => this.OnPlayerWordsSet.InvokeAsync(this.words)" @onsubmit:preventDefault>
 
                 @for (int i = 0; i < this.words.Length; i++)
@@ -36,5 +39,5 @@
                     </div>
                 </div>
             </form>
-        </StateContainer>;
+        </StepContainer>;
 }
