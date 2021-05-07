@@ -30,11 +30,27 @@ namespace Fishbowl.Net.Client.Components
         public ToastType Type { get; set; } = ToastType.Primary;
 
         [Parameter]
+        public bool Auto { get; set; } = true;
+
+        [Parameter]
         public EventCallback AnimationFinished { get; set; } = default!;
 
-        private string? animationClass = null;
+        private string animationClass = "hide";
 
         protected override async Task OnInitializedAsync()
+        {
+            if (!this.Auto) return;
+            
+            await this.Show();
+
+            await Task.Delay(Delay);
+            
+            await this.Hide();
+
+            await this.AnimationFinished.InvokeAsync();
+        }
+
+        public async Task Show()
         {
             await Task.Delay(100);
             this.animationClass = "showing show";
@@ -43,14 +59,16 @@ namespace Fishbowl.Net.Client.Components
             await Task.Delay(TransitionDuration);
             this.animationClass = "show";
             this.StateHasChanged();
+        }
 
-            await Task.Delay(Delay);
-            this.animationClass = null;
+        public async Task Hide()
+        {
+            this.animationClass = string.Empty;
             this.StateHasChanged();
-
             await Task.Delay(TransitionDuration);
 
-            await this.AnimationFinished.InvokeAsync();
+            this.animationClass = "hide";
+            this.StateHasChanged();
         }
     }
 }

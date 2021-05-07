@@ -147,4 +147,7 @@
     <data name="Pages.Play.ScoreRevoked">
         <value>Score revoked</value>
     </data>
+    <data name="Pages.Play.ConnectionCount">
+        <value>Connection count</value>
+    </data>
 </root>

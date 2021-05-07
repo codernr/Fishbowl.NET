@@ -7,6 +7,8 @@ namespace Fishbowl.Net.Client.Services
     {
         Task ReceiveSetupPlayer(GameSetup setup);
 
+        Task ReceiveConnectionCount(int connectionCount);
+
         Task ReceiveWaitForOtherPlayers(Player player);
 
         Task RestoreGameState(Player player, Round round);

@@ -147,4 +147,7 @@
     <data name="Pages.Play.ScoreRevoked">
         <value>Visszavont pont</value>
     </data>
+    <data name="Pages.Play.ConnectionCount">
+        <value>Kapcsolódó játékosok</value>
+    </data>
 </root>

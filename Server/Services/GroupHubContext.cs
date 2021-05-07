@@ -81,6 +81,8 @@ namespace Fishbowl.Net.Server.Services
         {
             public Task ReceiveSetupPlayer(GameSetup gameSetup) => Task.CompletedTask;
 
+            public Task ReceiveConnectionCount(int connectionCount) => Task.CompletedTask;
+
             public Task ReceiveWaitForOtherPlayers(Player player) => Task.CompletedTask;
 
             public Task RestoreGameState(Player player, Round round) => Task.CompletedTask;

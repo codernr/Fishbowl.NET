@@ -8,6 +8,10 @@
 @inject ILogger<Play> Logger
 @inject IStringLocalizer<Resources> StringLocalizer
 
+<div class="position-fixed top-0 start-50 translate-middle-x mt-1 pt-2">
+    <Toast @ref="this.connectionCountDisplay" Auto="false" Message="@($"{L("Pages.Play.ConnectionCount")}: {this.connectionCount}")" />
+</div>
+
 <StateManager @ref="this.stateManager">
     <Connecting />
     <Password OnCreateGame="this.CreateGame" OnJoinGame="this.JoinGame" />

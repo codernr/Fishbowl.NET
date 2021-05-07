@@ -17,9 +17,15 @@ namespace Fishbowl.Net.Client.Pages
 
         private StateManager StateManager => this.stateManager ?? throw new InvalidOperationException();
 
+        private Toast? connectionCountDisplay;
+
+        private Toast ConnectionCountDisplay => this.connectionCountDisplay ?? throw new InvalidOperationException();
+
         private ToastContainer? toastContainer;
 
         private HubConnection connection = default!;
+
+        private int connectionCount = 0;
 
         private string playerName = string.Empty;
 
@@ -116,7 +122,16 @@ namespace Fishbowl.Net.Client.Pages
             
             this.gameContextSetup.GameSetup = gameSetup;
 
-            await this.StateManager.SetStateAsync<PlayerName>();
+            await Task.WhenAll(
+                this.StateManager.SetStateAsync<PlayerName>(),
+                this.ConnectionCountDisplay.Show());
+        }
+
+        public Task ReceiveConnectionCount(int connectionCount)
+        {
+            this.connectionCount = connectionCount;
+            this.StateHasChanged();
+            return Task.CompletedTask;
         }
 
         public async Task ReceiveWaitForOtherPlayers(Player player)
@@ -151,8 +166,9 @@ namespace Fishbowl.Net.Client.Pages
 
             this.Logger.LogInformation("My team id: {TeamId}", playerTeam.Id);
 
-            return this.StateManager.SetStateAsync<GameStarted>(
-                state => state.Team = playerTeam);
+            return Task.WhenAll(
+                this.StateManager.SetStateAsync<GameStarted>(state => state.Team = playerTeam),
+                this.ConnectionCountDisplay.Hide());
         }
 
         public Task ReceiveGameFinished(Game game) =>
