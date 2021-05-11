@@ -8,24 +8,22 @@ namespace Fishbowl.Net.Server.Services
     {
         private readonly Task task;
 
-        private readonly ILogger<Timer> logger;
-
         private TaskCompletionSource restartTaskSource = new();
 
         public Timer(TimeSpan timeout, Func<Task> action, ILogger<Timer> logger) =>
-            (this.task, this.logger) = (this.Run(timeout, action), logger);
+            this.task = this.Run(timeout, action, logger);
 
-        private async Task Run(TimeSpan timeout, Func<Task> action)
+        private async Task Run(TimeSpan timeout, Func<Task> action, ILogger<Timer> logger)
         {
-            this.logger.LogInformation($"Run {{ timeout: {timeout.ToString("c")} }}");
+            logger.LogInformation($"Run {{ timeout: {timeout.ToString("c")} }}");
 
             while (await this.RestartRequested(timeout))
             {
-                this.logger.LogInformation("Restart requested");
+                logger.LogInformation("Restart requested");
                 this.restartTaskSource = new();
             }
 
-            this.logger.LogInformation("Expired, firing action");
+            logger.LogInformation("Expired, firing action");
             await action();
         }
 
