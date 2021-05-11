@@ -10,7 +10,14 @@ namespace Fishbowl.Net.Server.Services
 {
     public class GameContext : IAsyncDisposable
     {
-        public AsyncGame Game => this.game ?? throw new InvalidOperationException();
+        public AsyncGame Game
+        {
+            get
+            {
+                this.timer.Restart();
+                return this.game ?? throw new InvalidOperationException();
+            }
+        }
 
         public int WordCount => this.gameSetup.WordCount;
 
@@ -32,6 +39,8 @@ namespace Fishbowl.Net.Server.Services
 
         public async Task RegisterConnection(Guid playerId, string connectionId)
         {
+            this.timer.Restart();
+
             await this.groupHubContext.RegisterConnection(playerId, connectionId);
             await this.groupHubContext.Group().ReceivePlayerCount(
                 new PlayerCountViewModel(this.players.Count, this.gameSetup.PlayerCount));
@@ -64,6 +73,8 @@ namespace Fishbowl.Net.Server.Services
             {
                 throw new InvalidOperationException("Invalid player connection");
             }
+
+            this.timer.Restart();
 
             this.players.Add(player);
 

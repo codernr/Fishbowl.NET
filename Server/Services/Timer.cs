@@ -13,6 +13,8 @@ namespace Fishbowl.Net.Server.Services
         public Timer(TimeSpan timeout, Func<Task> action, ILogger<Timer> logger) =>
             this.task = this.Run(timeout, action, logger);
 
+        public void Restart() => this.restartTaskSource.SetResult();
+
         private async Task Run(TimeSpan timeout, Func<Task> action, ILogger<Timer> logger)
         {
             logger.LogInformation($"Run {{ timeout: {timeout.ToString("c")} }}");
