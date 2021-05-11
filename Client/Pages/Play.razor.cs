@@ -185,8 +185,11 @@ namespace Fishbowl.Net.Client.Pages
             return this.StateManager.SetStateAsync<GameStarted>(state => state.Team = playerTeam);
         }
 
-        public Task ReceiveGameFinished(Game game) =>
-            this.StateManager.SetStateAsync<GameFinished>(state => state.Game = game);
+        public Task ReceiveGameFinished(Game game)
+        {
+            this.StorageService.Password = null;
+            return this.StateManager.SetStateAsync<GameFinished>(state => state.Game = game);
+        }
 
         public Task ReceiveRoundStarted(Round round)
         {
