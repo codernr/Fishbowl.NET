@@ -27,23 +27,12 @@ namespace Fishbowl.Net.Client.Components.States
             {
                 this.showRevoke = value > this.scoreCount;
                 this.scoreCount = value;
-                this.Update();
             }
         }
 
         private int scoreCount = 0;
 
-        public Word? Word
-        {
-            get => this.word;
-            set
-            {
-                this.word = value;
-                this.Update();
-            }
-        }
-
-        private Word? word;
+        public Word? Word { get; set; }
 
         private DateTimeOffset StartedAt => this.Period.StartedAt ?? throw new InvalidOperationException();
 

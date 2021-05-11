@@ -47,8 +47,12 @@ namespace Fishbowl.Net.Client.Components
             return this.transition;
         }
 
-        public void SetParameters<TState>(Action<TState> setParameters) where TState : State =>
-            setParameters(this.GetState<TState>());
+        public void SetParameters<TState>(Action<TState> setParameters) where TState : State
+        {
+            var state = this.GetState<TState>();
+            setParameters(state);
+            this.StateHasChanged();
+        }
 
         public Task SetStateAsync<TState>(Action<TState>? setParameters = null) where TState : State
         {
