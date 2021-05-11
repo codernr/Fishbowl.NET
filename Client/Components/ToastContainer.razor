@@ -2,7 +2,7 @@
     <div class="toast-container">
         @foreach (var toast in toasts)
         {
-            <Toast Message="@toast.message" Type="@toast.type" AnimationFinished="@this.AnimationFinished" />
+            <Toast Message="@toast.message" ContextClass="@toast.contextClass" AnimationFinished="@this.AnimationFinished" />
         }
     </div>
 </div>

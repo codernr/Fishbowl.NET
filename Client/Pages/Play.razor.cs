@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Fishbowl.Net.Client.Components;
 using Fishbowl.Net.Client.Components.States;
 using Fishbowl.Net.Client.Services;
+using Fishbowl.Net.Client.Shared;
 using Fishbowl.Net.Shared.Data;
 using Fishbowl.Net.Shared.Data.ViewModels;
 using Microsoft.AspNetCore.SignalR.Client;
@@ -52,7 +53,7 @@ namespace Fishbowl.Net.Client.Pages
 
         private string L(string key) => this.StringLocalizer[key] ?? key;
 
-        private void Notify(string message, Toast.ToastType type) => this.toastContainer?.DisplayToast(message, type);
+        private void Notify(string message, string contextClass) => this.toastContainer?.DisplayToast(message, contextClass);
 
         protected override async Task OnInitializedAsync()
         {
@@ -251,7 +252,7 @@ namespace Fishbowl.Net.Client.Pages
                 score.Timestamp);
 
             this.periodScores.Add(score);
-            this.Notify($"{this.L("Pages.Play.Scored")}: {score.Word.Value}", Toast.ToastType.Primary);
+            this.Notify($"{this.L("Pages.Play.Scored")}: {score.Word.Value}", ContextCssClass.Primary);
             this.StateManager.SetParameters<PeriodPlay>(state => state.ScoreCount = this.periodScores.Count);
             return Task.CompletedTask;
         }
@@ -264,7 +265,7 @@ namespace Fishbowl.Net.Client.Pages
                 score.Timestamp);
                 
             this.periodScores.Remove(score);
-            this.Notify($"{this.L("Pages.Play.ScoreRevoked")}: {score.Word.Value}", Toast.ToastType.Warning);
+            this.Notify($"{this.L("Pages.Play.ScoreRevoked")}: {score.Word.Value}", ContextCssClass.Warning);
             this.StateManager.SetParameters<PeriodPlay>(state => state.ScoreCount = this.periodScores.Count);
             return Task.CompletedTask;
         }

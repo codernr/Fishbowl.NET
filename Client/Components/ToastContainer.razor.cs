@@ -5,13 +5,13 @@ namespace Fishbowl.Net.Client.Components
 {
     public partial class ToastContainer : ComponentBase
     {
-        private readonly List<(string message, Toast.ToastType type)> toasts = new();
+        private readonly List<(string message, string contextClass)> toasts = new();
 
         private int animating = 0;
 
-        public void DisplayToast(string message, Toast.ToastType type)
+        public void DisplayToast(string message, string contextClass)
         {
-            this.toasts.Add((message, type));
+            this.toasts.Add((message, contextClass));
             this.animating++;
             this.StateHasChanged();
         }

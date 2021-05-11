@@ -1,24 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Fishbowl.Net.Client.Shared;
 using Microsoft.AspNetCore.Components;
 
 namespace Fishbowl.Net.Client.Components
 {
     public partial class Toast : ComponentBase
     {
-        public enum ToastType
-        {
-            Primary,
-            Warning
-        }
-
-        private static readonly Dictionary<ToastType, string> Classes = new()
-        {
-            { ToastType.Primary, "text-light bg-primary" },
-            { ToastType.Warning, "text-dark bg-warning" }
-        };
-
         private static readonly TimeSpan TransitionDuration = TimeSpan.FromMilliseconds(150);
 
         private static readonly TimeSpan Delay = TimeSpan.FromSeconds(2);
@@ -27,7 +16,7 @@ namespace Fishbowl.Net.Client.Components
         public string Message { get; set; } = string.Empty;
 
         [Parameter]
-        public ToastType Type { get; set; } = ToastType.Primary;
+        public string ContextClass { get; set; } = ContextCssClass.Primary;
 
         [Parameter]
         public bool Auto { get; set; } = true;
