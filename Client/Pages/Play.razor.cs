@@ -296,12 +296,14 @@ namespace Fishbowl.Net.Client.Pages
 
         public ValueTask DisposeAsync() => this.connection.DisposeAsync();
 
-        private Task CreateGame(string password) =>
-            this.AfterPasswordCheck<PlayerCount>(() =>
+        private Task CreateGame(string password)
+        {
+            this.gameContextSetup.GameContextJoin.Password = password;
+            return this.AfterPasswordCheck<PlayerCount>(() =>
             {
-                this.gameContextSetup.GameContextJoin.Password = password;
                 this.StorageService.Password = password;
             });
+        }
 
         private Task SetPlayerCount(int playerCount) =>
             this.AfterPasswordCheck<TeamCount>(
