@@ -15,9 +15,6 @@
     <data name="Components.States.Connecting.Description">
         <value>Waiting for server</value>
     </data>
-    <data name="Components.States.Info.ErrorTitle">
-        <value>Error!</value>
-    </data>
     <data name="Components.States.GameFinished.Title">
         <value>Results</value>
     </data>
@@ -161,5 +158,14 @@
     </data>
     <data name="Pages.Play.PlayerCount">
         <value>Players waiting</value>
+    </data>
+    <data name="Pages.Play.ErrorTitle">
+        <value>Error!</value>
+    </data>
+    <data name="Pages.Play.GameCreatedTitle">
+        <value>Game created!</value>
+    </data>
+    <data name="Pages.Play.GameCreatedMessage">
+        <value>Now your friends can join the game with the password you set.</value>
     </data>
 </root>

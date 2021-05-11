@@ -15,9 +15,6 @@
     <data name="Components.States.Connecting.Description">
         <value>Várakozás a szerverre</value>
     </data>
-    <data name="Components.States.Info.ErrorTitle">
-        <value>Hiba!</value>
-    </data>
     <data name="Components.States.GameFinished.Title">
         <value>Eredmények</value>
     </data>
@@ -161,5 +158,14 @@
     </data>
     <data name="Pages.Play.PlayerCount">
         <value>Várakozó játékosok</value>
+    </data>
+    <data name="Pages.Play.ErrorTitle">
+        <value>Hiba!</value>
+    </data>
+    <data name="Pages.Play.GameCreatedTitle">
+        <value>Játék létrehozva!</value>
+    </data>
+    <data name="Pages.Play.GameCreatedMessage">
+        <value>Most már csatlakozhatnak az elején megadott jelszóval.</value>
     </data>
 </root>
