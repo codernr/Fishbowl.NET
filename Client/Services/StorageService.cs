@@ -41,7 +41,7 @@ namespace Fishbowl.Net.Client.Services
         {
             if (value is null)
             {
-                this.js.InvokeVoid("StorageModule.clearItem", key);
+                this.js.InvokeVoid("StorageModule.removeItem", key);
             }
             else
             {
