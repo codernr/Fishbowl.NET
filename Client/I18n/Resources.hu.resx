@@ -15,11 +15,8 @@
     <data name="Components.States.Connecting.Description">
         <value>Várakozás a szerverre</value>
     </data>
-    <data name="Components.States.Info.Title">
+    <data name="Components.States.Info.ErrorTitle">
         <value>Hiba!</value>
-    </data>
-    <data name="Components.States.Info.UnknownError">
-        <value>Ismeretlen hiba</value>
     </data>
     <data name="Components.States.GameFinished.Title">
         <value>Eredmények</value>

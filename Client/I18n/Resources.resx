@@ -15,11 +15,8 @@
     <data name="Components.States.Connecting.Description">
         <value>Waiting for server</value>
     </data>
-    <data name="Components.States.Info.Title">
+    <data name="Components.States.Info.ErrorTitle">
         <value>Error!</value>
-    </data>
-    <data name="Components.States.Info.UnknownError">
-        <value>Unknown error</value>
     </data>
     <data name="Components.States.GameFinished.Title">
         <value>Results</value>

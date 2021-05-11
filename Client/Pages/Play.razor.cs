@@ -118,7 +118,11 @@ namespace Fishbowl.Net.Client.Pages
 
         private Task Reconnecting(Exception exception) =>
             this.StateManager.SetStateAsync<Info>(state =>
-                state.Message = L("Pages.Play.Reconnecting"));
+                {
+                    state.ContextClass = ContextCssClass.Danger;
+                    state.Title = L("Components.States.Info.ErrorTitle");
+                    state.Message = L("Pages.Play.Reconnecting");
+                });
 
         private Task Reconnected(string connectionId) => this.JoinGameContext(this.gameContextSetup.GameContextJoin);
 
@@ -161,7 +165,12 @@ namespace Fishbowl.Net.Client.Pages
 
         public async Task ReceiveGameAborted(string message)
         {
-            await this.StateManager.SetStateAsync<Info>(state => state.Message = message);
+            await this.StateManager.SetStateAsync<Info>(state => 
+            {
+                state.ContextClass = ContextCssClass.Danger;
+                state.Title = L("Components.States.Info.ErrorTitle");
+                state.Message = message;
+            });
             await this.connection.StopAsync();
             this.NavigationManager.NavigateTo(this.NavigationManager.Uri, true);
         }
@@ -317,8 +326,12 @@ namespace Fishbowl.Net.Client.Pages
 
             if (passwordExists)
             {
-                await this.StateManager.SetStateAsync<Info>(
-                    state => state.Message = L("Pages.Play.PasswordIsInUse"));
+                await this.StateManager.SetStateAsync<Info>(state =>
+                {
+                    state.ContextClass = ContextCssClass.Danger;
+                    state.Title = L("Components.States.Info.ErrorTitle");
+                    state.Message = L("Pages.Play.PasswordIsInUse");
+                });
                 await this.StateManager.SetStateAsync<Password>();
             }
             else
@@ -345,7 +358,12 @@ namespace Fishbowl.Net.Client.Pages
                 return;
             }
             
-            await this.StateManager.SetStateAsync<Info>(state => state.Message = L("Pages.Play.JoinGameContextError"));
+            await this.StateManager.SetStateAsync<Info>(state =>
+            {
+                state.ContextClass = ContextCssClass.Danger;
+                state.Title = L("Components.States.Info.ErrorTitle");
+                state.Message = L("Pages.Play.JoinGameContextError");
+            });
             await this.StateManager.SetStateAsync<Password>();
         }
 

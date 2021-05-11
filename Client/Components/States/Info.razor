@@ -4,10 +4,10 @@
 @code
 {
     protected override RenderFragment Content =>
-        @<div class="h-100 container-fluid bg-danger">
+        @<div class="h-100 container-fluid @this.ContextClass">
             <div class="row h-100">
                 <div class="col my-auto">
-                    <h2 class="mb-5">@L["Components.States.Info.Title"]</h2>
+                    <h2 class="mb-5">@this.Title</h2>
                     @this.Message
                 </div>
             </div>
