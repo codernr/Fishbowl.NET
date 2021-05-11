@@ -15,10 +15,10 @@
     <data name="Components.States.Connecting.Description">
         <value>Várakozás a szerverre</value>
     </data>
-    <data name="Components.States.Error.Title">
+    <data name="Components.States.Info.Title">
         <value>Hiba!</value>
     </data>
-    <data name="Components.States.Error.UnknownError">
+    <data name="Components.States.Info.UnknownError">
         <value>Ismeretlen hiba</value>
     </data>
     <data name="Components.States.GameFinished.Title">

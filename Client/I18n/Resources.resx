@@ -15,10 +15,10 @@
     <data name="Components.States.Connecting.Description">
         <value>Waiting for server</value>
     </data>
-    <data name="Components.States.Error.Title">
+    <data name="Components.States.Info.Title">
         <value>Error!</value>
     </data>
-    <data name="Components.States.Error.UnknownError">
+    <data name="Components.States.Info.UnknownError">
         <value>Unknown error</value>
     </data>
     <data name="Components.States.GameFinished.Title">
