@@ -8,6 +8,12 @@ using Microsoft.Extensions.Hosting;
 using System.Linq;
 using Fishbowl.Net.Server.Hubs;
 using Fishbowl.Net.Server.Services;
+using System;
+using Microsoft.AspNetCore.SignalR;
+using Fishbowl.Net.Client.Services;
+using Fishbowl.Net.Shared.Data;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace Fishbowl.Net.Server
 {
@@ -25,6 +31,16 @@ namespace Fishbowl.Net.Server
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<GameService>();
+            services.AddSingleton<Func<string, GameSetup, GameContext>>(provider =>
+                (password, gameSetup) =>
+                    {
+                        var groupHubContext = new GroupHubContext(
+                            provider.GetRequiredService<IHubContext<GameHub, IGameClient>>(), password);
+                        return new GameContext(gameSetup, groupHubContext, provider.GetRequiredService<Func<Func<Task>, Timer>>());
+                    });
+            services.AddSingleton<Func<Func<Task>, Timer>>(provider =>
+                action => new Timer(TimeSpan.FromMinutes(this.Configuration.GetValue<int>("GameContextTimeoutInMinutes")),
+                    action, provider.GetRequiredService<ILogger<Timer>>()));
             services.AddSignalR();
             services.AddControllersWithViews();
             services.AddRazorPages();

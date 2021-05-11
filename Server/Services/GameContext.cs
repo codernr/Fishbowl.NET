@@ -22,10 +22,13 @@ namespace Fishbowl.Net.Server.Services
 
         private readonly IGroupHubContext groupHubContext;
 
+        private readonly Timer timer;
+
         private AsyncGame? game;
 
-        public GameContext(GameSetup gameSetup, IGroupHubContext groupHubContext) =>
-            (this.gameSetup, this.groupHubContext) = (gameSetup, groupHubContext);
+        public GameContext(GameSetup gameSetup, IGroupHubContext groupHubContext, Func<Func<Task>, Timer> timerFactory) =>
+            (this.gameSetup, this.groupHubContext, this.timer) =
+            (gameSetup, groupHubContext, timerFactory(() => this.Abort("Timeout")));
 
         public async Task RegisterConnection(Guid playerId, string connectionId)
         {
@@ -73,10 +76,10 @@ namespace Fishbowl.Net.Server.Services
                 return;
             }
 
-            this.StartGame(this.gameSetup.TeamCount, this.gameSetup.RoundTypes, this.players);
+            await this.StartGame(this.gameSetup.TeamCount, this.gameSetup.RoundTypes, this.players);
         }
 
-        private void StartGame(int teamCount, IEnumerable<string> roundTypes, IEnumerable<Player> players)
+        private async Task StartGame(int teamCount, IEnumerable<string> roundTypes, IEnumerable<Player> players)
         {
             try
             {
@@ -86,8 +89,7 @@ namespace Fishbowl.Net.Server.Services
             }
             catch (ArgumentException e)
             {
-                this.groupHubContext.Group().ReceiveGameAborted(e.Message);
-                this.GameFinished?.Invoke(this);
+                await this.Abort(e.Message);
             }
         }
 
@@ -137,6 +139,12 @@ namespace Fishbowl.Net.Server.Services
 
         private async void WordSetup(Player player, Word word) =>
             await this.groupHubContext.Client(player.Id).ReceiveWordSetup(word);
+
+        private async Task Abort(string message)
+        {
+            await this.groupHubContext.Group().ReceiveGameAborted(message);
+            this.GameFinished?.Invoke(this);
+        }
 
         private async Task Restore(Player player, AsyncGame game)
         {

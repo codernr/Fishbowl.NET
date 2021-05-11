@@ -2,10 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Fishbowl.Net.Client.Services;
-using Fishbowl.Net.Server.Hubs;
 using Fishbowl.Net.Shared.Data;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 
 namespace Fishbowl.Net.Server.Services
@@ -16,14 +13,14 @@ namespace Fishbowl.Net.Server.Services
 
         private readonly Dictionary<string, GameContext> connectionContextMap = new();
 
-        private readonly IHubContext<GameHub, IGameClient> hubContext;
+        private readonly Func<string, GameSetup, GameContext> gameContextFactory;
 
         private readonly ILogger<GameService> logger;
 
         public GameService(
-            IHubContext<GameHub, IGameClient> hubContext,
+            Func<string, GameSetup, GameContext> gameContextFactory,
             ILogger<GameService> logger) =>
-            (this.hubContext, this.logger) = (hubContext, logger);
+            (this.gameContextFactory, this.logger) = (gameContextFactory, logger);
 
         public bool GameContextExists(string password) => this.contexts.ContainsKey(password);
 
@@ -47,8 +44,7 @@ namespace Fishbowl.Net.Server.Services
                 throw new InvalidOperationException();
             }
 
-            var groupHubContext = new GroupHubContext(this.hubContext, password);
-            var context = new GameContext(request.GameSetup, groupHubContext);
+            var context = gameContextFactory(password, request.GameSetup);
             context.GameFinished += context => this.RemoveGameContext(password);
 
             this.contexts.Add(password, context);
