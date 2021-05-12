@@ -1,9 +1,9 @@
-using Fishbowl.Net.Shared.Data;
+using Fishbowl.Net.Shared.Data.ViewModels;
 
 namespace Fishbowl.Net.Client.Components.States
 {
     public partial class GameStarted
     {
-        public Team Team { get; set; } = default!;
+        public TeamViewModel Team { get; set; } = default!;
     }
 }

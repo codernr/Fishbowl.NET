@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Fishbowl.Net.Shared.Data;
 using Fishbowl.Net.Shared.Data.ViewModels;
@@ -16,7 +17,7 @@ namespace Fishbowl.Net.Client.Services
 
         Task ReceiveGameAborted(string message) => Task.CompletedTask;
 
-        Task ReceiveGameStarted(Game game) => Task.CompletedTask;
+        Task ReceiveGameStarted(IEnumerable<TeamViewModel> teams) => Task.CompletedTask;
 
         Task ReceiveGameFinished(Game game) => Task.CompletedTask;
 

@@ -119,7 +119,9 @@ namespace Fishbowl.Net.Server.Services
         }
 
         private async void GameStarted(Game game) =>
-            await this.groupHubContext.Group().ReceiveGameStarted(game);
+            await this.groupHubContext.Group().ReceiveGameStarted(game.Teams
+                .Select(team => new TeamViewModel(team.Id, team.Players
+                    .Select(player => new PlayerViewModel(player.Id, player.Name)))));
 
         private async void OnGameFinished(Game game)
         {

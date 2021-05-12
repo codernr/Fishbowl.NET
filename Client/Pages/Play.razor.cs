@@ -60,7 +60,7 @@ namespace Fishbowl.Net.Client.Pages
             this.connection.On<Player>(nameof(this.ReceiveWaitForOtherPlayers), this.ReceiveWaitForOtherPlayers);
             this.connection.On<Player, Round>(nameof(this.RestoreGameState), this.RestoreGameState);
             this.connection.On<string>(nameof(this.ReceiveGameAborted), this.ReceiveGameAborted);
-            this.connection.On<Game>(nameof(this.ReceiveGameStarted), this.ReceiveGameStarted);
+            this.connection.On<IEnumerable<TeamViewModel>>(nameof(this.ReceiveGameStarted), this.ReceiveGameStarted);
             this.connection.On<Game>(nameof(this.ReceiveGameFinished), this.ReceiveGameFinished);
             this.connection.On<Round>(nameof(this.ReceiveRoundStarted), this.ReceiveRoundStarted);
             this.connection.On<Round>(nameof(this.ReceiveRoundFinished), this.ReceiveRoundFinished);
@@ -167,9 +167,9 @@ namespace Fishbowl.Net.Client.Pages
             this.NavigationManager.NavigateTo(this.NavigationManager.Uri, true);
         }
 
-        public Task ReceiveGameStarted(Game game)
+        public Task ReceiveGameStarted(IEnumerable<TeamViewModel> teams)
         {
-            var playerTeam = game.Teams.First(
+            var playerTeam = teams.First(
                 team => team.Players.Any(player => player.Id == this.ClientState.Id));
 
             this.Logger.LogInformation("My team id: {TeamId}", playerTeam.Id);
