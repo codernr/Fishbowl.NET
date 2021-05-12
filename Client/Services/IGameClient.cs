@@ -31,7 +31,7 @@ namespace Fishbowl.Net.Client.Services
 
         Task ReceivePeriodFinished(PeriodSummaryViewModel period) => Task.CompletedTask;
 
-        Task ReceiveWordSetup(Word word) => Task.CompletedTask;
+        Task ReceiveWordSetup(WordViewModel word) => Task.CompletedTask;
 
         Task ReceiveScoreAdded(Score score) => Task.CompletedTask;
 

@@ -67,7 +67,7 @@ namespace Fishbowl.Net.Client.Pages
             this.connection.On<PeriodSetupViewModel>(nameof(this.ReceivePeriodSetup), this.ReceivePeriodSetup);
             this.connection.On<PeriodRunningViewModel>(nameof(this.ReceivePeriodStarted), this.ReceivePeriodStarted);
             this.connection.On<PeriodSummaryViewModel>(nameof(this.ReceivePeriodFinished), this.ReceivePeriodFinished);
-            this.connection.On<Word>(nameof(this.ReceiveWordSetup), this.ReceiveWordSetup);
+            this.connection.On<WordViewModel>(nameof(this.ReceiveWordSetup), this.ReceiveWordSetup);
             this.connection.On<Score>(nameof(this.ReceiveScoreAdded), this.ReceiveScoreAdded);
             this.connection.On<Score>(nameof(this.ReceiveLastScoreRevoked), this.ReceiveLastScoreRevoked);
 
@@ -226,9 +226,9 @@ namespace Fishbowl.Net.Client.Pages
             return this.StateManager.SetStateAsync<PeriodFinished>(state => state.Period = period);
         }
 
-        public Task ReceiveWordSetup(Word word)
+        public Task ReceiveWordSetup(WordViewModel word)
         {
-            this.Logger.LogInformation("Word setup: {Word}", word.Value);
+            this.Logger.LogInformation("ReceiveWordSetup: {Word}", word.Value);
 
             this.StateManager.SetParameters<PeriodPlay>(state => state.Word = word);
             return Task.CompletedTask;
@@ -264,7 +264,7 @@ namespace Fishbowl.Net.Client.Pages
 
         private Task NextWord(DateTimeOffset timestamp) => this.connection.SendAsync("NextWord", timestamp);
 
-        private async Task AddScore(Score score)
+        private async Task AddScore(ScoreViewModel score)
         {
             await this.connection.SendAsync("AddScore", score);
             await this.NextWord(score.Timestamp);

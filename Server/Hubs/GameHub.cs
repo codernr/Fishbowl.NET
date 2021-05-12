@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Fishbowl.Net.Client.Services;
 using Fishbowl.Net.Server.Services;
 using Fishbowl.Net.Shared.Data;
+using Fishbowl.Net.Shared.Data.ViewModels;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Fishbowl.Net.Server.Hubs
@@ -48,7 +49,7 @@ namespace Fishbowl.Net.Server.Hubs
 
         public void NextWord(DateTimeOffset timestamp) => this.GameContext.Game.NextWord(timestamp);
 
-        public void AddScore(Score score) => this.GameContext.Game.AddScore(score);
+        public void AddScore(ScoreViewModel score) => this.GameContext.Game.AddScore(score.Map());
 
         public void RevokeLastScore() => this.GameContext.Game.RevokeLastScore();
 

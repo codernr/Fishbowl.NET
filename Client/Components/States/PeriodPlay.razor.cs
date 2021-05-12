@@ -9,7 +9,7 @@ namespace Fishbowl.Net.Client.Components.States
     public partial class PeriodPlay
     {
         [Parameter]
-        public EventCallback<Score> OnScoreAdded { get; set; } = default!;
+        public EventCallback<ScoreViewModel> OnScoreAdded { get; set; } = default!;
 
         [Parameter]
         public EventCallback<DateTimeOffset> OnPeriodFinished { get; set; } = default!;
@@ -31,7 +31,7 @@ namespace Fishbowl.Net.Client.Components.States
 
         private int scoreCount = 0;
 
-        public Word? Word { get; set; }
+        public WordViewModel? Word { get; set; }
 
         private bool showRevoke = false;
 
@@ -49,7 +49,7 @@ namespace Fishbowl.Net.Client.Components.States
 
         private Task ScoreAdded(EventArgs e)
         {
-            var score = new Score(this.Word!, DateTimeOffset.UtcNow);
+            var score = new ScoreViewModel(this.Word!, DateTimeOffset.UtcNow);
             return this.OnScoreAdded.InvokeAsync(score);
         }
     }

@@ -45,6 +45,10 @@ namespace Fishbowl.Net.Shared.Data.ViewModels
 
         public static WordViewModel Map(this Word word) => new(word.Id, word.Value);
 
+        public static Word Map(this WordViewModel word) => new(word.Id, word.Value);
+
         public static ScoreViewModel Map(this Score score) => new(score.Word.Map(), score.Timestamp);
+
+        public static Score Map(this ScoreViewModel score) => new(score.Word.Map(), score.Timestamp);
     }
 }

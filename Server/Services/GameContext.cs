@@ -153,7 +153,7 @@ namespace Fishbowl.Net.Server.Services
             await this.groupHubContext.Group().ReceiveLastScoreRevoked(score);
 
         private async void WordSetup(Player player, Word word) =>
-            await this.groupHubContext.Client(player.Id).ReceiveWordSetup(word);
+            await this.groupHubContext.Client(player.Id).ReceiveWordSetup(word.Map());
 
         private async Task Abort(string message)
         {
@@ -179,7 +179,7 @@ namespace Fishbowl.Net.Server.Services
 
             if (player == period.Player)
             {
-                await client.ReceiveWordSetup(game.Game.CurrentWord());
+                await client.ReceiveWordSetup(game.Game.CurrentWord().Map());
             }
         }
 
