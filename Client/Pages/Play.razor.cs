@@ -47,6 +47,8 @@ namespace Fishbowl.Net.Client.Pages
 
         private Round? round;
 
+        private bool isCreating = false;
+
         private readonly GameContextSetup gameContextSetup = new();
 
         private readonly List<Score> periodScores = new();
@@ -131,6 +133,17 @@ namespace Fishbowl.Net.Client.Pages
             this.Logger.LogInformation(
                 "ReceiveSetupPlayer: {{WordCount: {WordCount}, TeamCount: {TeamCount}, RoundTypes: {RoundTypes}}}",
                 gameSetup.WordCount, gameSetup.TeamCount, (object)gameSetup.RoundTypes);
+
+            if (this.isCreating)
+            {
+                await this.StateManager.SetStateAsync<Info>(state =>
+                {
+                    state.ContextClass = ContextCssClass.Success;
+                    state.Title = L("Pages.Play.GameCreatedTitle");
+                    state.Message = L("Pages.Play.GameCreatedMessage");
+                });
+                this.isCreating = false;
+            }
             
             this.gameContextSetup.GameSetup = gameSetup;
 
@@ -322,12 +335,7 @@ namespace Fishbowl.Net.Client.Pages
         private async Task SetRoundTypes(string[] roundTypes)
         {
             this.gameContextSetup.GameSetup.RoundTypes = roundTypes;
-            await this.StateManager.SetStateAsync<Info>(state =>
-            {
-                state.ContextClass = ContextCssClass.Success;
-                state.Title = L("Pages.Play.GameCreatedTitle");
-                state.Message = L("Pages.Play.GameCreatedMessage");
-            });
+            this.isCreating = true;
             await this.connection.CreateGameContext(this.gameContextSetup);
         }
 
