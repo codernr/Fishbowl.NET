@@ -45,6 +45,9 @@
     <data name="Components.States.PeriodFinished.Scores">
         <value>pontjai</value>
     </data>
+    <data name="Components.States.PeriodFinished.GuessedWords">
+        <value>Kitalált szavak</value>
+    </data>
     <data name="Components.States.PeriodPlay.GuessedButton">
         <value>Kitaláltuk!</value>
     </data>

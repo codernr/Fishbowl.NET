@@ -45,6 +45,9 @@
     <data name="Components.States.PeriodFinished.Scores">
         <value>scores</value>
     </data>
+    <data name="Components.States.PeriodFinished.GuessedWords">
+        <value>Guessed words</value>
+    </data>
     <data name="Components.States.PeriodPlay.GuessedButton">
         <value>Guessed</value>
     </data>
