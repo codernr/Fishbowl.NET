@@ -6,23 +6,25 @@ namespace Fishbowl.Net.Shared.Data
 {
     public class Game
     {
-        public Guid Id { get; init; }
+        public Guid Id { get; private set; }
 
-        public List<Team> Teams { get; init; } = default!;
+        public List<Team> Teams { get; private set; } = default!;
         
-        public List<Round> Rounds { get; init; } = default!;
+        public List<Round> Rounds { get; private set; } = default!;
         
-        public TimeSpan PeriodLength { get; init; } = TimeSpan.FromSeconds(60);
+        public TimeSpan PeriodLength { get; private set; } = TimeSpan.FromSeconds(60);
 
-        public TimeSpan PeriodThreshold { get; init; } = TimeSpan.FromSeconds(5);
+        public TimeSpan PeriodThreshold { get; private set; } = TimeSpan.FromSeconds(5);
         
+        public Round CurrentRound => this.roundEnumerator.Current;
+        
+        public Word CurrentWord => this.roundEnumerator.Current.WordEnumerator.Current;
+
         private readonly CircularEnumerator<Team> teamEnumerator = default!;
 
         private readonly IEnumerator<Round> roundEnumerator = default!;
 
         private TimeSpan? remaining;
-
-        public Game() {}
 
         public Game(
             Guid id,
@@ -71,61 +73,57 @@ namespace Fishbowl.Net.Shared.Data
         {
             while (this.roundEnumerator.Current.NextPeriod(
                 this.remaining ?? this.PeriodLength,
-                this.teamEnumerator.Current.PlayerEnumerator().Current))
+                this.teamEnumerator.Current.PlayerEnumerator.Current))
             {
-                yield return this.roundEnumerator.Current.CurrentPeriod();
+                yield return this.roundEnumerator.Current.CurrentPeriod;
             }
         }
 
-        public Round CurrentRound() => this.roundEnumerator.Current;
-        
-        public Word CurrentWord() => this.roundEnumerator.Current.WordEnumerator().Current;
-
         public void StartPeriod(DateTimeOffset timestamp) =>
-            this.roundEnumerator.Current.CurrentPeriod().StartedAt = timestamp;
+            this.roundEnumerator.Current.CurrentPeriod.StartedAt = timestamp;
 
         public void FinishPeriod(DateTimeOffset timestamp) =>
             this.FinishPeriod(timestamp, true);
 
         private void FinishPeriod(DateTimeOffset timestamp, bool rewindWord)
         {
-            this.roundEnumerator.Current.CurrentPeriod().FinishedAt = timestamp;
+            this.roundEnumerator.Current.CurrentPeriod.FinishedAt = timestamp;
             this.remaining = null;
-            this.teamEnumerator.Current.PlayerEnumerator().MoveNext();
+            this.teamEnumerator.Current.PlayerEnumerator.MoveNext();
             this.teamEnumerator.MoveNext();
 
             if (rewindWord)
             {
-                var enumerator = this.roundEnumerator.Current.WordEnumerator();
+                var enumerator = this.roundEnumerator.Current.WordEnumerator;
                 enumerator.Return(enumerator.Current);
             }
         }
 
-        public void AddScore(Score score) => this.roundEnumerator.Current.CurrentPeriod().Scores.Add(score);
+        public void AddScore(Score score) => this.roundEnumerator.Current.CurrentPeriod.Scores.Add(score);
 
         public Score? RevokeLastScore()
         {
-            var score = this.CurrentRound().CurrentPeriod().RevokeLastScore();
+            var score = this.CurrentRound.CurrentPeriod.RevokeLastScore();
 
-            if (score is not null) this.CurrentRound().WordEnumerator().Return(score.Word);
+            if (score is not null) this.CurrentRound.WordEnumerator.Return(score.Word);
 
             return score;
         }
 
         public bool NextWord(DateTimeOffset timestamp)
         {
-            var period = this.roundEnumerator.Current.CurrentPeriod();
+            var period = this.roundEnumerator.Current.CurrentPeriod;
 
-            if (timestamp >= period.StartedAt + period.Length() - this.PeriodThreshold)
+            if (timestamp >= period.StartedAt + period.Length - this.PeriodThreshold)
             {
                 this.FinishPeriod(timestamp, false);
                 return false;
             }
 
-            if (!this.roundEnumerator.Current.WordEnumerator().MoveNext())
+            if (!this.roundEnumerator.Current.WordEnumerator.MoveNext())
             {
                 period.FinishedAt = timestamp;
-                this.remaining = period.StartedAt + period.Length() - timestamp;
+                this.remaining = period.StartedAt + period.Length - timestamp;
                 return false;
             }
 

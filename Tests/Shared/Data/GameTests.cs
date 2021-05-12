@@ -74,10 +74,10 @@ namespace Fishbowl.Net.Tests.Shared
 
                     do
                     {
-                        Assert.Equal(guessedWords[roundCount][periodCount][wordCount], game.CurrentWord().Value);
+                        Assert.Equal(guessedWords[roundCount][periodCount][wordCount], game.CurrentWord.Value);
                         
                         now += TimeSpan.FromSeconds(10);
-                        game.AddScore(new Score(game.CurrentWord(), now));
+                        game.AddScore(new Score(game.CurrentWord, now));
                         wordCount++;
                         totalWordCount++;
                     }
@@ -150,17 +150,17 @@ namespace Fishbowl.Net.Tests.Shared
 
                     do
                     {
-                        Assert.Equal(currentWord[roundCount][periodCount][wordCount], game.CurrentWord().Value);
+                        Assert.Equal(currentWord[roundCount][periodCount][wordCount], game.CurrentWord.Value);
                         
                         now += TimeSpan.FromSeconds(10);
-                        if (now >= start + period.Length())
+                        if (now >= start + period.Length)
                         {
                             game.FinishPeriod(now);
                             break;
                         }
                         else
                         {
-                            game.AddScore(new Score(game.CurrentWord(), now));
+                            game.AddScore(new Score(game.CurrentWord, now));
                             totalWordCount++;
                         }
                         wordCount++;

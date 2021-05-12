@@ -54,10 +54,10 @@ namespace Fishbowl.Net.Shared.Data.ViewModels
         public static RoundViewModel Map(this Round round) => new(round.Type);
 
         public static PeriodSetupViewModel Map(this Period period, Round round) =>
-            new(new(round.Type), new(period.Player.Id, period.Player.Name), period.LengthInSeconds);
+            new(new(round.Type), new(period.Player.Id, period.Player.Name), period.Length.TotalSeconds);
 
         public static PeriodRunningViewModel MapRunning(this Period period, Round round) =>
-            new(new(round.Type), new(period.Player.Id, period.Player.Name), period.LengthInSeconds,
+            new(new(round.Type), new(period.Player.Id, period.Player.Name), period.Length.TotalSeconds,
             period.StartedAt ?? throw new InvalidOperationException());
 
         public static PeriodSummaryViewModel Map(this Period period) =>

@@ -117,7 +117,7 @@ namespace Fishbowl.Net.Shared
             
             do
             {
-                this.WordSetup?.Invoke(period.Player, this.game.CurrentWord());
+                this.WordSetup?.Invoke(period.Player, this.game.CurrentWord);
 
                 timestamp = await this.inputReceived.Task;
 

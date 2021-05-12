@@ -136,11 +136,11 @@ namespace Fishbowl.Net.Server.Services
 
         private async void PeriodSetup(Period period) =>
             await this.groupHubContext.Group().ReceivePeriodSetup(
-                period.Map(this.Game.Game.CurrentRound()));
+                period.Map(this.Game.Game.CurrentRound));
 
         private async void PeriodStarted(Period period) =>
             await this.groupHubContext.Group().ReceivePeriodStarted(
-                period.MapRunning(this.Game.Game.CurrentRound()));
+                period.MapRunning(this.Game.Game.CurrentRound));
 
         private async void PeriodFinished(Period period) =>
             await this.groupHubContext.Group().ReceivePeriodFinished(period.Map());
@@ -162,8 +162,8 @@ namespace Fishbowl.Net.Server.Services
 
         private async Task Restore(Player player, AsyncGame game)
         {
-            var round = game.Game.CurrentRound();
-            var period = round.CurrentPeriod();
+            var round = game.Game.CurrentRound;
+            var period = round.CurrentPeriod;
             var client = this.groupHubContext.Client(player.Id);
 
             await client.RestoreGameState(player, round);
@@ -176,9 +176,9 @@ namespace Fishbowl.Net.Server.Services
 
             await client.ReceivePeriodStarted(period.MapRunning(round));
 
-            if (player == period.Player)
+            if (player.Id == period.Player.Id)
             {
-                await client.ReceiveWordSetup(game.Game.CurrentWord().Map());
+                await client.ReceiveWordSetup(game.Game.CurrentWord.Map());
             }
         }
 
