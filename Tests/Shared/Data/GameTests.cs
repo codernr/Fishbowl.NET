@@ -93,7 +93,7 @@ namespace Fishbowl.Net.Tests.Shared
             }
 
             Assert.Equal(20, totalWordCount);
-            var scores = game.GetTeamScores();
+            var scores = GetTeamScores(game);
             Assert.Equal(12, scores[0]);
             Assert.Equal(8, scores[1]);
         }
@@ -177,7 +177,7 @@ namespace Fishbowl.Net.Tests.Shared
             }
 
             Assert.Equal(20, totalWordCount);
-            var scores = game.GetTeamScores();
+            var scores = GetTeamScores(game);
             Assert.Equal(10, scores[0]);
             Assert.Equal(10, scores[1]);
         }
@@ -191,5 +191,26 @@ namespace Fishbowl.Net.Tests.Shared
                         .Select(j => new Word(Guid.NewGuid(), $"Player{i}Word{j}"))
                         .ToList()))
                 .ToList();
+
+        private static Dictionary<int, int> GetTeamScores(Game game)
+        {
+            var playerScores = game.Rounds
+                .SelectMany(round => round.Periods)
+                .GroupBy(period => period.Player.Id)
+                .ToDictionary(item => item.Key, item => item.SelectMany(p => p.Scores).Count());
+
+            var teamScores = game.Teams
+                .ToDictionary(
+                    team => team.Id,
+                    team => playerScores
+                        .Where(score => team.Players
+                            .Any(player => player.Id == score.Key))
+                        .Select(item => item.Value)
+                        .Sum())
+                .OrderByDescending(entry => entry.Value)
+                .ToDictionary(entry => entry.Key, entry => entry.Value);
+
+            return teamScores;
+        }
     }
 }

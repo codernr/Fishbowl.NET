@@ -129,26 +129,5 @@ namespace Fishbowl.Net.Shared.Data
 
             return true;
         }
-
-        public Dictionary<int, int> GetTeamScores()
-        {
-            var playerScores = this.Rounds
-                .SelectMany(round => round.Periods)
-                .GroupBy(period => period.Player.Id)
-                .ToDictionary(item => item.Key, item => item.SelectMany(p => p.Scores).Count());
-
-            var teamScores = this.Teams
-                .ToDictionary(
-                    team => team.Id,
-                    team => playerScores
-                        .Where(score => team.Players
-                            .Any(player => player.Id == score.Key))
-                        .Select(item => item.Value)
-                        .Sum())
-                .OrderByDescending(entry => entry.Value)
-                .ToDictionary(entry => entry.Key, entry => entry.Value);
-
-            return teamScores;
-        }
     }
 }
