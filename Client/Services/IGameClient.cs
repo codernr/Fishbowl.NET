@@ -6,34 +6,34 @@ namespace Fishbowl.Net.Client.Services
 {
     public interface IGameClient
     {
-        Task ReceiveSetupPlayer(GameSetup setup);
+        Task ReceiveSetupPlayer(GameSetup setup) => Task.CompletedTask;
 
-        Task ReceivePlayerCount(PlayerCountViewModel playerCount);
+        Task ReceivePlayerCount(PlayerCountViewModel playerCount) => Task.CompletedTask;
 
-        Task ReceiveWaitForOtherPlayers(Player player);
+        Task ReceiveWaitForOtherPlayers(Player player) => Task.CompletedTask;
 
-        Task RestoreGameState(Player player, Round round);
+        Task RestoreGameState(Player player, Round round) => Task.CompletedTask;
 
-        Task ReceiveGameAborted(string message);
+        Task ReceiveGameAborted(string message) => Task.CompletedTask;
 
-        Task ReceiveGameStarted(Game game);
+        Task ReceiveGameStarted(Game game) => Task.CompletedTask;
 
-        Task ReceiveGameFinished(Game game);
+        Task ReceiveGameFinished(Game game) => Task.CompletedTask;
 
-        Task ReceiveRoundStarted(Round round);
+        Task ReceiveRoundStarted(Round round) => Task.CompletedTask;
 
-        Task ReceiveRoundFinished(Round round);
+        Task ReceiveRoundFinished(Round round) => Task.CompletedTask;
 
-        Task ReceivePeriodSetup(Period period);
+        Task ReceivePeriodSetup(Period period) => Task.CompletedTask;
 
-        Task ReceivePeriodStarted(Period period);
+        Task ReceivePeriodStarted(Period period) => Task.CompletedTask;
 
-        Task ReceivePeriodFinished(Period period);
+        Task ReceivePeriodFinished(Period period) => Task.CompletedTask;
 
-        Task ReceiveWordSetup(Word word);
+        Task ReceiveWordSetup(Word word) => Task.CompletedTask;
 
-        Task ReceiveScoreAdded(Score score);
+        Task ReceiveScoreAdded(Score score) => Task.CompletedTask;
 
-        Task ReceiveLastScoreRevoked(Score score);
+        Task ReceiveLastScoreRevoked(Score score) => Task.CompletedTask;
     }
 }

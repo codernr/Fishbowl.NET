@@ -74,37 +74,6 @@ namespace Fishbowl.Net.Server.Services
             }
         }
 
-        private class NullGameClient : IGameClient
-        {
-            public Task ReceiveSetupPlayer(GameSetup gameSetup) => Task.CompletedTask;
-
-            public Task ReceivePlayerCount(PlayerCountViewModel playerCount) => Task.CompletedTask;
-
-            public Task ReceiveWaitForOtherPlayers(Player player) => Task.CompletedTask;
-
-            public Task RestoreGameState(Player player, Round round) => Task.CompletedTask;
-            
-            public Task ReceiveGameAborted(string message) => Task.CompletedTask;
-
-            public Task ReceiveGameFinished(Game game) => Task.CompletedTask;
-
-            public Task ReceiveGameStarted(Game game) => Task.CompletedTask;
-
-            public Task ReceivePeriodFinished(Period period) => Task.CompletedTask;
-
-            public Task ReceivePeriodSetup(Period period) => Task.CompletedTask;
-
-            public Task ReceivePeriodStarted(Period period) => Task.CompletedTask;
-
-            public Task ReceiveRoundFinished(Round round) => Task.CompletedTask;
-
-            public Task ReceiveRoundStarted(Round round) => Task.CompletedTask;
-
-            public Task ReceiveScoreAdded(Score score) => Task.CompletedTask;
-
-            public Task ReceiveLastScoreRevoked(Score score) => Task.CompletedTask;
-
-            public Task ReceiveWordSetup(Word word) => Task.CompletedTask;
-        }
+        private class NullGameClient : IGameClient {}
     }
 }
