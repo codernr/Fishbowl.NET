@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
+    <data name="Common.Abort.InvalidReturnValue">
+        <value>Invalid word has been revoked, game is aborted.</value>
+    </data>
+    <data name="Common.Abort.PlayerCount">
+        <value>The number of players is less than number of teams twice.</value>
+    </data>
+    <data name="Common.Abort.Timeout">
+        <value>You have been idle for too much time, game has been shut down.</value>
+    </data>
     <data name="Components.Timer.Remaining">
         <value>Remaining</value>
     </data>

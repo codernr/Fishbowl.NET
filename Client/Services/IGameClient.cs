@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Fishbowl.Net.Shared.Data;
 using Fishbowl.Net.Shared.Data.ViewModels;
@@ -15,7 +14,7 @@ namespace Fishbowl.Net.Client.Services
 
         Task RestoreGameState(Player player, Round round) => Task.CompletedTask;
 
-        Task ReceiveGameAborted(string message) => Task.CompletedTask;
+        Task ReceiveGameAborted(GameAbortViewModel abort) => Task.CompletedTask;
 
         Task ReceiveGameStarted(GameViewModel game) => Task.CompletedTask;
 
