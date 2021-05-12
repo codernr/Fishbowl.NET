@@ -29,16 +29,6 @@ namespace Fishbowl.Net.Client.Pages
 
         private PlayerCountViewModel playerCount = new PlayerCountViewModel(0, 0);
 
-        private string playerName = string.Empty;
-
-        private Player Player
-        {
-            get => this.player ?? throw new InvalidOperationException();
-            set => this.player = value;
-        }
-
-        private Player? player;
-
         private Round Round
         { 
             get => this.round ?? throw new InvalidOperationException();
@@ -47,9 +37,26 @@ namespace Fishbowl.Net.Client.Pages
 
         private Round? round;
 
-        private bool isCreating = false;
+        private ClientState ClientState
+        {
+            get
+            {
+                if (this.clientState is null)
+                {
+                    this.clientState = this.StorageService.ClientState;
+                }
+                return this.clientState;
+            }
+            set
+            {
+                this.clientState = value;
+                this.StorageService.ClientState = value;
+            }
+        }
 
-        private readonly GameContextSetup gameContextSetup = new();
+        private ClientState? clientState;
+
+        private GameSetup gameSetup = new();
 
         private readonly List<Score> periodScores = new();
 
@@ -98,20 +105,9 @@ namespace Fishbowl.Net.Client.Pages
 
         private async Task Connected()
         {
-            var userId = this.StorageService.UserId;
-            this.gameContextSetup.GameContextJoin.UserId = userId ?? Guid.NewGuid();
-            
-            if (userId is null)
+            if (this.ClientState.Password is not null && await this.connection.GameContextExists(this.ClientState.Password))
             {
-                this.StorageService.UserId = this.gameContextSetup.GameContextJoin.UserId;
-            }
-
-            var password = this.StorageService.Password;
-
-            if (password is not null && await this.connection.GameContextExists(password))
-            {
-                this.gameContextSetup.GameContextJoin.Password = password;
-                await this.JoinGameContext(this.gameContextSetup.GameContextJoin);
+                await this.JoinGameContext();
                 return;
             }
 
@@ -126,7 +122,7 @@ namespace Fishbowl.Net.Client.Pages
                     state.Message = L("Pages.Play.Reconnecting");
                 });
 
-        private Task Reconnected(string connectionId) => this.JoinGameContext(this.gameContextSetup.GameContextJoin);
+        private Task Reconnected(string connectionId) => this.JoinGameContext();
 
         public async Task ReceiveSetupPlayer(GameSetup gameSetup)
         {
@@ -134,7 +130,7 @@ namespace Fishbowl.Net.Client.Pages
                 "ReceiveSetupPlayer: {{WordCount: {WordCount}, TeamCount: {TeamCount}, RoundTypes: {RoundTypes}}}",
                 gameSetup.WordCount, gameSetup.TeamCount, (object)gameSetup.RoundTypes);
 
-            if (this.isCreating)
+            if (this.ClientState.IsCreating)
             {
                 await this.StateManager.SetStateAsync<Info>(state =>
                 {
@@ -142,10 +138,10 @@ namespace Fishbowl.Net.Client.Pages
                     state.Title = L("Pages.Play.GameCreatedTitle");
                     state.Message = L("Pages.Play.GameCreatedMessage");
                 });
-                this.isCreating = false;
+                this.ClientState = this.ClientState with { IsCreating = false };
             }
             
-            this.gameContextSetup.GameSetup = gameSetup;
+            this.gameSetup = gameSetup;
 
             await this.StateManager.SetStateAsync<PlayerName>();
         }
@@ -164,14 +160,14 @@ namespace Fishbowl.Net.Client.Pages
                 "ReceiveWaitForOtherPlayers: {{PlayerName: {PlayerName}, Words: {Words}}}",
                 player.Name, (object)player.Words.Select(word => word.Value));
             
-            this.player = player;
+            this.ClientState = this.ClientState with { Id = player.Id, Name = player.Name };
 
             await this.StateManager.SetStateAsync<WaitingForPlayers>();
         }
 
         public Task RestoreGameState(Player player, Round round)
         {
-            this.Player = player;
+            this.ClientState = this.ClientState with { Id = player.Id, Name = player.Name };
             this.Round = round;
             return Task.CompletedTask;
         }
@@ -191,7 +187,7 @@ namespace Fishbowl.Net.Client.Pages
         public Task ReceiveGameStarted(Game game)
         {
             var playerTeam = game.Teams.First(
-                team => team.Players.Any(player => player.Id == this.Player.Id));
+                team => team.Players.Any(player => player.Id == this.ClientState.Id));
 
             this.Logger.LogInformation("My team id: {TeamId}", playerTeam.Id);
 
@@ -226,7 +222,7 @@ namespace Fishbowl.Net.Client.Pages
                 period.Player.Name,
                 period.Length());
 
-            return period.Player == this.Player ?
+            return period.Player.Id == this.ClientState.Id ?
                 this.StateManager.SetStateAsync<PeriodSetupPlay>(state => state.Round = this.Round) :
                 this.StateManager.SetStateAsync<PeriodSetupWatch>(state => {
                     state.Round = this.Round;
@@ -239,7 +235,7 @@ namespace Fishbowl.Net.Client.Pages
             this.Logger.LogInformation("Period started at: {PeriodStartTime}", period.StartedAt);
             this.periodScores.Clear();
 
-            return period.Player == this.Player ?
+            return period.Player.Id == this.ClientState.Id ?
                 this.StateManager.SetStateAsync<PeriodPlay>(state => {
                     state.ScoreCount = 0;
                     state.Round = this.Round;
@@ -314,35 +310,41 @@ namespace Fishbowl.Net.Client.Pages
 
         private Task CreateGame(string password)
         {
-            this.gameContextSetup.GameContextJoin.Password = password;
-            return this.AfterPasswordCheck<PlayerCount>(() =>
-            {
-                this.StorageService.Password = password;
-            });
+            this.ClientState = this.ClientState with { Password = password };
+            return this.AfterPasswordCheck<PlayerCount>(() => {});
         }
 
         private Task SetPlayerCount(int playerCount) =>
             this.AfterPasswordCheck<TeamCount>(
-                () => this.gameContextSetup.GameSetup.PlayerCount = playerCount,
+                () => this.gameSetup.PlayerCount = playerCount,
                 teamCount => teamCount.MaxTeamCount = playerCount / 2);
 
         private Task SetTeamCount(int teamCount) =>
-            this.AfterPasswordCheck<WordCount>(() => this.gameContextSetup.GameSetup.TeamCount = teamCount);
+            this.AfterPasswordCheck<WordCount>(() => this.gameSetup.TeamCount = teamCount);
 
         private Task SetWordCount(int wordCount) =>
-            this.AfterPasswordCheck<RoundTypes>(() => this.gameContextSetup.GameSetup.WordCount = wordCount);
+            this.AfterPasswordCheck<RoundTypes>(() => this.gameSetup.WordCount = wordCount);
 
         private async Task SetRoundTypes(string[] roundTypes)
         {
-            this.gameContextSetup.GameSetup.RoundTypes = roundTypes;
-            this.isCreating = true;
-            await this.connection.CreateGameContext(this.gameContextSetup);
+            this.gameSetup.RoundTypes = roundTypes;
+            this.ClientState = this.ClientState with { IsCreating = true };
+            await this.connection.CreateGameContext(new()
+            {
+                GameContextJoin = new()
+                {
+                    Password = this.ClientState.Password ?? throw new InvalidOperationException(),
+                    UserId = this.ClientState.Id
+                },
+                GameSetup = this.gameSetup
+            });
         }
 
         private async Task AfterPasswordCheck<TNextState>(
             Action setup, Action<TNextState>? setParameters = null) where TNextState : State
         {
-            var passwordExists = await this.connection.GameContextExists(this.gameContextSetup.GameContextJoin.Password);
+            var passwordExists = this.ClientState.Password is null ?
+                false : await this.connection.GameContextExists(this.ClientState.Password);
 
             if (passwordExists)
             {
@@ -363,15 +365,16 @@ namespace Fishbowl.Net.Client.Pages
 
         private Task JoinGame(string password)
         {
-            this.gameContextSetup.GameContextJoin.Password = password;
-            this.StorageService.Password = password;
+            this.ClientState = this.ClientState with { Password = password };
 
-            return this.JoinGameContext(this.gameContextSetup.GameContextJoin);
+            return this.JoinGameContext();
         }
 
-        private async Task JoinGameContext(GameContextJoin gameContextJoin)
+        private async Task JoinGameContext()
         {
-            var success = await this.connection.JoinGameContext(gameContextJoin);
+            var password = this.ClientState.Password ?? throw new InvalidOperationException();
+            
+            var success = await this.connection.JoinGameContext(new() { Password = password, UserId = this.ClientState.Id });
             
             if (success)
             {
@@ -389,17 +392,14 @@ namespace Fishbowl.Net.Client.Pages
 
         private Task SetPlayerName(string name)
         {
-            this.playerName = name;
-            return this.StateManager.SetStateAsync<PlayerWords>();
+            this.ClientState = this.ClientState with { Name = name };
+            return this.StateManager.SetStateAsync<PlayerWords>(state => state.WordCount = this.gameSetup.WordCount);
         }
 
-        private async Task SubmitPlayerData(string[] words)
-        {
-            this.Player = new Player(
-                this.gameContextSetup.GameContextJoin.UserId,
-                this.playerName,
-                words.Select(word => new Word(Guid.NewGuid(), word)));
-            await this.connection.AddPlayer(this.Player);
-        }
+        private Task SubmitPlayerData(string[] words) =>
+            this.connection.AddPlayer(new(
+                this.ClientState.Id,
+                this.ClientState.Name,
+                words.Select(word => new Word(Guid.NewGuid(), word))));
     }
 }

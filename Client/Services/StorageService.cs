@@ -1,4 +1,6 @@
 using System;
+using System.Text.Json;
+using Fishbowl.Net.Client.Shared;
 using Microsoft.JSInterop;
 
 namespace Fishbowl.Net.Client.Services
@@ -8,6 +10,8 @@ namespace Fishbowl.Net.Client.Services
         string? Password { get; set; }
 
         Guid? UserId { get; set; }
+
+        ClientState ClientState { get; set; }
     }
 
     public class StorageService : IStorageService
@@ -16,9 +20,30 @@ namespace Fishbowl.Net.Client.Services
 
         private const string UserIdKey = "user.id";
 
+        private const string ClientStateKey = "client.state";
+
+        private static readonly JsonSerializerOptions JsonSerializerOptions =
+            new(JsonSerializerDefaults.Web);
+
         private readonly IJSInProcessRuntime js;
 
         public StorageService(IJSRuntime js) => this.js = (IJSInProcessRuntime)js;
+
+        public ClientState ClientState
+        {
+            get
+            {
+                var json = this.GetItem(ClientStateKey);
+                
+                if (json is null)
+                {
+                    return new ClientState();
+                }
+
+                return JsonSerializer.Deserialize<ClientState>(json, JsonSerializerOptions) ?? new ClientState();
+            }
+            set => this.SetItem(ClientStateKey, JsonSerializer.Serialize(value, JsonSerializerOptions));
+        }
 
         public string? Password
         {

@@ -22,7 +22,7 @@
     <WordCount OnWordCountSet="this.SetWordCount" />
     <RoundTypes OnRoundTypesSet="this.SetRoundTypes" />
     <PlayerName OnPlayerNameSet="this.SetPlayerName" />
-    <PlayerWords WordCount="this.gameContextSetup.GameSetup.WordCount" OnPlayerWordsSet="this.SubmitPlayerData" />
+    <PlayerWords OnPlayerWordsSet="this.SubmitPlayerData" />
     <WaitingForPlayers />
     <GameStarted Delay="@TimeSpan.FromSeconds(4)" />
     <RoundStarted Delay="@TimeSpan.FromSeconds(4)" />
