@@ -147,10 +147,10 @@ namespace Fishbowl.Net.Server.Services
             await this.groupHubContext.Group().ReceivePeriodFinished(period.Map());
 
         private async void ScoreAdded(Score score) =>
-            await this.groupHubContext.Group().ReceiveScoreAdded(score);
+            await this.groupHubContext.Group().ReceiveScoreAdded(score.Map());
 
         private async void LastScoreRevoked(Score score) =>
-            await this.groupHubContext.Group().ReceiveLastScoreRevoked(score);
+            await this.groupHubContext.Group().ReceiveLastScoreRevoked(score.Map());
 
         private async void WordSetup(Player player, Word word) =>
             await this.groupHubContext.Client(player.Id).ReceiveWordSetup(word.Map());

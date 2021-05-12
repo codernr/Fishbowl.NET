@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using Fishbowl.Net.Client.Shared;
+using Fishbowl.Net.Shared.Data.ViewModels;
 
 namespace Fishbowl.Net.Client.Services
 {
@@ -12,6 +14,8 @@ namespace Fishbowl.Net.Client.Services
         string? Password { get; set; }
 
         bool IsCreating { get; set; }
+
+        List<ScoreViewModel> PeriodScores { get; }
     }
 
     public class ClientState : IClientState
@@ -37,6 +41,8 @@ namespace Fishbowl.Net.Client.Services
         private readonly PersistedProperty<string?> password;
 
         public bool IsCreating { get; set; }
+
+        public List<ScoreViewModel> PeriodScores { get; } = new();
 
         private DateTime Expires { get => this.expires.Value; set => this.expires.Value = value; }
 

@@ -68,8 +68,8 @@ namespace Fishbowl.Net.Client.Pages
             this.connection.On<PeriodRunningViewModel>(nameof(this.ReceivePeriodStarted), this.ReceivePeriodStarted);
             this.connection.On<PeriodSummaryViewModel>(nameof(this.ReceivePeriodFinished), this.ReceivePeriodFinished);
             this.connection.On<WordViewModel>(nameof(this.ReceiveWordSetup), this.ReceiveWordSetup);
-            this.connection.On<Score>(nameof(this.ReceiveScoreAdded), this.ReceiveScoreAdded);
-            this.connection.On<Score>(nameof(this.ReceiveLastScoreRevoked), this.ReceiveLastScoreRevoked);
+            this.connection.On<ScoreViewModel>(nameof(this.ReceiveScoreAdded), this.ReceiveScoreAdded);
+            this.connection.On<ScoreViewModel>(nameof(this.ReceiveLastScoreRevoked), this.ReceiveLastScoreRevoked);
 
             await this.connection.StartAsync();
 
@@ -234,27 +234,21 @@ namespace Fishbowl.Net.Client.Pages
             return Task.CompletedTask;
         }
 
-        public Task ReceiveScoreAdded(Score score)
+        public Task ReceiveScoreAdded(ScoreViewModel score)
         {
-            this.Logger.LogInformation(
-                "Score received: {{Word: {Word}, Timestamp: {Timestamp}}}",
-                score.Word.Value,
-                score.Timestamp);
+            this.Logger.LogInformation("ReceiveScoreAdded: {Score}", score);
 
-            this.periodScores.Add(score);
+            this.ClientState.PeriodScores.Add(score);
             this.Notify($"{this.L("Pages.Play.Scored")}: {score.Word.Value}", ContextCssClass.Primary);
             this.StateManager.SetParameters<PeriodPlay>(state => state.ScoreCount = this.periodScores.Count);
             return Task.CompletedTask;
         }
 
-        public Task ReceiveLastScoreRevoked(Score score)
+        public Task ReceiveLastScoreRevoked(ScoreViewModel score)
         {
-            this.Logger.LogInformation(
-                "Last score revoked: {{Word: {Word}, Timestamp: {Timestamp}}}",
-                score.Word.Value,
-                score.Timestamp);
+            this.Logger.LogInformation("ReceiveLastScoreRevoked: {Score}", score);
                 
-            this.periodScores.Remove(score);
+            this.ClientState.PeriodScores.Remove(score);
             this.Notify($"{this.L("Pages.Play.ScoreRevoked")}: {score.Word.Value}", ContextCssClass.Warning);
             this.StateManager.SetParameters<PeriodPlay>(state => state.ScoreCount = this.periodScores.Count);
             return Task.CompletedTask;

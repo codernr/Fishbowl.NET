@@ -33,8 +33,8 @@ namespace Fishbowl.Net.Client.Services
 
         Task ReceiveWordSetup(WordViewModel word) => Task.CompletedTask;
 
-        Task ReceiveScoreAdded(Score score) => Task.CompletedTask;
+        Task ReceiveScoreAdded(ScoreViewModel score) => Task.CompletedTask;
 
-        Task ReceiveLastScoreRevoked(Score score) => Task.CompletedTask;
+        Task ReceiveLastScoreRevoked(ScoreViewModel score) => Task.CompletedTask;
     }
 }
