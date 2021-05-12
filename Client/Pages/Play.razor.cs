@@ -66,7 +66,7 @@ namespace Fishbowl.Net.Client.Pages
             this.connection.On<Round>(nameof(this.ReceiveRoundFinished), this.ReceiveRoundFinished);
             this.connection.On<PeriodSetupViewModel>(nameof(this.ReceivePeriodSetup), this.ReceivePeriodSetup);
             this.connection.On<PeriodRunningViewModel>(nameof(this.ReceivePeriodStarted), this.ReceivePeriodStarted);
-            this.connection.On<Period>(nameof(this.ReceivePeriodFinished), this.ReceivePeriodFinished);
+            this.connection.On<PeriodSummaryViewModel>(nameof(this.ReceivePeriodFinished), this.ReceivePeriodFinished);
             this.connection.On<Word>(nameof(this.ReceiveWordSetup), this.ReceiveWordSetup);
             this.connection.On<Score>(nameof(this.ReceiveScoreAdded), this.ReceiveScoreAdded);
             this.connection.On<Score>(nameof(this.ReceiveLastScoreRevoked), this.ReceiveLastScoreRevoked);
@@ -219,13 +219,9 @@ namespace Fishbowl.Net.Client.Pages
                 this.StateManager.SetStateAsync<PeriodWatch>(state => state.Period = period);
         }
 
-        public Task ReceivePeriodFinished(Period period)
+        public Task ReceivePeriodFinished(PeriodSummaryViewModel period)
         {
-            this.Logger.LogInformation(
-                "Period finished at: {PeriodFinishedAt}; scores ({PlayerName}): {ScoreCount}",
-                period.FinishedAt,
-                period.Player.Name,
-                period.Scores.Count);
+            this.Logger.LogInformation("ReceivePeriodFinished: {Period}", period);
 
             return this.StateManager.SetStateAsync<PeriodFinished>(state => state.Period = period);
         }

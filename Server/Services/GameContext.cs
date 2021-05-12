@@ -144,7 +144,8 @@ namespace Fishbowl.Net.Server.Services
                 period.MapRunning(this.Game.Game.CurrentRound()));
 
         private async void PeriodFinished(Period period) =>
-            await this.groupHubContext.Group().ReceivePeriodFinished(period);
+            await this.groupHubContext.Group().ReceivePeriodFinished(
+                new(new(period.Player.Id, period.Player.Name), period.Scores.Select(score => score.Word.Value).ToList()));
 
         private async void ScoreAdded(Score score) =>
             await this.groupHubContext.Group().ReceiveScoreAdded(score);

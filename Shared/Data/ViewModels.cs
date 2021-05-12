@@ -22,6 +22,8 @@ namespace Fishbowl.Net.Shared.Data.ViewModels
         RoundViewModel Round, PlayerViewModel Player, double LengthInSeconds, DateTimeOffset StartedAt) :
         PeriodSetupViewModel(Round, Player, LengthInSeconds);
 
+    public record PeriodSummaryViewModel(PlayerViewModel Player, List<string> Scores);
+
     public static class ViewModelExtensions
     {
         public static PeriodSetupViewModel Map(this Period period, Round round) =>
