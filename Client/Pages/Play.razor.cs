@@ -60,10 +60,10 @@ namespace Fishbowl.Net.Client.Pages
             this.connection.On<Player>(nameof(this.ReceiveWaitForOtherPlayers), this.ReceiveWaitForOtherPlayers);
             this.connection.On<Player, Round>(nameof(this.RestoreGameState), this.RestoreGameState);
             this.connection.On<string>(nameof(this.ReceiveGameAborted), this.ReceiveGameAborted);
-            this.connection.On<IEnumerable<TeamViewModel>>(nameof(this.ReceiveGameStarted), this.ReceiveGameStarted);
-            this.connection.On<Game>(nameof(this.ReceiveGameFinished), this.ReceiveGameFinished);
+            this.connection.On<GameViewModel>(nameof(this.ReceiveGameStarted), this.ReceiveGameStarted);
+            this.connection.On<GameSummaryViewModel>(nameof(this.ReceiveGameFinished), this.ReceiveGameFinished);
             this.connection.On<RoundViewModel>(nameof(this.ReceiveRoundStarted), this.ReceiveRoundStarted);
-            this.connection.On<Round>(nameof(this.ReceiveRoundFinished), this.ReceiveRoundFinished);
+            this.connection.On<RoundSummaryViewModel>(nameof(this.ReceiveRoundFinished), this.ReceiveRoundFinished);
             this.connection.On<PeriodSetupViewModel>(nameof(this.ReceivePeriodSetup), this.ReceivePeriodSetup);
             this.connection.On<PeriodRunningViewModel>(nameof(this.ReceivePeriodStarted), this.ReceivePeriodStarted);
             this.connection.On<PeriodSummaryViewModel>(nameof(this.ReceivePeriodFinished), this.ReceivePeriodFinished);
@@ -167,19 +167,20 @@ namespace Fishbowl.Net.Client.Pages
             this.NavigationManager.NavigateTo(this.NavigationManager.Uri, true);
         }
 
-        public Task ReceiveGameStarted(IEnumerable<TeamViewModel> teams)
+        public Task ReceiveGameStarted(GameViewModel game)
         {
-            var playerTeam = teams.First(
-                team => team.Players.Any(player => player.Id == this.ClientState.Id));
+            this.Logger.LogInformation("ReceiveGameStarted: {Game}", game);
 
-            this.Logger.LogInformation("ReceiveGameStarted: {Team}", playerTeam);
+            var playerTeam = game.Teams.First(
+                team => team.Players.Any(player => player.Id == this.ClientState.Id));
 
             return this.StateManager.SetStateAsync<GameStarted>(state => state.Team = playerTeam);
         }
 
-        public Task ReceiveGameFinished(Game game)
+        public Task ReceiveGameFinished(GameSummaryViewModel game)
         {
             this.ClientState.Password = null;
+            this.Logger.LogInformation("ReceiveGameFinished: {Game}", game);
             return this.StateManager.SetStateAsync<GameFinished>(state => state.Game = game);
         }
 
@@ -190,9 +191,9 @@ namespace Fishbowl.Net.Client.Pages
             return this.StateManager.SetStateAsync<RoundStarted>(state => state.Round = round);
         }
 
-        public Task ReceiveRoundFinished(Round round)
+        public Task ReceiveRoundFinished(RoundSummaryViewModel round)
         {
-            this.Logger.LogInformation("Round finished: {RoundType}", round.Type);
+            this.Logger.LogInformation("ReceiveRoundFinished: {Round}", round);
 
             return this.StateManager.SetStateAsync<RoundFinished>(state => state.Round = round);
         }

@@ -17,13 +17,13 @@ namespace Fishbowl.Net.Client.Services
 
         Task ReceiveGameAborted(string message) => Task.CompletedTask;
 
-        Task ReceiveGameStarted(IEnumerable<TeamViewModel> teams) => Task.CompletedTask;
+        Task ReceiveGameStarted(GameViewModel game) => Task.CompletedTask;
 
-        Task ReceiveGameFinished(Game game) => Task.CompletedTask;
+        Task ReceiveGameFinished(GameSummaryViewModel game) => Task.CompletedTask;
 
         Task ReceiveRoundStarted(RoundViewModel round) => Task.CompletedTask;
 
-        Task ReceiveRoundFinished(Round round) => Task.CompletedTask;
+        Task ReceiveRoundFinished(RoundSummaryViewModel round) => Task.CompletedTask;
 
         Task ReceivePeriodSetup(PeriodSetupViewModel period) => Task.CompletedTask;
 

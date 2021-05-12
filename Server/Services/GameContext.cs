@@ -119,13 +119,11 @@ namespace Fishbowl.Net.Server.Services
         }
 
         private async void GameStarted(Game game) =>
-            await this.groupHubContext.Group().ReceiveGameStarted(game.Teams
-                .Select(team => new TeamViewModel(team.Id, team.Players
-                    .Select(player => new PlayerViewModel(player.Id, player.Name)))));
+            await this.groupHubContext.Group().ReceiveGameStarted(game.Map());
 
         private async void OnGameFinished(Game game)
         {
-            await this.groupHubContext.Group().ReceiveGameFinished(game);
+            await this.groupHubContext.Group().ReceiveGameFinished(game.MapSummary());
             this.GameFinished?.Invoke(this);
         }
 
@@ -133,7 +131,7 @@ namespace Fishbowl.Net.Server.Services
             await this.groupHubContext.Group().ReceiveRoundStarted(new RoundViewModel(round.Type));
 
         private async void RoundFinished(Round round) =>
-            await this.groupHubContext.Group().ReceiveRoundFinished(round);
+            await this.groupHubContext.Group().ReceiveRoundFinished(round.Map());
 
         private async void PeriodSetup(Period period) =>
             await this.groupHubContext.Group().ReceivePeriodSetup(

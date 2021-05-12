@@ -1,9 +1,9 @@
-using Fishbowl.Net.Shared.Data;
+using Fishbowl.Net.Shared.Data.ViewModels;
 
 namespace Fishbowl.Net.Client.Components.States
 {
     public partial class RoundFinished
     {
-        public Round Round { get; set; } = default!;
+        public RoundSummaryViewModel Round { get; set; } = default!;
     }
 }

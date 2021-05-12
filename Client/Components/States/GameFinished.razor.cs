@@ -1,9 +1,9 @@
-using Fishbowl.Net.Shared.Data;
+using Fishbowl.Net.Shared.Data.ViewModels;
 
 namespace Fishbowl.Net.Client.Components.States
 {
     public partial class GameFinished
     {
-        public Game Game { get; set; } = default!;
+        public GameSummaryViewModel Game { get; set; } = default!;
     }
 }
