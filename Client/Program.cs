@@ -1,12 +1,8 @@
 using System;
 using System.Net.Http;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Text;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Fishbowl.Net.Client.Services;
 using System.Globalization;
 
@@ -22,6 +18,7 @@ namespace Fishbowl.Net.Client
             builder.Services
                 .AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) })
                 .AddSingleton<IStorageService, StorageService>()
+                .AddTransient<IClientState, ClientState>()
                 .AddLocalization();
 
             var culture = new CultureInfo("hu");

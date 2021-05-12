@@ -37,25 +37,6 @@ namespace Fishbowl.Net.Client.Pages
 
         private Round? round;
 
-        private ClientState ClientState
-        {
-            get
-            {
-                if (this.clientState is null)
-                {
-                    this.clientState = this.StorageService.ClientState;
-                }
-                return this.clientState;
-            }
-            set
-            {
-                this.clientState = value;
-                this.StorageService.ClientState = value;
-            }
-        }
-
-        private ClientState? clientState;
-
         private GameSetup gameSetup = new();
 
         private readonly List<Score> periodScores = new();
@@ -138,7 +119,7 @@ namespace Fishbowl.Net.Client.Pages
                     state.Title = L("Pages.Play.GameCreatedTitle");
                     state.Message = L("Pages.Play.GameCreatedMessage");
                 });
-                this.ClientState = this.ClientState with { IsCreating = false };
+                this.ClientState.IsCreating = false;
             }
             
             this.gameSetup = gameSetup;
@@ -160,14 +141,16 @@ namespace Fishbowl.Net.Client.Pages
                 "ReceiveWaitForOtherPlayers: {{PlayerName: {PlayerName}, Words: {Words}}}",
                 player.Name, (object)player.Words.Select(word => word.Value));
             
-            this.ClientState = this.ClientState with { Id = player.Id, Name = player.Name };
+            this.ClientState.Id = player.Id;
+            this.ClientState.Name = player.Name;
 
             await this.StateManager.SetStateAsync<WaitingForPlayers>();
         }
 
         public Task RestoreGameState(Player player, Round round)
         {
-            this.ClientState = this.ClientState with { Id = player.Id, Name = player.Name };
+            this.ClientState.Id = player.Id;
+            this.ClientState.Name = player.Name;
             this.Round = round;
             return Task.CompletedTask;
         }
@@ -196,7 +179,7 @@ namespace Fishbowl.Net.Client.Pages
 
         public Task ReceiveGameFinished(Game game)
         {
-            this.StorageService.Password = null;
+            this.ClientState.Password = null;
             return this.StateManager.SetStateAsync<GameFinished>(state => state.Game = game);
         }
 
@@ -310,7 +293,7 @@ namespace Fishbowl.Net.Client.Pages
 
         private Task CreateGame(string password)
         {
-            this.ClientState = this.ClientState with { Password = password };
+            this.ClientState.Password = password;
             return this.AfterPasswordCheck<PlayerCount>(() => {});
         }
 
@@ -328,7 +311,7 @@ namespace Fishbowl.Net.Client.Pages
         private async Task SetRoundTypes(string[] roundTypes)
         {
             this.gameSetup.RoundTypes = roundTypes;
-            this.ClientState = this.ClientState with { IsCreating = true };
+            this.ClientState.IsCreating = true;
             await this.connection.CreateGameContext(new()
             {
                 GameContextJoin = new()
@@ -365,7 +348,7 @@ namespace Fishbowl.Net.Client.Pages
 
         private Task JoinGame(string password)
         {
-            this.ClientState = this.ClientState with { Password = password };
+            this.ClientState.Password = password;
 
             return this.JoinGameContext();
         }
@@ -392,7 +375,7 @@ namespace Fishbowl.Net.Client.Pages
 
         private Task SetPlayerName(string name)
         {
-            this.ClientState = this.ClientState with { Name = name };
+            this.ClientState.Name = name;
             return this.StateManager.SetStateAsync<PlayerWords>(state => state.WordCount = this.gameSetup.WordCount);
         }
 

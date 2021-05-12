@@ -7,6 +7,7 @@
 @inject IStorageService StorageService
 @inject ILogger<Play> Logger
 @inject IStringLocalizer<Resources> StringLocalizer
+@inject IClientState ClientState;
 
 <div class="position-fixed top-0 start-50 translate-middle-x mt-1 pt-2">
     <Toast @ref="this.playerCountDisplay"
