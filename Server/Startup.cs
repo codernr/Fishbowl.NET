@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
@@ -11,9 +10,9 @@ using Fishbowl.Net.Server.Services;
 using System;
 using Microsoft.AspNetCore.SignalR;
 using Fishbowl.Net.Client.Services;
-using Fishbowl.Net.Shared.Data;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Fishbowl.Net.Shared.Data.ViewModels;
 
 namespace Fishbowl.Net.Server
 {
@@ -31,7 +30,7 @@ namespace Fishbowl.Net.Server
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<GameService>();
-            services.AddSingleton<Func<string, GameSetup, GameContext>>(provider =>
+            services.AddSingleton<Func<string, GameSetupViewModel, GameContext>>(provider =>
                 (password, gameSetup) =>
                     {
                         var groupHubContext = new GroupHubContext(

@@ -15,6 +15,16 @@ namespace Fishbowl.Net.Client.Services
 
         bool IsCreating { get; set; }
 
+        int PlayerCount { get; set; }
+
+        int SetupPlayerCount { get; set; }
+
+        int WordCount { get; set; }
+
+        int TeamCount { get; set; }
+        
+        string[] RoundTypes { get; set; }
+
         List<ScoreViewModel> PeriodScores { get; }
     }
 
@@ -41,6 +51,16 @@ namespace Fishbowl.Net.Client.Services
         private readonly PersistedProperty<string?> password;
 
         public bool IsCreating { get; set; }
+
+        public int PlayerCount { get; set; } = 4;
+
+        public int SetupPlayerCount { get; set; } = 0;
+        
+        public int WordCount { get; set; } = 2;
+
+        public int TeamCount { get; set; } = 2;
+        
+        public string[] RoundTypes { get; set; } = new string[0];
 
         public List<ScoreViewModel> PeriodScores { get; } = new();
 

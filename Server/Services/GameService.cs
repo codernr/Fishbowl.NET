@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Fishbowl.Net.Shared.Data;
+using Fishbowl.Net.Shared.Data.ViewModels;
 using Microsoft.Extensions.Logging;
 
 namespace Fishbowl.Net.Server.Services
@@ -13,18 +14,18 @@ namespace Fishbowl.Net.Server.Services
 
         private readonly Dictionary<string, GameContext> connectionContextMap = new();
 
-        private readonly Func<string, GameSetup, GameContext> gameContextFactory;
+        private readonly Func<string, GameSetupViewModel, GameContext> gameContextFactory;
 
         private readonly ILogger<GameService> logger;
 
         public GameService(
-            Func<string, GameSetup, GameContext> gameContextFactory,
+            Func<string, GameSetupViewModel, GameContext> gameContextFactory,
             ILogger<GameService> logger) =>
             (this.gameContextFactory, this.logger) = (gameContextFactory, logger);
 
         public bool GameContextExists(string password) => this.contexts.ContainsKey(password);
 
-        public Task CreateGameContext(string connectionId, GameContextSetup request)
+        public Task CreateGameContext(string connectionId, GameContextSetupViewModel request)
         {
             var password = request.GameContextJoin.Password;
 
@@ -53,7 +54,7 @@ namespace Fishbowl.Net.Server.Services
             return context.RegisterConnection(request.GameContextJoin.UserId, connectionId);
         }
 
-        public async Task JoinGameContext(string connectionId, GameContextJoin request)
+        public async Task JoinGameContext(string connectionId, GameContextJoinViewModel request)
         {
             this.logger.LogInformation(
                 "JoinGameContext: {{ConnectionId: {ConnectionId}, Password: {Password}}}",

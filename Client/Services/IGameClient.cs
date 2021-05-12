@@ -6,7 +6,7 @@ namespace Fishbowl.Net.Client.Services
 {
     public interface IGameClient
     {
-        Task ReceiveSetupPlayer(GameSetup setup) => Task.CompletedTask;
+        Task ReceiveSetupPlayer(GameSetupViewModel setup) => Task.CompletedTask;
 
         Task ReceivePlayerCount(PlayerCountViewModel playerCount) => Task.CompletedTask;
 

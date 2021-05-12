@@ -41,6 +41,12 @@ namespace Fishbowl.Net.Shared.Data.ViewModels
 
     public record GameAbortViewModel(string MessageKey);
 
+    public record GameSetupViewModel(int PlayerCount, int WordCount, int TeamCount, string[] RoundTypes);
+    
+    public record GameContextJoinViewModel(string Password, Guid UserId);
+
+    public record GameContextSetupViewModel(GameContextJoinViewModel GameContextJoin, GameSetupViewModel GameSetup);
+
     public static class ViewModelExtensions
     {
         public static PlayerViewModel Map(this Player player) => new(player.Id, player.Name);
@@ -88,6 +94,5 @@ namespace Fishbowl.Net.Shared.Data.ViewModels
             .Select(team => team.Map(game))
             .OrderByDescending(team => team.Players.Sum(player => player.Scores.Count))
             .ToList());
-
     }
 }

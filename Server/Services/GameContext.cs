@@ -26,7 +26,7 @@ namespace Fishbowl.Net.Server.Services
 
         private readonly List<Player> players = new();
 
-        private readonly GameSetup gameSetup;
+        private readonly GameSetupViewModel gameSetup;
 
         private readonly IGroupHubContext groupHubContext;
 
@@ -34,7 +34,7 @@ namespace Fishbowl.Net.Server.Services
 
         private AsyncGame? game;
 
-        public GameContext(GameSetup gameSetup, IGroupHubContext groupHubContext, Func<Func<Task>, Timer> timerFactory) =>
+        public GameContext(GameSetupViewModel gameSetup, IGroupHubContext groupHubContext, Func<Func<Task>, Timer> timerFactory) =>
             (this.gameSetup, this.groupHubContext, this.timer) =
             (gameSetup, groupHubContext, timerFactory(() => this.Abort("Common.Abort.Timeout")));
 
