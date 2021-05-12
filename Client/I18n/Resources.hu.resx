@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
+    <data name="Common.Abort.InvalidReturnValue">
+        <value>Érvénytelen szó lett visszahívva, a játék leállt.</value>
+    </data>
+    <data name="Common.Abort.PlayerCount">
+        <value>A játékosok száma kevesebb, mint a csapatok számának kétszerese. A játék leállt.</value>
+    </data>
+    <data name="Common.Abort.Timeout">
+        <value>Túl sokáig nem játszottatok, a játék leállt.</value>
+    </data>
     <data name="Components.Timer.Remaining">
         <value>Hátralévő idő</value>
     </data>

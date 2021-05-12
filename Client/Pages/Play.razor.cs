@@ -29,17 +29,7 @@ namespace Fishbowl.Net.Client.Pages
 
         private PlayerCountViewModel playerCount = new PlayerCountViewModel(0, 0);
 
-        private Round Round
-        { 
-            get => this.round ?? throw new InvalidOperationException();
-            set => this.round = value;
-        }
-
-        private Round? round;
-
         private GameSetup gameSetup = new();
-
-        private readonly List<Score> periodScores = new();
 
         private string L(string key) => this.StringLocalizer[key] ?? key;
 
@@ -59,7 +49,7 @@ namespace Fishbowl.Net.Client.Pages
             this.connection.On<PlayerCountViewModel>(nameof(this.ReceivePlayerCount), this.ReceivePlayerCount);
             this.connection.On<Player>(nameof(this.ReceiveWaitForOtherPlayers), this.ReceiveWaitForOtherPlayers);
             this.connection.On<Player, Round>(nameof(this.RestoreGameState), this.RestoreGameState);
-            this.connection.On<string>(nameof(this.ReceiveGameAborted), this.ReceiveGameAborted);
+            this.connection.On<GameAbortViewModel>(nameof(this.ReceiveGameAborted), this.ReceiveGameAborted);
             this.connection.On<GameViewModel>(nameof(this.ReceiveGameStarted), this.ReceiveGameStarted);
             this.connection.On<GameSummaryViewModel>(nameof(this.ReceiveGameFinished), this.ReceiveGameFinished);
             this.connection.On<RoundViewModel>(nameof(this.ReceiveRoundStarted), this.ReceiveRoundStarted);
@@ -151,17 +141,17 @@ namespace Fishbowl.Net.Client.Pages
         {
             this.ClientState.Id = player.Id;
             this.ClientState.Name = player.Name;
-            this.Round = round;
             return Task.CompletedTask;
         }
 
-        public async Task ReceiveGameAborted(string message)
+        public async Task ReceiveGameAborted(GameAbortViewModel abort)
         {
+            this.Logger.LogInformation("ReceiveGameAborted: {Abort}", abort);
             await this.StateManager.SetStateAsync<Info>(state => 
             {
                 state.ContextClass = ContextCssClass.Danger;
                 state.Title = L("Pages.Play.ErrorTitle");
-                state.Message = message;
+                state.Message = L(abort.MessageKey);
             });
             await this.connection.StopAsync();
             this.NavigationManager.NavigateTo(this.NavigationManager.Uri, true);
@@ -210,7 +200,7 @@ namespace Fishbowl.Net.Client.Pages
         public Task ReceivePeriodStarted(PeriodRunningViewModel period)
         {
             this.Logger.LogInformation("ReceivePeriodStarted: {Period}", period);
-            this.periodScores.Clear();
+            this.ClientState.PeriodScores.Clear();
 
             return period.Player.Id == this.ClientState.Id ?
                 this.StateManager.SetStateAsync<PeriodPlay>(state => {
@@ -241,7 +231,7 @@ namespace Fishbowl.Net.Client.Pages
 
             this.ClientState.PeriodScores.Add(score);
             this.Notify($"{this.L("Pages.Play.Scored")}: {score.Word.Value}", ContextCssClass.Primary);
-            this.StateManager.SetParameters<PeriodPlay>(state => state.ScoreCount = this.periodScores.Count);
+            this.StateManager.SetParameters<PeriodPlay>(state => state.ScoreCount = this.ClientState.PeriodScores.Count);
             return Task.CompletedTask;
         }
 
@@ -251,7 +241,7 @@ namespace Fishbowl.Net.Client.Pages
                 
             this.ClientState.PeriodScores.Remove(score);
             this.Notify($"{this.L("Pages.Play.ScoreRevoked")}: {score.Word.Value}", ContextCssClass.Warning);
-            this.StateManager.SetParameters<PeriodPlay>(state => state.ScoreCount = this.periodScores.Count);
+            this.StateManager.SetParameters<PeriodPlay>(state => state.ScoreCount = this.ClientState.PeriodScores.Count);
             return Task.CompletedTask;
         }
 

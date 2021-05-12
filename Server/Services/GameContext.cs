@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Fishbowl.Net.Shared;
 using Fishbowl.Net.Shared.Data;
 using Fishbowl.Net.Shared.Data.ViewModels;
+using Fishbowl.Net.Shared.Exceptions;
 
 namespace Fishbowl.Net.Server.Services
 {
@@ -35,7 +36,7 @@ namespace Fishbowl.Net.Server.Services
 
         public GameContext(GameSetup gameSetup, IGroupHubContext groupHubContext, Func<Func<Task>, Timer> timerFactory) =>
             (this.gameSetup, this.groupHubContext, this.timer) =
-            (gameSetup, groupHubContext, timerFactory(() => this.Abort("Timeout")));
+            (gameSetup, groupHubContext, timerFactory(() => this.Abort("Common.Abort.Timeout")));
 
         public async Task RegisterConnection(Guid playerId, string connectionId)
         {
@@ -100,7 +101,7 @@ namespace Fishbowl.Net.Server.Services
             }
             catch (ArgumentException e)
             {
-                await this.Abort(e.Message);
+                await this.Abort(e is InvalidReturnValueException ? "Common.Abort.InvalidReturnValue" : "Common.Abort.PlayerCount");
             }
         }
 
@@ -128,10 +129,10 @@ namespace Fishbowl.Net.Server.Services
         }
 
         private async void RoundStarted(Round round) =>
-            await this.groupHubContext.Group().ReceiveRoundStarted(new RoundViewModel(round.Type));
+            await this.groupHubContext.Group().ReceiveRoundStarted(round.Map());
 
         private async void RoundFinished(Round round) =>
-            await this.groupHubContext.Group().ReceiveRoundFinished(round.Map());
+            await this.groupHubContext.Group().ReceiveRoundFinished(round.MapSummary());
 
         private async void PeriodSetup(Period period) =>
             await this.groupHubContext.Group().ReceivePeriodSetup(
@@ -153,9 +154,9 @@ namespace Fishbowl.Net.Server.Services
         private async void WordSetup(Player player, Word word) =>
             await this.groupHubContext.Client(player.Id).ReceiveWordSetup(word.Map());
 
-        private async Task Abort(string message)
+        private async Task Abort(string messageKey)
         {
-            await this.groupHubContext.Group().ReceiveGameAborted(message);
+            await this.groupHubContext.Group().ReceiveGameAborted(new GameAbortViewModel(messageKey));
             this.GameFinished?.Invoke(this);
         }
 

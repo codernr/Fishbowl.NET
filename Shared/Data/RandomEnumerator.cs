@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Fishbowl.Net.Shared.Exceptions;
 
 namespace Fishbowl.Net.Shared.Data
 {
@@ -52,7 +53,7 @@ namespace Fishbowl.Net.Shared.Data
         {
             if (this.stack.Contains(item) || !this.list.Contains(item))
             {
-                throw new ArgumentException();
+                throw new InvalidReturnValueException();
             }
 
             this.stack.Push(item);

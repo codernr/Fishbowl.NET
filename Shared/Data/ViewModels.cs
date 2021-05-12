@@ -39,6 +39,8 @@ namespace Fishbowl.Net.Shared.Data.ViewModels
 
     public record ScoreViewModel(WordViewModel Word, DateTimeOffset Timestamp);
 
+    public record GameAbortViewModel(string MessageKey);
+
     public static class ViewModelExtensions
     {
         public static PlayerViewModel Map(this Player player) => new(player.Id, player.Name);
@@ -48,6 +50,8 @@ namespace Fishbowl.Net.Shared.Data.ViewModels
 
         public static GameViewModel Map(this Game game) => new(game.Teams
             .Select(team => team.Map()).ToList());
+
+        public static RoundViewModel Map(this Round round) => new(round.Type);
 
         public static PeriodSetupViewModel Map(this Period period, Round round) =>
             new(new(round.Type), new(period.Player.Id, period.Player.Name), period.LengthInSeconds);
@@ -67,7 +71,7 @@ namespace Fishbowl.Net.Shared.Data.ViewModels
 
         public static Score Map(this ScoreViewModel score) => new(score.Word.Map(), score.Timestamp);
 
-        public static RoundSummaryViewModel Map(this Round round) =>
+        public static RoundSummaryViewModel MapSummary(this Round round) =>
             new(round.Type, round.Periods.Select(period => period.Map()).ToList());
 
         public static PlayerSummaryViewModel Map(this Player player, Game game) =>
