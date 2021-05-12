@@ -31,7 +31,7 @@ namespace Fishbowl.Net.Server
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<GameService>();
-            services.AddSingleton<Func<string, GameSetup, GameContext>>(provider =>
+            services.AddSingleton<Func<string, GameSetupViewModel, GameContext>>(provider =>
                 (password, gameSetup) =>
                     {
                         var groupHubContext = new GroupHubContext(

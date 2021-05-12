@@ -27,10 +27,6 @@ namespace Fishbowl.Net.Client.Pages
 
         private HubConnection connection = default!;
 
-        private PlayerCountViewModel playerCount = new PlayerCountViewModel(0, 0);
-
-        private GameSetup gameSetup = new();
-
         private string L(string key) => this.StringLocalizer[key] ?? key;
 
         private void Notify(string message, string contextClass) => this.toastContainer?.DisplayToast(message, contextClass);
@@ -45,7 +41,7 @@ namespace Fishbowl.Net.Client.Pages
             this.connection.Reconnecting += this.Reconnecting;
             this.connection.Reconnected += this.Reconnected;
 
-            this.connection.On<GameSetup>(nameof(this.ReceiveSetupPlayer), this.ReceiveSetupPlayer);
+            this.connection.On<GameSetupViewModel>(nameof(this.ReceiveSetupPlayer), this.ReceiveSetupPlayer);
             this.connection.On<PlayerCountViewModel>(nameof(this.ReceivePlayerCount), this.ReceivePlayerCount);
             this.connection.On<Player>(nameof(this.ReceiveWaitForOtherPlayers), this.ReceiveWaitForOtherPlayers);
             this.connection.On<Player, Round>(nameof(this.RestoreGameState), this.RestoreGameState);
@@ -95,11 +91,9 @@ namespace Fishbowl.Net.Client.Pages
 
         private Task Reconnected(string connectionId) => this.JoinGameContext();
 
-        public async Task ReceiveSetupPlayer(GameSetup gameSetup)
+        public async Task ReceiveSetupPlayer(GameSetupViewModel gameSetup)
         {
-            this.Logger.LogInformation(
-                "ReceiveSetupPlayer: {{WordCount: {WordCount}, TeamCount: {TeamCount}, RoundTypes: {RoundTypes}}}",
-                gameSetup.WordCount, gameSetup.TeamCount, (object)gameSetup.RoundTypes);
+            this.Logger.LogInformation("ReceiveSetupPlayer: {Setup}", gameSetup);
 
             if (this.ClientState.IsCreating)
             {
@@ -112,15 +106,19 @@ namespace Fishbowl.Net.Client.Pages
                 this.ClientState.IsCreating = false;
             }
             
-            this.gameSetup = gameSetup;
+            this.ClientState.PlayerCount = gameSetup.PlayerCount;
+            this.ClientState.WordCount = gameSetup.WordCount;
+            this.ClientState.TeamCount = gameSetup.TeamCount;
+            this.ClientState.RoundTypes = gameSetup.RoundTypes;
 
             await this.StateManager.SetStateAsync<PlayerName>();
         }
 
         public Task ReceivePlayerCount(PlayerCountViewModel playerCount)
         {
-            this.Logger.LogInformation($"ReceiveConnectionCount: {this.playerCount}");
-            this.playerCount = playerCount;
+            this.Logger.LogInformation("ReceiveConnectionCount: {PlayerCount}", playerCount);
+            this.ClientState.PlayerCount = playerCount.TotalCount;
+            this.ClientState.SetupPlayerCount = playerCount.SetupCount;
             this.StateHasChanged();
             return Task.CompletedTask;
         }
@@ -269,28 +267,22 @@ namespace Fishbowl.Net.Client.Pages
 
         private Task SetPlayerCount(int playerCount) =>
             this.AfterPasswordCheck<TeamCount>(
-                () => this.gameSetup.PlayerCount = playerCount,
+                () => this.ClientState.PlayerCount = playerCount,
                 teamCount => teamCount.MaxTeamCount = playerCount / 2);
 
         private Task SetTeamCount(int teamCount) =>
-            this.AfterPasswordCheck<WordCount>(() => this.gameSetup.TeamCount = teamCount);
+            this.AfterPasswordCheck<WordCount>(() => this.ClientState.TeamCount = teamCount);
 
         private Task SetWordCount(int wordCount) =>
-            this.AfterPasswordCheck<RoundTypes>(() => this.gameSetup.WordCount = wordCount);
+            this.AfterPasswordCheck<RoundTypes>(() => this.ClientState.WordCount = wordCount);
 
         private async Task SetRoundTypes(string[] roundTypes)
         {
-            this.gameSetup.RoundTypes = roundTypes;
+            this.ClientState.RoundTypes = roundTypes;
             this.ClientState.IsCreating = true;
-            await this.connection.CreateGameContext(new()
-            {
-                GameContextJoin = new()
-                {
-                    Password = this.ClientState.Password ?? throw new InvalidOperationException(),
-                    UserId = this.ClientState.Id
-                },
-                GameSetup = this.gameSetup
-            });
+            await this.connection.CreateGameContext(new(
+                new(this.ClientState.Password ?? throw new InvalidOperationException(), this.ClientState.Id),
+                new(this.ClientState.PlayerCount, this.ClientState.WordCount, this.ClientState.TeamCount, this.ClientState.RoundTypes)));
         }
 
         private async Task AfterPasswordCheck<TNextState>(
@@ -325,9 +317,8 @@ namespace Fishbowl.Net.Client.Pages
 
         private async Task JoinGameContext()
         {
-            var password = this.ClientState.Password ?? throw new InvalidOperationException();
-            
-            var success = await this.connection.JoinGameContext(new() { Password = password, UserId = this.ClientState.Id });
+            var success = await this.connection.JoinGameContext(
+                new(this.ClientState.Password ?? throw new InvalidOperationException(), this.ClientState.Id));
             
             if (success)
             {
@@ -346,7 +337,7 @@ namespace Fishbowl.Net.Client.Pages
         private Task SetPlayerName(string name)
         {
             this.ClientState.Name = name;
-            return this.StateManager.SetStateAsync<PlayerWords>(state => state.WordCount = this.gameSetup.WordCount);
+            return this.StateManager.SetStateAsync<PlayerWords>(state => state.WordCount = this.ClientState.WordCount);
         }
 
         private Task SubmitPlayerData(string[] words) =>

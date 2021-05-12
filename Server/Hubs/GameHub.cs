@@ -22,12 +22,12 @@ namespace Fishbowl.Net.Server.Hubs
             await base.OnDisconnectedAsync(exception);
         }
 
-        public Task CreateGameContext(GameContextSetup request) =>
+        public Task CreateGameContext(GameContextSetupViewModel request) =>
             this.service.CreateGameContext(this.Context.ConnectionId, request);
 
         public bool GameContextExists(string password) => this.service.GameContextExists(password);
 
-        public async Task<bool> JoinGameContext(GameContextJoin request)
+        public async Task<bool> JoinGameContext(GameContextJoinViewModel request)
         {
             try
             {
