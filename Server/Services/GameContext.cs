@@ -130,16 +130,18 @@ namespace Fishbowl.Net.Server.Services
         }
 
         private async void RoundStarted(Round round) =>
-            await this.groupHubContext.Group().ReceiveRoundStarted(round);
+            await this.groupHubContext.Group().ReceiveRoundStarted(new RoundViewModel(round.Type));
 
         private async void RoundFinished(Round round) =>
             await this.groupHubContext.Group().ReceiveRoundFinished(round);
 
         private async void PeriodSetup(Period period) =>
-            await this.groupHubContext.Group().ReceivePeriodSetup(period);
+            await this.groupHubContext.Group().ReceivePeriodSetup(
+                period.Map(this.Game.Game.CurrentRound()));
 
         private async void PeriodStarted(Period period) =>
-            await this.groupHubContext.Group().ReceivePeriodStarted(period);
+            await this.groupHubContext.Group().ReceivePeriodStarted(
+                period.MapRunning(this.Game.Game.CurrentRound()));
 
         private async void PeriodFinished(Period period) =>
             await this.groupHubContext.Group().ReceivePeriodFinished(period);
@@ -169,11 +171,11 @@ namespace Fishbowl.Net.Server.Services
 
             if (period.StartedAt is null)
             {
-                await client.ReceivePeriodSetup(period);
+                await client.ReceivePeriodSetup(period.Map(round));
                 return;
             }
 
-            await client.ReceivePeriodStarted(period);
+            await client.ReceivePeriodStarted(period.MapRunning(round));
 
             if (player == period.Player)
             {

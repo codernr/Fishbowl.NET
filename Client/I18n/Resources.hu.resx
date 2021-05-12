@@ -60,6 +60,9 @@
     <data name="Components.States.PeriodSetupPlay.Subtitle">
         <value>Nyomd meg a kör kezdéséhez</value>
     </data>
+    <data name="Components.States.PeriodSetupPlay.PeriodLength">
+        <value>Kör hossza</value>
+    </data>
     <data name="Components.States.PeriodSetupPlay.StartButton">
         <value>Indítás</value>
     </data>

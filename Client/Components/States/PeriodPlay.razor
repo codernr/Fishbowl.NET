@@ -5,10 +5,10 @@
 @code
 {
     protected override RenderFragment Content =>
-        @<StateContainer Title="@this.Round.Type">
+        @<StateContainer Title="@this.Period.Round.Type">
             <div class="row mb-3">
                 <div class="col">
-                    <Timer Start="this.StartedAt" Length="this.Period.Length()" OnExpired="() => this.Expired = true" />
+                    <Timer Start="this.Period.StartedAt" Length="this.Period.Length" OnExpired="() => this.Expired = true" />
                 </div>
             </div>
 

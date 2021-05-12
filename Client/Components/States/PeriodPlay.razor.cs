@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Fishbowl.Net.Shared.Data;
+using Fishbowl.Net.Shared.Data.ViewModels;
 using Microsoft.AspNetCore.Components;
 
 namespace Fishbowl.Net.Client.Components.States
@@ -16,9 +17,7 @@ namespace Fishbowl.Net.Client.Components.States
         [Parameter]
         public EventCallback OnLastScoreRevoked { get; set; } = default!;
         
-        public Round Round { get; set; } = default!;
-
-        public Period Period { get; set; } = default!;
+        public PeriodRunningViewModel Period { get; set; } = default!;
 
         public int ScoreCount
         {
@@ -33,8 +32,6 @@ namespace Fishbowl.Net.Client.Components.States
         private int scoreCount = 0;
 
         public Word? Word { get; set; }
-
-        private DateTimeOffset StartedAt => this.Period.StartedAt ?? throw new InvalidOperationException();
 
         private bool showRevoke = false;
 

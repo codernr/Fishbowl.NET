@@ -21,13 +21,13 @@ namespace Fishbowl.Net.Client.Services
 
         Task ReceiveGameFinished(Game game) => Task.CompletedTask;
 
-        Task ReceiveRoundStarted(Round round) => Task.CompletedTask;
+        Task ReceiveRoundStarted(RoundViewModel round) => Task.CompletedTask;
 
         Task ReceiveRoundFinished(Round round) => Task.CompletedTask;
 
-        Task ReceivePeriodSetup(Period period) => Task.CompletedTask;
+        Task ReceivePeriodSetup(PeriodSetupViewModel period) => Task.CompletedTask;
 
-        Task ReceivePeriodStarted(Period period) => Task.CompletedTask;
+        Task ReceivePeriodStarted(PeriodRunningViewModel period) => Task.CompletedTask;
 
         Task ReceivePeriodFinished(Period period) => Task.CompletedTask;
 

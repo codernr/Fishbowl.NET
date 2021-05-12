@@ -62,10 +62,10 @@ namespace Fishbowl.Net.Client.Pages
             this.connection.On<string>(nameof(this.ReceiveGameAborted), this.ReceiveGameAborted);
             this.connection.On<IEnumerable<TeamViewModel>>(nameof(this.ReceiveGameStarted), this.ReceiveGameStarted);
             this.connection.On<Game>(nameof(this.ReceiveGameFinished), this.ReceiveGameFinished);
-            this.connection.On<Round>(nameof(this.ReceiveRoundStarted), this.ReceiveRoundStarted);
+            this.connection.On<RoundViewModel>(nameof(this.ReceiveRoundStarted), this.ReceiveRoundStarted);
             this.connection.On<Round>(nameof(this.ReceiveRoundFinished), this.ReceiveRoundFinished);
-            this.connection.On<Period>(nameof(this.ReceivePeriodSetup), this.ReceivePeriodSetup);
-            this.connection.On<Period>(nameof(this.ReceivePeriodStarted), this.ReceivePeriodStarted);
+            this.connection.On<PeriodSetupViewModel>(nameof(this.ReceivePeriodSetup), this.ReceivePeriodSetup);
+            this.connection.On<PeriodRunningViewModel>(nameof(this.ReceivePeriodStarted), this.ReceivePeriodStarted);
             this.connection.On<Period>(nameof(this.ReceivePeriodFinished), this.ReceivePeriodFinished);
             this.connection.On<Word>(nameof(this.ReceiveWordSetup), this.ReceiveWordSetup);
             this.connection.On<Score>(nameof(this.ReceiveScoreAdded), this.ReceiveScoreAdded);
@@ -172,7 +172,7 @@ namespace Fishbowl.Net.Client.Pages
             var playerTeam = teams.First(
                 team => team.Players.Any(player => player.Id == this.ClientState.Id));
 
-            this.Logger.LogInformation("My team id: {TeamId}", playerTeam.Id);
+            this.Logger.LogInformation("ReceiveGameStarted: {Team}", playerTeam);
 
             return this.StateManager.SetStateAsync<GameStarted>(state => state.Team = playerTeam);
         }
@@ -183,10 +183,9 @@ namespace Fishbowl.Net.Client.Pages
             return this.StateManager.SetStateAsync<GameFinished>(state => state.Game = game);
         }
 
-        public Task ReceiveRoundStarted(Round round)
+        public Task ReceiveRoundStarted(RoundViewModel round)
         {
-            this.Logger.LogInformation("Round started: {RoundType}", round.Type);
-            this.Round = round;
+            this.Logger.LogInformation("ReceiveRoundStarted: {Round}", round);
 
             return this.StateManager.SetStateAsync<RoundStarted>(state => state.Round = round);
         }
@@ -198,36 +197,26 @@ namespace Fishbowl.Net.Client.Pages
             return this.StateManager.SetStateAsync<RoundFinished>(state => state.Round = round);
         }
 
-        public Task ReceivePeriodSetup(Period period)
+        public Task ReceivePeriodSetup(PeriodSetupViewModel period)
         {
-            this.Logger.LogInformation(
-                "Period: {{PlayerName: {PlayerName}, Length: {Length}}}",
-                period.Player.Name,
-                period.Length());
+            this.Logger.LogInformation("ReceivePeriodSetup: {Period}", period);
 
             return period.Player.Id == this.ClientState.Id ?
-                this.StateManager.SetStateAsync<PeriodSetupPlay>(state => state.Round = this.Round) :
-                this.StateManager.SetStateAsync<PeriodSetupWatch>(state => {
-                    state.Round = this.Round;
-                    state.Period = period;
-                });
+                this.StateManager.SetStateAsync<PeriodSetupPlay>(state => state.Period = period) :
+                this.StateManager.SetStateAsync<PeriodSetupWatch>(state => state.Period = period);
         }
 
-        public Task ReceivePeriodStarted(Period period)
+        public Task ReceivePeriodStarted(PeriodRunningViewModel period)
         {
-            this.Logger.LogInformation("Period started at: {PeriodStartTime}", period.StartedAt);
+            this.Logger.LogInformation("ReceivePeriodStarted: {Period}", period);
             this.periodScores.Clear();
 
             return period.Player.Id == this.ClientState.Id ?
                 this.StateManager.SetStateAsync<PeriodPlay>(state => {
                     state.ScoreCount = 0;
-                    state.Round = this.Round;
                     state.Period = period;
                 }) :
-                this.StateManager.SetStateAsync<PeriodWatch>(state => {
-                    state.Round = this.Round;
-                    state.Period = period;
-                });
+                this.StateManager.SetStateAsync<PeriodWatch>(state => state.Period = period);
         }
 
         public Task ReceivePeriodFinished(Period period)

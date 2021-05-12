@@ -1,14 +1,9 @@
-using System;
-using Fishbowl.Net.Shared.Data;
+using Fishbowl.Net.Shared.Data.ViewModels;
 
 namespace Fishbowl.Net.Client.Components.States
 {
     public partial class PeriodWatch
     {
-        public Round Round { get; set; } = default!;
-
-        public Period Period { get; set; } = default!;
-
-        private DateTimeOffset StartedAt => this.Period.StartedAt ?? throw new InvalidOperationException();
+        public PeriodRunningViewModel Period { get; set; } = default!;
     }
 }

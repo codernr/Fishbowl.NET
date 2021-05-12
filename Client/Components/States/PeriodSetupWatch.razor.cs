@@ -1,13 +1,10 @@
-using Fishbowl.Net.Shared.Data;
+using Fishbowl.Net.Shared.Data.ViewModels;
 
 namespace Fishbowl.Net.Client.Components.States
 {
     public partial class PeriodSetupWatch
     {
-        public Round Round { get; set; } = default!;
-
-        public Period Period { get; set; } = default!;
-
+        public PeriodSetupViewModel Period { get; set; } = default!;
     }
 
 }

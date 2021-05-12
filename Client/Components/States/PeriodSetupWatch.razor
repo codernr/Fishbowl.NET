@@ -5,7 +5,7 @@
 @code
 {
     protected override RenderFragment Content =>
-        @<StateContainer Title="@this.Round.Type">
+        @<StateContainer Title="@this.Period.Round.Type">
             <div class="row">
                 <div class="col">
                     <h4>@L["Components.States.PeriodSetupWatch.WaitingForPlayer"]</h4>
@@ -15,7 +15,7 @@
             <div class="row">
                 <div class="col">
                     <h4>@L["Components.States.PeriodSetupWatch.PeriodLength"]</h4>
-                    <p>@this.Period.Length()</p>
+                    <p>@this.Period.Length</p>
                 </div>
             </div>
         </StateContainer>;
