@@ -34,6 +34,8 @@ namespace Fishbowl.Net.Server.Services
 
         private AsyncGame? game;
 
+        private List<Team> Teams => this.teams ?? throw new InvalidOperationException();
+
         private List<Team>? teams;
 
         public GameContext(GameSetupViewModel gameSetup, IGroupHubContext groupHubContext, Func<Func<Task>, Timer> timerFactory) =>
@@ -98,7 +100,19 @@ namespace Fishbowl.Net.Server.Services
             await this.CreateTeams(this.players, this.gameSetup.TeamCount);
         }
 
-        private async Task CreateTeams(List<Player> players, int teamCount)
+        public async Task SetTeamName(TeamNameViewModel teamName)
+        {
+            this.Teams[teamName.Id].Name = teamName.Name;
+
+            await this.groupHubContext.Group().ReceiveTeamName(teamName);
+
+            if (!this.Teams.Any(team => team.Name is null))
+            {
+                await this.StartGame(this.Teams, this.gameSetup.RoundTypes);
+            }
+        }
+
+        private Task CreateTeams(List<Player> players, int teamCount)
         {
             this.teams = players.Randomize().CreateTeams(teamCount).ToList();
 
@@ -108,7 +122,7 @@ namespace Fishbowl.Net.Server.Services
 
             TeamSetupViewModel data = new(this.teams.Select(team => team.Map()).ToList());
 
-            await Task.WhenAll(
+            return Task.WhenAll(
                 this.groupHubContext.Clients(setupPlayerIds).ReceiveSetTeamName(data),
                 this.groupHubContext.GroupExcept(setupPlayerIds).ReceiveWaitForTeamSetup(data));
         }

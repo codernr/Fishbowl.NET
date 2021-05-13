@@ -12,6 +12,8 @@ namespace Fishbowl.Net.Client.Services
 
         Task ReceiveWaitForTeamSetup(TeamSetupViewModel teamSetup) => Task.CompletedTask;
 
+        Task ReceiveTeamName(TeamNameViewModel teamName) => Task.CompletedTask;
+
         Task ReceivePlayerCount(PlayerCountViewModel playerCount) => Task.CompletedTask;
 
         Task ReceiveWaitForOtherPlayers(Player player) => Task.CompletedTask;

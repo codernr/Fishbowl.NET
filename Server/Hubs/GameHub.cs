@@ -45,6 +45,8 @@ namespace Fishbowl.Net.Server.Hubs
         public Task AddPlayer(Player player) =>
             this.GameContext.AddPlayer(player);
 
+        public Task SetTeamName(TeamNameViewModel teamName) => this.GameContext.SetTeamName(teamName);
+
         public void StartPeriod(DateTimeOffset timestamp) => this.GameContext.Game.StartPeriod(timestamp);
 
         public void NextWord(DateTimeOffset timestamp) => this.GameContext.Game.NextWord(timestamp);
