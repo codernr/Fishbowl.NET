@@ -44,6 +44,8 @@ namespace Fishbowl.Net.Client.Pages
             this.connection.On<GameSetupViewModel>(nameof(this.ReceiveSetupPlayer), this.ReceiveSetupPlayer);
             this.connection.On<PlayerCountViewModel>(nameof(this.ReceivePlayerCount), this.ReceivePlayerCount);
             this.connection.On<Player>(nameof(this.ReceiveWaitForOtherPlayers), this.ReceiveWaitForOtherPlayers);
+            this.connection.On<TeamSetupViewModel>(nameof(this.ReceiveSetTeamName), this.ReceiveSetTeamName);
+            this.connection.On<TeamSetupViewModel>(nameof(this.ReceiveWaitForTeamSetup), this.ReceiveWaitForTeamSetup);
             this.connection.On<Player, Round>(nameof(this.RestoreGameState), this.RestoreGameState);
             this.connection.On<GameAbortViewModel>(nameof(this.ReceiveGameAborted), this.ReceiveGameAborted);
             this.connection.On<GameViewModel>(nameof(this.ReceiveGameStarted), this.ReceiveGameStarted);
@@ -133,6 +135,40 @@ namespace Fishbowl.Net.Client.Pages
             this.ClientState.Name = player.Name;
 
             await this.StateManager.SetStateAsync<WaitingForPlayers>();
+        }
+
+        public Task ReceiveSetTeamName(TeamSetupViewModel teamSetup)
+        {
+            this.Logger.LogInformation("ReceiveSetTeamName: {TeamSetup}", teamSetup);
+            this.ClientState.Teams = teamSetup.Teams;
+
+            return this.StateManager.SetStateAsync<TeamName>(state =>
+                state.Team = this.ClientState.Team);
+        }
+
+        public Task ReceiveWaitForTeamSetup(TeamSetupViewModel teamSetup)
+        {
+            this.Logger.LogInformation("ReceiveWaitForTeamSetup: {TeamSetup}", teamSetup);
+            this.ClientState.Teams = teamSetup.Teams;
+
+            return this.StateManager.SetStateAsync<WaitingForTeamNames>(state =>
+            {
+                state.Team = this.ClientState.Team;
+                state.Teams = this.ClientState.Teams;
+            });
+        }
+
+        public Task ReceiveTeamName(TeamNameViewModel teamName)
+        {
+            this.Logger.LogInformation("ReceiveTeamName: {TeamName}", teamName);
+
+            this.ClientState.Teams[teamName.Id] = this.ClientState.Teams[teamName.Id] with { Name = teamName.Name };
+
+            this.StateManager.SetParameters<WaitingForTeamNames>(state =>
+            {
+                state.Teams = this.ClientState.Teams;
+            });
+            return Task.CompletedTask;
         }
 
         public Task RestoreGameState(Player player, Round round)
@@ -345,5 +381,8 @@ namespace Fishbowl.Net.Client.Pages
                 this.ClientState.Id,
                 this.ClientState.Name,
                 words.Select(word => new Word(Guid.NewGuid(), word))));
+
+        private Task SetTeamName(TeamNameViewModel teamName) =>
+            this.connection.SetTeamName(teamName);
     }
 }

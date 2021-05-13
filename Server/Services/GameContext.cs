@@ -104,6 +104,10 @@ namespace Fishbowl.Net.Server.Services
         {
             this.Teams[teamName.Id].Name = teamName.Name;
 
+            await this.groupHubContext
+                .Client(this.Teams[teamName.Id].Players[0].Id)
+                .ReceiveWaitForTeamSetup(new(this.Teams.Select(team => team.Map()).ToList()));
+
             await this.groupHubContext.Group().ReceiveTeamName(teamName);
 
             if (!this.Teams.Any(team => team.Name is null))

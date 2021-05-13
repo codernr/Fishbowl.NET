@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Fishbowl.Net.Client.Shared;
 using Fishbowl.Net.Shared.Data.ViewModels;
 
@@ -24,6 +25,11 @@ namespace Fishbowl.Net.Client.Services
         int TeamCount { get; set; }
         
         string[] RoundTypes { get; set; }
+
+        List<TeamViewModel> Teams { get; set; }
+
+        TeamViewModel Team => this.Teams.First(team =>
+            team.Players.Any(player => player.Id == this.Id));
 
         List<ScoreViewModel> PeriodScores { get; }
     }
@@ -61,6 +67,8 @@ namespace Fishbowl.Net.Client.Services
         public int TeamCount { get; set; } = 2;
         
         public string[] RoundTypes { get; set; } = new string[0];
+
+        public List<TeamViewModel> Teams { get; set; } = new();
 
         public List<ScoreViewModel> PeriodScores { get; } = new();
 

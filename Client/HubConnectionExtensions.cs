@@ -18,5 +18,8 @@ namespace Fishbowl.Net.Client
 
         public static Task AddPlayer(this HubConnection hubConnection, Player player) =>
             hubConnection.InvokeAsync("AddPlayer", player);
+
+        public static Task SetTeamName(this HubConnection hubConnection, TeamNameViewModel teamName) =>
+            hubConnection.InvokeAsync("SetTeamName", teamName);
     }
 }
