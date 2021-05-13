@@ -8,13 +8,13 @@
         @<StateContainer Title="@this.Period.Round.Type">
             <div class="row">
                 <div class="col">
-                    <h4>@L["Components.States.PeriodSetupPlay.Subtitle"]</h4>
+                    <h4>@L["Components.States.PeriodSetupPlay.PeriodLength"]</h4>
+                    <p>@(string.Format("{0:m\\:ss}", this.Period.Length))</p>
                 </div>
             </div>
             <div class="row">
                 <div class="col">
-                    <h4>@L["Components.States.PeriodSetupPlay.PeriodLength"]</h4>
-                    <p>@this.Period.Length</p>
+                    <h4>@L["Components.States.PeriodSetupPlay.Subtitle"]</h4>
                 </div>
             </div>
             <div class="row">
