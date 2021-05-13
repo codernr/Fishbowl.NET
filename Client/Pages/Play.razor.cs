@@ -122,7 +122,6 @@ namespace Fishbowl.Net.Client.Pages
             this.Logger.LogInformation("ReceiveConnectionCount: {PlayerCount}", playerCount);
             this.ClientState.PlayerCount = playerCount.TotalCount;
             this.ClientState.SetupPlayerCount = playerCount.SetupCount;
-            this.StateHasChanged();
             return Task.CompletedTask;
         }
 
