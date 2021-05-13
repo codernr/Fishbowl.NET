@@ -37,14 +37,8 @@ namespace Fishbowl.Net.Shared
 
         private Task? gameLoop;
 
-        public AsyncGame(
-            int teamCount,
-            IEnumerable<string> roundTypes,
-            IEnumerable<Player> players,
-            bool randomize = true)
-        {
-            this.game = new Game(Guid.NewGuid(), players, roundTypes, teamCount, randomize);
-        }
+        public AsyncGame(IEnumerable<Team> teams, IEnumerable<string> roundTypes, bool randomize = true) =>
+            this.game = new Game(Guid.NewGuid(), teams, roundTypes, randomize);
 
         public void Run() => this.gameLoop = this.RunAsync();
 

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Fishbowl.Net.Shared.Data;
 
 namespace Fishbowl.Net.Shared
 {
@@ -16,5 +17,11 @@ namespace Fishbowl.Net.Shared
             source
                 .Select((item, i) => (id: i, element: item))
                 .GroupBy(item => item.id % groupCount, item => item.element);
+
+        public static IEnumerable<Team> CreateTeams(this IEnumerable<Player> players, int teamCount) =>
+            players
+                .Distribute(teamCount)
+                .Select((players, id) => new Team(id, players.ToList()))
+                .ToList();
     }
 }

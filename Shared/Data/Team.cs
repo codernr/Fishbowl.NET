@@ -4,6 +4,8 @@ namespace Fishbowl.Net.Shared.Data
 {
     public class Team
     {
+        public string? Name { get; set; }
+        
         public CircularEnumerator<Player> PlayerEnumerator { get; private set; }
 
         public int Id { get; private set; }

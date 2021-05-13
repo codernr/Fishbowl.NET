@@ -11,6 +11,8 @@ namespace Fishbowl.Net.Shared.Data.ViewModels
 
     public record TeamViewModel(int Id, List<PlayerViewModel> Players);
 
+    public record TeamSetupViewModel(List<TeamViewModel> Teams);
+
     public record GameViewModel(List<TeamViewModel> Teams);
 
     public record RoundViewModel(string Type);

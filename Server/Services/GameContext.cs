@@ -34,6 +34,8 @@ namespace Fishbowl.Net.Server.Services
 
         private AsyncGame? game;
 
+        private List<Team>? teams;
+
         public GameContext(GameSetupViewModel gameSetup, IGroupHubContext groupHubContext, Func<Func<Task>, Timer> timerFactory) =>
             (this.gameSetup, this.groupHubContext, this.timer) =
             (gameSetup, groupHubContext, timerFactory(() => this.Abort("Common.Abort.Timeout")));
@@ -54,9 +56,14 @@ namespace Fishbowl.Net.Server.Services
                 return;
             }
 
-            if (this.game is null)
+            if (this.teams is null)
             {
                 await this.groupHubContext.Client(playerId).ReceiveWaitForOtherPlayers(existingPlayer);
+                return;
+            }
+
+            if (this.game is null)
+            {
                 return;
             }
 
@@ -88,14 +95,29 @@ namespace Fishbowl.Net.Server.Services
                 return;
             }
 
-            await this.StartGame(this.gameSetup.TeamCount, this.gameSetup.RoundTypes, this.players);
+            await this.CreateTeams(this.players, this.gameSetup.TeamCount);
         }
 
-        private async Task StartGame(int teamCount, IEnumerable<string> roundTypes, IEnumerable<Player> players)
+        private async Task CreateTeams(List<Player> players, int teamCount)
+        {
+            this.teams = players.Randomize().CreateTeams(teamCount).ToList();
+
+            var setupPlayerIds = this.teams
+                .Select(team => team.Players.First())
+                .Select(player => player.Id);
+
+            TeamSetupViewModel data = new(this.teams.Select(team => team.Map()).ToList());
+
+            await Task.WhenAll(
+                this.groupHubContext.Clients(setupPlayerIds).ReceiveSetTeamName(data),
+                this.groupHubContext.GroupExcept(setupPlayerIds).ReceiveWaitForTeamSetup(data));
+        }
+
+        private async Task StartGame(List<Team> teams, IEnumerable<string> roundTypes)
         {
             try
             {
-                this.game = new AsyncGame(teamCount, roundTypes, players);
+                this.game = new AsyncGame(teams, roundTypes);
                 this.SetEventHandlers();
                 this.Game.Run();
             }

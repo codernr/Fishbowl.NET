@@ -8,9 +8,9 @@ namespace Fishbowl.Net.Shared.Data
     {
         public Guid Id { get; private set; }
 
-        public List<Team> Teams { get; private set; } = default!;
+        public List<Team> Teams { get; private set; }
         
-        public List<Round> Rounds { get; private set; } = default!;
+        public List<Round> Rounds { get; private set; }
         
         public TimeSpan PeriodLength { get; private set; } = TimeSpan.FromSeconds(60);
 
@@ -26,30 +26,15 @@ namespace Fishbowl.Net.Shared.Data
 
         private TimeSpan? remaining;
 
-        public Game(
-            Guid id,
-            IEnumerable<Player> players,
-            IEnumerable<string> roundTypes,
-            int teamCount = 2,
-            bool randomize = true)
+        public Game(Guid id, IEnumerable<Team> teams, IEnumerable<string> roundTypes, bool randomize = true)
         {
             this.Id = id;
 
-            var playerList = (randomize ? players.Randomize() : players).ToList();
-
-            if (playerList.Count < teamCount * 2)
-            {
-                throw new ArgumentException("Player count should be at least (team count) * 2.");
-            }
-
-            this.Teams = playerList
-                .Distribute(teamCount)
-                .Select((players, id) => new Team(id, players.ToList()))
-                .ToList();
-
+            this.Teams = teams.ToList();
             this.teamEnumerator = new CircularEnumerator<Team>(this.Teams);
 
-            var words = players
+            var words = this.Teams
+                .SelectMany(team => team.Players)
                 .SelectMany(player => player.Words);
 
             this.Rounds = roundTypes

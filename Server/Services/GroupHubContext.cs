@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,7 +17,11 @@ namespace Fishbowl.Net.Server.Services
 
         IGameClient Group();
 
+        IGameClient GroupExcept(IEnumerable<Guid> ids);
+
         IGameClient Client(Guid id);
+
+        IGameClient Clients(IEnumerable<Guid> ids);
 
         Task RegisterConnection(Guid id, string connectionId);
 
@@ -47,7 +52,13 @@ namespace Fishbowl.Net.Server.Services
             return (connectionId is null) ? NullClient : this.hubContext.Clients.Clients(connectionId);
         }
 
+        public IGameClient Clients(IEnumerable<Guid> playerIds) =>
+            this.hubContext.Clients.Clients(this.GetConnections(playerIds));
+
         public IGameClient Group() => this.hubContext.Clients.Group(this.password);
+
+        public IGameClient GroupExcept(IEnumerable<Guid> playerIds) =>
+            this.hubContext.Clients.GroupExcept(this.password, this.GetConnections(playerIds));
 
         public Task RegisterConnection(Guid playerId, string connectionId)
         {
@@ -71,6 +82,18 @@ namespace Fishbowl.Net.Server.Services
             foreach (var entry in this.idConnectionMap)
             {
                 if (entry.Value is not null) await this.RemoveConnection(entry.Value);
+            }
+        }
+
+        private IEnumerable<string> GetConnections(IEnumerable<Guid> ids)
+        {
+            foreach (var id in ids)
+            {
+                var connectionId = this.idConnectionMap[id];
+                if (connectionId is not null)
+                {
+                    yield return connectionId;
+                }
             }
         }
 

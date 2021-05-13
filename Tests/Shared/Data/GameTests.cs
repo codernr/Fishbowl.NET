@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Fishbowl.Net.Shared;
 using Fishbowl.Net.Shared.Data;
 using Xunit;
 
@@ -13,29 +14,23 @@ namespace Fishbowl.Net.Tests.Shared
         {
             Assert.Throws<ArgumentException>(() => new Game(
                 Guid.NewGuid(),
-                new[]
+                (new[]
                 {
                     new Player(Guid.NewGuid(), "Player1", new Word[0]),
                     new Player(Guid.NewGuid(), "Player2", new Word[0]),
                     new Player(Guid.NewGuid(), "Player3", new Word[0]),
-                },
-                new string[0],
-                2));
+                }).CreateTeams(2),
+                new string[0]));
         }
 
         [Fact]
         public void TestRunWithNoPasses()
         {
-            var players = CreatePlayers(5, 2);
+            var teams = CreatePlayers(5, 2).CreateTeams(2);
 
             var rounds = new[] { "GameType1", "GameType2" };
 
-            var game = new Game(
-                Guid.NewGuid(),
-                players,
-                rounds,
-                2,
-                false);
+            var game = new Game(Guid.NewGuid(), teams, rounds, false);
 
             int roundCount = 0;
             int periodCount = 0;
@@ -101,16 +96,11 @@ namespace Fishbowl.Net.Tests.Shared
         [Fact]
         public void TestRunWithPasses()
         {
-            var players = CreatePlayers(5, 2);
+            var teams = CreatePlayers(5, 2).CreateTeams(2);
 
             var rounds = new[] { "GameType1", "GameType2" };
 
-            var game = new Game(
-                Guid.NewGuid(),
-                players,
-                rounds,
-                2,
-                false);
+            var game = new Game(Guid.NewGuid(), teams, rounds, false);
 
             int roundCount = 0;
             int periodCount = 0;
