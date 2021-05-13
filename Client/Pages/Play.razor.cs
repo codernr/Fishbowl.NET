@@ -42,7 +42,7 @@ namespace Fishbowl.Net.Client.Pages
             this.connection.Reconnected += this.Reconnected;
 
             this.connection.On<GameSetupViewModel>(nameof(this.ReceiveSetupPlayer), this.ReceiveSetupPlayer);
-            this.connection.On<PlayerCountViewModel>(nameof(this.ReceivePlayerCount), this.ReceivePlayerCount);
+            this.connection.On<SetupStateViewModel>(nameof(this.ReceivePlayerCount), this.ReceivePlayerCount);
             this.connection.On<Player>(nameof(this.ReceiveWaitForOtherPlayers), this.ReceiveWaitForOtherPlayers);
             this.connection.On<Player, Round>(nameof(this.RestoreGameState), this.RestoreGameState);
             this.connection.On<GameAbortViewModel>(nameof(this.ReceiveGameAborted), this.ReceiveGameAborted);
@@ -114,7 +114,7 @@ namespace Fishbowl.Net.Client.Pages
             await this.StateManager.SetStateAsync<PlayerName>();
         }
 
-        public Task ReceivePlayerCount(PlayerCountViewModel playerCount)
+        public Task ReceivePlayerCount(SetupStateViewModel playerCount)
         {
             this.Logger.LogInformation("ReceiveConnectionCount: {PlayerCount}", playerCount);
             this.ClientState.PlayerCount = playerCount.TotalCount;
