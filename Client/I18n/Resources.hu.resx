@@ -9,6 +9,9 @@
     <data name="Common.Abort.Timeout">
         <value>Túl sokáig nem játszottatok, a játék leállt.</value>
     </data>
+    <data name="Components.TeamMembers.Title">
+        <value>Csapatod</value>
+    </data>
     <data name="Components.Timer.Remaining">
         <value>Hátralévő idő</value>
     </data>

@@ -1,0 +1,10 @@
+@inject IStringLocalizer<Resources> L
+
+<div class="card timer bg-success text-light">
+    <div class="card-header">
+        @L["Components.TeamMembers.Title"]
+    </div>
+    <div class="card-body fs-3">
+        @string.Join(", ", this.Players.Select(player => player.Name))
+    </div>
+</div>
