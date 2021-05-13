@@ -56,7 +56,7 @@ namespace Fishbowl.Net.Shared.Data.ViewModels
         public static PlayerViewModel Map(this Player player) => new(player.Id, player.Name);
 
         public static TeamViewModel Map(this Team team) => new(team.Id, team.Players
-            .Select(player => player.Map()).ToList());
+            .Select(player => player.Map()).ToList(), team.Name);
 
         public static GameViewModel Map(this Game game) => new(game.Teams
             .Select(team => team.Map()).ToList());
