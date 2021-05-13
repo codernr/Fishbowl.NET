@@ -1,0 +1,28 @@
+@using Fishbowl.Net.Client.Components.Templates
+@inherits State
+@inject IStringLocalizer<Resources> L
+
+@code
+{
+    protected override RenderFragment Content =>
+        @<StateContainer Title="@(L["Components.States.WaitingForTeamNames.Title"])">
+            <div class="row mb-5">
+                <TeamMembers Players="this.Team.Players" />
+            </div>
+            <div class="row">
+                <div class="col">
+                    <h4>@L["Components.States.WaitingForTeamNames.TeamNames"]</h4>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <ul class="list-group">
+                        @foreach (var team in this.Teams)
+                        {
+                            <li class="list-group-item">@team.Name</li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </StateContainer>;
+}

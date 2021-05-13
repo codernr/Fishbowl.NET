@@ -9,7 +9,7 @@ namespace Fishbowl.Net.Shared.Data.ViewModels
 
     public record PlayerViewModel(Guid Id, string Name);
 
-    public record TeamViewModel(int Id, List<PlayerViewModel> Players);
+    public record TeamViewModel(int Id, List<PlayerViewModel> Players, string? Name = null);
 
     public record TeamSetupViewModel(List<TeamViewModel> Teams);
 
