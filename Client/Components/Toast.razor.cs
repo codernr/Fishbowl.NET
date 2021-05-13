@@ -24,7 +24,7 @@ namespace Fishbowl.Net.Client.Components
         [Parameter]
         public EventCallback AnimationFinished { get; set; } = default!;
 
-        private bool Visible => this.animationClass.Contains("show");
+        private bool Visible => this.animationClass == "show";
 
         private string animationClass = "hide";
 
@@ -51,12 +51,10 @@ namespace Fishbowl.Net.Client.Components
                 .ContinueWith(async _ =>
                 {
                     await Task.Delay(100);
-                    this.animationClass = "showing show";
+                    this.animationClass = "show";
                     this.StateHasChanged();
 
                     await Task.Delay(TransitionDuration);
-                    this.animationClass = "show";
-                    this.StateHasChanged();
                 })
                 .Unwrap();
 
