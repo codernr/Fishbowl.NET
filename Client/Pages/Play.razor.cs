@@ -46,6 +46,7 @@ namespace Fishbowl.Net.Client.Pages
             this.connection.On<Player>(nameof(this.ReceiveWaitForOtherPlayers), this.ReceiveWaitForOtherPlayers);
             this.connection.On<TeamSetupViewModel>(nameof(this.ReceiveSetTeamName), this.ReceiveSetTeamName);
             this.connection.On<TeamSetupViewModel>(nameof(this.ReceiveWaitForTeamSetup), this.ReceiveWaitForTeamSetup);
+            this.connection.On<TeamNameViewModel>(nameof(this.ReceiveTeamName), this.ReceiveTeamName);
             this.connection.On<Player, Round>(nameof(this.RestoreGameState), this.RestoreGameState);
             this.connection.On<GameAbortViewModel>(nameof(this.ReceiveGameAborted), this.ReceiveGameAborted);
             this.connection.On<GameViewModel>(nameof(this.ReceiveGameStarted), this.ReceiveGameStarted);
@@ -154,7 +155,7 @@ namespace Fishbowl.Net.Client.Pages
             return this.StateManager.SetStateAsync<WaitingForTeamNames>(state =>
             {
                 state.Team = this.ClientState.Team;
-                state.Teams = this.ClientState.Teams;
+                state.Teams = this.ClientState.Teams.Where(team => team.Name is not null).ToList();
             });
         }
 
@@ -166,7 +167,7 @@ namespace Fishbowl.Net.Client.Pages
 
             this.StateManager.SetParameters<WaitingForTeamNames>(state =>
             {
-                state.Teams = this.ClientState.Teams;
+                state.Teams = this.ClientState.Teams.Where(team => team.Name is not null).ToList();
             });
             return Task.CompletedTask;
         }

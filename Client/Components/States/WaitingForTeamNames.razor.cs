@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using Fishbowl.Net.Shared.Data.ViewModels;
 
 namespace Fishbowl.Net.Client.Components.States
@@ -8,6 +7,6 @@ namespace Fishbowl.Net.Client.Components.States
     {
         public TeamViewModel Team { get; set; } = default!;
         
-        public IEnumerable<TeamViewModel> Teams { get; set; } = Enumerable.Empty<TeamViewModel>();
+        public ICollection<TeamViewModel> Teams { get; set; } = default!;
     }
 }
