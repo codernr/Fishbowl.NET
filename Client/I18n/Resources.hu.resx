@@ -147,6 +147,12 @@
     <data name="Components.States.TeamCount.SubmitButton">
         <value>Beállít</value>
     </data>
+    <data name="Components.States.TeamName.Title">
+        <value>Nevezd el a csapatod</value>
+    </data>
+    <data name="Components.States.TeamName.Button">
+        <value>Beállít</value>
+    </data>
     <data name="Components.States.WaitingForPlayers.Title">
         <value>Várakozás...</value>
     </data>

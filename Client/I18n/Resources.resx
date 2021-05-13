@@ -147,6 +147,12 @@
     <data name="Components.States.TeamCount.SubmitButton">
         <value>Set</value>
     </data>
+    <data name="Components.States.TeamName.Title">
+        <value>Give your team a name</value>
+    </data>
+    <data name="Components.States.TeamName.Button">
+        <value>Set</value>
+    </data>
     <data name="Components.States.WaitingForPlayers.Title">
         <value>Waiting...</value>
     </data>
