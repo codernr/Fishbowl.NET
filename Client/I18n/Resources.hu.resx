@@ -159,6 +159,12 @@
     <data name="Components.States.WaitingForPlayers.Message">
         <value>A többiek még pötyögnek...</value>
     </data>
+    <data name="Components.States.WaitingForTeamNames.Title">
+        <value>Csapatnevek megadása</value>
+    </data>
+    <data name="Components.States.WaitingForTeamNames.TeamNames">
+        <value>Csapatnevek</value>
+    </data>
     <data name="Components.States.WordCount.Title">
         <value>Add meg a szavak számát játékosonként</value>
     </data>

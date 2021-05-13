@@ -159,6 +159,12 @@
     <data name="Components.States.WaitingForPlayers.Message">
         <value>Other players are still working...</value>
     </data>
+    <data name="Components.States.WaitingForTeamNames.Title">
+        <value>Team name setup</value>
+    </data>
+    <data name="Components.States.WaitingForTeamNames.TeamNames">
+        <value>Team names</value>
+    </data>
     <data name="Components.States.WordCount.Title">
         <value>Set word count per player</value>
     </data>
