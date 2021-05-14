@@ -15,7 +15,7 @@
         Message="@($"{L("Pages.Play.PlayerCount")}: {this.ClientState.SetupPlayerCount} / {this.ClientState.PlayerCount}")" />
 </div>
 
-<StateManager @ref="this.stateManager" TransitionStarted="this.OnStateTransition">
+<StateManager @ref="this.stateManager" TransitionStarted="@this.OnStateTransition">
     <Connecting Delay="@TimeSpan.FromSeconds(2)" />
     <Password OnCreateGame="this.CreateGame" OnJoinGame="this.JoinGame" />
     <PlayerCount OnPlayerCountSet="this.SetPlayerCount" />

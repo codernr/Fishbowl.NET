@@ -68,10 +68,15 @@ namespace Fishbowl.Net.Client.Pages
             }
         }
 
-        private Task OnStateTransition(State newState) =>
-            (newState is PlayerName || newState is PlayerWords || newState is WaitingForPlayers) ?
-            this.PlayerCountDisplay.Show() :
-            this.PlayerCountDisplay.Hide();
+        private async void OnStateTransition(State newState)
+        {
+            if (newState is PlayerName || newState is PlayerWords || newState is WaitingForPlayers)
+            {
+                await this.PlayerCountDisplay.Show();
+                return;
+            }
+            await this.PlayerCountDisplay.Hide();
+        }
 
         private async Task Connected()
         {
@@ -122,6 +127,7 @@ namespace Fishbowl.Net.Client.Pages
             this.Logger.LogInformation("ReceiveConnectionCount: {PlayerCount}", playerCount);
             this.ClientState.PlayerCount = playerCount.TotalCount;
             this.ClientState.SetupPlayerCount = playerCount.SetupCount;
+            this.StateHasChanged();
             return Task.CompletedTask;
         }
 
