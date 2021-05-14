@@ -198,7 +198,7 @@ namespace Fishbowl.Net.Client.Pages
                 state.Message = L(abort.MessageKey);
             });
             await this.connection.StopAsync();
-            this.NavigationManager.NavigateTo(this.NavigationManager.Uri, true);
+            this.Reload();
         }
 
         public async Task ReceiveGameStarted()
@@ -407,5 +407,7 @@ namespace Fishbowl.Net.Client.Pages
 
         private Task SetTeamName(TeamNameViewModel teamName) =>
             this.connection.SetTeamName(teamName);
+
+        private void Reload() => this.NavigationManager.NavigateTo(this.NavigationManager.Uri, true);
     }
 }

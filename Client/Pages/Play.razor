@@ -17,7 +17,7 @@
 
 <StateManager @ref="this.stateManager" TransitionStarted="@this.OnStateTransition">
     <Connecting Delay="@TimeSpan.FromSeconds(2)" />
-    <ConnectionClosed ReloadRequested="() => this.NavigationManager.NavigateTo(this.NavigationManager.Uri, true)" />
+    <ConnectionClosed ReloadRequested="this.Reload" />
     <Password OnCreateGame="this.CreateGame" OnJoinGame="this.JoinGame" />
     <PlayerCount OnPlayerCountSet="this.SetPlayerCount" />
     <TeamCount OnTeamCountSet="this.SetTeamCount" />
@@ -37,7 +37,7 @@
     <PeriodWatch />
     <PeriodFinished Delay="@TimeSpan.FromSeconds(4)" />
     <RoundFinished Delay="@TimeSpan.FromSeconds(4)" />
-    <GameFinished />
+    <GameFinished ReloadRequested="this.Reload" />
     <Info Delay="@TimeSpan.FromSeconds(2)" />
 </StateManager>
 

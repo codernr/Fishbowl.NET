@@ -39,8 +39,8 @@
     <data name="Components.States.GameFinished.Title">
         <value>Eredmények</value>
     </data>
-    <data name="Components.States.GameFinished.Team">
-        <value>Csapat</value>
+    <data name="Components.States.GameFinished.Button">
+        <value>Új játék</value>
     </data>
     <data name="Components.States.Password.Title">
         <value>Add meg a játék jelszavát</value>

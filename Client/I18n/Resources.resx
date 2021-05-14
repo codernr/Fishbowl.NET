@@ -39,6 +39,9 @@
     <data name="Components.States.GameFinished.Title">
         <value>Results</value>
     </data>
+    <data name="Components.States.GameFinished.Button">
+        <value>New game</value>
+    </data>
     <data name="Components.States.Password.Title">
         <value>Set game password</value>
     </data>
