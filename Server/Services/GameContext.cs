@@ -160,11 +160,11 @@ namespace Fishbowl.Net.Server.Services
         }
 
         private async void GameStarted(Game game) =>
-            await this.groupHubContext.Group().ReceiveGameStarted(game.Map());
+            await this.groupHubContext.Group().ReceiveGameStarted();
 
         private async void OnGameFinished(Game game)
         {
-            await this.groupHubContext.Group().ReceiveGameFinished(game.MapSummary());
+            await this.groupHubContext.Group().ReceiveGameFinished(game.Map());
             this.GameFinished?.Invoke(this);
         }
 

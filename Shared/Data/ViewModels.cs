@@ -15,8 +15,6 @@ namespace Fishbowl.Net.Shared.Data.ViewModels
 
     public record TeamNameViewModel(int Id, string Name);
 
-    public record GameViewModel(List<TeamViewModel> Teams);
-
     public record RoundViewModel(string Type);
 
     public record RoundSummaryViewModel(string Type, List<PeriodSummaryViewModel> Periods);
@@ -58,9 +56,6 @@ namespace Fishbowl.Net.Shared.Data.ViewModels
         public static TeamViewModel Map(this Team team) => new(team.Id, team.Players
             .Select(player => player.Map()).ToList(), team.Name);
 
-        public static GameViewModel Map(this Game game) => new(game.Teams
-            .Select(team => team.Map()).ToList());
-
         public static RoundViewModel Map(this Round round) => new(round.Type);
 
         public static PeriodSetupViewModel Map(this Period period, Round round) =>
@@ -94,7 +89,7 @@ namespace Fishbowl.Net.Shared.Data.ViewModels
         public static TeamSummaryViewModel Map(this Team team, Game game) =>
             new(team.Id, team.Players.Select(player => player.Map(game)).ToList());
 
-        public static GameSummaryViewModel MapSummary(this Game game) => new(game.Teams
+        public static GameSummaryViewModel Map(this Game game) => new(game.Teams
             .Select(team => team.Map(game))
             .OrderByDescending(team => team.Players.Sum(player => player.Scores.Count))
             .ToList());

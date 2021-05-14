@@ -2,6 +2,8 @@ namespace Fishbowl.Net.Client.Shared
 {
     public static class ContextCssClass
     {
+        public const string Dark = "text-light bg-dark";
+        
         public const string Primary = "text-light bg-primary";
 
         public const string Success = "text-light bg-success";

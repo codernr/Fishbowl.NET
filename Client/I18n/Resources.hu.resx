@@ -33,9 +33,6 @@
     <data name="Components.States.GameFinished.Team">
         <value>Csapat</value>
     </data>
-    <data name="Components.States.GameStarted.Title">
-        <value>A csapatod</value>
-    </data>
     <data name="Components.States.Password.Title">
         <value>Add meg a játék jelszavát</value>
     </data>
@@ -197,5 +194,8 @@
     </data>
     <data name="Pages.Play.GameCreatedMessage">
         <value>Most már csatlakozhatnak az elején megadott jelszóval.</value>
+    </data>
+    <data name="Pages.Play.GameStartedTitle">
+        <value>Kezdődik a játék</value>
     </data>
 </root>

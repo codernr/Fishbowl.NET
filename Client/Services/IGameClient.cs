@@ -22,7 +22,7 @@ namespace Fishbowl.Net.Client.Services
 
         Task ReceiveGameAborted(GameAbortViewModel abort) => Task.CompletedTask;
 
-        Task ReceiveGameStarted(GameViewModel game) => Task.CompletedTask;
+        Task ReceiveGameStarted() => Task.CompletedTask;
 
         Task ReceiveGameFinished(GameSummaryViewModel game) => Task.CompletedTask;
 

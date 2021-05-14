@@ -49,7 +49,7 @@ namespace Fishbowl.Net.Client.Pages
             this.connection.On<TeamNameViewModel>(nameof(this.ReceiveTeamName), this.ReceiveTeamName);
             this.connection.On<Player, Round>(nameof(this.RestoreGameState), this.RestoreGameState);
             this.connection.On<GameAbortViewModel>(nameof(this.ReceiveGameAborted), this.ReceiveGameAborted);
-            this.connection.On<GameViewModel>(nameof(this.ReceiveGameStarted), this.ReceiveGameStarted);
+            this.connection.On(nameof(this.ReceiveGameStarted), this.ReceiveGameStarted);
             this.connection.On<GameSummaryViewModel>(nameof(this.ReceiveGameFinished), this.ReceiveGameFinished);
             this.connection.On<RoundViewModel>(nameof(this.ReceiveRoundStarted), this.ReceiveRoundStarted);
             this.connection.On<RoundSummaryViewModel>(nameof(this.ReceiveRoundFinished), this.ReceiveRoundFinished);
@@ -197,14 +197,16 @@ namespace Fishbowl.Net.Client.Pages
             this.NavigationManager.NavigateTo(this.NavigationManager.Uri, true);
         }
 
-        public Task ReceiveGameStarted(GameViewModel game)
+        public Task ReceiveGameStarted()
         {
-            this.Logger.LogInformation("ReceiveGameStarted: {Game}", game);
+            this.Logger.LogInformation("ReceiveGameStarted");
 
-            var playerTeam = game.Teams.First(
-                team => team.Players.Any(player => player.Id == this.ClientState.Id));
-
-            return this.StateManager.SetStateAsync<GameStarted>(state => state.Team = playerTeam);
+            return this.StateManager.SetStateAsync<Info>(state =>
+            {
+                state.ContextClass = ContextCssClass.Dark;
+                state.Title = L("Pages.Play.GameStartedTitle");
+                state.Message = string.Empty;
+            });
         }
 
         public Task ReceiveGameFinished(GameSummaryViewModel game)

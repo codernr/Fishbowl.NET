@@ -33,9 +33,6 @@
     <data name="Components.States.GameFinished.Team">
         <value>Team</value>
     </data>
-    <data name="Components.States.GameStarted.Title">
-        <value>Your team</value>
-    </data>
     <data name="Components.States.Password.Title">
         <value>Set game password</value>
     </data>
@@ -197,5 +194,8 @@
     </data>
     <data name="Pages.Play.GameCreatedMessage">
         <value>Now your friends can join the game with the password you set.</value>
+    </data>
+    <data name="Pages.Play.GameStartedTitle">
+        <value>Starting the game</value>
     </data>
 </root>
