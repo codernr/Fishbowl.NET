@@ -6,6 +6,7 @@ using Fishbowl.Net.Client.Components;
 using Fishbowl.Net.Client.Components.States;
 using Fishbowl.Net.Client.Services;
 using Fishbowl.Net.Client.Shared;
+using Fishbowl.Net.Shared;
 using Fishbowl.Net.Shared.Data;
 using Fishbowl.Net.Shared.Data.ViewModels;
 using Microsoft.AspNetCore.SignalR.Client;
@@ -339,9 +340,12 @@ namespace Fishbowl.Net.Client.Pages
         {
             this.ClientState.RoundTypes = roundTypes;
             this.ClientState.IsCreating = true;
-            await this.connection.CreateGameContext(new(
+            var status = await this.connection.CreateGameContext(new(
                 new(this.ClientState.Password ?? throw new InvalidOperationException(), this.ClientState.Id),
                 new(this.ClientState.PlayerCount, this.ClientState.WordCount, this.ClientState.TeamCount, this.ClientState.RoundTypes)));
+
+            if (status == StatusCode.Ok) return;
+            await this.StatusError(status);
         }
 
         private async Task AfterPasswordCheck<TNextState>(
@@ -352,19 +356,12 @@ namespace Fishbowl.Net.Client.Pages
 
             if (passwordExists)
             {
-                await this.StateManager.SetStateAsync<Info>(state =>
-                {
-                    state.ContextClass = ContextCssClass.Danger;
-                    state.Title = L("Pages.Play.ErrorTitle");
-                    state.Message = L("Pages.Play.PasswordIsInUse");
-                });
-                await this.StateManager.SetStateAsync<Password>();
+                await this.StatusError(StatusCode.GameContextExists);
+                return;
             }
-            else
-            {
-                setup();
-                await this.StateManager.SetStateAsync<TNextState>(setParameters);
-            }
+            
+            setup();
+            await this.StateManager.SetStateAsync<TNextState>(setParameters);
         }
 
         private Task JoinGame(string password)
@@ -376,19 +373,21 @@ namespace Fishbowl.Net.Client.Pages
 
         private async Task JoinGameContext()
         {
-            var success = await this.connection.JoinGameContext(
+            var status = await this.connection.JoinGameContext(
                 new(this.ClientState.Password ?? throw new InvalidOperationException(), this.ClientState.Id));
             
-            if (success)
-            {
-                return;
-            }
-            
+            if (status == StatusCode.Ok) return;
+
+            await this.StatusError(status);
+        }
+
+        private async Task StatusError(StatusCode status)
+        {
             await this.StateManager.SetStateAsync<Info>(state =>
             {
                 state.ContextClass = ContextCssClass.Danger;
                 state.Title = L("Pages.Play.ErrorTitle");
-                state.Message = L("Pages.Play.JoinGameContextError");
+                state.Message = L($"Pages.Play.StatusCode.{status}");
             });
             await this.StateManager.SetStateAsync<Password>();
         }

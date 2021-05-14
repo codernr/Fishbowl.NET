@@ -183,12 +183,6 @@
     <data name="Pages.Play.Reconnecting">
         <value>Connection lost, reconnecting...</value>
     </data>
-    <data name="Pages.Play.PasswordIsInUse">
-        <value>The password is already in use, choose another one.</value>
-    </data>
-    <data name="Pages.Play.JoinGameContextError">
-        <value>User is already connected to a game. Try reloading the page.</value>
-    </data>
     <data name="Pages.Play.Scored">
         <value>Score</value>
     </data>
@@ -200,6 +194,18 @@
     </data>
     <data name="Pages.Play.ErrorTitle">
         <value>Error!</value>
+    </data>
+    <data name="Pages.Play.StatusCode.ConnectionAlreadyAssigned">
+        <value>Connection error. Try reloading the page.</value>
+    </data>
+    <data name="Pages.Play.StatusCode.GameContextExists">
+        <value>The password can't be used to create the game. Try another one.</value>
+    </data>
+    <data name="Pages.Play.StatusCode.GameContextNotFound">
+        <value>No game found with the given password.</value>
+    </data>
+    <data name="Pages.Play.StatusCode.GameContextFull">
+        <value>This game is already full.</value>
     </data>
     <data name="Pages.Play.GameCreatedTitle">
         <value>Game created!</value>
