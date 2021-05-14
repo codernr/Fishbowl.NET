@@ -197,11 +197,13 @@ namespace Fishbowl.Net.Client.Pages
             this.NavigationManager.NavigateTo(this.NavigationManager.Uri, true);
         }
 
-        public Task ReceiveGameStarted()
+        public async Task ReceiveGameStarted()
         {
             this.Logger.LogInformation("ReceiveGameStarted");
 
-            return this.StateManager.SetStateAsync<Info>(state =>
+            await Task.Delay(1000);
+
+            await this.StateManager.SetStateAsync<Info>(state =>
             {
                 state.ContextClass = ContextCssClass.Dark;
                 state.Title = L("Pages.Play.GameStartedTitle");
