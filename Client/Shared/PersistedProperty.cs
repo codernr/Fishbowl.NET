@@ -53,7 +53,13 @@ namespace Fishbowl.Net.Client.Shared
         protected override Guid Get()
         {
             var stringValue = this.storageService.GetItem(this.storageKey);
-            return stringValue is null ? this.defaultValue : new Guid(stringValue);
+            if (stringValue is null)
+            {
+                this.storageService.SetItem(this.storageKey, this.defaultValue.ToString());
+                return this.defaultValue;
+            }
+            
+            return new Guid(stringValue);
         }
     }
 
