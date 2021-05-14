@@ -82,10 +82,10 @@ namespace Fishbowl.Net.Client.Pages
 
         private async Task Connected()
         {
-            if (this.ClientState.Password is not null && await this.connection.GameContextExists(this.ClientState.Password))
+            if (this.ClientState.Password is not null)
             {
-                await this.JoinGameContext();
-                return;
+                var status = await this.connection.JoinGameContext(new(this.ClientState.Password, this.ClientState.Id));
+                if (status == StatusCode.Ok) return;
             }
 
             await this.StateManager.SetStateAsync<Password>();
