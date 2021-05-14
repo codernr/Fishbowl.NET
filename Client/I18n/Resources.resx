@@ -27,6 +27,15 @@
     <data name="Components.States.Connecting.Description">
         <value>Connecting to server...</value>
     </data>
+    <data name="Components.States.ConnectionClosed.Title">
+        <value>Connection closed</value>
+    </data>
+    <data name="Components.States.ConnectionClosed.Description">
+        <value>Reload the page to reconnect</value>
+    </data>
+    <data name="Components.States.ConnectionClosed.Button">
+        <value>Reconnect</value>
+    </data>
     <data name="Components.States.GameFinished.Title">
         <value>Results</value>
     </data>

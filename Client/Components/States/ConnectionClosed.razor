@@ -1,0 +1,25 @@
+@using Fishbowl.Net.Client.Components.Templates
+@inherits State
+@inject IStringLocalizer<Resources> L
+
+@code
+{
+    [Parameter]
+    public EventCallback ReloadRequested { get; set; } = default!;
+
+    protected override RenderFragment Content =>
+        @<StateContainer Title="@(L["Components.States.ConnectionClosed.Title"])">
+            <div class="row mb-5">
+                <div class="col">
+                    @L["Components.States.ConnectionClosed.Description"]
+                </div>
+            </div>
+            <div class="row">
+                <div class="d-grid col">
+                    <button class="btn btn-warning btn-lg" type="button" @onclick="e => this.ReloadRequested.InvokeAsync()">
+                        @L["Components.States.ConnectionClosed.Button"]
+                    </button>
+                </div>
+            </div>
+        </StateContainer>;
+}

@@ -40,6 +40,7 @@ namespace Fishbowl.Net.Client.Pages
 
             this.connection.Reconnecting += this.Reconnecting;
             this.connection.Reconnected += this.Reconnected;
+            this.connection.Closed += this.Closed;
 
             this.connection.On<GameSetupViewModel>(nameof(this.ReceiveSetupPlayer), this.ReceiveSetupPlayer);
             this.connection.On<PlayerCountViewModel>(nameof(this.ReceivePlayerCount), this.ReceivePlayerCount);
@@ -98,6 +99,9 @@ namespace Fishbowl.Net.Client.Pages
                 });
 
         private Task Reconnected(string connectionId) => this.JoinGameContext();
+
+        private Task Closed(Exception error) =>
+            this.StateManager.SetStateAsync<ConnectionClosed>();
 
         public async Task ReceiveSetupPlayer(GameSetupViewModel gameSetup)
         {

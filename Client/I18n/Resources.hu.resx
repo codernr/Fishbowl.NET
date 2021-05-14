@@ -27,6 +27,15 @@
     <data name="Components.States.Connecting.Description">
         <value>Kapcsolódás a szerverhez...</value>
     </data>
+    <data name="Components.States.ConnectionClosed.Title">
+        <value>Megszűnt a kapcsolat</value>
+    </data>
+    <data name="Components.States.ConnectionClosed.Description">
+        <value>Töltsd újra az oldalt az újracsatlakozáshoz!</value>
+    </data>
+    <data name="Components.States.ConnectionClosed.Button">
+        <value>Újracsatlakozás</value>
+    </data>
     <data name="Components.States.GameFinished.Title">
         <value>Eredmények</value>
     </data>
