@@ -1,17 +1,5 @@
 ﻿@page "/"
-@using Fishbowl.Net.Client.Components
-@using Fishbowl.Net.Client.Shared
 
 <h1>Hello, world!</h1>
 
 Welcome to your new app.
-
-<button @onclick="e => this.toastContainer?.DisplayToast(this.i++.ToString(), ContextCssClass.Primary)">He</button>
-
-<ToastContainer @ref="this.toastContainer" />
-
-@code {
-    private ToastContainer? toastContainer;
-
-    private int i;
-}

@@ -50,7 +50,10 @@ namespace Fishbowl.Net.Client.Components
             this.transition = this.transition
                 .ContinueWith(async _ =>
                 {
+                    this.animationClass = string.Empty;
+                    this.StateHasChanged();
                     await Task.Delay(100);
+                    
                     this.animationClass = "showing show";
                     this.StateHasChanged();
 
