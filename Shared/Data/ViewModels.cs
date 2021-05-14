@@ -89,6 +89,9 @@ namespace Fishbowl.Net.Shared.Data.ViewModels
         public static TeamSummaryViewModel Map(this Team team, Game game) =>
             new(team.Id, team.Players.Select(player => player.Map(game)).ToList());
 
+        public static TeamSetupViewModel Map(this IEnumerable<Team> teams) =>
+            new(teams.Select(team => team.Map()).ToList());
+
         public static GameSummaryViewModel Map(this Game game) => new(game.Teams
             .Select(team => team.Map(game))
             .OrderByDescending(team => team.Players.Sum(player => player.Scores.Count))

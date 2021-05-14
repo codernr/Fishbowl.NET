@@ -66,10 +66,11 @@ namespace Fishbowl.Net.Server.Services
 
             if (this.game is null)
             {
+                await this.RestoreTeamSetup(existingPlayer, this.teams);
                 return;
             }
 
-            await this.Restore(existingPlayer, this.game);
+            await this.RestoreGame(existingPlayer, this.game);
         }
 
         public async Task RemoveConnection(string connectionId)
@@ -124,7 +125,7 @@ namespace Fishbowl.Net.Server.Services
                 .Select(team => team.Players.First())
                 .Select(player => player.Id);
 
-            TeamSetupViewModel data = new(this.teams.Select(team => team.Map()).ToList());
+            TeamSetupViewModel data = this.Teams.Map();
 
             return Task.WhenAll(
                 this.groupHubContext.Clients(setupPlayerIds).ReceiveSetTeamName(data),
@@ -200,7 +201,17 @@ namespace Fishbowl.Net.Server.Services
             this.GameFinished?.Invoke(this);
         }
 
-        private async Task Restore(Player player, AsyncGame game)
+        private Task RestoreTeamSetup(Player player, List<Team> teams)
+        {
+            var playerTeam = teams.First(team => team.Players.Any(teamPlayer => teamPlayer.Id == player.Id));
+
+            var client = this.groupHubContext.Client(player.Id);
+
+            return (playerTeam.Players[0].Id == player.Id && playerTeam.Name is null) ?
+                client.ReceiveSetTeamName(this.Teams.Map()) : client.ReceiveWaitForTeamSetup(this.Teams.Map());
+        }
+
+        private async Task RestoreGame(Player player, AsyncGame game)
         {
             var round = game.Game.CurrentRound;
             var period = round.CurrentPeriod;
