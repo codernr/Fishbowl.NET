@@ -215,7 +215,11 @@ namespace Fishbowl.Net.Client.Pages
         {
             this.ClientState.Password = null;
             this.Logger.LogInformation("ReceiveGameFinished: {Game}", game);
-            return this.StateManager.SetStateAsync<GameFinished>(state => state.Game = game);
+            return this.StateManager.SetStateAsync<GameFinished>(state =>
+            {
+                state.Game = game;
+                state.Winner = game.Teams[0].Players.Any(player => player.Id == this.ClientState.Id);
+            });
         }
 
         public Task ReceiveRoundStarted(RoundViewModel round)

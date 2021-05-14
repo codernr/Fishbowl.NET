@@ -7,6 +7,14 @@
     protected override RenderFragment Content =>
         @<StateContainer Title="@(L["Components.States.GameFinished.Title"])">
 
+            @if (this.Winner)
+            {
+                <div class="fireworks-container">
+                    <div class="before"></div>
+                    <div class="after"></div>
+                </div>
+            }
+
             <div class="row">
                 <div class="col">
                     <ul class="list-group">

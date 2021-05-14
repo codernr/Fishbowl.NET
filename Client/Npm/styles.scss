@@ -17,6 +17,8 @@
 
 @import "bootstrap/scss/utilities/api";
 
+@import "fireworks";
+
 .fade-container {
     opacity: 0;
     transition: opacity 300ms;
