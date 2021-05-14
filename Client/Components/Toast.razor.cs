@@ -22,9 +22,9 @@ namespace Fishbowl.Net.Client.Components
         public bool Auto { get; set; } = true;
 
         [Parameter]
-        public EventCallback AnimationFinished { get; set; } = default!;
+        public Action? AnimationFinished { get; set; } = default!;
 
-        private bool Visible => this.animationClass == "show";
+        private bool Visible => this.animationClass.Contains("show");
 
         private string animationClass = "hide";
 
@@ -40,7 +40,7 @@ namespace Fishbowl.Net.Client.Components
             
             await this.Hide();
 
-            await this.AnimationFinished.InvokeAsync();
+            this.AnimationFinished?.Invoke();
         }
 
         public Task Show()
@@ -51,10 +51,12 @@ namespace Fishbowl.Net.Client.Components
                 .ContinueWith(async _ =>
                 {
                     await Task.Delay(100);
-                    this.animationClass = "show";
+                    this.animationClass = "showing show";
                     this.StateHasChanged();
 
                     await Task.Delay(TransitionDuration);
+                    this.animationClass = "show";
+                    this.StateHasChanged();
                 })
                 .Unwrap();
 
