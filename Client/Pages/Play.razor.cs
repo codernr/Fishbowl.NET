@@ -222,7 +222,11 @@ namespace Fishbowl.Net.Client.Pages
         {
             this.Logger.LogInformation("ReceiveRoundStarted: {Round}", round);
 
-            return this.StateManager.SetStateAsync<RoundStarted>(state => state.Round = round);
+            return this.StateManager.SetStateAsync<Info>(state =>
+            {
+                state.Title = $"{L("Pages.Play.RoundStartedTitle")}: {round.Type}";
+                state.Message = string.Empty;
+            });
         }
 
         public Task ReceiveRoundFinished(RoundSummaryViewModel round)

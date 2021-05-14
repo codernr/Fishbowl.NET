@@ -114,9 +114,6 @@
     <data name="Components.States.RoundFinished.Scores">
         <value>Pontok</value>
     </data>
-    <data name="Components.States.RoundStarted.Title">
-        <value>Új szakasz</value>
-    </data>
     <data name="Components.States.RoundTypes.Title">
         <value>Válaszd ki a szakaszokat</value>
     </data>
@@ -194,5 +191,8 @@
     </data>
     <data name="Pages.Play.GameStartedTitle">
         <value>Kezdődik a játék</value>
+    </data>
+    <data name="Pages.Play.RoundStartedTitle">
+        <value>Új szakasz</value>
     </data>
 </root>

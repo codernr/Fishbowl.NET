@@ -27,7 +27,6 @@
     <WaitingForPlayers />
     <TeamName OnTeamNameSet="this.SetTeamName" />
     <WaitingForTeamNames />
-    <RoundStarted Delay="@TimeSpan.FromSeconds(4)" />
     <PeriodSetupPlay OnStarted="this.StartPeriod" />
     <PeriodSetupWatch />
     <PeriodPlay
@@ -38,7 +37,7 @@
     <PeriodFinished Delay="@TimeSpan.FromSeconds(4)" />
     <RoundFinished Delay="@TimeSpan.FromSeconds(4)" />
     <GameFinished />
-    <Info Delay="@TimeSpan.FromSeconds(4)" />
+    <Info Delay="@TimeSpan.FromSeconds(2)" />
 </StateManager>
 
 <ToastContainer @ref="this.toastContainer" />

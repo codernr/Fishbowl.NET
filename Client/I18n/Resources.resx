@@ -111,9 +111,6 @@
     <data name="Components.States.RoundFinished.Scores">
         <value>Scores</value>
     </data>
-    <data name="Components.States.RoundStarted.Title">
-        <value>Start round</value>
-    </data>
     <data name="Components.States.RoundTypes.Title">
         <value>Select round types</value>
     </data>
@@ -191,5 +188,8 @@
     </data>
     <data name="Pages.Play.GameStartedTitle">
         <value>Starting the game</value>
+    </data>
+    <data name="Pages.Play.RoundStartedTitle">
+        <value>Start round</value>
     </data>
 </root>
