@@ -13,7 +13,7 @@
                         @foreach (var team in this.Game.Teams)
                         {
                             <li class="list-group-item">
-                                @L["Components.States.GameFinished.Team"] @team.Id:
+                                @L["Components.States.GameFinished.Team"] @team.Name:
                                 @(team.Players.Sum(player => player.Scores.Count))
                             </li>
                         }

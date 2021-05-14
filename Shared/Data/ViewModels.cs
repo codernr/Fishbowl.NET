@@ -21,7 +21,7 @@ namespace Fishbowl.Net.Shared.Data.ViewModels
 
     public record PlayerSummaryViewModel(Guid Id, string Name, List<ScoreViewModel> Scores);
 
-    public record TeamSummaryViewModel(int Id, List<PlayerSummaryViewModel> Players);
+    public record TeamSummaryViewModel(int Id, string Name, List<PlayerSummaryViewModel> Players);
 
     public record GameSummaryViewModel(List<TeamSummaryViewModel> Teams);
 
@@ -87,7 +87,8 @@ namespace Fishbowl.Net.Shared.Data.ViewModels
                 .ToList());
 
         public static TeamSummaryViewModel Map(this Team team, Game game) =>
-            new(team.Id, team.Players.Select(player => player.Map(game)).ToList());
+            new(team.Id, team.Name ?? throw new InvalidOperationException(),
+                team.Players.Select(player => player.Map(game)).ToList());
 
         public static TeamSetupViewModel Map(this IEnumerable<Team> teams) =>
             new(teams.Select(team => team.Map()).ToList());
