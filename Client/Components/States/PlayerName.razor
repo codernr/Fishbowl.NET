@@ -16,12 +16,14 @@
                             <input
                                 type="text"
                                 class="form-control"
-                                id="name-input"
+                                id="name"
+                                name="name"
+                                autocomplete="nickname"
                                 placeholder="@(L["Components.States.PlayerName.InputPlaceholder"])"
                                 @bind="this.playerName"
                                 minlength="3"
                                 required>
-                            <label for="name-input">@L["Components.States.PlayerName.Title"]</label>
+                            <label for="name">@L["Components.States.PlayerName.Title"]</label>
                         </div>
                     </div>
                 </div>

@@ -20,12 +20,13 @@
                                 <input
                                     type="text"
                                     class="form-control"
-                                    id="word-input-@id"
+                                    id="word-@id"
+                                    name="words[]"
                                     placeholder="@(L[$"Components.States.PlayerWords.Word.{id}"])"
                                     @bind="this.words[id]"
                                     minlength="2"
                                     required>
-                                <label for="word-input-@id">@L[$"Components.States.PlayerWords.Word.{id}"]</label>
+                                <label for="word-@id">@L[$"Components.States.PlayerWords.Word.{id}"]</label>
                             </div>
                         </div>
                     </div>
