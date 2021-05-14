@@ -56,10 +56,8 @@ namespace Fishbowl.Net.Client.Components
 
         public Task SetStateAsync<TState>(Action<TState>? setParameters = null) where TState : State
         {
-            if (setParameters is not null) this.SetParameters(setParameters);
-
             this.transition = this.transition
-                .ContinueWith(_ => this.TransitionAsync<TState>())
+                .ContinueWith(_ => this.TransitionAsync<TState>(setParameters ?? (_ => {})))
                 .Unwrap();
 
             return this.transition;
@@ -67,15 +65,15 @@ namespace Fishbowl.Net.Client.Components
 
         private TState GetState<TState>() where TState : State => (TState)this.states[typeof(TState)];
 
-        private async Task TransitionAsync<TState>() where TState : State
+        private async Task TransitionAsync<TState>(Action<TState> setParameters) where TState : State
         {
             var newState = this.GetState<TState>();
-
-            if (newState == this.ActiveState) return;
 
             this.TransitionStarted?.Invoke(newState);
 
             await this.ActiveState.DisableAsync();
+
+            setParameters(newState);
 
             this.ActiveState = newState;
             
