@@ -7,7 +7,9 @@
     protected override RenderFragment Content =>
         @<StateContainer Title="@(L["Components.States.TeamName.Title"])">
             <div class="row mb-5">
-                <TeamMembers Players="this.Team.Players" />
+                <div class="col">
+                    <TeamMembers Players="this.Team.Players" />
+                </div>
             </div>
             <form @onsubmit="e => this.OnTeamNameSet.InvokeAsync(new(this.Team.Id, this.teamName))" @onsubmit:preventDefault>
                 <div class="row mb-3">

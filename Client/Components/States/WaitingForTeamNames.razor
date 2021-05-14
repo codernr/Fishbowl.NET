@@ -7,7 +7,9 @@
     protected override RenderFragment Content =>
         @<StateContainer Title="@(L["Components.States.WaitingForTeamNames.Title"])">
             <div class="row mb-5">
-                <TeamMembers Players="this.Team.Players" />
+                <div class="col">
+                    <TeamMembers Players="this.Team.Players" />
+                </div>
             </div>
             @if (this.Teams.Count > 0)
             {
