@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Fishbowl.Net.Client.Services;
 using Fishbowl.Net.Server.Services;
+using Fishbowl.Net.Shared;
 using Fishbowl.Net.Shared.Data;
 using Fishbowl.Net.Shared.Data.ViewModels;
 using Microsoft.AspNetCore.SignalR;
@@ -22,23 +23,13 @@ namespace Fishbowl.Net.Server.Hubs
             await base.OnDisconnectedAsync(exception);
         }
 
-        public Task CreateGameContext(GameContextSetupViewModel request) =>
+        public Task<StatusCode> CreateGameContext(GameContextSetupViewModel request) =>
             this.service.CreateGameContext(this.Context.ConnectionId, request);
 
         public bool GameContextExists(string password) => this.service.GameContextExists(password);
 
-        public async Task<bool> JoinGameContext(GameContextJoinViewModel request)
-        {
-            try
-            {
-                await this.service.JoinGameContext(this.Context.ConnectionId, request);
-                return true;
-            }
-            catch (InvalidOperationException)
-            {
-                return false;
-            }
-        }
+        public Task<StatusCode> JoinGameContext(GameContextJoinViewModel request) =>
+            this.service.JoinGameContext(this.Context.ConnectionId, request);
 
         public int GetWordCount() => this.GameContext.WordCount;
 

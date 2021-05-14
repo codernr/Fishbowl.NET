@@ -29,25 +29,31 @@ namespace Fishbowl.Net.Server
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<GameService>();
-            services.AddSingleton<Func<string, GameSetupViewModel, GameContext>>(provider =>
-                (password, gameSetup) =>
+            services
+                .AddSingleton<GameService>()
+                .AddSingleton<Func<string, GameSetupViewModel, GameContext>>(provider =>
+                    (password, gameSetup) =>
+                        {
+                            var groupHubContext = new GroupHubContext(
+                                provider.GetRequiredService<IHubContext<GameHub, IGameClient>>(),
+                                password,
+                                provider.GetRequiredService<ILogger<GroupHubContext>>());
+                            return new GameContext(gameSetup, groupHubContext, provider.GetRequiredService<Func<Func<Task>, Timer>>());
+                        })
+                .AddSingleton<Func<Func<Task>, Timer>>(provider =>
+                    action => new Timer(
+                        TimeSpan.FromMinutes(this.Configuration.GetValue<int>("GameContextTimeoutInMinutes")),
+                        action,
+                        provider.GetRequiredService<ILogger<Timer>>()))
+                .AddResponseCompression(options =>
                     {
-                        var groupHubContext = new GroupHubContext(
-                            provider.GetRequiredService<IHubContext<GameHub, IGameClient>>(), password);
-                        return new GameContext(gameSetup, groupHubContext, provider.GetRequiredService<Func<Func<Task>, Timer>>());
+                        options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+                            new[] { "application/octet-stream" });
                     });
-            services.AddSingleton<Func<Func<Task>, Timer>>(provider =>
-                action => new Timer(TimeSpan.FromMinutes(this.Configuration.GetValue<int>("GameContextTimeoutInMinutes")),
-                    action, provider.GetRequiredService<ILogger<Timer>>()));
-            services.AddSignalR();
+
             services.AddControllersWithViews();
             services.AddRazorPages();
-            services.AddResponseCompression(options =>
-            {
-                options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
-                    new[] { "application/octet-stream" });
-            });
+            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Fishbowl.Net.Shared.Data;
+using Fishbowl.Net.Shared;
 using Fishbowl.Net.Shared.Data.ViewModels;
 using Microsoft.Extensions.Logging;
 
@@ -25,7 +25,7 @@ namespace Fishbowl.Net.Server.Services
 
         public bool GameContextExists(string password) => this.contexts.ContainsKey(password);
 
-        public Task CreateGameContext(string connectionId, GameContextSetupViewModel request)
+        public async Task<StatusCode> CreateGameContext(string connectionId, GameContextSetupViewModel request)
         {
             var password = request.GameContextJoin.Password;
 
@@ -36,13 +36,13 @@ namespace Fishbowl.Net.Server.Services
             if (this.connectionContextMap.ContainsKey(connectionId))
             {
                 this.logger.LogError("Connection is already assigned to a GameContext");
-                throw new InvalidOperationException();
+                return StatusCode.ConnectionAlreadyAssigned;
             }
 
             if (this.contexts.ContainsKey(password))
             {
                 this.logger.LogError("GameContext already exists");
-                throw new InvalidOperationException();
+                return StatusCode.GameContextExists;
             }
 
             var context = gameContextFactory(password, request.GameSetup);
@@ -51,32 +51,41 @@ namespace Fishbowl.Net.Server.Services
             this.contexts.Add(password, context);
             this.connectionContextMap.Add(connectionId, context);
 
-            return context.RegisterConnection(request.GameContextJoin.UserId, connectionId);
+            await context.RegisterConnection(request.GameContextJoin.UserId, connectionId);
+            
+            return StatusCode.Ok;
         }
 
-        public async Task JoinGameContext(string connectionId, GameContextJoinViewModel request)
+        public async Task<StatusCode> JoinGameContext(string connectionId, GameContextJoinViewModel request)
         {
             this.logger.LogInformation(
-                "JoinGameContext: {{ConnectionId: {ConnectionId}, Password: {Password}}}",
-                connectionId, request.Password);
+                "JoinGameContext: {{ConnectionId: {ConnectionId}, Request: {Request}}}",
+                connectionId, request);
             
             if (this.connectionContextMap.ContainsKey(connectionId))
             {
                 this.logger.LogError("Connection is already assigned to a GameContext");
-                throw new InvalidOperationException();
+                return StatusCode.ConnectionAlreadyAssigned;
             }
 
             if (!this.contexts.ContainsKey(request.Password))
             {
                 this.logger.LogError("GameContext doesn't exist");
-                throw new InvalidOperationException();
+                return StatusCode.GameContextNotFound;
             }
 
             var context = this.contexts[request.Password];
 
+            if (!context.CanRegister(request.UserId))
+            {
+                this.logger.LogError("GameContext is full and player Id is not registered connection.");
+                return StatusCode.GameContextFull;
+            }
+
             await context.RegisterConnection(request.UserId, connectionId);
 
             this.connectionContextMap.Add(connectionId, context);
+            return StatusCode.Ok;
         }
 
         public async Task RemoveConnection(string connectionId)

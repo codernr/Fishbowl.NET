@@ -1,18 +1,18 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Fishbowl.Net.Client.Services;
 using Fishbowl.Net.Server.Hubs;
-using Fishbowl.Net.Shared.Data;
-using Fishbowl.Net.Shared.Data.ViewModels;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Logging;
 
 namespace Fishbowl.Net.Server.Services
 {
     public interface IGroupHubContext : IAsyncDisposable
     {
+        int Count { get; }
+
         bool ContainsKey(Guid id);
 
         IGameClient Group();
@@ -30,6 +30,8 @@ namespace Fishbowl.Net.Server.Services
 
     public class GroupHubContext : IGroupHubContext
     {
+        public int Count => this.idConnectionMap.Count;
+
         private static readonly IGameClient NullClient = new NullGameClient();
 
         private readonly Dictionary<Guid, string?> idConnectionMap = new();
@@ -38,10 +40,14 @@ namespace Fishbowl.Net.Server.Services
 
         private readonly string password;
 
+        private readonly ILogger<GroupHubContext> logger;
+
         public GroupHubContext(
             IHubContext<GameHub, IGameClient> hubContext,
-            string password) =>
-            (this.hubContext, this.password) = (hubContext, password);
+            string password,
+            ILogger<GroupHubContext> logger) =>
+            (this.hubContext, this.password, this.logger) =
+            (hubContext, password, logger);
 
         public bool ContainsKey(Guid id) => this.idConnectionMap.ContainsKey(id);
 
@@ -69,8 +75,15 @@ namespace Fishbowl.Net.Server.Services
 
         public Task RemoveConnection(string connectionId)
         {
-            var key = this.idConnectionMap.First(entry => entry.Value == connectionId).Key;
-            this.idConnectionMap[key] = null;
+            var entries = this.idConnectionMap.Where(entry => entry.Value == connectionId).ToList();
+
+            if (entries.Count < 1)
+            {
+                this.logger.LogInformation("RemoveConnection: {ConnectionId} not found", connectionId);
+                return Task.CompletedTask;
+            }
+
+            this.idConnectionMap[entries[0].Key] = null;
 
             return this.hubContext.Groups.RemoveFromGroupAsync(connectionId, this.password);
         }

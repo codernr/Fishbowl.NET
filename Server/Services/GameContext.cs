@@ -42,6 +42,9 @@ namespace Fishbowl.Net.Server.Services
             (this.gameSetup, this.groupHubContext, this.timer) =
             (gameSetup, groupHubContext, timerFactory(() => this.Abort("Common.Abort.Timeout")));
 
+        public bool CanRegister(Guid playerId) =>
+            this.groupHubContext.ContainsKey(playerId) || this.groupHubContext.Count < this.gameSetup.PlayerCount;
+
         public async Task RegisterConnection(Guid playerId, string connectionId)
         {
             this.timer.Restart();
@@ -73,10 +76,7 @@ namespace Fishbowl.Net.Server.Services
             await this.RestoreGame(existingPlayer, this.game);
         }
 
-        public async Task RemoveConnection(string connectionId)
-        {
-            await this.groupHubContext.RemoveConnection(connectionId);
-        }
+        public Task RemoveConnection(string connectionId) => this.groupHubContext.RemoveConnection(connectionId);
 
         public async Task AddPlayer(Player player)
         {
