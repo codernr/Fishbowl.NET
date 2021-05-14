@@ -47,6 +47,8 @@ namespace Fishbowl.Net.Client.Components.States
         
         private bool expired;
 
+        private string Show(bool show) => show ? "show" : string.Empty;
+
         private Task ScoreAdded(EventArgs e)
         {
             var score = new ScoreViewModel(this.Word!, DateTimeOffset.UtcNow);

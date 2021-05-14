@@ -8,8 +8,10 @@
         @<StateContainer Title="@(L["Components.States.PeriodFinished.Title"])">
             <div class="row mb-3">
                 <div class="col">
-                    <h4>@this.Period.Player.Name @L["Components.States.PeriodFinished.Scores"]</h4>
-                    <p><strong>@this.Period.Scores.Count</strong></p>
+                    <h4>
+                        @this.Period.Player.Name @L["Components.States.PeriodFinished.Scores"]:
+                        @this.Period.Scores.Count
+                    </h4>
                 </div>
             </div>
 

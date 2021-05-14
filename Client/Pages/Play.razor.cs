@@ -248,6 +248,7 @@ namespace Fishbowl.Net.Client.Pages
 
             return period.Player.Id == this.ClientState.Id ?
                 this.StateManager.SetStateAsync<PeriodPlay>(state => {
+                    state.Word = null;
                     state.ScoreCount = 0;
                     state.Period = period;
                 }) :

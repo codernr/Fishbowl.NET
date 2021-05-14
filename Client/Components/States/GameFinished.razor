@@ -12,9 +12,9 @@
                     <ul class="list-group">
                         @foreach (var team in this.Game.Teams)
                         {
-                            <li class="list-group-item">
-                                @L["Components.States.GameFinished.Team"] @team.Name:
-                                @(team.Players.Sum(player => player.Scores.Count))
+                            <li class="list-group-item d-flex justify-content-between align-items-center fs-4">
+                                <strong>@team.Name</strong>
+                                <span class="badge bg-primary rounded-pill">@(team.Players.Sum(player => player.Scores.Count))</span>
                             </li>
                         }
                     </ul>

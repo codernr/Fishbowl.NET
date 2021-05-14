@@ -117,9 +117,6 @@
     <data name="Components.States.RoundStarted.Title">
         <value>Új szakasz</value>
     </data>
-    <data name="Components.States.RoundStarted.RoundType">
-        <value>Szakasz</value>
-    </data>
     <data name="Components.States.RoundTypes.Title">
         <value>Válaszd ki a szakaszokat</value>
     </data>

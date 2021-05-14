@@ -30,9 +30,6 @@
     <data name="Components.States.GameFinished.Title">
         <value>Results</value>
     </data>
-    <data name="Components.States.GameFinished.Team">
-        <value>Team</value>
-    </data>
     <data name="Components.States.Password.Title">
         <value>Set game password</value>
     </data>
@@ -115,10 +112,7 @@
         <value>Scores</value>
     </data>
     <data name="Components.States.RoundStarted.Title">
-        <value>Round started</value>
-    </data>
-    <data name="Components.States.RoundStarted.RoundType">
-        <value>Round type</value>
+        <value>Start round</value>
     </data>
     <data name="Components.States.RoundTypes.Title">
         <value>Select round types</value>
