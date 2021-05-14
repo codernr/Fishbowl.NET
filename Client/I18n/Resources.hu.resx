@@ -102,8 +102,17 @@
     <data name="Components.States.PlayerWords.Title">
         <value>Add meg a szavaidat</value>
     </data>
-    <data name="Components.States.PlayerWords.InputPlaceholder">
-        <value>Szó</value>
+    <data name="Components.States.PlayerWords.Word.0">
+        <value>Első szó</value>
+    </data>
+    <data name="Components.States.PlayerWords.Word.1">
+        <value>Második szó</value>
+    </data>
+    <data name="Components.States.PlayerWords.Word.2">
+        <value>Harmadik szó</value>
+    </data>
+    <data name="Components.States.PlayerWords.Word.3">
+        <value>Negyedik szó</value>
     </data>
     <data name="Components.States.PlayerWords.SubmitButton">
         <value>Beállít</value>

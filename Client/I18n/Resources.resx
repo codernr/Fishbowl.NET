@@ -99,8 +99,17 @@
     <data name="Components.States.PlayerWords.Title">
         <value>Set player words</value>
     </data>
-    <data name="Components.States.PlayerWords.InputPlaceholder">
-        <value>Word</value>
+    <data name="Components.States.PlayerWords.Word.0">
+        <value>First word</value>
+    </data>
+    <data name="Components.States.PlayerWords.Word.1">
+        <value>Second word</value>
+    </data>
+    <data name="Components.States.PlayerWords.Word.2">
+        <value>Third word</value>
+    </data>
+    <data name="Components.States.PlayerWords.Word.3">
+        <value>Fourth word</value>
     </data>
     <data name="Components.States.PlayerWords.SubmitButton">
         <value>Set</value>

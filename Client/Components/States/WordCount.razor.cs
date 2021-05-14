@@ -7,6 +7,6 @@ namespace Fishbowl.Net.Client.Components.States
         [Parameter]
         public EventCallback<int> OnWordCountSet { get; set; } = default!;
 
-        private int wordCount = 2;
+        private int wordCount = 1;
     }
 }
