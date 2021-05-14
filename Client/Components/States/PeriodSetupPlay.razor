@@ -6,13 +6,12 @@
 {
     protected override RenderFragment Content =>
         @<StateContainer Title="@this.Period.Round.Type">
-            <div class="row">
+            <div class="row mb-5">
                 <div class="col">
-                    <h4>@L["Components.States.PeriodSetupPlay.PeriodLength"]</h4>
-                    <p>@(string.Format("{0:m\\:ss}", this.Period.Length))</p>
+                    <h4>@L["Components.States.PeriodSetupPlay.PeriodLength"]: @(string.Format("{0:m\\:ss}", this.Period.Length))</h4>
                 </div>
             </div>
-            <div class="row">
+            <div class="row mb-2">
                 <div class="col">
                     <h4>@L["Components.States.PeriodSetupPlay.Subtitle"]</h4>
                 </div>

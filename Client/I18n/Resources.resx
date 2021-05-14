@@ -75,8 +75,8 @@
     <data name="Components.States.PeriodSetupPlay.StartButton">
         <value>Start</value>
     </data>
-    <data name="Components.States.PeriodSetupWatch.WaitingForPlayer">
-        <value>Waiting for player</value>
+    <data name="Components.States.PeriodSetupWatch.NextPlayer">
+        <value>Next player</value>
     </data>
     <data name="Components.States.PeriodSetupWatch.PeriodLength">
         <value>Period length</value>

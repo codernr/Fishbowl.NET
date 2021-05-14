@@ -75,8 +75,8 @@
     <data name="Components.States.PeriodSetupPlay.StartButton">
         <value>Indítás</value>
     </data>
-    <data name="Components.States.PeriodSetupWatch.WaitingForPlayer">
-        <value>Várakozás a következő játékosra</value>
+    <data name="Components.States.PeriodSetupWatch.NextPlayer">
+        <value>Következő játékos</value>
     </data>
     <data name="Components.States.PeriodSetupWatch.PeriodLength">
         <value>Kör hossza</value>
