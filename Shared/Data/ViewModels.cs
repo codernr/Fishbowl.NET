@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 
 namespace Fishbowl.Net.Shared.Data.ViewModels
 {
-    public record PlayerCountViewModel(int SetupCount, int TotalCount);
+    public record PlayerCountViewModel(int TotalCount, int ConnectedCount, int SetupCount);
 
     public record PlayerViewModel(Guid Id, string Name);
 

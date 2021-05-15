@@ -12,7 +12,7 @@
 <div class="position-fixed top-0 start-50 translate-middle-x mt-1 pt-2">
     <Toast @ref="this.playerCountDisplay"
         Auto="false"
-        Message="@($"{L("Pages.Play.PlayerCount")}: {this.ClientState.SetupPlayerCount} / {this.ClientState.PlayerCount}")" />
+        Message="@(string.Format(L("Pages.Play.PlayerCount"), this.ClientState.TotalPlayerCount, this.ClientState.ConnectedPlayerCount, this.ClientState.SetupPlayerCount))" />
 </div>
 
 <StateManager @ref="this.stateManager" TransitionStarted="@this.OnStateTransition">

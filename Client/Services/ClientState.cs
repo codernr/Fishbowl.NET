@@ -16,9 +16,11 @@ namespace Fishbowl.Net.Client.Services
 
         bool IsCreating { get; set; }
 
-        int PlayerCount { get; set; }
+        int TotalPlayerCount { get; set; }
 
         int SetupPlayerCount { get; set; }
+
+        int ConnectedPlayerCount { get; set; }
 
         int WordCount { get; set; }
 
@@ -58,9 +60,11 @@ namespace Fishbowl.Net.Client.Services
 
         public bool IsCreating { get; set; }
 
-        public int PlayerCount { get; set; } = 4;
+        public int TotalPlayerCount { get; set; } = 4;
 
         public int SetupPlayerCount { get; set; } = 0;
+
+        public int ConnectedPlayerCount { get; set; } = 0;
         
         public int WordCount { get; set; } = 2;
 

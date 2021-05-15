@@ -190,7 +190,7 @@
         <value>Visszavont pont</value>
     </data>
     <data name="Pages.Play.PlayerCount">
-        <value>Várakozó játékosok</value>
+        <value>Kapcsolódva: {1}/{0} | Beállítva: {2}/{0}</value>
     </data>
     <data name="Pages.Play.ErrorTitle">
         <value>Hiba!</value>

@@ -51,7 +51,7 @@ namespace Fishbowl.Net.Server.Services
 
             await this.groupHubContext.RegisterConnection(playerId, connectionId);
             await this.groupHubContext.Group().ReceivePlayerCount(
-                new PlayerCountViewModel(this.players.Count, this.gameSetup.PlayerCount));
+                new PlayerCountViewModel(this.gameSetup.PlayerCount, this.groupHubContext.Count, this.players.Count));
 
             var existingPlayer = this.players.SingleOrDefault(player => player.Id == playerId);
 
@@ -90,7 +90,7 @@ namespace Fishbowl.Net.Server.Services
             this.players.Add(player);
 
             await this.groupHubContext.Group().ReceivePlayerCount(
-                new PlayerCountViewModel(this.players.Count, this.gameSetup.PlayerCount));
+                new PlayerCountViewModel(this.gameSetup.PlayerCount, this.groupHubContext.Count, this.players.Count));
 
             if (this.players.Count != this.gameSetup.PlayerCount)
             {

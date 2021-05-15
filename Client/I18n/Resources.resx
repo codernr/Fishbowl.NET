@@ -190,7 +190,7 @@
         <value>Score revoked</value>
     </data>
     <data name="Pages.Play.PlayerCount">
-        <value>Players waiting</value>
+        <value>Connected: {1}/{0} | Waiting: {2}/{0}</value>
     </data>
     <data name="Pages.Play.ErrorTitle">
         <value>Error!</value>

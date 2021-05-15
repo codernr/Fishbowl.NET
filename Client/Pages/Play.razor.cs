@@ -119,7 +119,7 @@ namespace Fishbowl.Net.Client.Pages
                 this.ClientState.IsCreating = false;
             }
             
-            this.ClientState.PlayerCount = gameSetup.PlayerCount;
+            this.ClientState.TotalPlayerCount = gameSetup.PlayerCount;
             this.ClientState.WordCount = gameSetup.WordCount;
             this.ClientState.TeamCount = gameSetup.TeamCount;
             this.ClientState.RoundTypes = gameSetup.RoundTypes;
@@ -130,8 +130,9 @@ namespace Fishbowl.Net.Client.Pages
         public Task ReceivePlayerCount(PlayerCountViewModel playerCount)
         {
             this.Logger.LogInformation("ReceiveConnectionCount: {PlayerCount}", playerCount);
-            this.ClientState.PlayerCount = playerCount.TotalCount;
+            this.ClientState.TotalPlayerCount = playerCount.TotalCount;
             this.ClientState.SetupPlayerCount = playerCount.SetupCount;
+            this.ClientState.ConnectedPlayerCount = playerCount.ConnectedCount;
             this.StateHasChanged();
             return Task.CompletedTask;
         }
@@ -327,7 +328,7 @@ namespace Fishbowl.Net.Client.Pages
 
         private Task SetPlayerCount(int playerCount) =>
             this.AfterPasswordCheck<TeamCount>(
-                () => this.ClientState.PlayerCount = playerCount,
+                () => this.ClientState.TotalPlayerCount = playerCount,
                 teamCount => teamCount.MaxTeamCount = playerCount / 2);
 
         private Task SetTeamCount(int teamCount) =>
@@ -342,7 +343,7 @@ namespace Fishbowl.Net.Client.Pages
             this.ClientState.IsCreating = true;
             var status = await this.connection.CreateGameContext(new(
                 new(this.ClientState.Password ?? throw new InvalidOperationException(), this.ClientState.Id),
-                new(this.ClientState.PlayerCount, this.ClientState.WordCount, this.ClientState.TeamCount, this.ClientState.RoundTypes)));
+                new(this.ClientState.TotalPlayerCount, this.ClientState.WordCount, this.ClientState.TeamCount, this.ClientState.RoundTypes)));
 
             if (status == StatusCode.Ok) return;
             await this.StatusError(status);
