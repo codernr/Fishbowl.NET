@@ -7,6 +7,6 @@ namespace Fishbowl.Net.Client.Components.States
         [Parameter]
         public EventCallback<string> OnPlayerNameSet { get; set; } = default!;
 
-        private string playerName = string.Empty;
+        public string Value { get; set; } = string.Empty;
     }
 }

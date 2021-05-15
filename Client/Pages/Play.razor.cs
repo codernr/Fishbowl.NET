@@ -124,7 +124,7 @@ namespace Fishbowl.Net.Client.Pages
             this.ClientState.TeamCount = gameSetup.TeamCount;
             this.ClientState.RoundTypes = gameSetup.RoundTypes;
 
-            await this.StateManager.SetStateAsync<PlayerName>();
+            await this.StateManager.SetStateAsync<PlayerName>(state => state.Value = this.ClientState.Name);
         }
 
         public Task ReceivePlayerCount(PlayerCountViewModel playerCount)
