@@ -5,7 +5,7 @@ using Fishbowl.Net.Shared;
 using Fishbowl.Net.Shared.GameEntities;
 using Xunit;
 
-namespace Fishbowl.Net.Tests.Shared
+namespace Fishbowl.Net.Tests.Shared.GameEntities
 {
     public class GameTests
     {
