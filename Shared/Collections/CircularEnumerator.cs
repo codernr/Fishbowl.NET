@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Fishbowl.Net.Shared.Data
+namespace Fishbowl.Net.Shared.Collections
 {
     public class CircularEnumerator<T> : IEnumerator<T>
     {

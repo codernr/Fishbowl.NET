@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Fishbowl.Net.Shared.Exceptions;
 
-namespace Fishbowl.Net.Shared.Data
+namespace Fishbowl.Net.Shared.Collections
 {
     public class RandomEnumerator<T> : IReturnEnumerator<T>
     {
