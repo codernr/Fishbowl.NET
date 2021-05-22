@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Fishbowl.Net.Client.Shared;
-using Fishbowl.Net.Shared.Data.ViewModels;
+using Fishbowl.Net.Shared.ViewModels;
 
 namespace Fishbowl.Net.Client.Services
 {

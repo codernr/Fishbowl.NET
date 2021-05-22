@@ -1,4 +1,4 @@
-using Fishbowl.Net.Shared.Data.ViewModels;
+using Fishbowl.Net.Shared.ViewModels;
 
 namespace Fishbowl.Net.Client.Components.States
 {

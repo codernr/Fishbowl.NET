@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Fishbowl.Net.Shared.Data;
-using Fishbowl.Net.Shared.Data.ViewModels;
+using Fishbowl.Net.Shared.ViewModels;
 using Microsoft.AspNetCore.Components;
 
 namespace Fishbowl.Net.Client.Components.States

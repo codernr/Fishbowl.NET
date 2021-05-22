@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Fishbowl.Net.Shared;
 using Fishbowl.Net.Shared.Data;
-using Fishbowl.Net.Shared.Data.ViewModels;
+using Fishbowl.Net.Shared.ViewModels;
 using Fishbowl.Net.Shared.Exceptions;
 
 namespace Fishbowl.Net.Server.Services

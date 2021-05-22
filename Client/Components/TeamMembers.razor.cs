@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Fishbowl.Net.Shared.Data.ViewModels;
+using Fishbowl.Net.Shared.ViewModels;
 using Microsoft.AspNetCore.Components;
 
 namespace Fishbowl.Net.Client.Components

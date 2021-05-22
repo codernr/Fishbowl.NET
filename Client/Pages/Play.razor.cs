@@ -8,7 +8,7 @@ using Fishbowl.Net.Client.Services;
 using Fishbowl.Net.Client.Shared;
 using Fishbowl.Net.Shared;
 using Fishbowl.Net.Shared.Data;
-using Fishbowl.Net.Shared.Data.ViewModels;
+using Fishbowl.Net.Shared.ViewModels;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Logging;
 

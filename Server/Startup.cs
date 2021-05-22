@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.SignalR;
 using Fishbowl.Net.Client.Services;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Fishbowl.Net.Shared.Data.ViewModels;
+using Fishbowl.Net.Shared.ViewModels;
 
 namespace Fishbowl.Net.Server
 {

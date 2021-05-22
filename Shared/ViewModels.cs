@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
+using Fishbowl.Net.Shared.Data;
 
-namespace Fishbowl.Net.Shared.Data.ViewModels
+namespace Fishbowl.Net.Shared.ViewModels
 {
     public record PlayerCountViewModel(int TotalCount, int ConnectedCount, int SetupCount);
 

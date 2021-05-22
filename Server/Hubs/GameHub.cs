@@ -4,7 +4,7 @@ using Fishbowl.Net.Client.Services;
 using Fishbowl.Net.Server.Services;
 using Fishbowl.Net.Shared;
 using Fishbowl.Net.Shared.Data;
-using Fishbowl.Net.Shared.Data.ViewModels;
+using Fishbowl.Net.Shared.ViewModels;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Fishbowl.Net.Server.Hubs

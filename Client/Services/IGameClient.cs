@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 using Fishbowl.Net.Shared.Data;
-using Fishbowl.Net.Shared.Data.ViewModels;
+using Fishbowl.Net.Shared.ViewModels;
 
 namespace Fishbowl.Net.Client.Services
 {
