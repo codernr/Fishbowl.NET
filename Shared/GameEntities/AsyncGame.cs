@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Fishbowl.Net.Shared.GameEntities;
 
-namespace Fishbowl.Net.Shared
+namespace Fishbowl.Net.Shared.GameEntities
 {
     public class AsyncGame
     {
