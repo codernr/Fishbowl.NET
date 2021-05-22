@@ -68,6 +68,7 @@ $box-shadow2: ();
 }
 
 .fireworks-container > .before, .fireworks-container > .after {
+  z-index: 10;
   position: absolute;
   width: 5px;
   height: 5px;
