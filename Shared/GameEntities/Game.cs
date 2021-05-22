@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Fishbowl.Net.Shared.Collections;
 
-namespace Fishbowl.Net.Shared.Data
+namespace Fishbowl.Net.Shared.GameEntities
 {
     public class Game
     {

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Fishbowl.Net.Shared.Data
+namespace Fishbowl.Net.Shared.GameEntities
 {
     public class Period
     {

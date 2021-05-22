@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
-using Fishbowl.Net.Shared.Data;
+using Fishbowl.Net.Shared.GameEntities;
 
 namespace Fishbowl.Net.Shared.ViewModels
 {

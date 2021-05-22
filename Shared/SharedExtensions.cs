@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Fishbowl.Net.Shared.Data;
+using Fishbowl.Net.Shared.GameEntities;
 
 namespace Fishbowl.Net.Shared
 {

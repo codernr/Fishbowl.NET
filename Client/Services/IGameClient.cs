@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using Fishbowl.Net.Shared.Data;
+using Fishbowl.Net.Shared.GameEntities;
 using Fishbowl.Net.Shared.ViewModels;
 
 namespace Fishbowl.Net.Client.Services

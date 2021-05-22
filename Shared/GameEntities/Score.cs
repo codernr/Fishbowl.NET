@@ -1,6 +1,6 @@
 using System;
 
-namespace Fishbowl.Net.Shared.Data
+namespace Fishbowl.Net.Shared.GameEntities
 {
     public class Score
     {

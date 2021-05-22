@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 using Fishbowl.Net.Shared;
-using Fishbowl.Net.Shared.Data;
+using Fishbowl.Net.Shared.GameEntities;
 using Fishbowl.Net.Shared.ViewModels;
 using Microsoft.AspNetCore.SignalR.Client;
 

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Fishbowl.Net.Shared.Collections;
 
-namespace Fishbowl.Net.Shared.Data
+namespace Fishbowl.Net.Shared.GameEntities
 {
     public class Team
     {
