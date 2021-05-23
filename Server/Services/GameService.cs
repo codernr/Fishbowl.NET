@@ -1,5 +1,5 @@
 using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading.Tasks;
 using Fishbowl.Net.Shared;
@@ -10,9 +10,9 @@ namespace Fishbowl.Net.Server.Services
 {
     public class GameService
     {
-        private Dictionary<string, GameContext> contexts = new();
+        private readonly ConcurrentDictionary<string, GameContext> contexts = new();
 
-        private readonly Dictionary<string, GameContext> connectionContextMap = new();
+        private readonly ConcurrentDictionary<string, GameContext> connectionContextMap = new();
 
         private readonly Func<string, GameSetupViewModel, GameContext> gameContextFactory;
 
@@ -39,21 +39,22 @@ namespace Fishbowl.Net.Server.Services
                 return StatusCode.ConnectionAlreadyAssigned;
             }
 
-            if (this.contexts.ContainsKey(password))
+            var context = gameContextFactory(password, request.GameSetup);
+            context.GameFinished += context => this.RemoveGameContext(password);
+
+            if (!this.contexts.TryAdd(password, context))
             {
                 this.logger.LogError("GameContext already exists");
                 return StatusCode.GameContextExists;
             }
 
-            var context = gameContextFactory(password, request.GameSetup);
-            context.GameFinished += context => this.RemoveGameContext(password);
+            if (await context.TryRegisterConnection(request.GameContextJoin.UserId, connectionId) &&
+                this.connectionContextMap.TryAdd(connectionId, context))
+            {
+                return StatusCode.Ok;
+            }
 
-            this.contexts.Add(password, context);
-            this.connectionContextMap.Add(connectionId, context);
-
-            await context.RegisterConnection(request.GameContextJoin.UserId, connectionId);
-            
-            return StatusCode.Ok;
+            return StatusCode.ConcurrencyError;
         }
 
         public async Task<StatusCode> JoinGameContext(string connectionId, GameContextJoinViewModel request)
@@ -68,13 +69,11 @@ namespace Fishbowl.Net.Server.Services
                 return StatusCode.ConnectionAlreadyAssigned;
             }
 
-            if (!this.contexts.ContainsKey(request.Password))
+            if (!this.contexts.TryGetValue(request.Password, out var context))
             {
                 this.logger.LogError("GameContext doesn't exist");
                 return StatusCode.GameContextNotFound;
             }
-
-            var context = this.contexts[request.Password];
 
             if (!context.CanRegister(request.UserId))
             {
@@ -82,34 +81,41 @@ namespace Fishbowl.Net.Server.Services
                 return StatusCode.GameContextFull;
             }
 
-            await context.RegisterConnection(request.UserId, connectionId);
+            if (await context.TryRegisterConnection(request.UserId, connectionId) &&
+                this.connectionContextMap.TryAdd(connectionId, context))
+            {
+                return StatusCode.Ok;
+            }
 
-            this.connectionContextMap.Add(connectionId, context);
-            return StatusCode.Ok;
+            return StatusCode.ConcurrencyError;
         }
 
         public async Task RemoveConnection(string connectionId)
         {
             this.logger.LogInformation("RemoveConnection: {ConnectionId}", connectionId);
 
-            if (!this.connectionContextMap.ContainsKey(connectionId))
+            if (!this.connectionContextMap.TryGetValue(connectionId, out var context))
             {
                 this.logger.LogInformation("Connection not found");
                 return;
             }
 
-            var context = this.connectionContextMap[connectionId];
-            
             await context.RemoveConnection(connectionId);
 
-            this.connectionContextMap.Remove(connectionId);
+            this.connectionContextMap.TryRemove(connectionId, out var connection);
         }
 
         public GameContext GetContext(string connectionId) => this.connectionContextMap[connectionId];
 
         private async void RemoveGameContext(string password)
         {
-            var context = this.contexts[password];
+            this.logger.LogInformation("RemoveGameContext: {Password}", password);
+
+            if (!this.contexts.TryRemove(password, out var context))
+            {
+                this.logger.LogWarning("Context already removed");
+                return;
+            }
 
             var connections = this.connectionContextMap
                 .Where(item => item.Value == context)
@@ -118,10 +124,8 @@ namespace Fishbowl.Net.Server.Services
 
             foreach (var connectionId in connections)
             {
-                this.connectionContextMap.Remove(connectionId);
+                this.connectionContextMap.TryRemove(connectionId, out var connection);
             }
-
-            this.contexts.Remove(password);
 
             await context.DisposeAsync();
         }

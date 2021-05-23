@@ -6,6 +6,7 @@ namespace Fishbowl.Net.Shared
         ConnectionAlreadyAssigned,
         GameContextExists,
         GameContextNotFound,
-        GameContextFull
+        GameContextFull,
+        ConcurrencyError
     }
 }

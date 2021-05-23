@@ -38,6 +38,8 @@ namespace Fishbowl.Net.Server.Services
 
         private List<Team>? teams;
 
+        private bool isDisposing = false;
+
         public GameContext(GameSetupViewModel gameSetup, IGroupHubContext groupHubContext, Func<Func<Task>, Timer> timerFactory) =>
             (this.gameSetup, this.groupHubContext, this.timer) =
             (gameSetup, groupHubContext, timerFactory(() => this.Abort("Common.Abort.Timeout")));
@@ -45,8 +47,10 @@ namespace Fishbowl.Net.Server.Services
         public bool CanRegister(Guid playerId) =>
             this.groupHubContext.ContainsKey(playerId) || this.groupHubContext.Count < this.gameSetup.PlayerCount;
 
-        public async Task RegisterConnection(Guid playerId, string connectionId)
+        public async Task<bool> TryRegisterConnection(Guid playerId, string connectionId)
         {
+            if (this.isDisposing) return false;
+
             this.timer.Restart();
 
             await this.groupHubContext.RegisterConnection(playerId, connectionId);
@@ -55,25 +59,14 @@ namespace Fishbowl.Net.Server.Services
 
             var existingPlayer = this.players.SingleOrDefault(player => player.Id == playerId);
 
-            if (existingPlayer is null)
-            {
-                await this.groupHubContext.Client(playerId).ReceiveSetupPlayer(this.gameSetup);
-                return;
-            }
+            var clientTask =
+                existingPlayer is null  ? this.groupHubContext.Client(playerId).ReceiveSetupPlayer(this.gameSetup) :
+                (this.teams is null     ? this.groupHubContext.Client(playerId).ReceiveWaitForOtherPlayers(existingPlayer) :
+                (this.game is null      ? this.RestoreTeamSetup(existingPlayer, this.teams) :
+                this.RestoreGame(existingPlayer, this.game)));
 
-            if (this.teams is null)
-            {
-                await this.groupHubContext.Client(playerId).ReceiveWaitForOtherPlayers(existingPlayer);
-                return;
-            }
-
-            if (this.game is null)
-            {
-                await this.RestoreTeamSetup(existingPlayer, this.teams);
-                return;
-            }
-
-            await this.RestoreGame(existingPlayer, this.game);
+            await clientTask;
+            return true;
         }
 
         public Task RemoveConnection(string connectionId) => this.groupHubContext.RemoveConnection(connectionId);
@@ -235,6 +228,13 @@ namespace Fishbowl.Net.Server.Services
 
         public ValueTask DisposeAsync() => this.DisposeAsyncCore();
 
-        protected virtual ValueTask DisposeAsyncCore() => this.groupHubContext.DisposeAsync();
+        protected virtual ValueTask DisposeAsyncCore()
+        {
+            if (this.isDisposing) return ValueTask.CompletedTask;
+
+            this.isDisposing = true;
+            
+            return this.groupHubContext.DisposeAsync();
+        }
     }
 }

@@ -207,6 +207,9 @@
     <data name="Pages.Play.StatusCode.GameContextFull">
         <value>A megadott jelszóhoz tartozó játék már tele van.</value>
     </data>
+    <data name="Pages.Play.StatusCode.ConcurrencyError">
+        <value>Váratlan hiba történt! Próbáld meg újratölteni a lapot!</value>
+    </data>
     <data name="Pages.Play.GameCreatedTitle">
         <value>Játék létrehozva!</value>
     </data>
