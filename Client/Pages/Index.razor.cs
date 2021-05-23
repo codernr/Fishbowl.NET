@@ -236,6 +236,7 @@ namespace Fishbowl.Net.Client.Pages
 
             return this.StateManager.SetStateAsync<Info>(state =>
             {
+                state.ContextClass = ContextCssClass.Dark;
                 state.Title = $"{L("Pages.Play.RoundStartedTitle")}: {round.Type}";
                 state.Message = string.Empty;
             });
