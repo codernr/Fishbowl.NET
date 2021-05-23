@@ -21,7 +21,7 @@ namespace Fishbowl.Net.Shared
         public static IEnumerable<Team> CreateTeams(this IEnumerable<Player> players, int teamCount) =>
             players
                 .Distribute(teamCount)
-                .Select((players, id) => new Team(id, players.ToList()))
+                .Select((teamPlayers, id) => new Team(id, teamPlayers.ToList()))
                 .ToList();
     }
 }
