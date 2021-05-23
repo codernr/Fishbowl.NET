@@ -11,16 +11,16 @@ namespace Fishbowl.Net.Client
         public static Task<bool> GameContextExists(this HubConnection hubConnection, string password) =>
             hubConnection.InvokeAsync<bool>("GameContextExists", password);
 
-        public static Task<StatusCode> JoinGameContext(this HubConnection hubConnection, GameContextJoinViewModel gameContextJoin) =>
-            hubConnection.InvokeAsync<StatusCode>("JoinGameContext", gameContextJoin);
+        public static Task<StatusResponse> JoinGameContext(this HubConnection hubConnection, GameContextJoinViewModel gameContextJoin) =>
+            hubConnection.InvokeAsync<StatusResponse>("JoinGameContext", gameContextJoin);
 
-        public static Task<StatusCode> CreateGameContext(this HubConnection hubConnection, GameContextSetupViewModel gameContextSetup) =>
-            hubConnection.InvokeAsync<StatusCode>("CreateGameContext", gameContextSetup);
+        public static Task<StatusResponse> CreateGameContext(this HubConnection hubConnection, GameContextSetupViewModel gameContextSetup) =>
+            hubConnection.InvokeAsync<StatusResponse>("CreateGameContext", gameContextSetup);
 
-        public static Task AddPlayer(this HubConnection hubConnection, Player player) =>
-            hubConnection.InvokeAsync("AddPlayer", player);
+        public static Task<StatusResponse> AddPlayer(this HubConnection hubConnection, Player player) =>
+            hubConnection.InvokeAsync<StatusResponse>("AddPlayer", player);
 
-        public static Task SetTeamName(this HubConnection hubConnection, TeamNameViewModel teamName) =>
-            hubConnection.InvokeAsync("SetTeamName", teamName);
+        public static Task<StatusResponse> SetTeamName(this HubConnection hubConnection, TeamNameViewModel teamName) =>
+            hubConnection.InvokeAsync<StatusResponse>("SetTeamName", teamName);
     }
 }

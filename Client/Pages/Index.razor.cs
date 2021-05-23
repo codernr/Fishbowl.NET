@@ -32,6 +32,8 @@ namespace Fishbowl.Net.Client.Pages
 
         private void Notify(string message, string contextClass) => this.toastContainer?.DisplayToast(message, contextClass);
 
+
+
         protected override async Task OnInitializedAsync()
         {
             this.connection = new HubConnectionBuilder()
@@ -84,8 +86,8 @@ namespace Fishbowl.Net.Client.Pages
         {
             if (this.ClientState.Password is not null)
             {
-                var status = await this.connection.JoinGameContext(new(this.ClientState.Password, this.ClientState.Id));
-                if (status == StatusCode.Ok) return;
+                var response = await this.connection.JoinGameContext(new(this.ClientState.Password, this.ClientState.Id));
+                if (response.Status == StatusCode.Ok) return;
             }
 
             await this.StateManager.SetStateAsync<Password>();
@@ -341,12 +343,12 @@ namespace Fishbowl.Net.Client.Pages
         {
             this.ClientState.RoundTypes = roundTypes;
             this.ClientState.IsCreating = true;
-            var status = await this.connection.CreateGameContext(new(
+            var response = await this.connection.CreateGameContext(new(
                 new(this.ClientState.Password ?? throw new InvalidOperationException(), this.ClientState.Id),
                 new(this.ClientState.TotalPlayerCount, this.ClientState.WordCount, this.ClientState.TeamCount, this.ClientState.RoundTypes)));
 
-            if (status == StatusCode.Ok) return;
-            await this.StatusError(status);
+            if (response.Status == StatusCode.Ok) return;
+            await this.StatusError(response.Status);
         }
 
         private async Task AfterPasswordCheck<TNextState>(
@@ -374,12 +376,12 @@ namespace Fishbowl.Net.Client.Pages
 
         private async Task JoinGameContext()
         {
-            var status = await this.connection.JoinGameContext(
+            var response = await this.connection.JoinGameContext(
                 new(this.ClientState.Password ?? throw new InvalidOperationException(), this.ClientState.Id));
             
-            if (status == StatusCode.Ok) return;
+            if (response.Status == StatusCode.Ok) return;
 
-            await this.StatusError(status);
+            await this.StatusError(response.Status);
         }
 
         private async Task StatusError(StatusCode status)

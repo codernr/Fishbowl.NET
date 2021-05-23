@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Fishbowl.Net.Client.Services;
 using Fishbowl.Net.Server.Services;
@@ -23,29 +24,92 @@ namespace Fishbowl.Net.Server.Hubs
             await base.OnDisconnectedAsync(exception);
         }
 
-        public Task<StatusCode> CreateGameContext(GameContextSetupViewModel request) =>
-            this.service.CreateGameContext(this.Context.ConnectionId, request);
+        public Task<StatusResponse> CreateGameContext(GameContextSetupViewModel request) =>
+            Catch<KeyNotFoundException>(() =>
+                this.service.CreateGameContext(this.Context.ConnectionId, request), StatusCode.ConcurrencyError);
 
         public bool GameContextExists(string password) => this.service.GameContextExists(password);
 
-        public Task<StatusCode> JoinGameContext(GameContextJoinViewModel request) =>
-            this.service.JoinGameContext(this.Context.ConnectionId, request);
+        public Task<StatusResponse> JoinGameContext(GameContextJoinViewModel request) =>
+            Catch<KeyNotFoundException>(() =>
+                this.service.JoinGameContext(this.Context.ConnectionId, request), StatusCode.ConcurrencyError);
 
-        public int GetWordCount() => this.GameContext.WordCount;
+        public StatusResponse<int> GetWordCount() =>
+            Catch<KeyNotFoundException, int>(() => this.GameContext.WordCount, StatusCode.ConcurrencyError);
 
-        public Task AddPlayer(Player player) =>
-            this.GameContext.AddPlayer(player);
+        public Task<StatusResponse> AddPlayer(Player player) =>
+            Catch<KeyNotFoundException>(() => this.GameContext.AddPlayer(player), StatusCode.ConcurrencyError);
 
-        public Task SetTeamName(TeamNameViewModel teamName) => this.GameContext.SetTeamName(teamName);
+        public Task<StatusResponse> SetTeamName(TeamNameViewModel teamName) =>
+            Catch<KeyNotFoundException>(() =>this.GameContext.SetTeamName(teamName), StatusCode.ConcurrencyError);
 
-        public void StartPeriod(DateTimeOffset timestamp) => this.GameContext.Game.StartPeriod(timestamp);
+        public StatusResponse StartPeriod(DateTimeOffset timestamp) =>
+            Catch<KeyNotFoundException>(() => this.GameContext.Game.StartPeriod(timestamp), StatusCode.ConcurrencyError);
 
-        public void NextWord(DateTimeOffset timestamp) => this.GameContext.Game.NextWord(timestamp);
+        public StatusResponse NextWord(DateTimeOffset timestamp) =>
+            Catch<KeyNotFoundException>(() => this.GameContext.Game.NextWord(timestamp), StatusCode.ConcurrencyError);
 
-        public void AddScore(ScoreViewModel score) => this.GameContext.Game.AddScore(score.Map());
+        public StatusResponse AddScore(ScoreViewModel score) =>
+            Catch<KeyNotFoundException>(() => this.GameContext.Game.AddScore(score.Map()), StatusCode.ConcurrencyError);
 
-        public void RevokeLastScore() => this.GameContext.Game.RevokeLastScore();
+        public StatusResponse RevokeLastScore() =>
+            Catch<KeyNotFoundException>(() => this.GameContext.Game.RevokeLastScore(), StatusCode.ConcurrencyError);
 
-        public void FinishPeriod(DateTimeOffset timestamp) => this.GameContext.Game.FinishPeriod(timestamp);
+        public StatusResponse FinishPeriod(DateTimeOffset timestamp) =>
+            Catch<KeyNotFoundException>(() => this.GameContext.Game.FinishPeriod(timestamp), StatusCode.ConcurrencyError);
+
+        private static StatusResponse<TResult> Catch<TException, TResult>(Func<TResult> action, StatusCode catchCode)
+            where TResult : notnull where TException : Exception
+        {
+            try
+            {
+                return new(StatusCode.Ok, action());
+            }
+            catch (TException)
+            {
+                return new(catchCode);
+            }
+        }
+
+        private static async Task<StatusResponse> Catch<TException>(Func<Task<StatusCode>> action, StatusCode catchCode)
+            where TException : Exception
+        {
+            try
+            {
+                return new(await action());
+            }
+            catch (TException)
+            {
+                return new(catchCode);
+            }
+        }
+
+        private static async Task<StatusResponse> Catch<TException>(Func<Task> action, StatusCode catchCode)
+            where TException : Exception
+        {
+            try
+            {
+                await action();
+                return new(StatusCode.Ok);
+            }
+            catch (TException)
+            {
+                return new(catchCode);
+            }
+        }
+
+        private static StatusResponse Catch<TException>(Action action, StatusCode catchCode)
+            where TException : Exception
+        {
+            try
+            {
+                action();
+                return new(StatusCode.Ok);
+            }
+            catch (TException)
+            {
+                return new(catchCode);
+            }
+        }
     }
 }

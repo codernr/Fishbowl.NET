@@ -6,6 +6,23 @@ using Fishbowl.Net.Shared.GameEntities;
 
 namespace Fishbowl.Net.Shared.ViewModels
 {
+    public record StatusResponse(StatusCode Status);
+
+    public record StatusResponse<T> : StatusResponse where T : notnull
+    {
+        public T Data
+        {
+            get => this.data ?? throw new InvalidOperationException();
+        }
+
+        private readonly T? data;
+
+        public StatusResponse(StatusCode status) : base(status) {}
+
+        public StatusResponse(StatusCode status, T data) : base(status) =>
+            this.data = data;
+    }
+
     public record PlayerCountViewModel(int TotalCount, int ConnectedCount, int SetupCount);
 
     public record PlayerViewModel(Guid Id, string Name);
