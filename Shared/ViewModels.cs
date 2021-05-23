@@ -6,16 +6,26 @@ using Fishbowl.Net.Shared.GameEntities;
 
 namespace Fishbowl.Net.Shared.ViewModels
 {
-    public record StatusResponse(StatusCode Status);
+    public record StatusResponse
+    {
+        public StatusResponse() {}
+
+        public StatusResponse(StatusCode status) => this.Status = status;
+
+        public StatusCode Status { get; init; } = StatusCode.Ok;
+    }
 
     public record StatusResponse<T> : StatusResponse where T : notnull
     {
         public T Data
         {
             get => this.data ?? throw new InvalidOperationException();
+            init => this.data = value;
         }
 
         private readonly T? data;
+
+        public StatusResponse() : base() {}
 
         public StatusResponse(StatusCode status) : base(status) {}
 

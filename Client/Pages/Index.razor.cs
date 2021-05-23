@@ -353,7 +353,7 @@ namespace Fishbowl.Net.Client.Pages
             Action setup, Action<TNextState>? setParameters = null) where TNextState : State
         {
             var passwordExists = this.ClientState.Password is null ?
-                false : await this.connection.GameContextExists(this.ClientState.Password);
+                false : (await this.connection.GameContextExists(this.ClientState.Password)).Data;
 
             if (passwordExists)
             {
