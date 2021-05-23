@@ -23,9 +23,9 @@ namespace Fishbowl.Net.Server.Services
             ILogger<GameService> logger) =>
             (this.gameContextFactory, this.logger) = (gameContextFactory, logger);
 
-        public bool GameContextExists(string password) => this.contexts.ContainsKey(password);
+        public StatusResponse<bool> GameContextExists(string password) => new(StatusCode.Ok, this.contexts.ContainsKey(password));
 
-        public async Task<StatusCode> CreateGameContext(string connectionId, GameContextSetupViewModel request)
+        public async Task<StatusResponse> CreateGameContext(string connectionId, GameContextSetupViewModel request)
         {
             var password = request.GameContextJoin.Password;
 
@@ -36,7 +36,7 @@ namespace Fishbowl.Net.Server.Services
             if (this.connectionContextMap.ContainsKey(connectionId))
             {
                 this.logger.LogError("Connection is already assigned to a GameContext");
-                return StatusCode.ConnectionAlreadyAssigned;
+                return new(StatusCode.ConnectionAlreadyAssigned);
             }
 
             var context = gameContextFactory(password, request.GameSetup);
@@ -45,19 +45,19 @@ namespace Fishbowl.Net.Server.Services
             if (!this.contexts.TryAdd(password, context))
             {
                 this.logger.LogError("GameContext already exists");
-                return StatusCode.GameContextExists;
+                return new(StatusCode.GameContextExists);
             }
 
             if (await context.TryRegisterConnection(request.GameContextJoin.UserId, connectionId) &&
                 this.connectionContextMap.TryAdd(connectionId, context))
             {
-                return StatusCode.Ok;
+                return new(StatusCode.Ok);
             }
 
-            return StatusCode.ConcurrencyError;
+            return new(StatusCode.ConcurrencyError);
         }
 
-        public async Task<StatusCode> JoinGameContext(string connectionId, GameContextJoinViewModel request)
+        public async Task<StatusResponse> JoinGameContext(string connectionId, GameContextJoinViewModel request)
         {
             this.logger.LogInformation(
                 "JoinGameContext: {{ConnectionId: {ConnectionId}, Request: {Request}}}",
@@ -66,28 +66,28 @@ namespace Fishbowl.Net.Server.Services
             if (this.connectionContextMap.ContainsKey(connectionId))
             {
                 this.logger.LogError("Connection is already assigned to a GameContext");
-                return StatusCode.ConnectionAlreadyAssigned;
+                return new(StatusCode.ConnectionAlreadyAssigned);
             }
 
             if (!this.contexts.TryGetValue(request.Password, out var context))
             {
                 this.logger.LogError("GameContext doesn't exist");
-                return StatusCode.GameContextNotFound;
+                return new(StatusCode.GameContextNotFound);
             }
 
             if (!context.CanRegister(request.UserId))
             {
                 this.logger.LogError("GameContext is full and player Id is not registered connection.");
-                return StatusCode.GameContextFull;
+                return new(StatusCode.GameContextFull);
             }
 
             if (await context.TryRegisterConnection(request.UserId, connectionId) &&
                 this.connectionContextMap.TryAdd(connectionId, context))
             {
-                return StatusCode.Ok;
+                return new(StatusCode.Ok);
             }
 
-            return StatusCode.ConcurrencyError;
+            return new(StatusCode.ConcurrencyError);
         }
 
         public async Task RemoveConnection(string connectionId)
@@ -105,7 +105,11 @@ namespace Fishbowl.Net.Server.Services
             this.connectionContextMap.TryRemove(connectionId, out var connection);
         }
 
-        public GameContext GetContext(string connectionId) => this.connectionContextMap[connectionId];
+        public GameContext? GetContext(string connectionId)
+        {
+            this.connectionContextMap.TryGetValue(connectionId, out var context);
+            return context;
+        }
 
         private async void RemoveGameContext(string password)
         {
