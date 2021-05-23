@@ -14,7 +14,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Fishbowl.Net.Client.Pages
 {
-    public partial class Play : IGameClient, IAsyncDisposable
+    public partial class Index : IGameClient, IAsyncDisposable
     {
         private StateManager? stateManager;
 
