@@ -119,7 +119,7 @@ namespace Fishbowl.Net.Server.Services
 
         private Task CreateTeams(List<Player> players, int teamCount)
         {
-            this.teams = players.Randomize().CreateTeams(teamCount).ToList();
+            this.teams = players.Randomize().ToList().CreateTeams(teamCount).ToList();
 
             var setupPlayerIds = this.teams
                 .Select(team => team.Players.First())
