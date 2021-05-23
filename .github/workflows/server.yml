@@ -24,7 +24,7 @@ jobs:
       run: npm --prefix ./Client/Npm install ./Client/Npm
 
     - name: dotnet publish
-      run: dotnet publish ./Server/Server.csproj -c Release -o ${{env.DOTNET_ROOT}}/myapp
+      run: dotnet publish ./Server/Fishbowl.Net.Server.csproj -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
     - name: Upload artifact for deployment job
       uses: actions/upload-artifact@v2
