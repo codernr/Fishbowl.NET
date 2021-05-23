@@ -4,10 +4,9 @@
 name: Build and deploy ASP.Net Core app to Azure Web App - fishbowl-online
 
 on:
-  push:
-    branches:
-      - issue/22
-  workflow_dispatch:
+  create:
+    tags:
+      - v*
 
 jobs:
   build:
