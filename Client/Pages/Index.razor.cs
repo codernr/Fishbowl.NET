@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Fishbowl.Net.Client.Components;
@@ -47,11 +46,11 @@ namespace Fishbowl.Net.Client.Pages
 
             this.connection.On<GameSetupViewModel>(nameof(this.ReceiveSetupPlayer), this.ReceiveSetupPlayer);
             this.connection.On<PlayerCountViewModel>(nameof(this.ReceivePlayerCount), this.ReceivePlayerCount);
-            this.connection.On<Player>(nameof(this.ReceiveWaitForOtherPlayers), this.ReceiveWaitForOtherPlayers);
+            this.connection.On<PlayerViewModel>(nameof(this.ReceiveWaitForOtherPlayers), this.ReceiveWaitForOtherPlayers);
             this.connection.On<TeamSetupViewModel>(nameof(this.ReceiveSetTeamName), this.ReceiveSetTeamName);
             this.connection.On<TeamSetupViewModel>(nameof(this.ReceiveWaitForTeamSetup), this.ReceiveWaitForTeamSetup);
             this.connection.On<TeamNameViewModel>(nameof(this.ReceiveTeamName), this.ReceiveTeamName);
-            this.connection.On<Player, Round>(nameof(this.RestoreGameState), this.RestoreGameState);
+            this.connection.On<PlayerViewModel>(nameof(this.ReceiveRestoreState), this.ReceiveRestoreState);
             this.connection.On<GameAbortViewModel>(nameof(this.ReceiveGameAborted), this.ReceiveGameAborted);
             this.connection.On(nameof(this.ReceiveGameStarted), this.ReceiveGameStarted);
             this.connection.On<GameSummaryViewModel>(nameof(this.ReceiveGameFinished), this.ReceiveGameFinished);
@@ -139,11 +138,9 @@ namespace Fishbowl.Net.Client.Pages
             return Task.CompletedTask;
         }
 
-        public async Task ReceiveWaitForOtherPlayers(Player player)
+        public async Task ReceiveWaitForOtherPlayers(PlayerViewModel player)
         {
-            this.Logger.LogInformation(
-                "ReceiveWaitForOtherPlayers: {{PlayerName: {PlayerName}, Words: {Words}}}",
-                player.Name, (object)player.Words.Select(word => word.Value));
+            this.Logger.LogInformation("ReceiveWaitForOtherPlayers: {Player}", player);
             
             this.ClientState.Id = player.Id;
             this.ClientState.Name = player.Name;
@@ -185,7 +182,7 @@ namespace Fishbowl.Net.Client.Pages
             return Task.CompletedTask;
         }
 
-        public Task RestoreGameState(Player player, Round round)
+        public Task ReceiveRestoreState(PlayerViewModel player)
         {
             this.ClientState.Id = player.Id;
             this.ClientState.Name = player.Name;

@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using Fishbowl.Net.Shared.GameEntities;
 using Fishbowl.Net.Shared.ViewModels;
 
 namespace Fishbowl.Net.Client.Services
@@ -16,9 +15,9 @@ namespace Fishbowl.Net.Client.Services
 
         Task ReceivePlayerCount(PlayerCountViewModel playerCount) => Task.CompletedTask;
 
-        Task ReceiveWaitForOtherPlayers(Player player) => Task.CompletedTask;
+        Task ReceiveWaitForOtherPlayers(PlayerViewModel player) => Task.CompletedTask;
 
-        Task RestoreGameState(Player player, Round round) => Task.CompletedTask;
+        Task ReceiveRestoreState(PlayerViewModel player) => Task.CompletedTask;
 
         Task ReceiveGameAborted(GameAbortViewModel abort) => Task.CompletedTask;
 

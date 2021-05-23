@@ -61,7 +61,7 @@ namespace Fishbowl.Net.Server.Services
 
             var clientTask =
                 existingPlayer is null  ? this.groupHubContext.Client(playerId).ReceiveSetupPlayer(this.gameSetup) :
-                (this.teams is null     ? this.groupHubContext.Client(playerId).ReceiveWaitForOtherPlayers(existingPlayer) :
+                (this.teams is null     ? this.groupHubContext.Client(playerId).ReceiveWaitForOtherPlayers(existingPlayer.Map()) :
                 (this.game is null      ? this.RestoreTeamSetup(existingPlayer, this.teams) :
                 this.RestoreGame(existingPlayer, this.game)));
 
@@ -87,7 +87,7 @@ namespace Fishbowl.Net.Server.Services
 
             if (this.players.Count != this.gameSetup.PlayerCount)
             {
-                await this.groupHubContext.Client(player.Id).ReceiveWaitForOtherPlayers(player);
+                await this.groupHubContext.Client(player.Id).ReceiveWaitForOtherPlayers(player.Map());
                 return;
             }
 
@@ -210,7 +210,7 @@ namespace Fishbowl.Net.Server.Services
             var period = round.CurrentPeriod;
             var client = this.groupHubContext.Client(player.Id);
 
-            await client.RestoreGameState(player, round);
+            await client.ReceiveRestoreState(player.Map());
 
             if (period.StartedAt is null)
             {
