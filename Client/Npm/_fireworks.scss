@@ -59,7 +59,7 @@ $box-shadow2: ();
     animation: $settings;
 }
 
-@mixin foreworks-transform ($settings) {
+@mixin fireworks-transform ($settings) {
     transform: $settings;
     -moz-transform: $settings;
     -webkit-transform: $settings;
@@ -90,7 +90,7 @@ $box-shadow2: ();
     
 @include firework-keyframes(gravity)  {
   to {
-    @include foreworks-transform(translateY(200px));
+    @include fireworks-transform(translateY(200px));
     opacity: 0;
   }
 }

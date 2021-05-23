@@ -7,7 +7,7 @@ module.exports = {
     ],
     css: ['./../wwwroot/css/styles.css'],
     safelist: {
-        greedy: [/fade-container/]
+        greedy: [/fade-container/, /bg-info/, /bg-warning/]
     },
     keyframes: true,
     output: './../wwwroot/css/'
