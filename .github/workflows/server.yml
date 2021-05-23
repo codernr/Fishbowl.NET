@@ -20,6 +20,9 @@ jobs:
       with:
         dotnet-version: '5.0.x'
 
+    - name: NPM install
+      run: npm --prefix ./Client/Npm install ./Client/Npm
+
     - name: Build with dotnet
       run: dotnet build --configuration Release
 
