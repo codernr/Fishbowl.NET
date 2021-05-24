@@ -69,6 +69,7 @@ namespace Fishbowl.Net.Client.Pages
                     state.ContextClass = ContextCssClass.Danger;
                     state.Title = L("Pages.Play.ErrorTitle");
                     state.Message = L("Pages.Play.Reconnecting");
+                    state.Loading = true;
                 });
 
         public Task Reconnected(string connectionId) => this.JoinGameContext();
@@ -85,6 +86,7 @@ namespace Fishbowl.Net.Client.Pages
                     state.ContextClass = ContextCssClass.Success;
                     state.Title = L("Pages.Play.GameCreatedTitle");
                     state.Message = L("Pages.Play.GameCreatedMessage");
+                    state.Loading = false;
                 });
                 this.ClientState.IsCreating = false;
             }
@@ -158,6 +160,7 @@ namespace Fishbowl.Net.Client.Pages
                 state.ContextClass = ContextCssClass.Danger;
                 state.Title = L("Pages.Play.ErrorTitle");
                 state.Message = L(abort.MessageKey);
+                state.Loading = false;
             });
             await this.Connection.StopAsync();
             this.Reload();
@@ -172,6 +175,7 @@ namespace Fishbowl.Net.Client.Pages
                 state.ContextClass = ContextCssClass.Dark;
                 state.Title = L("Pages.Play.GameStartedTitle");
                 state.Message = string.Empty;
+                state.Loading = true;
             });
         }
 
@@ -191,6 +195,7 @@ namespace Fishbowl.Net.Client.Pages
                 state.ContextClass = ContextCssClass.Dark;
                 state.Title = $"{L("Pages.Play.RoundStartedTitle")}: {round.Type}";
                 state.Message = string.Empty;
+                state.Loading = true;
             });
 
         public Task ReceiveRoundFinished(RoundSummaryViewModel round) =>
@@ -316,6 +321,7 @@ namespace Fishbowl.Net.Client.Pages
                 state.ContextClass = ContextCssClass.Danger;
                 state.Title = L("Pages.Play.ErrorTitle");
                 state.Message = L($"Pages.Play.StatusCode.{status}");
+                state.Loading = false;
             });
             await this.StateManager.SetStateAsync<Password>();
         }

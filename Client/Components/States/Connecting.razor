@@ -6,10 +6,8 @@
 {
     protected override RenderFragment Content =>
         @<StateContainer Title="@(L["Components.States.Connecting.Title"])">
-            <div class="row">
-                <div class="col">
-                    @L["Components.States.Connecting.Description"]
-                </div>
+            <div class="position-fixed top-50 start-50 translate-middle">
+                <Spinner />
             </div>
         </StateContainer>;
 }

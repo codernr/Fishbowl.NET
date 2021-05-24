@@ -24,9 +24,6 @@
     <data name="Components.States.Connecting.Title">
         <value>Japán activity</value>
     </data>
-    <data name="Components.States.Connecting.Description">
-        <value>Kapcsolódás a szerverhez...</value>
-    </data>
     <data name="Components.States.ConnectionClosed.Title">
         <value>Megszűnt a kapcsolat</value>
     </data>

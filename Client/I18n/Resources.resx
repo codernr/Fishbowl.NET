@@ -24,9 +24,6 @@
     <data name="Components.States.Connecting.Title">
         <value>Fishbowl game</value>
     </data>
-    <data name="Components.States.Connecting.Description">
-        <value>Connecting to server...</value>
-    </data>
     <data name="Components.States.ConnectionClosed.Title">
         <value>Connection closed</value>
     </data>
