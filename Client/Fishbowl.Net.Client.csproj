@@ -14,7 +14,8 @@
     <PackageReference Include="System.Net.Http.Json" Version="*"/>
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="*"/>
     <PackageReference Include="Microsoft.Extensions.Localization" Version="*"/>
-  </ItemGroup>  
+    <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="*"/>
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Shared\Fishbowl.Net.Shared.csproj"/>
   </ItemGroup>

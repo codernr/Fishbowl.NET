@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Fishbowl.Net.Client.Services;
 using System.Globalization;
+using Microsoft.Extensions.Logging;
 
 namespace Fishbowl.Net.Client
 {
@@ -13,6 +14,9 @@ namespace Fishbowl.Net.Client
         public static async Task Main(string[] args)
         {
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
+
+            builder.Logging.AddConfiguration(builder.Configuration.GetSection("Logging"));
+
             builder.RootComponents.Add<App>("#app");
 
             builder.Services
