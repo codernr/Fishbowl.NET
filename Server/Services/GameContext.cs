@@ -264,13 +264,14 @@ namespace Fishbowl.Net.Server.Services
 
         public ValueTask DisposeAsync() => this.DisposeAsyncCore();
 
-        protected virtual ValueTask DisposeAsyncCore()
+        protected virtual async ValueTask DisposeAsyncCore()
         {
-            if (this.isDisposing) return ValueTask.CompletedTask;
+            if (this.isDisposing) return;
 
             this.isDisposing = true;
             
-            return this.groupHubContext.DisposeAsync();
+            await this.timer.DisposeAsync();
+            await this.groupHubContext.DisposeAsync();
         }
 
         private void Log(string methodName, object arg1) =>
