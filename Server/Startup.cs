@@ -38,7 +38,9 @@ namespace Fishbowl.Net.Server
                                 provider.GetRequiredService<IHubContext<GameHub, IGameClient>>(),
                                 password,
                                 provider.GetRequiredService<ILogger<GroupHubContext>>());
-                            return new GameContext(gameSetup, groupHubContext, provider.GetRequiredService<Func<Func<Task>, Timer>>());
+                            return new GameContext(
+                                gameSetup, groupHubContext, provider.GetRequiredService<Func<Func<Task>,Timer>>(),
+                                provider.GetRequiredService<ILogger<GameContext>>());
                         })
                 .AddSingleton<Func<Func<Task>, Timer>>(provider =>
                     action => new Timer(

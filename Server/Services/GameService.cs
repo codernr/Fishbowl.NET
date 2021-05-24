@@ -23,19 +23,21 @@ namespace Fishbowl.Net.Server.Services
             ILogger<GameService> logger) =>
             (this.gameContextFactory, this.logger) = (gameContextFactory, logger);
 
-        public StatusResponse<bool> GameContextExists(string password) => new(StatusCode.Ok, this.contexts.ContainsKey(password));
+        public StatusResponse<bool> GameContextExists(string password)
+        {
+            this.Log(nameof(this.GameContextExists), password);
+            return new(StatusCode.Ok, this.contexts.ContainsKey(password));
+        }
 
         public async Task<StatusResponse> CreateGameContext(string connectionId, GameContextSetupViewModel request)
         {
-            var password = request.GameContextJoin.Password;
+            this.Log(nameof(this.CreateGameContext), connectionId, request);
 
-            this.logger.LogInformation(
-                "CreateGameContext: {{ConnectionId: {ConnectionId}, Password: {Password}}}",
-                connectionId, password);
+            var password = request.GameContextJoin.Password;
             
             if (this.connectionContextMap.ContainsKey(connectionId))
             {
-                this.logger.LogError("Connection is already assigned to a GameContext");
+                this.logger.LogWarning(StatusCode.ConnectionAlreadyAssigned.ToString());
                 return new(StatusCode.ConnectionAlreadyAssigned);
             }
 
@@ -44,59 +46,61 @@ namespace Fishbowl.Net.Server.Services
 
             if (!this.contexts.TryAdd(password, context))
             {
-                this.logger.LogError("GameContext already exists");
+                this.logger.LogWarning(StatusCode.GameContextExists.ToString());
                 return new(StatusCode.GameContextExists);
             }
 
             if (await context.TryRegisterConnection(request.GameContextJoin.UserId, connectionId) &&
                 this.connectionContextMap.TryAdd(connectionId, context))
             {
+                this.logger.LogInformation(StatusCode.Ok.ToString());
                 return new(StatusCode.Ok);
             }
 
+            this.logger.LogError(StatusCode.ConcurrencyError.ToString());
             return new(StatusCode.ConcurrencyError);
         }
 
         public async Task<StatusResponse> JoinGameContext(string connectionId, GameContextJoinViewModel request)
         {
-            this.logger.LogInformation(
-                "JoinGameContext: {{ConnectionId: {ConnectionId}, Request: {Request}}}",
-                connectionId, request);
+            this.Log(nameof(this.JoinGameContext), connectionId, request);
             
             if (this.connectionContextMap.ContainsKey(connectionId))
             {
-                this.logger.LogError("Connection is already assigned to a GameContext");
+                this.logger.LogWarning(StatusCode.ConnectionAlreadyAssigned.ToString());
                 return new(StatusCode.ConnectionAlreadyAssigned);
             }
 
             if (!this.contexts.TryGetValue(request.Password, out var context))
             {
-                this.logger.LogError("GameContext doesn't exist");
+                this.logger.LogWarning(StatusCode.GameContextNotFound.ToString());
                 return new(StatusCode.GameContextNotFound);
             }
 
             if (!context.CanRegister(request.UserId))
             {
-                this.logger.LogError("GameContext is full and player Id is not registered connection.");
+                this.logger.LogWarning(StatusCode.GameContextFull.ToString());
                 return new(StatusCode.GameContextFull);
             }
 
             if (await context.TryRegisterConnection(request.UserId, connectionId) &&
                 this.connectionContextMap.TryAdd(connectionId, context))
             {
+                this.logger.LogInformation(StatusCode.Ok.ToString());
                 return new(StatusCode.Ok);
             }
 
+            this.logger.LogError(StatusCode.ConcurrencyError.ToString());
             return new(StatusCode.ConcurrencyError);
         }
 
         public async Task RemoveConnection(string connectionId)
         {
-            this.logger.LogInformation("RemoveConnection: {ConnectionId}", connectionId);
+            this.Log(nameof(this.RemoveConnection), connectionId);
 
             if (!this.connectionContextMap.TryGetValue(connectionId, out var context))
             {
-                this.logger.LogInformation("Connection not found");
+                this.logger.LogInformation("NotFound");
                 return;
             }
 
@@ -107,17 +111,18 @@ namespace Fishbowl.Net.Server.Services
 
         public GameContext? GetContext(string connectionId)
         {
+            this.Log(nameof(this.GetContext), connectionId);
             this.connectionContextMap.TryGetValue(connectionId, out var context);
             return context;
         }
 
         private async void RemoveGameContext(string password)
         {
-            this.logger.LogInformation("RemoveGameContext: {Password}", password);
+            this.Log(nameof(this.RemoveGameContext), password);
 
             if (!this.contexts.TryRemove(password, out var context))
             {
-                this.logger.LogWarning("Context already removed");
+                this.logger.LogWarning("AlreadyRemoved");
                 return;
             }
 
@@ -132,6 +137,14 @@ namespace Fishbowl.Net.Server.Services
             }
 
             await context.DisposeAsync();
+
+            this.logger.LogInformation("ContextRemoved");
         }
+
+        private void Log(string methodName, object arg1) =>
+            this.logger.LogInformation("{MethodName}: [{Arg1}]", methodName, arg1);
+
+        private void Log(string methodName, object arg1, object arg2) =>
+            this.logger.LogInformation("{MethodName}: [{Arg1}] [{Arg2}]", methodName, arg1, arg2);
     }
 }

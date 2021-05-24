@@ -6,6 +6,7 @@ using Fishbowl.Net.Shared;
 using Fishbowl.Net.Shared.GameEntities;
 using Fishbowl.Net.Shared.ViewModels;
 using Fishbowl.Net.Shared.Exceptions;
+using Microsoft.Extensions.Logging;
 
 namespace Fishbowl.Net.Server.Services
 {
@@ -32,6 +33,8 @@ namespace Fishbowl.Net.Server.Services
 
         private readonly Timer timer;
 
+        private readonly ILogger<GameContext> logger;
+
         private AsyncGame? game;
 
         private List<Team> Teams => this.teams ?? throw new InvalidOperationException();
@@ -40,16 +43,30 @@ namespace Fishbowl.Net.Server.Services
 
         private bool isDisposing = false;
 
-        public GameContext(GameSetupViewModel gameSetup, IGroupHubContext groupHubContext, Func<Func<Task>, Timer> timerFactory) =>
-            (this.gameSetup, this.groupHubContext, this.timer) =
-            (gameSetup, groupHubContext, timerFactory(() => this.Abort("Common.Abort.Timeout")));
+        public GameContext(
+            GameSetupViewModel gameSetup,
+            IGroupHubContext groupHubContext,
+            Func<Func<Task>, Timer> timerFactory,
+            ILogger<GameContext> logger) =>
+            (this.gameSetup, this.groupHubContext, this.timer, this.logger) =
+            (gameSetup, groupHubContext, timerFactory(() => this.Abort("Common.Abort.Timeout")), logger);
 
-        public bool CanRegister(Guid playerId) =>
-            this.groupHubContext.ContainsKey(playerId) || this.groupHubContext.Count < this.gameSetup.PlayerCount;
+        public bool CanRegister(Guid playerId)
+        {
+            var result = this.groupHubContext.ContainsKey(playerId) || this.groupHubContext.Count < this.gameSetup.PlayerCount;
+            this.Log(nameof(this.CanRegister), playerId, result);
+            return result;
+        }
 
         public async Task<bool> TryRegisterConnection(Guid playerId, string connectionId)
         {
-            if (this.isDisposing) return false;
+            this.Log(nameof(this.TryRegisterConnection), playerId, connectionId);
+
+            if (this.isDisposing)
+            {
+                this.logger.LogWarning("Disposing");
+                return false;
+            }
 
             this.timer.Restart();
 
@@ -66,6 +83,8 @@ namespace Fishbowl.Net.Server.Services
                 this.RestoreGame(existingPlayer, this.game)));
 
             await clientTask;
+
+            this.logger.LogInformation("ConnectionRegistered");
             return true;
         }
 
@@ -73,6 +92,8 @@ namespace Fishbowl.Net.Server.Services
 
         public async Task AddPlayer(Player player)
         {
+            this.Log(nameof(this.AddPlayer), player);
+
             if (!this.groupHubContext.ContainsKey(player.Id))
             {
                 throw new InvalidOperationException("Invalid player connection");
@@ -96,6 +117,8 @@ namespace Fishbowl.Net.Server.Services
 
         public async Task SetTeamName(TeamNameViewModel teamName)
         {
+            this.Log(nameof(this.SetTeamName), teamName);
+
             this.Teams[teamName.Id].Name = teamName.Name;
 
             await this.groupHubContext
@@ -127,6 +150,8 @@ namespace Fishbowl.Net.Server.Services
 
         private async Task StartGame(List<Team> teams, IEnumerable<string> roundTypes)
         {
+            this.Log(nameof(this.StartGame), teams, roundTypes);
+
             try
             {
                 this.game = new AsyncGame(teams, roundTypes);
@@ -135,6 +160,7 @@ namespace Fishbowl.Net.Server.Services
             }
             catch (ArgumentException e)
             {
+                this.logger.LogError(e is InvalidReturnValueException ? "InvalidReturnValue" : "InvalidPlayerCount");
                 await this.Abort(e is InvalidReturnValueException ? "Common.Abort.InvalidReturnValue" : "Common.Abort.PlayerCount");
             }
         }
@@ -196,6 +222,8 @@ namespace Fishbowl.Net.Server.Services
 
         private Task RestoreTeamSetup(Player player, List<Team> teams)
         {
+            this.Log(nameof(this.RestoreTeamSetup), player, teams);
+
             var playerTeam = teams.First(team => team.Players.Any(teamPlayer => teamPlayer.Id == player.Id));
 
             var client = this.groupHubContext.Client(player.Id);
@@ -206,6 +234,8 @@ namespace Fishbowl.Net.Server.Services
 
         private async Task RestoreGame(Player player, AsyncGame game)
         {
+            this.Log(nameof(this.RestoreGame), player, game);
+            
             var round = game.Game.CurrentRound;
             var period = round.CurrentPeriod;
             var client = this.groupHubContext.Client(player.Id);
@@ -236,5 +266,11 @@ namespace Fishbowl.Net.Server.Services
             
             return this.groupHubContext.DisposeAsync();
         }
+
+        private void Log(string methodName, object arg1) =>
+            this.logger.LogInformation("{MethodName}: [{Arg1}]", methodName, arg1);
+
+        private void Log(string methodName, object arg1, object arg2) =>
+            this.logger.LogInformation("{MethodName}: [{Arg1}] [{Arg2}]", methodName, arg1, arg2);
     }
 }
