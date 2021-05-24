@@ -90,7 +90,7 @@ namespace Fishbowl.Net.Server.Services
 
         public Task RemoveConnection(string connectionId) => this.groupHubContext.RemoveConnection(connectionId);
 
-        public async Task AddPlayer(Player player)
+        public async Task AddPlayer(AddPlayerViewModel player)
         {
             this.Log(nameof(this.AddPlayer), player);
 
@@ -101,14 +101,16 @@ namespace Fishbowl.Net.Server.Services
 
             this.timer.Restart();
 
-            this.players.Add(player);
+            var entity = player.Map();
+
+            this.players.Add(entity);
 
             await this.groupHubContext.Group().ReceivePlayerCount(
                 new PlayerCountViewModel(this.gameSetup.PlayerCount, this.groupHubContext.Count, this.players.Count));
 
             if (this.players.Count != this.gameSetup.PlayerCount)
             {
-                await this.groupHubContext.Client(player.Id).ReceiveWaitForOtherPlayers(player.Map());
+                await this.groupHubContext.Client(player.Id).ReceiveWaitForOtherPlayers(entity.Map());
                 return;
             }
 

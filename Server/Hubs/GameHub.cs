@@ -32,7 +32,7 @@ namespace Fishbowl.Net.Server.Hubs
         public StatusResponse<int> GetWordCount() =>
             this.CallContext(context => context.WordCount);
 
-        public Task<StatusResponse> AddPlayer(Player player) =>
+        public Task<StatusResponse> AddPlayer(AddPlayerViewModel player) =>
             this.CallContext(context => context.AddPlayer(player));
 
         public Task<StatusResponse> SetTeamName(TeamNameViewModel teamName) =>

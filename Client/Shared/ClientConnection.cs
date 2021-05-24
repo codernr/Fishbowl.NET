@@ -1,7 +1,6 @@
 using System;
 using System.Threading.Tasks;
 using Fishbowl.Net.Client.Services;
-using Fishbowl.Net.Shared.GameEntities;
 using Fishbowl.Net.Shared.ViewModels;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Logging;
@@ -77,7 +76,7 @@ namespace Fishbowl.Net.Client.Shared
         public Task<StatusResponse> CreateGameContext(GameContextSetupViewModel gameContextSetup) =>
             this.connection.InvokeAsync<StatusResponse>(nameof(this.CreateGameContext), gameContextSetup);
 
-        public Task<StatusResponse> AddPlayer(Player player) =>
+        public Task<StatusResponse> AddPlayer(AddPlayerViewModel player) =>
             this.connection.InvokeAsync<StatusResponse>(nameof(this.AddPlayer), player);
 
         public Task<StatusResponse> SetTeamName(TeamNameViewModel teamName) =>

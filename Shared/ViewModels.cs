@@ -37,6 +37,8 @@ namespace Fishbowl.Net.Shared.ViewModels
 
     public record PlayerViewModel(Guid Id, string Name);
 
+    public record AddPlayerViewModel(Guid Id, string Name, IEnumerable<Word> Words);
+
     public record TeamViewModel(int Id, List<PlayerViewModel> Players, string? Name = null);
 
     public record TeamSetupViewModel(List<TeamViewModel> Teams);
@@ -125,5 +127,8 @@ namespace Fishbowl.Net.Shared.ViewModels
             .Select(team => team.Map(game))
             .OrderByDescending(team => team.Players.Sum(player => player.Scores.Count))
             .ToList());
+
+        public static Player Map(this AddPlayerViewModel player) =>
+            new(player.Id, player.Name, player.Words);
     }
 }
