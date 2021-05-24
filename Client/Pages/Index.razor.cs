@@ -78,8 +78,6 @@ namespace Fishbowl.Net.Client.Pages
 
         public async Task ReceiveSetupPlayer(GameSetupViewModel gameSetup)
         {
-            this.Logger.LogInformation("ReceiveSetupPlayer: {Setup}", gameSetup);
-
             if (this.ClientState.IsCreating)
             {
                 await this.StateManager.SetStateAsync<Info>(state =>
@@ -101,7 +99,6 @@ namespace Fishbowl.Net.Client.Pages
 
         public Task ReceivePlayerCount(PlayerCountViewModel playerCount)
         {
-            this.Logger.LogInformation("ReceiveConnectionCount: {PlayerCount}", playerCount);
             this.ClientState.TotalPlayerCount = playerCount.TotalCount;
             this.ClientState.SetupPlayerCount = playerCount.SetupCount;
             this.ClientState.ConnectedPlayerCount = playerCount.ConnectedCount;
@@ -111,8 +108,6 @@ namespace Fishbowl.Net.Client.Pages
 
         public async Task ReceiveWaitForOtherPlayers(PlayerViewModel player)
         {
-            this.Logger.LogInformation("ReceiveWaitForOtherPlayers: {Player}", player);
-            
             this.ClientState.Id = player.Id;
             this.ClientState.Name = player.Name;
 
@@ -121,7 +116,6 @@ namespace Fishbowl.Net.Client.Pages
 
         public Task ReceiveSetTeamName(TeamSetupViewModel teamSetup)
         {
-            this.Logger.LogInformation("ReceiveSetTeamName: {TeamSetup}", teamSetup);
             this.ClientState.Teams = teamSetup.Teams;
 
             return this.StateManager.SetStateAsync<TeamName>(state =>
@@ -130,7 +124,6 @@ namespace Fishbowl.Net.Client.Pages
 
         public Task ReceiveWaitForTeamSetup(TeamSetupViewModel teamSetup)
         {
-            this.Logger.LogInformation("ReceiveWaitForTeamSetup: {TeamSetup}", teamSetup);
             this.ClientState.Teams = teamSetup.Teams;
 
             return this.StateManager.SetStateAsync<WaitingForTeamNames>(state =>
@@ -142,8 +135,6 @@ namespace Fishbowl.Net.Client.Pages
 
         public Task ReceiveTeamName(TeamNameViewModel teamName)
         {
-            this.Logger.LogInformation("ReceiveTeamName: {TeamName}", teamName);
-
             this.ClientState.Teams[teamName.Id] = this.ClientState.Teams[teamName.Id] with { Name = teamName.Name };
 
             this.StateManager.SetParameters<WaitingForTeamNames>(state =>
@@ -162,7 +153,6 @@ namespace Fishbowl.Net.Client.Pages
 
         public async Task ReceiveGameAborted(GameAbortViewModel abort)
         {
-            this.Logger.LogInformation("ReceiveGameAborted: {Abort}", abort);
             await this.StateManager.SetStateAsync<Info>(state => 
             {
                 state.ContextClass = ContextCssClass.Danger;
@@ -175,8 +165,6 @@ namespace Fishbowl.Net.Client.Pages
 
         public async Task ReceiveGameStarted()
         {
-            this.Logger.LogInformation("ReceiveGameStarted");
-
             await Task.Delay(1000);
 
             await this.StateManager.SetStateAsync<Info>(state =>
@@ -190,7 +178,6 @@ namespace Fishbowl.Net.Client.Pages
         public Task ReceiveGameFinished(GameSummaryViewModel game)
         {
             this.ClientState.Password = null;
-            this.Logger.LogInformation("ReceiveGameFinished: {Game}", game);
             return this.StateManager.SetStateAsync<GameFinished>(state =>
             {
                 state.Game = game;
@@ -198,37 +185,24 @@ namespace Fishbowl.Net.Client.Pages
             });
         }
 
-        public Task ReceiveRoundStarted(RoundViewModel round)
-        {
-            this.Logger.LogInformation("ReceiveRoundStarted: {Round}", round);
-
-            return this.StateManager.SetStateAsync<Info>(state =>
+        public Task ReceiveRoundStarted(RoundViewModel round) =>
+            this.StateManager.SetStateAsync<Info>(state =>
             {
                 state.ContextClass = ContextCssClass.Dark;
                 state.Title = $"{L("Pages.Play.RoundStartedTitle")}: {round.Type}";
                 state.Message = string.Empty;
             });
-        }
 
-        public Task ReceiveRoundFinished(RoundSummaryViewModel round)
-        {
-            this.Logger.LogInformation("ReceiveRoundFinished: {Round}", round);
+        public Task ReceiveRoundFinished(RoundSummaryViewModel round) =>
+            this.StateManager.SetStateAsync<RoundFinished>(state => state.Round = round);
 
-            return this.StateManager.SetStateAsync<RoundFinished>(state => state.Round = round);
-        }
-
-        public Task ReceivePeriodSetup(PeriodSetupViewModel period)
-        {
-            this.Logger.LogInformation("ReceivePeriodSetup: {Period}", period);
-
-            return period.Player.Id == this.ClientState.Id ?
+        public Task ReceivePeriodSetup(PeriodSetupViewModel period) =>
+            period.Player.Id == this.ClientState.Id ?
                 this.StateManager.SetStateAsync<PeriodSetupPlay>(state => state.Period = period) :
                 this.StateManager.SetStateAsync<PeriodSetupWatch>(state => state.Period = period);
-        }
 
         public Task ReceivePeriodStarted(PeriodRunningViewModel period)
         {
-            this.Logger.LogInformation("ReceivePeriodStarted: {Period}", period);
             this.ClientState.PeriodScores.Clear();
 
             return period.Player.Id == this.ClientState.Id ?
@@ -240,25 +214,17 @@ namespace Fishbowl.Net.Client.Pages
                 this.StateManager.SetStateAsync<PeriodWatch>(state => state.Period = period);
         }
 
-        public Task ReceivePeriodFinished(PeriodSummaryViewModel period)
-        {
-            this.Logger.LogInformation("ReceivePeriodFinished: {Period}", period);
-
-            return this.StateManager.SetStateAsync<PeriodFinished>(state => state.Period = period);
-        }
+        public Task ReceivePeriodFinished(PeriodSummaryViewModel period) =>
+            this.StateManager.SetStateAsync<PeriodFinished>(state => state.Period = period);
 
         public Task ReceiveWordSetup(WordViewModel word)
         {
-            this.Logger.LogInformation("ReceiveWordSetup: {Word}", word.Value);
-
             this.StateManager.SetParameters<PeriodPlay>(state => state.Word = word);
             return Task.CompletedTask;
         }
 
         public Task ReceiveScoreAdded(ScoreViewModel score)
         {
-            this.Logger.LogInformation("ReceiveScoreAdded: {Score}", score);
-
             this.ClientState.PeriodScores.Add(score);
             this.Notify($"{this.L("Pages.Play.Scored")}: {score.Word.Value}", ContextCssClass.Primary);
             this.StateManager.SetParameters<PeriodPlay>(state => state.ScoreCount = this.ClientState.PeriodScores.Count);
@@ -267,8 +233,6 @@ namespace Fishbowl.Net.Client.Pages
 
         public Task ReceiveLastScoreRevoked(ScoreViewModel score)
         {
-            this.Logger.LogInformation("ReceiveLastScoreRevoked: {Score}", score);
-                
             this.ClientState.PeriodScores.Remove(score);
             this.Notify($"{this.L("Pages.Play.ScoreRevoked")}: {score.Word.Value}", ContextCssClass.Warning);
             this.StateManager.SetParameters<PeriodPlay>(state => state.ScoreCount = this.ClientState.PeriodScores.Count);
