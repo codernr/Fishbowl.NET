@@ -7,6 +7,7 @@ using Fishbowl.Net.Shared.GameEntities;
 using Fishbowl.Net.Shared.ViewModels;
 using Fishbowl.Net.Shared.Exceptions;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace Fishbowl.Net.Server.Services
 {
@@ -33,6 +34,8 @@ namespace Fishbowl.Net.Server.Services
 
         private readonly Timer timer;
 
+        private readonly GameOptions gameOptions;
+
         private readonly ILogger<GameContext> logger;
 
         private AsyncGame? game;
@@ -47,9 +50,10 @@ namespace Fishbowl.Net.Server.Services
             GameSetupViewModel gameSetup,
             IGroupHubContext groupHubContext,
             Func<Func<Task>, Timer> timerFactory,
+            IOptions<GameOptions> gameOptions,
             ILogger<GameContext> logger) =>
-            (this.gameSetup, this.groupHubContext, this.timer, this.logger) =
-            (gameSetup, groupHubContext, timerFactory(() => this.Abort("Common.Abort.Timeout")), logger);
+            (this.gameSetup, this.groupHubContext, this.timer, this.gameOptions, this.logger) =
+            (gameSetup, groupHubContext, timerFactory(() => this.Abort("Common.Abort.Timeout")), gameOptions.Value, logger);
 
         public bool CanRegister(Guid playerId)
         {
@@ -156,7 +160,7 @@ namespace Fishbowl.Net.Server.Services
 
             try
             {
-                this.game = new AsyncGame(teams, roundTypes);
+                this.game = new AsyncGame(this.gameOptions, teams, roundTypes);
                 this.SetEventHandlers();
                 this.Game.Run();
             }

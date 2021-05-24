@@ -13,10 +13,6 @@ namespace Fishbowl.Net.Shared.GameEntities
         
         public List<Round> Rounds { get; private set; }
         
-        public TimeSpan PeriodLength { get; private set; } = TimeSpan.FromSeconds(60);
-
-        public TimeSpan PeriodThreshold { get; private set; } = TimeSpan.FromSeconds(5);
-        
         public Round CurrentRound => this.roundEnumerator.Current;
         
         public Word CurrentWord => this.roundEnumerator.Current.WordEnumerator.Current;
@@ -25,11 +21,18 @@ namespace Fishbowl.Net.Shared.GameEntities
 
         private readonly IEnumerator<Round> roundEnumerator = default!;
 
+        private readonly TimeSpan periodLength;
+
+        public readonly TimeSpan periodThreshold;
+
         private TimeSpan? remaining;
 
-        public Game(Guid id, IEnumerable<Team> teams, IEnumerable<string> roundTypes, bool randomize = true)
+        public Game(Guid id, GameOptions options, IEnumerable<Team> teams, IEnumerable<string> roundTypes, bool randomize = true)
         {
             this.Id = id;
+
+            this.periodLength = TimeSpan.FromSeconds(options.PeriodLengthInSeconds);
+            this.periodThreshold = TimeSpan.FromSeconds(options.PeriodThresholdInSeconds);
 
             this.Teams = teams.ToList();
             this.teamEnumerator = new CircularEnumerator<Team>(this.Teams);
@@ -58,7 +61,7 @@ namespace Fishbowl.Net.Shared.GameEntities
         public IEnumerable<Period> PeriodLoop()
         {
             while (this.roundEnumerator.Current.NextPeriod(
-                this.remaining ?? this.PeriodLength,
+                this.remaining ?? this.periodLength,
                 this.teamEnumerator.Current.PlayerEnumerator.Current))
             {
                 yield return this.roundEnumerator.Current.CurrentPeriod;
@@ -100,7 +103,7 @@ namespace Fishbowl.Net.Shared.GameEntities
         {
             var period = this.roundEnumerator.Current.CurrentPeriod;
 
-            if (timestamp >= period.StartedAt + period.Length - this.PeriodThreshold)
+            if (timestamp >= period.StartedAt + period.Length - this.periodThreshold)
             {
                 this.FinishPeriod(timestamp, false);
                 return false;

@@ -13,6 +13,8 @@ using Fishbowl.Net.Client.Services;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Fishbowl.Net.Shared.ViewModels;
+using Fishbowl.Net.Shared.GameEntities;
+using Microsoft.Extensions.Options;
 
 namespace Fishbowl.Net.Server
 {
@@ -31,6 +33,7 @@ namespace Fishbowl.Net.Server
         {
             services
                 .AddSingleton<GameService>()
+                .Configure<GameOptions>(this.Configuration.GetSection("GameOptions"))
                 .AddSingleton<Func<string, GameSetupViewModel, GameContext>>(provider =>
                     (password, gameSetup) =>
                         {
@@ -40,6 +43,7 @@ namespace Fishbowl.Net.Server
                                 provider.GetRequiredService<ILogger<GroupHubContext>>());
                             return new GameContext(
                                 gameSetup, groupHubContext, provider.GetRequiredService<Func<Func<Task>,Timer>>(),
+                                provider.GetRequiredService<IOptions<GameOptions>>(),
                                 provider.GetRequiredService<ILogger<GameContext>>());
                         })
                 .AddSingleton<Func<Func<Task>, Timer>>(provider =>
