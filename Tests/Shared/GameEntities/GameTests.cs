@@ -14,6 +14,7 @@ namespace Fishbowl.Net.Tests.Shared.GameEntities
         {
             Assert.Throws<ArgumentException>(() => new Game(
                 Guid.NewGuid(),
+                new(),
                 (new[]
                 {
                     new Player(Guid.NewGuid(), "Player1", new Word[0]),
@@ -30,7 +31,7 @@ namespace Fishbowl.Net.Tests.Shared.GameEntities
 
             var rounds = new[] { "GameType1", "GameType2" };
 
-            var game = new Game(Guid.NewGuid(), teams, rounds, false);
+            var game = new Game(Guid.NewGuid(), new(), teams, rounds, false);
 
             int roundCount = 0;
             int periodCount = 0;
@@ -100,7 +101,7 @@ namespace Fishbowl.Net.Tests.Shared.GameEntities
 
             var rounds = new[] { "GameType1", "GameType2" };
 
-            var game = new Game(Guid.NewGuid(), teams, rounds, false);
+            var game = new Game(Guid.NewGuid(), new(), teams, rounds, false);
 
             int roundCount = 0;
             int periodCount = 0;
