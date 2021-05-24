@@ -83,15 +83,15 @@ namespace Fishbowl.Net.Client.Shared
         public Task<StatusResponse> SetTeamName(TeamNameViewModel teamName) =>
             this.connection.InvokeAsync<StatusResponse>(nameof(this.SetTeamName), teamName);
 
-        public Task StartPeriod(DateTimeOffset timestamp) => this.connection.SendAsync(nameof(this.StartPeriod), timestamp);
+        public Task StartPeriod(DateTimeOffset timestamp) => this.SendAsync(nameof(this.StartPeriod), timestamp);
 
-        public Task AddScore(ScoreViewModel score) => this.connection.SendAsync(nameof(this.AddScore), score);
+        public Task AddScore(ScoreViewModel score) => this.SendAsync(nameof(this.AddScore), score);
 
-        public Task NextWord(DateTimeOffset timestamp) => this.connection.SendAsync(nameof(this.NextWord), timestamp);
+        public Task NextWord(DateTimeOffset timestamp) => this.SendAsync(nameof(this.NextWord), timestamp);
 
-        public Task RevokeLastScore() => this.connection.SendAsync(nameof(this.RevokeLastScore));
+        public Task RevokeLastScore() => this.SendAsync(nameof(this.RevokeLastScore));
 
-        public Task FinishPeriod(DateTimeOffset timestamp) => this.connection.SendAsync(nameof(this.FinishPeriod), timestamp);
+        public Task FinishPeriod(DateTimeOffset timestamp) => this.SendAsync(nameof(this.FinishPeriod), timestamp);
 
         private ClientConnection On(string methodName, Func<Task> handler)
         {
@@ -105,6 +105,12 @@ namespace Fishbowl.Net.Client.Shared
             this.connection.On<T>(methodName, handler);
             this.connection.On<T>(methodName, data => this.logger.LogInformation("{MethodName}: {Data}", methodName, data));
             return this;
+        }
+
+        private Task SendAsync(string methodName, object? arg = null)
+        {
+            this.logger.LogInformation("{MethodName}: {Data}", methodName, arg);
+            return arg is null ? this.connection.SendAsync(methodName) : this.connection.SendAsync(methodName, arg);
         }
 
         public ValueTask DisposeAsync() => this.connection.DisposeAsync();
