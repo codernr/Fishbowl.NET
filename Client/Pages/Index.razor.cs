@@ -8,7 +8,6 @@ using Fishbowl.Net.Client.Shared;
 using Fishbowl.Net.Shared;
 using Fishbowl.Net.Shared.GameEntities;
 using Fishbowl.Net.Shared.ViewModels;
-using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Logging;
 
 namespace Fishbowl.Net.Client.Pages
@@ -25,50 +24,22 @@ namespace Fishbowl.Net.Client.Pages
 
         private ToastContainer? toastContainer;
 
-        private HubConnection connection = default!;
+        private ClientConnection Connection => this.connection ?? throw new InvalidOperationException();
+
+        private ClientConnection? connection;
 
         private string L(string key) => this.StringLocalizer[key] ?? key;
 
         private void Notify(string message, string contextClass) => this.toastContainer?.DisplayToast(message, contextClass);
 
-
-
-        protected override async Task OnInitializedAsync()
+        protected override Task OnInitializedAsync()
         {
-            this.connection = new HubConnectionBuilder()
-                .WithUrl(this.NavigationManager.ToAbsoluteUri("/game"))
-                .WithAutomaticReconnect()
-                .Build();
+            this.connection = new ClientConnection(
+                this.NavigationManager.ToAbsoluteUri("/game"),
+                this,
+                this.LoggerFactory.CreateLogger<ClientConnection>());
 
-            this.connection.Reconnecting += this.Reconnecting;
-            this.connection.Reconnected += this.Reconnected;
-            this.connection.Closed += this.Closed;
-
-            this.connection.On<GameSetupViewModel>(nameof(this.ReceiveSetupPlayer), this.ReceiveSetupPlayer);
-            this.connection.On<PlayerCountViewModel>(nameof(this.ReceivePlayerCount), this.ReceivePlayerCount);
-            this.connection.On<PlayerViewModel>(nameof(this.ReceiveWaitForOtherPlayers), this.ReceiveWaitForOtherPlayers);
-            this.connection.On<TeamSetupViewModel>(nameof(this.ReceiveSetTeamName), this.ReceiveSetTeamName);
-            this.connection.On<TeamSetupViewModel>(nameof(this.ReceiveWaitForTeamSetup), this.ReceiveWaitForTeamSetup);
-            this.connection.On<TeamNameViewModel>(nameof(this.ReceiveTeamName), this.ReceiveTeamName);
-            this.connection.On<PlayerViewModel>(nameof(this.ReceiveRestoreState), this.ReceiveRestoreState);
-            this.connection.On<GameAbortViewModel>(nameof(this.ReceiveGameAborted), this.ReceiveGameAborted);
-            this.connection.On(nameof(this.ReceiveGameStarted), this.ReceiveGameStarted);
-            this.connection.On<GameSummaryViewModel>(nameof(this.ReceiveGameFinished), this.ReceiveGameFinished);
-            this.connection.On<RoundViewModel>(nameof(this.ReceiveRoundStarted), this.ReceiveRoundStarted);
-            this.connection.On<RoundSummaryViewModel>(nameof(this.ReceiveRoundFinished), this.ReceiveRoundFinished);
-            this.connection.On<PeriodSetupViewModel>(nameof(this.ReceivePeriodSetup), this.ReceivePeriodSetup);
-            this.connection.On<PeriodRunningViewModel>(nameof(this.ReceivePeriodStarted), this.ReceivePeriodStarted);
-            this.connection.On<PeriodSummaryViewModel>(nameof(this.ReceivePeriodFinished), this.ReceivePeriodFinished);
-            this.connection.On<WordViewModel>(nameof(this.ReceiveWordSetup), this.ReceiveWordSetup);
-            this.connection.On<ScoreViewModel>(nameof(this.ReceiveScoreAdded), this.ReceiveScoreAdded);
-            this.connection.On<ScoreViewModel>(nameof(this.ReceiveLastScoreRevoked), this.ReceiveLastScoreRevoked);
-
-            await this.connection.StartAsync();
-
-            if (this.connection.State == HubConnectionState.Connected)
-            {
-                await this.Connected();
-            }
+            return this.Connection.StartAsync();
         }
 
         private async void OnStateTransition(State newState)
@@ -81,18 +52,18 @@ namespace Fishbowl.Net.Client.Pages
             await this.PlayerCountDisplay.Hide();
         }
 
-        private async Task Connected()
+        public async Task Connected()
         {
             if (this.ClientState.Password is not null)
             {
-                var response = await this.connection.JoinGameContext(new(this.ClientState.Password, this.ClientState.Id));
+                var response = await this.Connection.JoinGameContext(new(this.ClientState.Password, this.ClientState.Id));
                 if (response.Status == StatusCode.Ok) return;
             }
 
             await this.StateManager.SetStateAsync<Password>();
         }
 
-        private Task Reconnecting(Exception exception) =>
+        public Task Reconnecting(Exception exception) =>
             this.StateManager.SetStateAsync<Info>(state =>
                 {
                     state.ContextClass = ContextCssClass.Danger;
@@ -100,9 +71,9 @@ namespace Fishbowl.Net.Client.Pages
                     state.Message = L("Pages.Play.Reconnecting");
                 });
 
-        private Task Reconnected(string connectionId) => this.JoinGameContext();
+        public Task Reconnected(string connectionId) => this.JoinGameContext();
 
-        private Task Closed(Exception error) =>
+        public Task Closed(Exception error) =>
             this.StateManager.SetStateAsync<ConnectionClosed>();
 
         public async Task ReceiveSetupPlayer(GameSetupViewModel gameSetup)
@@ -198,7 +169,7 @@ namespace Fishbowl.Net.Client.Pages
                 state.Title = L("Pages.Play.ErrorTitle");
                 state.Message = L(abort.MessageKey);
             });
-            await this.connection.StopAsync();
+            await this.Connection.StopAsync();
             this.Reload();
         }
 
@@ -304,21 +275,13 @@ namespace Fishbowl.Net.Client.Pages
             return Task.CompletedTask;
         }
 
-        private Task StartPeriod(DateTimeOffset timestamp) => this.connection.SendAsync("StartPeriod", timestamp);
-
-        private Task NextWord(DateTimeOffset timestamp) => this.connection.SendAsync("NextWord", timestamp);
-
         private async Task AddScore(ScoreViewModel score)
         {
-            await this.connection.SendAsync("AddScore", score);
-            await this.NextWord(score.Timestamp);
+            await this.Connection.AddScore(score);
+            await this.Connection.NextWord(score.Timestamp);
         }
 
-        private Task RevokeLastScore() => this.connection.SendAsync("RevokeLastScore");
-
-        private Task FinishPeriod(DateTimeOffset timestamp) => this.connection.SendAsync("FinishPeriod", timestamp);
-
-        public ValueTask DisposeAsync() => this.connection.DisposeAsync();
+        public ValueTask DisposeAsync() => this.Connection.DisposeAsync();
 
         private Task CreateGame(string password)
         {
@@ -341,7 +304,7 @@ namespace Fishbowl.Net.Client.Pages
         {
             this.ClientState.RoundTypes = roundTypes;
             this.ClientState.IsCreating = true;
-            var response = await this.connection.CreateGameContext(new(
+            var response = await this.Connection.CreateGameContext(new(
                 new(this.ClientState.Password ?? throw new InvalidOperationException(), this.ClientState.Id),
                 new(this.ClientState.TotalPlayerCount, this.ClientState.WordCount, this.ClientState.TeamCount, this.ClientState.RoundTypes)));
 
@@ -353,7 +316,7 @@ namespace Fishbowl.Net.Client.Pages
             Action setup, Action<TNextState>? setParameters = null) where TNextState : State
         {
             var passwordExists = this.ClientState.Password is null ?
-                false : (await this.connection.GameContextExists(this.ClientState.Password)).Data;
+                false : (await this.Connection.GameContextExists(this.ClientState.Password)).Data;
 
             if (passwordExists)
             {
@@ -374,7 +337,7 @@ namespace Fishbowl.Net.Client.Pages
 
         private async Task JoinGameContext()
         {
-            var response = await this.connection.JoinGameContext(
+            var response = await this.Connection.JoinGameContext(
                 new(this.ClientState.Password ?? throw new InvalidOperationException(), this.ClientState.Id));
             
             if (response.Status == StatusCode.Ok) return;
@@ -400,13 +363,13 @@ namespace Fishbowl.Net.Client.Pages
         }
 
         private Task SubmitPlayerData(string[] words) =>
-            this.connection.AddPlayer(new(
+            this.Connection.AddPlayer(new(
                 this.ClientState.Id,
                 this.ClientState.Name,
                 words.Select(word => new Word(Guid.NewGuid(), word))));
 
         private Task SetTeamName(TeamNameViewModel teamName) =>
-            this.connection.SetTeamName(teamName);
+            this.Connection.SetTeamName(teamName);
 
         private void Reload() => this.NavigationManager.NavigateTo(this.NavigationManager.Uri, true);
     }

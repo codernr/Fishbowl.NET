@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Fishbowl.Net.Shared.ViewModels;
 
@@ -5,6 +6,14 @@ namespace Fishbowl.Net.Client.Services
 {
     public interface IGameClient
     {
+        Task Connected() => Task.CompletedTask;
+
+        Task Reconnecting(Exception exception) => Task.CompletedTask;
+
+        Task Reconnected(string connectionId) => Task.CompletedTask;
+
+        Task Closed(Exception error) => Task.CompletedTask;
+
         Task ReceiveSetupPlayer(GameSetupViewModel setup) => Task.CompletedTask;
 
         Task ReceiveSetTeamName(TeamSetupViewModel teamSetup) => Task.CompletedTask;

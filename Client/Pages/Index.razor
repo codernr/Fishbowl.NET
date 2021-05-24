@@ -6,8 +6,9 @@
 @inject NavigationManager NavigationManager
 @inject IStorageService StorageService
 @inject ILogger<Index> Logger
+@inject ILoggerFactory LoggerFactory
 @inject IStringLocalizer<Resources> StringLocalizer
-@inject IClientState ClientState;
+@inject IClientState ClientState
 
 <div class="position-fixed top-0 start-50 translate-middle-x mt-1 pt-2">
     <Toast @ref="this.playerCountDisplay"
@@ -28,12 +29,12 @@
     <WaitingForPlayers />
     <TeamName OnTeamNameSet="this.SetTeamName" />
     <WaitingForTeamNames />
-    <PeriodSetupPlay OnStarted="this.StartPeriod" />
+    <PeriodSetupPlay OnStarted="this.Connection.StartPeriod" />
     <PeriodSetupWatch />
     <PeriodPlay
         OnScoreAdded="this.AddScore"
-        OnPeriodFinished="this.FinishPeriod"
-        OnLastScoreRevoked="this.RevokeLastScore" />
+        OnPeriodFinished="this.Connection.FinishPeriod"
+        OnLastScoreRevoked="this.Connection.RevokeLastScore" />
     <PeriodWatch />
     <PeriodFinished Delay="@TimeSpan.FromSeconds(4)" />
     <RoundFinished Delay="@TimeSpan.FromSeconds(4)" />
