@@ -22,6 +22,7 @@ namespace Fishbowl.Net.Client
             builder.Services
                 .AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) })
                 .AddSingleton<IStorageService, StorageService>()
+                .AddSingleton<IScreenService, ScreenService>()
                 .AddTransient<IClientState, ClientState>()
                 .AddLocalization();
 

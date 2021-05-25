@@ -252,10 +252,13 @@ namespace Fishbowl.Net.Client.Pages
 
         public ValueTask DisposeAsync() => this.Connection.DisposeAsync();
 
-        private Task CreateGame(string password)
+        private async Task CreateGame(string password)
         {
             this.ClientState.Password = password;
-            return this.AfterPasswordCheck<PlayerCount>(() => {});
+            
+            await this.ScreenService.RequestWakeLock();
+            await this.ScreenService.RequestFullScreen();
+            await this.AfterPasswordCheck<PlayerCount>(() => {});
         }
 
         private Task SetPlayerCount(int playerCount) =>
@@ -297,11 +300,13 @@ namespace Fishbowl.Net.Client.Pages
             await this.StateManager.SetStateAsync<TNextState>(setParameters);
         }
 
-        private Task JoinGame(string password)
+        private async Task JoinGame(string password)
         {
             this.ClientState.Password = password;
 
-            return this.JoinGameContext();
+            await this.ScreenService.RequestWakeLock();
+            await this.ScreenService.RequestFullScreen();
+            await this.JoinGameContext();
         }
 
         private async Task JoinGameContext()
