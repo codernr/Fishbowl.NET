@@ -19,10 +19,18 @@ namespace Fishbowl.Net.Client
 
             builder.RootComponents.Add<App>("#app");
 
+            if (builder.HostEnvironment.IsDevelopment())
+            {
+                builder.Services.AddSingleton<IScreenService, DevScreenService>();
+            }
+            else
+            {
+                builder.Services.AddSingleton<IScreenService, ScreenService>();
+            }
+
             builder.Services
                 .AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) })
                 .AddSingleton<IStorageService, StorageService>()
-                .AddSingleton<IScreenService, ScreenService>()
                 .AddTransient<IClientState, ClientState>()
                 .AddLocalization();
 
