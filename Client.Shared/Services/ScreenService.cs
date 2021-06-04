@@ -7,6 +7,8 @@ namespace Fishbowl.Net.Client.Shared.Services
 {
     public interface IScreenService
     {
+        Task InitializeAsync() => Task.CompletedTask;
+
         ValueTask RequestWakeLock();
 
         ValueTask RequestFullScreen();
@@ -16,21 +18,23 @@ namespace Fishbowl.Net.Client.Shared.Services
     {
         private const string JSModuleName = "ScreenModule";
 
-        private readonly Lazy<Task<IJSObjectReference>> moduleTask;
+        private readonly IJSRuntime js;
 
-        public ScreenService(IJSRuntime js) =>
-            this.moduleTask = new (() => js.InvokeAsync<IJSObjectReference>(
-                "import", "./_content/Fishbowl.Net.Client.Shared/js/screen.js").AsTask());
+        private IJSObjectReference? module;
+
+        private IJSObjectReference Module => this.module ?? throw new InvalidOperationException();
+
+        public ScreenService(IJSRuntime js) => this.js = js;
+
+        public async Task InitializeAsync() => this.module = await js.InvokeAsync<IJSObjectReference>(
+                "import", "./_content/Fishbowl.Net.Client.Shared/js/screen.js");
 
         public ValueTask RequestWakeLock() => this.InvokeVoidAsync("requestWakeLock");
 
         public ValueTask RequestFullScreen() => this.InvokeVoidAsync("requestFullScreen");
 
-        private async ValueTask InvokeVoidAsync(string methodName)
-        {
-            var module = await this.moduleTask.Value;
-            await module.InvokeVoidAsync($"{JSModuleName}.{methodName}");
-        }
+        private ValueTask InvokeVoidAsync(string methodName) =>
+            this.Module.InvokeVoidAsync($"{JSModuleName}.{methodName}");
     }
 
     public class DevScreenService : IScreenService

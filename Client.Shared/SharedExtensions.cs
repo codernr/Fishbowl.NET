@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Fishbowl.Net.Client.Shared.Services;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,5 +22,10 @@ namespace Fishbowl.Net.Client.Shared
 
             return builder;
         }
+
+        public static Task InitializeInteropServicesAsync(this WebAssemblyHost host) =>
+            Task.WhenAll(
+                host.Services.GetRequiredService<IStorageService>().InitializeAsync(),
+                host.Services.GetRequiredService<IScreenService>().InitializeAsync());
     }
 }

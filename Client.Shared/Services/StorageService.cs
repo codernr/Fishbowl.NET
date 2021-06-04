@@ -6,37 +6,40 @@ namespace Fishbowl.Net.Client.Shared.Services
 {
     public interface IStorageService
     {
-        Task<string?> GetItem(string key);
+        Task InitializeAsync();
+        
+        string? GetItem(string key);
 
-        Task SetItem(string key, string? value);
+        void SetItem(string key, string? value);
     }
 
     public class StorageService : IStorageService
     {
         private const string JSModuleName = "StorageModule";
 
-        private readonly Lazy<Task<IJSInProcessObjectReference>> moduleTask;
+        private readonly IJSRuntime js;
 
-        public StorageService(IJSRuntime js) =>
-            this.moduleTask = new (() => js.InvokeAsync<IJSInProcessObjectReference>(
-                "import", "./_content/Fishbowl.Net.Client.Shared/js/storage.js").AsTask());
+        private IJSInProcessObjectReference? module;
 
-        public Task SetItem(string key, string? value) =>
-            value is null ? this.InvokeVoid("removeItem", key) : this.InvokeVoid("setItem", key, value);
+        private IJSInProcessObjectReference Module => this.module ?? throw new InvalidOperationException();
 
-        public Task<string?> GetItem(string key) =>
-            this.Invoke<string?>("getItem", key);
+        public StorageService(IJSRuntime js) => this.js = js;
 
-        private async Task InvokeVoid(string methodName, params object?[] args)
+        public async Task InitializeAsync() => this.module = await this.js.InvokeAsync<IJSInProcessObjectReference>(
+                "import", "./_content/Fishbowl.Net.Client.Shared/js/storage.js");
+
+        public void SetItem(string key, string? value)
         {
-            var module = await this.moduleTask.Value;
-            module.InvokeVoid($"{JSModuleName}.{methodName}", args);
+            if (value is null) this.InvokeVoid("removeItem", key);
+            else this.InvokeVoid("setItem", key, value);
         }
 
-        private async Task<T> Invoke<T>(string methodName, params object?[] args)
-        {
-            var module = await this.moduleTask.Value;
-            return module.Invoke<T>($"{JSModuleName}.{methodName}", args);
-        }
+        public string? GetItem(string key) => this.Invoke<string?>("getItem", key);
+
+        private void InvokeVoid(string methodName, params object?[] args) =>
+            this.Module.InvokeVoid($"{JSModuleName}.{methodName}", args);
+
+        private T Invoke<T>(string methodName, params object?[] args) =>
+            this.Module.Invoke<T>($"{JSModuleName}.{methodName}", args);
     }
 }

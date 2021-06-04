@@ -31,7 +31,11 @@ namespace Fishbowl.Net.Client.Online
             CultureInfo.DefaultThreadCurrentCulture = culture;
             CultureInfo.DefaultThreadCurrentUICulture = culture;
 
-            await builder.Build().RunAsync();
+            var host = builder.Build();
+
+            await host.InitializeInteropServicesAsync();
+            
+            await host.RunAsync();
         }
     }
 }
