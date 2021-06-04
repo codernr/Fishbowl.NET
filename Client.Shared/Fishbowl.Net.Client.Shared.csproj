@@ -3,8 +3,12 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <Nullable>enable</Nullable>
+    <NpmRoot>Npm\</NpmRoot>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Content Remove="$(NpmRoot)**" />
+  </ItemGroup>
   
   <ItemGroup>
     <SupportedPlatform Include="browser" />
@@ -13,5 +17,13 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="*" />
   </ItemGroup>
+
+  <Target Name="BuildCssDebug" BeforeTargets="Build" Condition="'$(Configuration)' == 'Debug'">
+    <Exec WorkingDirectory="$(NpmRoot)" Command="npm run css-debug" />
+  </Target>
+
+  <Target Name="BuildCssRelease" BeforeTargets="Build" Condition="'$(Configuration)' == 'Release'">
+    <Exec WorkingDirectory="$(NpmRoot)" Command="npm run build" />
+  </Target>
 
 </Project>
