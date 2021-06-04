@@ -1,8 +1,9 @@
+using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.JSInterop;
 
-namespace Fishbowl.Net.Client.Online.Services
+namespace Fishbowl.Net.Client.Shared.Services
 {
     public interface IScreenService
     {
@@ -13,13 +14,23 @@ namespace Fishbowl.Net.Client.Online.Services
 
     public class ScreenService : IScreenService
     {
-        private readonly IJSRuntime js;
+        private const string JSModuleName = "ScreenModule";
 
-        public ScreenService(IJSRuntime js) => this.js = js;
+        private readonly Lazy<Task<IJSObjectReference>> moduleTask;
 
-        public ValueTask RequestWakeLock() => this.js.InvokeVoidAsync("ScreenModule.requestWakeLock");
+        public ScreenService(IJSRuntime js) =>
+            this.moduleTask = new (() => js.InvokeAsync<IJSObjectReference>(
+                "import", "./_content/Fishbowl.Net.Client.Shared/js/screen.js").AsTask());
 
-        public ValueTask RequestFullScreen() => this.js.InvokeVoidAsync("ScreenModule.requestFullScreen");
+        public ValueTask RequestWakeLock() => this.InvokeVoidAsync("requestWakeLock");
+
+        public ValueTask RequestFullScreen() => this.InvokeVoidAsync("requestFullScreen");
+
+        private async ValueTask InvokeVoidAsync(string methodName)
+        {
+            var module = await this.moduleTask.Value;
+            await module.InvokeVoidAsync($"{JSModuleName}.{methodName}");
+        }
     }
 
     public class DevScreenService : IScreenService

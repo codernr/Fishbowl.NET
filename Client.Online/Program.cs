@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Fishbowl.Net.Client.Online.Services;
+using Fishbowl.Net.Client.Shared;
 using System.Globalization;
 using Microsoft.Extensions.Logging;
 
@@ -19,20 +20,12 @@ namespace Fishbowl.Net.Client.Online
 
             builder.RootComponents.Add<App>("#app");
 
-            if (builder.HostEnvironment.IsDevelopment())
-            {
-                builder.Services.AddSingleton<IScreenService, DevScreenService>();
-            }
-            else
-            {
-                builder.Services.AddSingleton<IScreenService, ScreenService>();
-            }
-
-            builder.Services
-                .AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) })
-                .AddSingleton<IStorageService, StorageService>()
-                .AddTransient<IClientState, ClientState>()
-                .AddLocalization();
+            builder
+                .AddInteropServices()
+                .Services
+                    .AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) })
+                    .AddTransient<IClientState, ClientState>()
+                    .AddLocalization();
 
             var culture = new CultureInfo("hu");
             CultureInfo.DefaultThreadCurrentCulture = culture;
