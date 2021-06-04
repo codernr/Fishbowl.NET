@@ -1,6 +1,7 @@
 {
     "version": "0.2.0",
     "configurations": [
+
         {
             "name": ".NET Core Launch (web)",
             "type": "coreclr",
@@ -16,6 +17,14 @@
             "sourceFileMap": {
                 "/Views": "${workspaceFolder}/Server/Views"
             }
+        },
+        {
+            "name": "Pwa",
+            "type": "blazorwasm",
+            "request": "launch",
+            "preLaunchTask": "pwa-build",
+            "cwd": "${workspaceFolder}/Client.Pwa",
+            "browser": "edge"
         },
         {
             "name": "Blazor debug",
