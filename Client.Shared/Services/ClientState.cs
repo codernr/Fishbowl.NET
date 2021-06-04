@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Fishbowl.Net.Client.Online.Shared;
+using Fishbowl.Net.Client.Shared.Services;
 using Fishbowl.Net.Shared.ViewModels;
 
-namespace Fishbowl.Net.Client.Online.Services
+namespace Fishbowl.Net.Client.Shared.Services
 {
     public interface IClientState
     {

@@ -3,10 +3,10 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
-using Fishbowl.Net.Client.Online.Services;
 using Fishbowl.Net.Client.Shared;
 using System.Globalization;
 using Microsoft.Extensions.Logging;
+using Fishbowl.Net.Client.Shared.Services;
 
 namespace Fishbowl.Net.Client.Online
 {
