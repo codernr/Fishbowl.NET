@@ -12,6 +12,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="*" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Shared\Fishbowl.Net.Shared.csproj" />
     <ProjectReference Include="..\Client.Shared\Fishbowl.Net.Client.Shared.csproj" />
   </ItemGroup>
 </Project>
