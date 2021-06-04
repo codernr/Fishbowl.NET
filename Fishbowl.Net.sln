@@ -12,6 +12,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fishbowl.Net.Tests", "Tests
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fishbowl.Net.Client.Pwa", "Client.Pwa\Fishbowl.Net.Client.Pwa.csproj", "{1A249FFC-A4D8-4CAC-94E0-08AB6DD91B8C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fishbowl.Net.Client.Shared", "Client.Shared\Fishbowl.Net.Client.Shared.csproj", "{1518C87E-B643-4D82-AB4F-CA8EC79EF25E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -82,6 +84,18 @@ Global
 		{1A249FFC-A4D8-4CAC-94E0-08AB6DD91B8C}.Release|x64.Build.0 = Release|Any CPU
 		{1A249FFC-A4D8-4CAC-94E0-08AB6DD91B8C}.Release|x86.ActiveCfg = Release|Any CPU
 		{1A249FFC-A4D8-4CAC-94E0-08AB6DD91B8C}.Release|x86.Build.0 = Release|Any CPU
+		{1518C87E-B643-4D82-AB4F-CA8EC79EF25E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1518C87E-B643-4D82-AB4F-CA8EC79EF25E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1518C87E-B643-4D82-AB4F-CA8EC79EF25E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1518C87E-B643-4D82-AB4F-CA8EC79EF25E}.Debug|x64.Build.0 = Debug|Any CPU
+		{1518C87E-B643-4D82-AB4F-CA8EC79EF25E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1518C87E-B643-4D82-AB4F-CA8EC79EF25E}.Debug|x86.Build.0 = Debug|Any CPU
+		{1518C87E-B643-4D82-AB4F-CA8EC79EF25E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1518C87E-B643-4D82-AB4F-CA8EC79EF25E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1518C87E-B643-4D82-AB4F-CA8EC79EF25E}.Release|x64.ActiveCfg = Release|Any CPU
+		{1518C87E-B643-4D82-AB4F-CA8EC79EF25E}.Release|x64.Build.0 = Release|Any CPU
+		{1518C87E-B643-4D82-AB4F-CA8EC79EF25E}.Release|x86.ActiveCfg = Release|Any CPU
+		{1518C87E-B643-4D82-AB4F-CA8EC79EF25E}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
