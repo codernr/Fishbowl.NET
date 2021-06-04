@@ -19,6 +19,10 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="*" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Shared\Fishbowl.Net.Shared.csproj" />
+  </ItemGroup>
+
   <Target Name="BuildCssDebug" BeforeTargets="Build" Condition="'$(Configuration)' == 'Debug'">
     <Exec WorkingDirectory="$(NpmRoot)" Command="npm run css-debug" />
   </Target>
