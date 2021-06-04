@@ -1,0 +1,32 @@
+@using Fishbowl.Net.Client.Shared.Components.Templates
+@inherits State
+@inject IStringLocalizer<Resources> L
+
+@code
+{
+    protected override RenderFragment Content =>
+        @<StepContainer
+            Title="@(L["Components.States.Common.SetupGame"])"
+            Subtitle="@(L["Components.States.RoundTypes.Title"])"
+            TotalSteps="4" Step="4">
+            <form @onsubmit="e => this.OnRoundTypesSet.InvokeAsync(this.SelectedOptions)">
+                <div class="row mb-3">
+                    <div class="col d-grid gap-3">
+                        @for (int i = 0; i < this.options.Count; i++)
+                        {
+                            var id = i;
+                            <input type="checkbox" class="btn-check" id="option-@id" checked="@this.options[i].selected" @onchange="e => this.ToggleOption(id)">
+                            <label for="option-@id" class="btn btn-outline-primary btn-lg">@this.options[i].name</label>
+                        }
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="d-grid col">
+                        <button class="btn btn-success btn-lg" type="submit" disabled="@(!this.IsValid)">
+                            @L["Components.States.RoundTypes.SubmitButton"]
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </StepContainer>;
+}

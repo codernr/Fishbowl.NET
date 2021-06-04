@@ -1,0 +1,28 @@
+@using Fishbowl.Net.Client.Shared.Components.Templates
+@inherits State
+@inject IStringLocalizer<Resources> L
+
+@code
+{
+    protected override RenderFragment Content =>
+        @<StateContainer Title="@this.Period.Round.Type">
+            <div class="row mb-5">
+                <div class="col">
+                    <h4>@L["Components.States.PeriodSetupPlay.PeriodLength"]: @(string.Format("{0:m\\:ss}", this.Period.Length))</h4>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col">
+                    <h4>@L["Components.States.PeriodSetupPlay.Subtitle"]</h4>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col d-grid">
+                    <button class="btn btn-success btn-lg" type="button"
+                        @onclick="e => this.OnStarted.InvokeAsync(DateTimeOffset.UtcNow)">
+                        @L["Components.States.PeriodSetupPlay.StartButton"]
+                    </button>
+                </div>
+            </div>
+        </StateContainer>;
+}

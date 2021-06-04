@@ -1,0 +1,44 @@
+@using Fishbowl.Net.Client.Shared.Components.Templates
+@inherits State
+@inject IStringLocalizer<Resources> L
+
+@code
+{
+    protected override RenderFragment Content =>
+        @<StepContainer
+            Title="@(L["Components.States.Common.SetupPlayer"])"
+            Subtitle="@(L["Components.States.PlayerWords.Title"])"
+            TotalSteps="2" Step="2">
+            <form @onsubmit="e => this.OnPlayerWordsSet.InvokeAsync(this.words)" @onsubmit:preventDefault>
+
+                @for (int i = 0; i < this.words.Length; i++)
+                {
+                    var id = i;
+                    <div class="row mb-3">
+                        <div class="col">
+                            <div class="form-floating text-dark">
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    id="word-@id"
+                                    name="words[]"
+                                    placeholder="@(L[$"Components.States.PlayerWords.Word.{id}"])"
+                                    @bind="this.words[id]"
+                                    minlength="2"
+                                    required>
+                                <label for="word-@id">@L[$"Components.States.PlayerWords.Word.{id}"]</label>
+                            </div>
+                        </div>
+                    </div>
+                }
+            
+                <div class="row mb-3">
+                    <div class="d-grid col">
+                        <button class="btn btn-success btn-lg" type="submit">
+                            @L["Components.States.PlayerWords.SubmitButton"]
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </StepContainer>;
+}

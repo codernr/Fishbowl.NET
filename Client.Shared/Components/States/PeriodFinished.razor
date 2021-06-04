@@ -1,0 +1,30 @@
+@using Fishbowl.Net.Client.Shared.Components.Templates
+@inherits State
+@inject IStringLocalizer<Resources> L
+
+@code
+{
+    protected override RenderFragment Content =>
+        @<StateContainer Title="@(L["Components.States.PeriodFinished.Title"])">
+            <div class="row mb-3">
+                <div class="col">
+                    <h4>
+                        @this.Period.Player.Name @L["Components.States.PeriodFinished.Scores"]:
+                        @this.Period.Scores.Count
+                    </h4>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <h4>@L["Components.States.PeriodFinished.GuessedWords"]</h4>
+                    <ul class="list-group">
+                        @foreach (var score in this.Period.Scores)
+                        {
+                            <li class="list-group-item">@score.Word.Value</li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </StateContainer>;
+}
