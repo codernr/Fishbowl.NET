@@ -9,7 +9,7 @@ using Fishbowl.Net.Server.Hubs;
 using Fishbowl.Net.Server.Services;
 using System;
 using Microsoft.AspNetCore.SignalR;
-using Fishbowl.Net.Client.Services;
+using Fishbowl.Net.Client.Online.Services;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Fishbowl.Net.Shared.ViewModels;

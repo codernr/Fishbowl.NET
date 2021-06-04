@@ -1,0 +1,25 @@
+@using Fishbowl.Net.Client.Online.Components.Templates
+@inherits State
+@inject IStringLocalizer<Resources> L
+
+@code
+{
+    protected override RenderFragment Content =>
+        @<StateContainer Title="@this.Period.Round.Type">
+            <div class="row mb-5">
+                <div class="col">
+                    <h4>@L["Components.States.PeriodSetupWatch.NextPlayer"]: @this.Period.Player.Name</h4>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <h4>@L["Components.States.PeriodSetupWatch.PeriodLength"]: @(string.Format("{0:m\\:ss}", this.Period.Length))</h4>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <Spinner />
+                </div>
+            </div>
+        </StateContainer>;
+}

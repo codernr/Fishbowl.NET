@@ -1,0 +1,60 @@
+@using Fishbowl.Net.Client.Online.Components.Templates
+@inherits State
+@inject IStringLocalizer<Resources> L
+
+@code
+{
+    protected override RenderFragment Content =>
+        @<StateContainer Title="@this.Period.Round.Type">
+            <div class="row mb-3 fade @this.Show(this.showRevoke)">
+                <div class="col d-grid">
+                    <button
+                        class="btn btn-danger"
+                        type="button"
+                        disabled="@(!this.showRevoke)"
+                        @onclick="e => this.OnLastScoreRevoked.InvokeAsync()">
+                        @L["Components.States.PeriodPlay.RevokeButton"]
+                    </button>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col">
+                    <Timer Start="this.Period.StartedAt" Length="this.Period.Length" OnExpired="() => this.Expired = true" />
+                </div>
+            </div>
+
+            <div class="row mb-3 fade @this.Show(this.Word is not null)">
+                <div class="col">
+                    <div class="card text-white bg-primary">
+                        <div class="card-body fs-3">
+                            @(this.Word?.Value ?? ".")
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-3 fade @this.Show(this.Word is not null)">
+                <div class="col d-grid">
+                    <button
+                        class="btn btn-success btn-lg"
+                        type="button"
+                        disabled="@(this.Word is null)"
+                        @onclick="this.ScoreAdded">
+                        @L["Components.States.PeriodPlay.GuessedButton"]
+                    </button>
+                </div>
+            </div>
+        
+            <div class="row mb-3 fade @this.Show(this.Expired)">
+                <div class="col d-grid">
+                    <button
+                        class="btn btn-danger btn-lg"
+                        type="button"
+                        disabled="@(!this.Expired)"
+                        @onclick="e => this.OnPeriodFinished.InvokeAsync(DateTimeOffset.UtcNow)">
+                        @L["Components.States.PeriodPlay.PassButton"]
+                    </button>
+                </div>
+            </div>
+        </StateContainer>;   
+}

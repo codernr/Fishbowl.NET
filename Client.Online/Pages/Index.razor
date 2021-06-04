@@ -1,0 +1,45 @@
+@page "/"
+@using Microsoft.Extensions.Logging
+@using Fishbowl.Net.Client.Online.Components
+@using Fishbowl.Net.Client.Online.Components.States
+
+@inject NavigationManager NavigationManager
+@inject IStorageService StorageService
+@inject IScreenService ScreenService
+@inject ILoggerFactory LoggerFactory
+@inject IStringLocalizer<Resources> StringLocalizer
+@inject IClientState ClientState
+
+<div class="position-fixed top-0 start-50 translate-middle-x mt-1 pt-2">
+    <Toast @ref="this.playerCountDisplay"
+        Auto="false"
+        Message="@(string.Format(L("Pages.Play.PlayerCount"), this.ClientState.TotalPlayerCount, this.ClientState.ConnectedPlayerCount, this.ClientState.SetupPlayerCount))" />
+</div>
+
+<StateManager @ref="this.stateManager" TransitionStarted="@this.OnStateTransition">
+    <Connecting Delay="@TimeSpan.FromSeconds(2)" />
+    <ConnectionClosed ReloadRequested="this.Reload" />
+    <Password OnCreateGame="this.CreateGame" OnJoinGame="this.JoinGame" />
+    <PlayerCount OnPlayerCountSet="this.SetPlayerCount" />
+    <TeamCount OnTeamCountSet="this.SetTeamCount" />
+    <WordCount OnWordCountSet="this.SetWordCount" />
+    <RoundTypes OnRoundTypesSet="this.SetRoundTypes" />
+    <PlayerName OnPlayerNameSet="this.SetPlayerName" />
+    <PlayerWords OnPlayerWordsSet="this.SubmitPlayerData" />
+    <WaitingForPlayers />
+    <TeamName OnTeamNameSet="this.SetTeamName" />
+    <WaitingForTeamNames />
+    <PeriodSetupPlay OnStarted="this.Connection.StartPeriod" />
+    <PeriodSetupWatch />
+    <PeriodPlay
+        OnScoreAdded="this.AddScore"
+        OnPeriodFinished="this.Connection.FinishPeriod"
+        OnLastScoreRevoked="this.Connection.RevokeLastScore" />
+    <PeriodWatch />
+    <PeriodFinished Delay="@TimeSpan.FromSeconds(4)" />
+    <RoundFinished Delay="@TimeSpan.FromSeconds(4)" />
+    <GameFinished ReloadRequested="this.Reload" />
+    <Info Delay="@TimeSpan.FromSeconds(2)" />
+</StateManager>
+
+<ToastContainer @ref="this.toastContainer" />

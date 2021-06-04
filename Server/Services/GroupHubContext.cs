@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Fishbowl.Net.Client.Services;
+using Fishbowl.Net.Client.Online.Services;
 using Fishbowl.Net.Server.Hubs;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;

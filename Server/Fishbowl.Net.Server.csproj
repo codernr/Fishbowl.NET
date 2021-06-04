@@ -10,7 +10,7 @@
     <PackageReference Include="System.Linq.Async" Version="*"/>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Client\Fishbowl.Net.Client.csproj"/>
+    <ProjectReference Include="..\Client.Online\Fishbowl.Net.Client.Online.csproj"/>
     <ProjectReference Include="..\Shared\Fishbowl.Net.Shared.csproj"/>
   </ItemGroup>
 </Project>
