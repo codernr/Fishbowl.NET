@@ -16,7 +16,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "Client.Pwa": {
+    "Fishbowl.Net.Client.Pwa": {
       "commandName": "Project",
       "dotnetRunMessages": "true",
       "launchBrowser": true,

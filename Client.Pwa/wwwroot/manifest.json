@@ -1,6 +1,6 @@
 {
-  "name": "Client.Pwa",
-  "short_name": "Client.Pwa",
+  "name": "Fishbowl.Net.Client.Pwa",
+  "short_name": "Fishbowl.Net.Client.Pwa",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#ffffff",
