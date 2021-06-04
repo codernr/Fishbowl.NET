@@ -1,4 +1,4 @@
-namespace Fishbowl.Net.Client.Online.Shared
+namespace Fishbowl.Net.Client.Shared.Common
 {
     public static class ContextCssClass
     {

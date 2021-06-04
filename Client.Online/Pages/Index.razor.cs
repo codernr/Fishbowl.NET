@@ -5,6 +5,7 @@ using Fishbowl.Net.Client.Online.Components;
 using Fishbowl.Net.Client.Online.Components.States;
 using Fishbowl.Net.Client.Online.Services;
 using Fishbowl.Net.Client.Online.Shared;
+using Fishbowl.Net.Client.Shared.Common;
 using Fishbowl.Net.Shared;
 using Fishbowl.Net.Shared.GameEntities;
 using Fishbowl.Net.Shared.ViewModels;

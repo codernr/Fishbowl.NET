@@ -1,7 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using Fishbowl.Net.Client.Online.Shared;
+using Fishbowl.Net.Client.Shared.Common;
 using Microsoft.AspNetCore.Components;
 
 namespace Fishbowl.Net.Client.Online.Components

@@ -1,4 +1,4 @@
-using Fishbowl.Net.Client.Online.Shared;
+using Fishbowl.Net.Client.Shared.Common;
 
 namespace Fishbowl.Net.Client.Online.Components.States
 {
