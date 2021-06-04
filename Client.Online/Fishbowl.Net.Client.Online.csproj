@@ -6,23 +6,24 @@
     <BlazorWebAssemblyLoadAllGlobalizationData>true</BlazorWebAssemblyLoadAllGlobalizationData>
   </PropertyGroup>
   <ItemGroup>
-    <Content Remove="$(NpmRoot)**"/>
+    <Content Remove="$(NpmRoot)**" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="*"/>
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="*" PrivateAssets="all"/>
-    <PackageReference Include="System.Net.Http.Json" Version="*"/>
-    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="*"/>
-    <PackageReference Include="Microsoft.Extensions.Localization" Version="*"/>
-    <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="*"/>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="*" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="*" PrivateAssets="all" />
+    <PackageReference Include="System.Net.Http.Json" Version="*" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="*" />
+    <PackageReference Include="Microsoft.Extensions.Localization" Version="*" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="*" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Shared\Fishbowl.Net.Shared.csproj"/>
+    <ProjectReference Include="..\Shared\Fishbowl.Net.Shared.csproj" />
+    <ProjectReference Include="..\Client.Shared\Fishbowl.Net.Client.Shared.csproj" />
   </ItemGroup>
   <Target Name="BuildCssDebug" BeforeTargets="Build" Condition="'$(Configuration)' == 'Debug'">
-    <Exec WorkingDirectory="$(NpmRoot)" Command="npm run css-debug"/>
+    <Exec WorkingDirectory="$(NpmRoot)" Command="npm run css-debug" />
   </Target>
   <Target Name="BuildCssRelease" BeforeTargets="Build" Condition="'$(Configuration)' == 'Release'">
-    <Exec WorkingDirectory="$(NpmRoot)" Command="npm run build"/>
+    <Exec WorkingDirectory="$(NpmRoot)" Command="npm run build" />
   </Target>
 </Project>
