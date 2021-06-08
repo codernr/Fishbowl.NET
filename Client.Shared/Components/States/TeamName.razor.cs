@@ -7,9 +7,10 @@ namespace Fishbowl.Net.Client.Shared.Components.States
     {
         public TeamViewModel Team { get; set; } = default!;
 
+        public string Value { get; set; } = string.Empty;
+
         [Parameter]
         public EventCallback<TeamNameViewModel> OnTeamNameSet { get; set; } = default!;
 
-        private string teamName = string.Empty;
     }
 }

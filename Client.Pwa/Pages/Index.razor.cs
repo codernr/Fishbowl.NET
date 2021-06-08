@@ -83,7 +83,7 @@ namespace Fishbowl.Net.Client.Pwa.Pages
                 words.Select(word => new Word(Guid.NewGuid(), word)).ToList()));
 
             return this.players.Count < this.playerCount ?
-                this.StateManager.SetStateAsync<PlayerName>() :
+                this.StateManager.SetStateAsync<PlayerName>(state => state.Value = string.Empty) :
                 this.CreateTeams();
         }
 
@@ -101,7 +101,11 @@ namespace Fishbowl.Net.Client.Pwa.Pages
             var nextTeam = this.teams.FirstOrDefault(team => team.Name is null);
 
             return nextTeam is null ? this.StartGame() :
-                this.StateManager.SetStateAsync<TeamName>(state => state.Team = nextTeam.Map());
+                this.StateManager.SetStateAsync<TeamName>(state =>
+                {
+                    state.Team = nextTeam.Map();
+                    state.Value = string.Empty;
+                });
         }
 
         private async Task StartGame()
@@ -173,6 +177,7 @@ namespace Fishbowl.Net.Client.Pwa.Pages
             this.StateManager.SetStateAsync<PeriodPlay>(state =>
             {
                 state.Word = null;
+                state.Expired = false;
                 state.ScoreCount = 0;
                 state.Period = period.MapRunning(this.Game.Game.CurrentRound);
             });

@@ -19,6 +19,18 @@ namespace Fishbowl.Net.Client.Shared.Components.States
         
         public PeriodRunningViewModel Period { get; set; } = default!;
 
+        public bool Expired
+        {
+            get => this.expired;
+            set
+            {
+                this.expired = value;
+                this.Update();
+            }
+        }
+        
+        private bool expired;
+
         public int ScoreCount
         {
             get => this.scoreCount;
@@ -34,18 +46,6 @@ namespace Fishbowl.Net.Client.Shared.Components.States
         public WordViewModel? Word { get; set; }
 
         private bool showRevoke = false;
-
-        private bool Expired
-        {
-            get => this.expired;
-            set
-            {
-                this.expired = value;
-                this.Update();
-            }
-        }
-        
-        private bool expired;
 
         private string Show(bool show) => show ? "show" : string.Empty;
 
