@@ -5,7 +5,7 @@
 @code
 {
     protected override RenderFragment Content =>
-        @<StateContainer Title="@this.Period.Round.Type">
+        @<StateContainer Title="@($"{this.Period.Round.Type}: {this.Period.Player.Name}")">
             <div class="row mb-5">
                 <div class="col">
                     <h4>@L["Components.States.PeriodSetupPlay.PeriodLength"]: @(string.Format("{0:m\\:ss}", this.Period.Length))</h4>
