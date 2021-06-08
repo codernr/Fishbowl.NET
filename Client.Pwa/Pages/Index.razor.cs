@@ -184,7 +184,13 @@ namespace Fishbowl.Net.Client.Pwa.Pages
 
         private void StartPeriod(DateTimeOffset timestamp) => this.Game.StartPeriod(timestamp);
 
-        private void AddScore(ScoreViewModel score) => this.Game.AddScore(score.Map());
+        private void AddScore(ScoreViewModel score)
+        {
+            this.Game.AddScore(score.Map());
+            this.transition = this.transition
+                .ContinueWith(_ => this.StateManager.SetParameters<PeriodPlay>(state => state.ScoreCount++));
+            this.Game.NextWord(score.Timestamp);
+        }
 
         private void FinishPeriod(DateTimeOffset timestamp) => this.Game.FinishPeriod(timestamp);
 
