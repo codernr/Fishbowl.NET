@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Fishbowl.Net.Client.Shared;
 using System.Globalization;
 using Microsoft.Extensions.Logging;
-using Fishbowl.Net.Client.Shared.Services;
+using Fishbowl.Net.Client.Online.Services;
 
 namespace Fishbowl.Net.Client.Online
 {

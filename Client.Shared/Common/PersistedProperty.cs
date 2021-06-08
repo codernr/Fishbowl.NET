@@ -1,6 +1,7 @@
 using System;
+using Fishbowl.Net.Client.Shared.Services;
 
-namespace Fishbowl.Net.Client.Shared.Services
+namespace Fishbowl.Net.Client.Shared.Common
 {
     public abstract class PersistedProperty<T>
     {
