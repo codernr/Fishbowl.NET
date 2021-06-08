@@ -1,7 +1,7 @@
 using Fishbowl.Net.Shared.ViewModels;
 using Microsoft.AspNetCore.Components;
 
-namespace Fishbowl.Net.Client.Online.Components.States
+namespace Fishbowl.Net.Client.Shared.Components.States
 {
     public partial class GameFinished
     {
