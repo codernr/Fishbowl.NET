@@ -36,6 +36,8 @@ namespace Fishbowl.Net.Client.Pwa.Pages
 
         private AsyncGame? game;
 
+        private Task transition = Task.CompletedTask;
+
         private string L(string key) => this.StringLocalizer[key] ?? key;
 
         private Task SetPlayerCount(int playerCount)
@@ -70,7 +72,7 @@ namespace Fishbowl.Net.Client.Pwa.Pages
         {
             this.currentPlayerName = name;
 
-            return this.StateManager.SetStateAsync<PlayerWords>();
+            return this.StateManager.SetStateAsync<PlayerWords>(state => state.WordCount = this.wordCount);
         }
 
         private Task SetPlayerData(string[] words)
@@ -116,17 +118,20 @@ namespace Fishbowl.Net.Client.Pwa.Pages
 
         private void SetEventHandlers()
         {
-            this.Game.GameStarted += this.OnGameStarted;
-            this.Game.GameFinished += this.OnGameFinished;
-            this.Game.RoundStarted += this.OnRoundStarted;
-            this.Game.RoundFinished += this.OnRoundFinished;
-            this.Game.PeriodSetup += this.OnPeriodSetup;
-            this.Game.PeriodStarted += this.OnPeriodStarted;
-            this.Game.PeriodFinished += this.OnPeriodFinished;
+            this.Game.GameStarted += game => this.Transition(game, this.OnGameStarted);
+            this.Game.GameFinished += game => this.Transition(game, this.OnGameFinished);
+            this.Game.RoundStarted += round => this.Transition(round, this.OnRoundStarted);
+            this.Game.RoundFinished += round => this.Transition(round, this.OnRoundFinished);
+            this.Game.PeriodSetup += period => this.Transition(period, this.OnPeriodSetup);
+            this.Game.PeriodStarted += period => this.Transition(period, this.OnPeriodStarted);
+            this.Game.PeriodFinished += period => this.Transition(period, this.OnPeriodFinished);
             this.Game.WordSetup += this.OnWordSetup;
         }
 
-        public async void OnGameStarted(Game game)
+        private void Transition<T>(T input, Func<T, Task> handler) =>
+            this.transition = this.transition.ContinueWith(_ => handler(input)).Unwrap();
+
+        private async Task OnGameStarted(Game game)
         {
             await Task.Delay(1000);
 
@@ -139,15 +144,15 @@ namespace Fishbowl.Net.Client.Pwa.Pages
             });
         }
 
-        public async void OnGameFinished(Game game) =>
-            await this.StateManager.SetStateAsync<GameFinished>(state =>
+        private Task OnGameFinished(Game game) =>
+            this.StateManager.SetStateAsync<GameFinished>(state =>
             {
                 state.Game = game.Map();
                 state.Winner = true;
             });
 
-        public async void OnRoundStarted(Round round) =>
-            await this.StateManager.SetStateAsync<Info>(state =>
+        private Task OnRoundStarted(Round round) =>
+            this.StateManager.SetStateAsync<Info>(state =>
             {
                 state.ContextClass = ContextCssClass.Dark;
                 state.Title = $"{L("Pages.Play.RoundStartedTitle")}: {round.Type}";
@@ -155,25 +160,25 @@ namespace Fishbowl.Net.Client.Pwa.Pages
                 state.Loading = true;
             });
 
-        public async void OnRoundFinished(Round round) =>
-            await this.StateManager.SetStateAsync<RoundFinished>(state => state.Round = round.MapSummary());
+        private Task OnRoundFinished(Round round) =>
+            this.StateManager.SetStateAsync<RoundFinished>(state => state.Round = round.MapSummary());
 
-        public async void OnPeriodSetup(Period period) =>
-            await this.StateManager.SetStateAsync<PeriodSetupPlay>(
-                state => state.Period = period.MapRunning(this.Game.Game.CurrentRound));
+        private Task OnPeriodSetup(Period period) =>
+            this.StateManager.SetStateAsync<PeriodSetupPlay>(
+                state => state.Period = period.Map(this.Game.Game.CurrentRound));
 
-        public async void OnPeriodStarted(Period period) =>
-            await this.StateManager.SetStateAsync<PeriodPlay>(state =>
+        private Task OnPeriodStarted(Period period) =>
+            this.StateManager.SetStateAsync<PeriodPlay>(state =>
             {
                 state.Word = null;
                 state.ScoreCount = 0;
                 state.Period = period.MapRunning(this.Game.Game.CurrentRound);
             });
 
-        public async void OnPeriodFinished(Period period) =>
-            await this.StateManager.SetStateAsync<PeriodFinished>(state => state.Period = period.Map());
+        private Task OnPeriodFinished(Period period) =>
+            this.StateManager.SetStateAsync<PeriodFinished>(state => state.Period = period.Map());
 
-        public void OnWordSetup(Player player, Word word) =>
+        private void OnWordSetup(Player player, Word word) =>
             this.StateManager.SetParameters<PeriodPlay>(state => state.Word = word.Map());
 
         private void StartPeriod(DateTimeOffset timestamp) => this.Game.StartPeriod(timestamp);
