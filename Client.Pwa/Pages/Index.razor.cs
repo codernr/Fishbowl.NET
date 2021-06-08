@@ -18,6 +18,10 @@ namespace Fishbowl.Net.Client.Pwa.Pages
 
         private StateManager StateManager => this.stateManager ?? throw new InvalidOperationException();
 
+        private Toast? playerSetupDisplay;
+
+        private Toast PlayerSetupDisplay => this.playerSetupDisplay ?? throw new InvalidOperationException();
+
         private int playerCount = 4;
 
         private int teamCount = 2;
@@ -65,7 +69,9 @@ namespace Fishbowl.Net.Client.Pwa.Pages
         {
             this.roundTypes = roundTypes;
 
-            return this.StateManager.SetStateAsync<PlayerName>();
+            return Task.WhenAll(
+                this.StateManager.SetStateAsync<PlayerName>(),
+                this.PlayerSetupDisplay.Show());
         }
 
         private Task SetPlayerName(string name)
@@ -82,9 +88,11 @@ namespace Fishbowl.Net.Client.Pwa.Pages
                 this.currentPlayerName,
                 words.Select(word => new Word(Guid.NewGuid(), word)).ToList()));
 
+            this.StateHasChanged();
+
             return this.players.Count < this.playerCount ?
                 this.StateManager.SetStateAsync<PlayerName>(state => state.Value = string.Empty) :
-                this.CreateTeams();
+                Task.WhenAll(this.PlayerSetupDisplay.Hide(), this.CreateTeams());
         }
 
         private Task CreateTeams()

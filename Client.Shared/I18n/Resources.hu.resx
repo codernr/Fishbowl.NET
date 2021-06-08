@@ -189,6 +189,9 @@
     <data name="Pages.Play.PlayerCount">
         <value>Kapcsolódva: {1}/{0} | Beállítva: {2}/{0}</value>
     </data>
+    <data name="Pages.Play.SetupCount">
+        <value>{0}. játékos beállítása</value>
+    </data>
     <data name="Pages.Play.ErrorTitle">
         <value>Hiba!</value>
     </data>
