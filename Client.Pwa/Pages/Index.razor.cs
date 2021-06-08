@@ -179,7 +179,8 @@ namespace Fishbowl.Net.Client.Pwa.Pages
             this.StateManager.SetStateAsync<PeriodFinished>(state => state.Period = period.Map());
 
         private void OnWordSetup(Player player, Word word) =>
-            this.StateManager.SetParameters<PeriodPlay>(state => state.Word = word.Map());
+            this.transition = this.transition
+                .ContinueWith(_ => this.StateManager.SetParameters<PeriodPlay>(state => state.Word = word.Map()));
 
         private void StartPeriod(DateTimeOffset timestamp) => this.Game.StartPeriod(timestamp);
 
