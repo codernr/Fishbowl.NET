@@ -77,8 +77,10 @@ namespace Fishbowl.Net.Client.Pwa.Pages
 
         private Task SetPlayerData(string[] words)
         {
-            this.players.Add(
-                new Player(Guid.NewGuid(), this.currentPlayerName, words.Select(word => new Word(Guid.NewGuid(), word))));
+            this.players.Add(new Player(
+                Guid.NewGuid(),
+                this.currentPlayerName,
+                words.Select(word => new Word(Guid.NewGuid(), word)).ToList()));
 
             return this.players.Count < this.playerCount ?
                 this.StateManager.SetStateAsync<PlayerName>() :
@@ -187,14 +189,22 @@ namespace Fishbowl.Net.Client.Pwa.Pages
         private void AddScore(ScoreViewModel score)
         {
             this.Game.AddScore(score.Map());
-            this.transition = this.transition
-                .ContinueWith(_ => this.StateManager.SetParameters<PeriodPlay>(state => state.ScoreCount++));
+            this.UpdateScore();
             this.Game.NextWord(score.Timestamp);
         }
 
         private void FinishPeriod(DateTimeOffset timestamp) => this.Game.FinishPeriod(timestamp);
 
-        private void RevokeLastScore() => this.Game.RevokeLastScore();
+        private void RevokeLastScore()
+        {
+            this.Game.RevokeLastScore();
+            this.UpdateScore();
+        }
+
+        private void UpdateScore() =>
+            this.transition = this.transition
+                .ContinueWith(_ => this.StateManager.SetParameters<PeriodPlay>(state =>
+                    state.ScoreCount = this.Game.Game.CurrentRound.CurrentPeriod.Scores.Count));
 
         private async Task Abort(string messageKey)
         {
