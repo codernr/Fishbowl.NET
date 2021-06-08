@@ -1,9 +1,10 @@
 module.exports = {
     content: [
-        './../wwwroot/index.html',
-        './../Shared/**/*.razor',
-        './../Pages/**/*.razor',
-        './../Components/**/*.razor'
+        './../../Client.Online/wwwroot/index.html',
+        './../../Client.Pwa/wwwroot/index.html',
+        './../../Client.Shared/**/*.razor',
+        './../../Client.Online/**/*.razor',
+        './../../Client.Pwa/**/*.razor',
     ],
     css: ['./../wwwroot/css/styles.css'],
     safelist: {
