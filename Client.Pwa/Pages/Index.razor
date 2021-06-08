@@ -1,5 +1,23 @@
 ﻿@page "/"
 
-<h1>Hello, world!</h1>
+@inject NavigationManager NavigationManager
+@inject IStringLocalizer<Resources> StringLocalizer
 
-Welcome to your new app.
+<StateManager @ref="this.stateManager">
+    <PlayerCount OnPlayerCountSet="this.SetPlayerCount" />
+    <TeamCount OnTeamCountSet="this.SetTeamCount" />
+    <WordCount OnWordCountSet="this.SetWordCount" />
+    <RoundTypes OnRoundTypesSet="this.SetRoundTypes" />
+    <PlayerName OnPlayerNameSet="this.SetPlayerName" />
+    <PlayerWords OnPlayerWordsSet="this.SetPlayerData" />
+    <TeamName OnTeamNameSet="this.SetTeamName" />
+    <PeriodSetupPlay OnStarted="this.StartPeriod" />
+    <PeriodPlay
+        OnScoreAdded="this.AddScore"
+        OnPeriodFinished="this.FinishPeriod"
+        OnLastScoreRevoked="this.RevokeLastScore" />
+    <PeriodFinished Delay="@TimeSpan.FromSeconds(4)" />
+    <RoundFinished Delay="@TimeSpan.FromSeconds(4)" />
+    <GameFinished ReloadRequested="this.Reload" />
+    <Info Delay="@TimeSpan.FromSeconds(2)" />
+</StateManager>
