@@ -22,10 +22,6 @@ namespace Fishbowl.Net.Client.Shared.Components
 
         private string ShowClass => this.show ? "show" : string.Empty;
 
-        private bool pointerEvents = false;
-
-        private string PointerEventsClass => this.pointerEvents ? "pe-auto" : "pe-none";
-
         public virtual async Task EnableAsync()
         {
             await Task.Delay(100);
@@ -35,16 +31,12 @@ namespace Fishbowl.Net.Client.Shared.Components
 
             await Task.Delay(TransitionDuration);
 
-            this.pointerEvents = true;
-            this.Update();
-
             await Task.Delay(this.Delay);
         }
 
         public virtual async Task DisableAsync()
         {
             this.show = false;
-            this.pointerEvents = false;
             this.Update();
 
             await Task.Delay(TransitionDuration);
