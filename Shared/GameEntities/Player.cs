@@ -3,15 +3,5 @@ using System.Collections.Generic;
 
 namespace Fishbowl.Net.Shared.GameEntities
 {
-    public class Player
-    {
-        public Guid Id { get; private set; }
-        
-        public string Name { get; private set; }
-        
-        public IEnumerable<Word> Words { get; private set; }
-        
-        public Player(Guid id, string name, IEnumerable<Word> words) =>
-            (this.Id, this.Name, this.Words) = (id, name, words);
-    }
+    public record Player(Guid Id, string Name, IEnumerable<Word> Words);
 }

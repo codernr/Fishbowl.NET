@@ -2,13 +2,5 @@ using System;
 
 namespace Fishbowl.Net.Shared.GameEntities
 {
-    public class Score
-    {
-        public Word Word { get; private set; }
-        
-        public DateTimeOffset Timestamp { get; private set; }
-
-        public Score(Word word, DateTimeOffset timestamp) =>
-            (this.Word, this.Timestamp) = (word, timestamp);
-    }
+    public record Score(Word Word, DateTimeOffset Timestamp);
 }
