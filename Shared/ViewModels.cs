@@ -62,7 +62,7 @@ namespace Fishbowl.Net.Shared.ViewModels
     }
 
     public record PeriodRunningViewModel(
-        RoundViewModel Round, PlayerViewModel Player, double LengthInSeconds, DateTimeOffset StartedAt) :
+        RoundViewModel Round, PlayerViewModel Player, double LengthInSeconds, DateTimeOffset StartedAt, int ScoreCount) :
         PeriodSetupViewModel(Round, Player, LengthInSeconds);
 
     public record PeriodSummaryViewModel(PlayerViewModel Player, List<ScoreViewModel> Scores);
@@ -93,7 +93,7 @@ namespace Fishbowl.Net.Shared.ViewModels
 
         public static PeriodRunningViewModel MapRunning(this Period period, Round round) =>
             new(new(round.Type), new(period.Player.Id, period.Player.Name), period.Length.TotalSeconds,
-            period.StartedAt ?? throw new InvalidOperationException());
+            period.StartedAt ?? throw new InvalidOperationException(), period.Scores.Count);
 
         public static PeriodSummaryViewModel Map(this Period period) =>
             new(period.Player.Map(), period.Scores.Select(score => score.Map()).ToList());

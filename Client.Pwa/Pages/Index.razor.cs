@@ -228,8 +228,8 @@ namespace Fishbowl.Net.Client.Pwa.Pages
             this.StateManager.SetStateAsync<PeriodPlay>(state =>
             {
                 state.Word = null;
-                state.Expired = false;
-                state.ScoreCount = 0;
+                state.Expired = period.StartedAt!.Value + period.Length < DateTimeOffset.UtcNow;
+                state.ScoreCount = period.Scores.Count;
                 state.Period = period.MapRunning(this.Game.Game.CurrentRound);
             });
 
