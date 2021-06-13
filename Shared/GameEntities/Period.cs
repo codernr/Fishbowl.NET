@@ -16,6 +16,8 @@ namespace Fishbowl.Net.Shared.GameEntities
 
         public List<Score> Scores { get; init; } = new List<Score>();
 
+        public Period() { }
+
         public Period(TimeSpan length, Player player) =>
             (this.Length, this.Player) = (length, player);
 

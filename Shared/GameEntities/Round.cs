@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 using Fishbowl.Net.Shared.Collections;
 
 namespace Fishbowl.Net.Shared.GameEntities
@@ -16,6 +17,10 @@ namespace Fishbowl.Net.Shared.GameEntities
 
         public Round(string type, IReturnEnumerator<Word> wordEnumerator) =>
             (this.Type, this.WordEnumerator) = (type, wordEnumerator);
+
+        [JsonConstructor]
+        public Round(string type, IReturnEnumerator<Word> wordEnumerator, List<Period> periods) : this(type, wordEnumerator) =>
+            this.Periods = periods;
 
         public bool NextPeriod(TimeSpan length, Player player)
         {

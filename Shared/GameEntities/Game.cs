@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using Fishbowl.Net.Shared.Collections;
 
 namespace Fishbowl.Net.Shared.GameEntities
@@ -49,6 +50,11 @@ namespace Fishbowl.Net.Shared.GameEntities
 
             this.roundEnumerator = this.Rounds.GetEnumerator();
         }
+
+        [JsonConstructor]
+        public Game(Guid id, List<Team> teams, List<Round> rounds) =>
+            (this.Id, this.Teams, this.Rounds, this.teamEnumerator, this.roundEnumerator) =
+            (id, teams, rounds, new CircularEnumerator<Team>(teams), this.Rounds.GetEnumerator());
 
         public IEnumerable<Round> RoundLoop()
         {
