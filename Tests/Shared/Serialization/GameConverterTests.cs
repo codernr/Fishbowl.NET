@@ -17,13 +17,15 @@ namespace Fishbowl.Net.Tests.Shared.Serialization
             var options = new JsonSerializerOptions(JsonSerializerDefaults.Web);
             options.Converters.Add(new GameConverter());
             options.Converters.Add(new TeamConverter());
+            options.Converters.Add(new RoundConverter());
             options.Converters.Add(new RandomEnumeratorConverter());
+            options.WriteIndented = true;
 
             var teams = CreatePlayers(5, 2).CreateTeams(2);
             
             var rounds = new[] { "GameType1", "GameType2" };
 
-            var game = new Game(Guid.NewGuid(), new(), teams, rounds, false);
+            var game = new Game(Guid.NewGuid(), new(), teams, rounds, true);
 
             int roundCount = 0;
             int periodCount = 0;
@@ -31,30 +33,18 @@ namespace Fishbowl.Net.Tests.Shared.Serialization
             int wordCount = 0;
             int totalWordCount = 0;
 
-            var guessedWords = new[]
-            {
-                new[]
-                {
-                    new[] { "Player0Word0", "Player0Word1", "Player1Word0", "Player1Word1", "Player2Word0", "Player2Word1" },
-                    new[] { "Player3Word0", "Player3Word1", "Player4Word0", "Player4Word1" }
-                },
-                new[]
-                {
-                    new[] { "Player0Word0", "Player0Word1" },
-                    new[] { "Player1Word0", "Player1Word1", "Player2Word0", "Player2Word1", "Player3Word0", "Player3Word1" },
-                    new[] { "Player4Word0", "Player4Word1" }
-                }
-            };
-
-            var playerList = new[] { "Player0", "Player1", "Player1", "Player2", "Player3" };
+            string serialized = JsonSerializer.Serialize(game, options);
+            Game deserialized = JsonSerializer.Deserialize<Game>(serialized, options)!;
 
             foreach (var round in game.RoundLoop())
             {
-                Assert.Equal(rounds[roundCount], Serialize(game, options).CurrentRound.Type);
+                serialized = JsonSerializer.Serialize(game, options);
+                deserialized = JsonSerializer.Deserialize<Game>(serialized, options)!;
 
                 foreach (var period in game.PeriodLoop())
                 {
-                    Assert.Equal(playerList[totalPeriodCount], Serialize(game, options).CurrentRound.CurrentPeriod.Player.Name);
+                    serialized = JsonSerializer.Serialize(game, options);
+                    deserialized = JsonSerializer.Deserialize<Game>(serialized, options)!;
 
                     var now = new DateTimeOffset(2021, 3, 31, 10, 0, 0, TimeSpan.Zero);
 
@@ -62,9 +52,8 @@ namespace Fishbowl.Net.Tests.Shared.Serialization
 
                     do
                     {
-                        Assert.Equal(
-                            guessedWords[roundCount][periodCount][wordCount],
-                            Serialize(game, options).CurrentWord.Value);
+                        serialized = JsonSerializer.Serialize(game, options);
+                        deserialized = JsonSerializer.Deserialize<Game>(serialized, options)!;
                         
                         now += TimeSpan.FromSeconds(10);
                         game.AddScore(new Score(game.CurrentWord, now));
@@ -94,8 +83,5 @@ namespace Fishbowl.Net.Tests.Shared.Serialization
                         .Select(j => new Word(Guid.NewGuid(), $"Player{i}Word{j}"))
                         .ToList()))
                 .ToList();
-
-        private static Game Serialize(Game game, JsonSerializerOptions options) =>
-            JsonSerializer.Deserialize<Game>(JsonSerializer.Serialize(game, options), options)!;
     }
 }

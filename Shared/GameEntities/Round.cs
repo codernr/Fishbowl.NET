@@ -18,7 +18,6 @@ namespace Fishbowl.Net.Shared.GameEntities
         public Round(string type, IReturnEnumerator<Word> wordEnumerator) =>
             (this.Type, this.WordEnumerator) = (type, wordEnumerator);
 
-        [JsonConstructor]
         public Round(string type, IReturnEnumerator<Word> wordEnumerator, List<Period> periods) : this(type, wordEnumerator) =>
             this.Periods = periods;
 
