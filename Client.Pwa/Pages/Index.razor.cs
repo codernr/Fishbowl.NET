@@ -122,6 +122,7 @@ namespace Fishbowl.Net.Client.Pwa.Pages
             {
                 this.game = new(new(), this.teams, this.roundTypes);
                 this.SetEventHandlers();
+                this.PersistGame();
                 this.Game.Run();
             }
             catch (ArgumentException e)
@@ -143,7 +144,15 @@ namespace Fishbowl.Net.Client.Pwa.Pages
         }
 
         private void Transition<T>(T input, Func<T, Task> handler) =>
-            this.transition = this.transition.ContinueWith(_ => handler(input)).Unwrap();
+            this.transition = this.transition.ContinueWith(_ =>
+            {
+                this.PersistGame();
+                return handler(input);
+            }).Unwrap();
+
+        private void PersistGame() => this.PersistedGame.Value = this.Game.Game;
+
+        private void ClearPersistedGame() => this.PersistedGame.Value = null;
 
         private async Task OnGameStarted(Game game)
         {
@@ -158,12 +167,15 @@ namespace Fishbowl.Net.Client.Pwa.Pages
             });
         }
 
-        private Task OnGameFinished(Game game) =>
-            this.StateManager.SetStateAsync<GameFinished>(state =>
+        private Task OnGameFinished(Game game)
+        {
+            this.ClearPersistedGame();
+            return this.StateManager.SetStateAsync<GameFinished>(state =>
             {
                 state.Game = game.Map();
                 state.Winner = true;
             });
+        }
 
         private Task OnRoundStarted(Round round) =>
             this.StateManager.SetStateAsync<Info>(state =>
@@ -216,8 +228,12 @@ namespace Fishbowl.Net.Client.Pwa.Pages
 
         private void UpdateScore() =>
             this.transition = this.transition
-                .ContinueWith(_ => this.StateManager.SetParameters<PeriodPlay>(state =>
-                    state.ScoreCount = this.Game.Game.CurrentRound.CurrentPeriod.Scores.Count));
+                .ContinueWith(_ =>
+                {
+                    this.PersistGame();
+                    this.StateManager.SetParameters<PeriodPlay>(state =>
+                    state.ScoreCount = this.Game.Game.CurrentRound.CurrentPeriod.Scores.Count);
+                });
 
         private async Task Abort(string messageKey)
         {
@@ -228,6 +244,7 @@ namespace Fishbowl.Net.Client.Pwa.Pages
                 state.Message = L(messageKey);
                 state.Loading = false;
             });
+            this.ClearPersistedGame();
             this.Reload();
         }
 
