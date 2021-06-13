@@ -143,12 +143,11 @@ namespace Fishbowl.Net.Client.Pwa.Pages
             this.Game.WordSetup += this.OnWordSetup;
         }
 
-        private void Transition<T>(T input, Func<T, Task> handler) =>
-            this.transition = this.transition.ContinueWith(_ =>
-            {
-                this.PersistGame();
-                return handler(input);
-            }).Unwrap();
+        private void Transition<T>(T input, Func<T, Task> handler)
+        {
+            this.PersistGame();
+            this.transition = this.transition.ContinueWith(_ => handler(input)).Unwrap();
+        }
 
         private void PersistGame() => this.PersistedGame.Value = this.Game.Game;
 
