@@ -12,20 +12,23 @@ namespace Fishbowl.Net.Shared.Collections
         object IEnumerator.Current { get => this.Current ??
             throw new InvalidOperationException("Invalid state."); }
 
-        private readonly List<T> list;
+        public List<T> List { get; private set; }
 
-        private Stack<T> stack;
+        public Stack<T> Stack { get; private set; }
 
         public RandomEnumerator(IEnumerable<T> collection) =>
-            (this.list, this.stack) = (new List<T>(collection), new Stack<T>(collection.Randomize()));
+            (this.List, this.Stack) = (new List<T>(collection), new Stack<T>(collection.Randomize()));
+
+        public RandomEnumerator(T current, Stack<T> stack, List<T> list) : this(list) =>
+            (this.Current, this.Stack) = (current, stack);
 
         public void Dispose() {}
 
         public bool MoveNext()
         {
-            if (this.stack.Count > 0)
+            if (this.Stack.Count > 0)
             {
-                this.Current = this.stack.Pop();
+                this.Current = this.Stack.Pop();
                 return true;
             }
 
@@ -34,10 +37,10 @@ namespace Fishbowl.Net.Shared.Collections
 
         public bool MovePrevious()
         {
-            if (this.stack.Count < this.list.Count)
+            if (this.Stack.Count < this.List.Count)
             {
-                this.stack.Push(this.Current);
-                this.stack = new Stack<T>(this.stack.Randomize());
+                this.Stack.Push(this.Current);
+                this.Stack = new Stack<T>(this.Stack.Randomize());
                 return true;
             }
 
@@ -46,18 +49,18 @@ namespace Fishbowl.Net.Shared.Collections
 
         public void Reset()
         {
-            this.stack = new Stack<T>(this.list.Randomize());
+            this.Stack = new Stack<T>(this.List.Randomize());
         }
 
         public void Return(T item)
         {
-            if (this.stack.Contains(item) || !this.list.Contains(item))
+            if (this.Stack.Contains(item) || !this.List.Contains(item))
             {
                 throw new InvalidReturnValueException();
             }
 
-            this.stack.Push(item);
-            this.stack = new Stack<T>(this.stack.Randomize());
+            this.Stack.Push(item);
+            this.Stack = new Stack<T>(this.Stack.Randomize());
         }
     }
 }
