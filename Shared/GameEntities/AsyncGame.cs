@@ -39,7 +39,11 @@ namespace Fishbowl.Net.Shared.GameEntities
         public AsyncGame(GameOptions options, IEnumerable<Team> teams, IEnumerable<string> roundTypes, bool randomize = true) =>
             this.game = new Game(Guid.NewGuid(), options, teams, roundTypes, randomize);
 
+        public AsyncGame(Game game) => this.game = game;
+
         public void Run() => this.gameLoop = this.RunAsync();
+
+        public void Restore() => this.gameLoop = this.RestoreAsync();
 
         public void SetInput(DateTimeOffset timestamp)
         {
@@ -88,6 +92,38 @@ namespace Fishbowl.Net.Shared.GameEntities
             this.GameFinished?.Invoke(this.game);
         }
 
+        private async Task RestoreAsync()
+        {
+            this.GameStarted?.Invoke(this.game);
+
+            var currentRound = this.game.CurrentRound;
+
+            this.RoundStarted?.Invoke(currentRound);
+
+            var currentPeriod = currentRound.CurrentPeriod;
+
+            if (currentPeriod.StartedAt is null)
+            {
+                await this.RunPeriod(currentPeriod);
+            }
+            else
+            {
+                this.PeriodStarted?.Invoke(currentPeriod);
+                this.WordSetup?.Invoke(currentPeriod.Player, currentRound.WordEnumerator.Current);
+
+                await this.GetWords(currentPeriod);
+                this.PeriodFinished?.Invoke(currentPeriod);
+            }
+
+            foreach(var period in this.game.PeriodLoop()) await this.RunPeriod(period);
+
+            this.RoundFinished?.Invoke(currentRound);
+
+            foreach(var round in this.game.RoundLoop()) await this.RunRound(round);
+
+            this.GameFinished?.Invoke(this.Game);
+        }
+
         private async Task RunRound(Round round)
         {
             this.RoundStarted?.Invoke(round);
@@ -104,10 +140,19 @@ namespace Fishbowl.Net.Shared.GameEntities
         {
             this.PeriodSetup?.Invoke(period);
 
-            var timestamp = await this.inputReceived.Task;
+            await this.inputReceived.Task;
 
             this.PeriodStarted?.Invoke(period);
             
+            await this.GetWords(period);
+
+            this.PeriodFinished?.Invoke(period);
+        }
+
+        private async Task GetWords(Period period)
+        {
+            DateTimeOffset timestamp;
+
             do
             {
                 this.WordSetup?.Invoke(period.Player, this.game.CurrentWord);
@@ -121,8 +166,6 @@ namespace Fishbowl.Net.Shared.GameEntities
                 }
             }
             while (this.game.NextWord(timestamp));
-
-            this.PeriodFinished?.Invoke(period);
         }
     }
 }
