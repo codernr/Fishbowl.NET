@@ -20,6 +20,6 @@ namespace Fishbowl.Net.Client.Pwa.Common
         }
 
         protected override void Set(Game? value) =>
-            this.storageService.SetItem(this.storageKey, JsonSerializer.Serialize(value, this.options));
+            this.storageService.SetItem(this.storageKey, value is not null ? JsonSerializer.Serialize(value, this.options) : null);
     }
 }
