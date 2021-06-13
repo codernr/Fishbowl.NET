@@ -20,16 +20,16 @@ namespace Fishbowl.Net.Shared.Serialization
             CircularEnumerator<Team> TeamEnumerator,
             List<Round> Rounds,
             int CurrentRoundIndex,
-            double PeriodLengthInSeconds,
-            double PeriodThresholdInSeconds);
+            TimeSpan PeriodLength,
+            TimeSpan PeriodThreshold);
 
         private static Data Map(Game game) => new(
             game.Id,
             game.TeamEnumerator,
             game.Rounds,
             game.Rounds.IndexOf(game.CurrentRound),
-            game.periodLength.TotalSeconds,
-            game.periodThreshold.TotalSeconds);
+            game.periodLength,
+            game.periodThreshold);
 
         private static Game? Map(Data? data)
         {
@@ -44,8 +44,8 @@ namespace Fishbowl.Net.Shared.Serialization
                 data.TeamEnumerator,
                 data.Rounds,
                 roundEnumerator,
-                TimeSpan.FromSeconds(data.PeriodLengthInSeconds),
-                TimeSpan.FromSeconds(data.PeriodThresholdInSeconds));
+                data.PeriodLength,
+                data.PeriodThreshold);
         }
     }
 }

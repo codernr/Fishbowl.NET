@@ -8,7 +8,7 @@ namespace Fishbowl.Net.Shared.GameEntities
     {
         public Player Player { get; init; } = default!;
 
-        public TimeSpan Length { get; private set; }
+        public TimeSpan Length { get; init; }
         
         public DateTimeOffset? StartedAt { get; set; }
 

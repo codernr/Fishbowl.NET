@@ -27,6 +27,7 @@ namespace Fishbowl.Net.Client.Pwa
                         options.Converters.Add(new TeamConverter());
                         options.Converters.Add(new RoundConverter());
                         options.Converters.Add(new RandomEnumeratorConverter());
+                        options.Converters.Add(new TimeSpanConverter());
 
                         return options;
                     })
