@@ -1,4 +1,4 @@
-@inherits State
+@inherits InputState
 @inject IStringLocalizer<Resources> L
 
 @code
@@ -8,7 +8,7 @@
             Title="@(L["Components.States.Common.SetupGame"])"
             Subtitle="@(L["Components.States.RoundTypes.Title"])"
             TotalSteps="4" Step="4">
-            <form @onsubmit="e => this.OnRoundTypesSet.InvokeAsync(this.SelectedOptions)">
+            <form @onsubmit="_ => this.Submit(() => this.OnRoundTypesSet.InvokeAsync(this.SelectedOptions))">
                 <div class="row mb-3">
                     <div class="col d-grid gap-3">
                         @for (int i = 0; i < this.options.Count; i++)

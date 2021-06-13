@@ -1,4 +1,4 @@
-@inherits State
+@inherits InputState
 @inject IStringLocalizer<Resources> L
 
 @code
@@ -50,7 +50,7 @@
                         class="btn btn-danger btn-lg"
                         type="button"
                         disabled="@(!this.Expired)"
-                        @onclick="e => this.OnPeriodFinished.InvokeAsync(DateTimeOffset.UtcNow)">
+                        @onclick="_ => this.Submit(() => this.OnPeriodFinished.InvokeAsync(DateTimeOffset.UtcNow))">
                         @L["Components.States.PeriodPlay.PassButton"]
                     </button>
                 </div>

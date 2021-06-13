@@ -1,4 +1,4 @@
-@inherits State
+@inherits InputState
 @inject IStringLocalizer<Resources> L
 
 @code
@@ -8,7 +8,7 @@
             Title="@(L["Components.States.Common.SetupPlayer"])"
             Subtitle="@(L["Components.States.PlayerWords.Title"])"
             TotalSteps="2" Step="2">
-            <form @onsubmit="e => this.OnPlayerWordsSet.InvokeAsync(this.words)" @onsubmit:preventDefault>
+            <form @onsubmit="_ => this.Submit(() => this.OnPlayerWordsSet.InvokeAsync(this.words))" @onsubmit:preventDefault>
 
                 @for (int i = 0; i < this.words.Length; i++)
                 {

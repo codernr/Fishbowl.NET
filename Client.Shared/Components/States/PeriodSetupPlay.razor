@@ -1,4 +1,4 @@
-@inherits State
+@inherits InputState
 @inject IStringLocalizer<Resources> L
 
 @code
@@ -18,7 +18,7 @@
             <div class="row">
                 <div class="col d-grid">
                     <button class="btn btn-success btn-lg" type="button"
-                        @onclick="e => this.OnStarted.InvokeAsync(DateTimeOffset.UtcNow)">
+                        @onclick="_ => this.Submit(() => this.OnStarted.InvokeAsync(DateTimeOffset.UtcNow))">
                         @L["Components.States.PeriodSetupPlay.StartButton"]
                     </button>
                 </div>
