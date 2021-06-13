@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Fishbowl.Net.Client.Pwa.Components.States;
 using Fishbowl.Net.Client.Shared.Common;
 using Fishbowl.Net.Client.Shared.Components;
 using Fishbowl.Net.Client.Shared.Components.States;
@@ -43,6 +44,15 @@ namespace Fishbowl.Net.Client.Pwa.Pages
         private Task transition = Task.CompletedTask;
 
         private string L(string key) => this.StringLocalizer[key] ?? key;
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (!firstRender) return;
+            
+            await (this.PersistedGame.Value is not null ?
+                this.Transition<Restore>() :
+                this.Transition<PlayerCount>());
+        }
 
         private Task SetPlayerCount(int playerCount)
         {
@@ -131,6 +141,21 @@ namespace Fishbowl.Net.Client.Pwa.Pages
             }
         }
 
+        private async Task RestoreGame()
+        {
+            var game = this.PersistedGame.Value;
+
+            if (game is null)
+            {
+                await this.Abort("Common.Abort.InvalidReturnValue");
+                return;
+            }
+
+            this.game = new(game);
+            this.SetEventHandlers();
+            this.Game.Restore();
+        }
+
         private void SetEventHandlers()
         {
             this.Game.GameStarted += game => this.Transition(game, this.OnGameStarted);
@@ -143,13 +168,20 @@ namespace Fishbowl.Net.Client.Pwa.Pages
             this.Game.WordSetup += this.OnWordSetup;
         }
 
+        private Task Transition<TState>() where TState : State
+        {
+            this.transition = this.transition
+                .ContinueWith(_ => this.StateManager.SetStateAsync<TState>()).Unwrap();
+            return this.transition;
+        }
+
         private void Transition<T>(T input, Func<T, Task> handler)
         {
             this.PersistGame();
             this.transition = this.transition.ContinueWith(_ => handler(input)).Unwrap();
         }
 
-        private void PersistGame() => this.PersistedGame.Value = this.Game.Game;
+        private void PersistGame() => this.PersistedGame.Value = this.game?.Game;
 
         private void ClearPersistedGame() => this.PersistedGame.Value = null;
 
