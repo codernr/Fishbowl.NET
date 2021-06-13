@@ -18,11 +18,11 @@ namespace Fishbowl.Net.Shared.GameEntities
         
         public Word CurrentWord => this.roundEnumerator.Current.WordEnumerator.Current;
 
-        private readonly CircularEnumerator<Team> teamEnumerator = default!;
+        public CircularEnumerator<Team> TeamEnumerator { get; private set; }= default!;
 
         private readonly IEnumerator<Round> roundEnumerator = default!;
 
-        private readonly TimeSpan periodLength;
+        public readonly TimeSpan periodLength;
 
         public readonly TimeSpan periodThreshold;
 
@@ -36,7 +36,7 @@ namespace Fishbowl.Net.Shared.GameEntities
             this.periodThreshold = TimeSpan.FromSeconds(options.PeriodThresholdInSeconds);
 
             this.Teams = teams.ToList();
-            this.teamEnumerator = new CircularEnumerator<Team>(this.Teams);
+            this.TeamEnumerator = new CircularEnumerator<Team>(this.Teams);
 
             var words = this.Teams
                 .SelectMany(team => team.Players)
@@ -51,10 +51,15 @@ namespace Fishbowl.Net.Shared.GameEntities
             this.roundEnumerator = this.Rounds.GetEnumerator();
         }
 
-        [JsonConstructor]
-        public Game(Guid id, List<Team> teams, List<Round> rounds) =>
-            (this.Id, this.Teams, this.Rounds, this.teamEnumerator, this.roundEnumerator) =
-            (id, teams, rounds, new CircularEnumerator<Team>(teams), this.Rounds.GetEnumerator());
+        public Game(
+            Guid id,
+            CircularEnumerator<Team> teamEnumerator,
+            List<Round> rounds,
+            IEnumerator<Round> roundEnumerator,
+            TimeSpan periodLength,
+            TimeSpan periodThreshold) =>
+            (this.Id, this.Teams, this.Rounds, this.TeamEnumerator, this.roundEnumerator, this.periodLength, this.periodThreshold) =
+            (id, teamEnumerator.List.ToList(), rounds, teamEnumerator, roundEnumerator, periodLength, periodThreshold);
 
         public IEnumerable<Round> RoundLoop()
         {
@@ -68,7 +73,7 @@ namespace Fishbowl.Net.Shared.GameEntities
         {
             while (this.roundEnumerator.Current.NextPeriod(
                 this.remaining ?? this.periodLength,
-                this.teamEnumerator.Current.PlayerEnumerator.Current))
+                this.TeamEnumerator.Current.PlayerEnumerator.Current))
             {
                 yield return this.roundEnumerator.Current.CurrentPeriod;
             }
@@ -84,8 +89,8 @@ namespace Fishbowl.Net.Shared.GameEntities
         {
             this.roundEnumerator.Current.CurrentPeriod.FinishedAt = timestamp;
             this.remaining = null;
-            this.teamEnumerator.Current.PlayerEnumerator.MoveNext();
-            this.teamEnumerator.MoveNext();
+            this.TeamEnumerator.Current.PlayerEnumerator.MoveNext();
+            this.TeamEnumerator.MoveNext();
 
             if (rewindWord)
             {
