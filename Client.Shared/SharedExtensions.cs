@@ -1,5 +1,7 @@
+using System.Text.Json;
 using System.Threading.Tasks;
 using Fishbowl.Net.Client.Shared.Services;
+using Fishbowl.Net.Shared.Serialization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -22,6 +24,19 @@ namespace Fishbowl.Net.Client.Shared
 
             return builder;
         }
+
+        public static IServiceCollection AddJsonSerializationOptions(this IServiceCollection services) =>
+            services.AddSingleton<JsonSerializerOptions>(services =>
+            {
+                JsonSerializerOptions options = new(JsonSerializerDefaults.Web);
+                options.Converters.Add(new GameConverter());
+                options.Converters.Add(new TeamConverter());
+                options.Converters.Add(new RoundConverter());
+                options.Converters.Add(new RandomEnumeratorConverter());
+                options.Converters.Add(new TimeSpanConverter());
+
+                return options;
+            });
 
         public static Task InitializeInteropServicesAsync(this WebAssemblyHost host) =>
             Task.WhenAll(
