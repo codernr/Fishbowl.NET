@@ -1,27 +1,32 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Fishbowl.Net.Shared.Collections
 {
     public class RewindEnumerator<T> : IReturnEnumerator<T>
     {
-        public T Current => this.list[id];
+        [JsonIgnore]
+        public T Current => this.List[Id];
 
         object IEnumerator.Current => this.Current!;
 
-        private int id = -1;
+        public int Id { get; private set; } = -1;
 
-        private readonly List<T> list;
+        public List<T> List { get; private set; }
 
-        public RewindEnumerator(IEnumerable<T> collection) => this.list = new List<T>(collection);
+        public RewindEnumerator(IEnumerable<T> collection) => this.List = new List<T>(collection);
+
+        [JsonConstructor]
+        public RewindEnumerator(int id, List<T> list) => (this.Id, this.List) = (id, list);
 
         public void Dispose() {}
 
         public bool MoveNext()
         {
-            if (this.id < this.list.Count - 1)
+            if (this.Id < this.List.Count - 1)
             {
-                this.id++;
+                this.Id++;
                 return true;
             }
 
@@ -30,9 +35,9 @@ namespace Fishbowl.Net.Shared.Collections
 
         public bool MovePrevious()
         {
-            if (this.id > -1)
+            if (this.Id > -1)
             {
-                this.id--;
+                this.Id--;
                 return true;
             }
 
@@ -41,14 +46,14 @@ namespace Fishbowl.Net.Shared.Collections
 
         public void Reset()
         {
-            this.id = -1;
+            this.Id = -1;
         }
 
         public void Return(T item)
         {
-            if (this.id > -1)
+            if (this.Id > -1)
             {
-                this.id--;
+                this.Id--;
             }
         }
     }

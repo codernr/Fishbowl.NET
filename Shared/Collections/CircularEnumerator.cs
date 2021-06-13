@@ -1,31 +1,36 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Fishbowl.Net.Shared.Collections
 {
     public class CircularEnumerator<T> : IEnumerator<T>
     {
-        public T Current => this.list[this.id];
+        [JsonIgnore]
+        public T Current => this.List[this.Id];
 
-        object IEnumerator.Current => this.list[this.id]!;
+        object IEnumerator.Current => this.List[this.Id]!;
 
-        private int id = 0;
+        public int Id { get; private set; } = 0;
 
-        private readonly IList<T> list;
+        public IList<T> List { get; private set; }
 
-        public CircularEnumerator(IList<T> collection) => this.list = collection;
+        public CircularEnumerator(IList<T> list) => this.List = list;
+
+        [JsonConstructor]
+        public CircularEnumerator(int id, IList<T> list) : this(list) => this.Id = id;
 
         public void Dispose() { }
 
         public bool MoveNext()
         {
-            this.id = (this.id + 1) % this.list.Count;
+            this.Id = (this.Id + 1) % this.List.Count;
             return true;
         }
 
         public void Reset()
         {
-            this.id = 0;
+            this.Id = 0;
         }
     }
 }
