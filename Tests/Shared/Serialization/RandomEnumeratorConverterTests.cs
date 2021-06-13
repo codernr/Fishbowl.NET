@@ -42,7 +42,5 @@ namespace Fishbowl.Net.Tests.Shared.Serialization
             Assert.Equal(original.Current, deserialized2!.Current);
             Assert.Equal(3, deserialized2.Stack.Count);
         }
-
-        private record TestData(string Id);
     }
 }
