@@ -13,7 +13,7 @@ namespace Fishbowl.Net.Shared.Serialization
             Map(JsonSerializer.Deserialize<Data>(ref reader, options));
 
         public override void Write(Utf8JsonWriter writer, Game value, JsonSerializerOptions options) =>
-            JsonSerializer.Serialize(writer, Map(value));
+            JsonSerializer.Serialize(writer, Map(value), options);
 
         private record Data(
             Guid Id,
