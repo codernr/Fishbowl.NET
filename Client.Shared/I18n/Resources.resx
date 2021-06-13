@@ -123,6 +123,15 @@
     <data name="Components.States.PlayerWords.SubmitButton">
         <value>Set</value>
     </data>
+    <data name="Components.States.Restore.Title">
+        <value>Restore saved game?</value>
+    </data>
+    <data name="Components.States.Restore.RestoreButton">
+        <value>Restore saved game</value>
+    </data>
+    <data name="Components.States.Restore.NewGameButton">
+        <value>Start new game</value>
+    </data>
     <data name="Components.States.RoundFinished.Title">
         <value>Round finished</value>
     </data>

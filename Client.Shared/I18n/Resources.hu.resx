@@ -123,6 +123,15 @@
     <data name="Components.States.PlayerWords.SubmitButton">
         <value>Beállít</value>
     </data>
+    <data name="Components.States.Restore.Title">
+        <value>Folytatod a játékot?</value>
+    </data>
+    <data name="Components.States.Restore.RestoreButton">
+        <value>Mentett játék folytatása</value>
+    </data>
+    <data name="Components.States.Restore.NewGameButton">
+        <value>Új játék</value>
+    </data>
     <data name="Components.States.RoundFinished.Title">
         <value>Szakasz vége</value>
     </data>

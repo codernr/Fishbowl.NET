@@ -1,0 +1,29 @@
+@inherits InputState
+@inject IStringLocalizer<Resources> L
+
+@code
+{
+    protected override RenderFragment Content =>
+        @<StateContainer Title="@(L["Components.States.Restore.Title"])">
+            <div class="row mb-3">
+                <div class="d-grid col">
+                    <button
+                        class="btn btn-success btn-lg"
+                        type="button"
+                        @onclick="e => this.Submit(() => this.OnRestoreRequested.InvokeAsync())">
+                        @L["Components.States.Restore.RestoreButton"]
+                    </button>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="d-grid col">
+                    <button
+                        class="btn btn-warning btn-lg"
+                        type="button"
+                        @onclick="e => this.Submit(() => this.OnNewGameRequested.InvokeAsync())">
+                        @L["Components.States.PlayerName.NewGameButton"]
+                    </button>
+                </div>
+            </div>
+        </StateContainer>;
+}
