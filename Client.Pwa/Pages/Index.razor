@@ -10,7 +10,7 @@
         Message="@(string.Format(L("Pages.Play.SetupCount"), this.players.Count + 1))" />
 </div>
 
-<StateManager @ref="this.stateManager" ShowOnInit="false">
+<StateManager @ref="this.stateManager">
     <Restore
         OnRestoreRequested="this.RestoreGame"
         OnNewGameRequested="_ => this.StateManager.SetStateAsync<PlayerCount>()" />

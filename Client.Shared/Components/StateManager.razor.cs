@@ -14,9 +14,6 @@ namespace Fishbowl.Net.Client.Shared.Components
         [Parameter]
         public Action<State>? TransitionStarted { get; set; }
 
-        [Parameter]
-        public bool ShowOnInit { get; set; } = true;
-
         private Dictionary<Type, State> states = new();
 
         private Task transition = Task.CompletedTask;
@@ -33,21 +30,11 @@ namespace Fishbowl.Net.Client.Shared.Components
             }
         }
 
-        public Task AddAsync(State state)
+        public void Add(State state)
         {
             this.Logger.LogInformation("Add state: {StateType}", state.GetType().Name);
             this.states.Add(state.GetType(), state);
             state.Updated += this.StateHasChanged;
-
-            if (this.states.Count == 1 && this.ShowOnInit)
-            {
-                this.ActiveState = state;
-                this.transition = this.transition
-                    .ContinueWith(_ => this.ActiveState.EnableAsync())
-                    .Unwrap();
-            }
-
-            return this.transition;
         }
 
         public void SetParameters<TState>(Action<TState> setParameters) where TState : State

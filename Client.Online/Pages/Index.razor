@@ -15,7 +15,7 @@
         Message="@(string.Format(L("Pages.Play.PlayerCount"), this.ClientState.TotalPlayerCount, this.ClientState.ConnectedPlayerCount, this.ClientState.SetupPlayerCount))" />
 </div>
 
-<StateManager @ref="this.stateManager" TransitionStarted="@this.OnStateTransition" ShowOnInit="false">
+<StateManager @ref="this.stateManager" TransitionStarted="@this.OnStateTransition">
     <ConnectionClosed ReloadRequested="this.Reload" />
     <Password OnCreateGame="this.CreateGame" OnJoinGame="this.JoinGame" />
     <PlayerCount OnPlayerCountSet="this.SetPlayerCount" />

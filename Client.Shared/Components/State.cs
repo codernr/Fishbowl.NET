@@ -44,10 +44,6 @@ namespace Fishbowl.Net.Client.Shared.Components
 
         protected void Update() => this.Updated?.Invoke();
 
-        protected override async Task OnInitializedAsync()
-        {
-            await this.StateManager.AddAsync(this);
-            await base.OnInitializedAsync();
-        }
+        protected override void OnInitialized() => this.StateManager.Add(this);
     }
 }
