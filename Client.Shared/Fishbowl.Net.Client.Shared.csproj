@@ -25,11 +25,11 @@
     <ProjectReference Include="..\Shared\Fishbowl.Net.Shared.csproj" />
   </ItemGroup>
 
-  <Target Name="BuildCssDebug" BeforeTargets="Build" Condition="'$(Configuration)' == 'Debug'">
-    <Exec WorkingDirectory="$(NpmRoot)" Command="npm run css-debug" />
+  <Target Name="NpmInstall">
+    <Exec WorkingDirectory="$(NpmRoot)" Command="npm install" />
   </Target>
 
-  <Target Name="BuildCssRelease" BeforeTargets="Build" Condition="'$(Configuration)' == 'Release'">
+  <Target Name="NpmRunBuild" DependsOnTargets="NpmInstall" BeforeTargets="BeforeBuild">
     <Exec WorkingDirectory="$(NpmRoot)" Command="npm run build" />
   </Target>
 

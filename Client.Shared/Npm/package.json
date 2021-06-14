@@ -2,23 +2,14 @@
   "name": "fishbowl-client",
   "version": "1.0.0",
   "scripts": {
-    "build": "npm run css",
-    "clear": "rm -f ./../wwwroot/css/styles.*.css",
-    "css-compile": "sass styles.scss ./../wwwroot/css/styles.css --load-path=node_modules --style compressed --no-source-map",
-    "css-prefix": "postcss --replace ./../wwwroot/css/styles.css --use autoprefixer --no-map",
-    "css-purge": "purgecss -c ./purgecss.config.js",
-    "css": "npm-run-all clear css-compile css-prefix css-purge",
-    "css-debug": "npm-run-all clear css-compile css-prefix"
+    "build": "node build.js"
   },
   "dependencies": {
     "bootstrap": "^5.0.0"
   },
   "devDependencies": {
     "autoprefixer": "^10.2.5",
-    "hash-files": "^1.1.1",
-    "npm-run-all": "^4.1.5",
     "postcss": "^8.2.14",
-    "postcss-cli": "^8.3.1",
     "purgecss": "^4.0.3",
     "sass": "^1.32.12"
   }
