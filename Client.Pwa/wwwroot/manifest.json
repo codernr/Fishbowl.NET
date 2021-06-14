@@ -1,15 +1,17 @@
 {
-  "name": "Fishbowl.Net.Client.Pwa",
-  "short_name": "Fishbowl.Net.Client.Pwa",
+  "name": "Japán activity",
+  "short_name": "Japán activity",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#03173d",
+  "background_color": "#212529",
+  "theme_color": "#f8f9fa",
   "icons": [
     {
       "src": "icon-512.png",
       "type": "image/png",
       "sizes": "512x512"
     }
-  ]
+  ],
+  "lang": "hu",
+  "orientation": "portrait"
 }
