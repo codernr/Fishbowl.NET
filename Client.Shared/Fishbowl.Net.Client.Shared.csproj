@@ -25,12 +25,12 @@
     <ProjectReference Include="..\Shared\Fishbowl.Net.Shared.csproj" />
   </ItemGroup>
 
-  <Target Name="NpmInstall" AfterTargets="ReferenceResolved" BeforeTargets="BeforeBuild">
+  <Target Name="Npm" BeforeTargets="PreBuildEvent">
     <Exec WorkingDirectory="$(NpmRoot)" Command="npm install" />
-  </Target>
-
-  <Target Name="NpmRunBuild" DependsOnTargets="NpmInstall" BeforeTargets="BeforeBuild">
     <Exec WorkingDirectory="$(NpmRoot)" Command="npm run build" />
+    <ItemGroup>
+      <Content Include="wwwroot/css/styles*.css" />
+    </ItemGroup>
   </Target>
 
 </Project>

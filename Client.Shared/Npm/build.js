@@ -6,6 +6,10 @@ const { PurgeCSS } = require('purgecss');
 
 const PATH = './../wwwroot/css/styles.css';
 
+const release = process.argv.includes('Release');
+
+if (fs.existsSync(PATH)) fs.unlinkSync(PATH);
+
 const sassResult = sass.renderSync({
     file: 'styles.scss',
     includePaths: ['node_modules'],
