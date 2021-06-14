@@ -24,10 +24,10 @@ namespace Fishbowl.Net.Client.Shared.Components.States
             base.OnInitialized();
             this.options = new()
             {
-                (L["Components.States.RoundTypes.Types.Taboo"] ?? "Taboo", true),
-                (L["Components.States.RoundTypes.Types.Charades"] ?? "Charades", true),
-                (L["Components.States.RoundTypes.Types.Password"] ?? "Password", true),
-                (L["Components.States.RoundTypes.Types.Humming"] ?? "Humming", true)
+                (L["Components.States.RoundTypes.Types.Taboo"]?.Value ?? "Taboo", true),
+                (L["Components.States.RoundTypes.Types.Charades"]?.Value ?? "Charades", true),
+                (L["Components.States.RoundTypes.Types.Password"]?.Value ?? "Password", true),
+                (L["Components.States.RoundTypes.Types.Humming"]?.Value ?? "Humming", true)
             };
         }
 
