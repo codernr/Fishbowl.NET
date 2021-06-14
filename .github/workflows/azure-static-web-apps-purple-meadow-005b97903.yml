@@ -14,14 +14,22 @@ jobs:
     name: Build and Deploy Job
     steps:
       - uses: actions/checkout@v2
-        with:
-          submodules: true
-      - name: Build And Deploy
-        id: builddeploy
+
+      - name: NPM install
+        run: npm --prefix ./Client.Shared/Npm install ./Client.Shared/Npm
+
+      - name: NPM build
+        run: npm --prefix ./Client.Shared/Npm run build
+
+      - name: dotnet publish
+        run: dotnet publish ./Client.Pwa/Fishbowl.Net.Client.Pwa.csproj -c Release
+
+      - name: Deploy
         uses: Azure/static-web-apps-deploy@v1
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_PURPLE_MEADOW_005B97903 }}
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          action: "upload"
-          app_location: "Client.Pwa"
-          output_location: "wwwroot"
+          action: 'upload'
+          app_location: 'Client.Pwa/bin/Release/net5.0/publish/wwwroot'
+          output_location: ''
+          skip_app_build: true
