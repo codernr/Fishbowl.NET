@@ -43,7 +43,7 @@ namespace Fishbowl.Net.Client.Pwa.Pages
 
         private Task transition = Task.CompletedTask;
 
-        private string L(string key) => this.StringLocalizer[key] ?? key;
+        private string L(string key) => this.StringLocalizer[key]?.Value ?? key;
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {

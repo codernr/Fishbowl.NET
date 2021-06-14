@@ -30,7 +30,7 @@ namespace Fishbowl.Net.Client.Online.Pages
 
         private ClientConnection? connection;
 
-        private string L(string key) => this.StringLocalizer[key] ?? key;
+        private string L(string key) => this.StringLocalizer[key]?.Value ?? key;
 
         private void Notify(string message, string contextClass) => this.toastContainer?.DisplayToast(message, contextClass);
 
