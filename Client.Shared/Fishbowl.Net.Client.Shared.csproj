@@ -25,7 +25,7 @@
     <ProjectReference Include="..\Shared\Fishbowl.Net.Shared.csproj" />
   </ItemGroup>
 
-  <Target Name="NpmInstall">
+  <Target Name="NpmInstall" AfterTargets="ReferenceResolved" BeforeTargets="BeforeBuild">
     <Exec WorkingDirectory="$(NpmRoot)" Command="npm install" />
   </Target>
 
