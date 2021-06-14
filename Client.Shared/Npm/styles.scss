@@ -45,6 +45,10 @@ form:invalid {
     z-index: 5;
 }
 
+.splash {
+    z-index: -10;
+}
+
 #blazor-error-ui {
     background: lightyellow;
     bottom: 0;

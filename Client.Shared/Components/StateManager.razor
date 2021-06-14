@@ -5,5 +5,10 @@
 <CascadingValue Value="this">
     @ChildContent
 
-    @this.ActiveState?.Container
+    @if (this.ActiveState is not null)
+    {
+        <div class="row w-100 h-100 bg-dark">
+            @this.ActiveState.Container
+        </div>
+    }
 </CascadingValue>
