@@ -7,6 +7,8 @@
     <VersionSuffix>beta12</VersionSuffix>
     <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
     <BlazorWebAssemblyLoadAllGlobalizationData>true</BlazorWebAssemblyLoadAllGlobalizationData>
+    <PublishDependsOn>ResolveReferences; $(PublishDependsOn)</PublishDependsOn>
+    <BuildDependsOn>ResolveReferences; $(BuildDependsOn)</BuildDependsOn>
   </PropertyGroup>
 
   <ItemGroup>
