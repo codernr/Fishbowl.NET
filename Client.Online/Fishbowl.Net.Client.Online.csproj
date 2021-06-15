@@ -3,6 +3,8 @@
     <TargetFramework>net5.0</TargetFramework>
     <Nullable>enable</Nullable>
     <BlazorWebAssemblyLoadAllGlobalizationData>true</BlazorWebAssemblyLoadAllGlobalizationData>
+    <PublishDependsOn>ResolveReferences; $(PublishDependsOn)</PublishDependsOn>
+    <BuildDependsOn>ResolveReferences; $(BuildDependsOn)</BuildDependsOn>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="*" />
