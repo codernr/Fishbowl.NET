@@ -12,12 +12,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: NPM install
-        run: npm --prefix ./Client.Shared/Npm install ./Client.Shared/Npm
-
-      - name: NPM build
-        run: npm --prefix ./Client.Shared/Npm run build
-
       - name: dotnet publish
         run: dotnet publish ./Client.Pwa/Fishbowl.Net.Client.Pwa.csproj -c Release
 
