@@ -4,7 +4,7 @@
     <TargetFramework>net5.0</TargetFramework>
     <Nullable>enable</Nullable>
     <VersionPrefix>1.0.0</VersionPrefix>
-    <VersionSuffix>beta12</VersionSuffix>
+    <VersionSuffix>beta13</VersionSuffix>
     <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
     <BlazorWebAssemblyLoadAllGlobalizationData>true</BlazorWebAssemblyLoadAllGlobalizationData>
     <PublishDependsOn>ResolveReferences; $(PublishDependsOn)</PublishDependsOn>
