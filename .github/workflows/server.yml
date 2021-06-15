@@ -20,9 +20,6 @@ jobs:
       with:
         dotnet-version: '5.0.x'
 
-    - name: NPM install
-      run: npm --prefix ./Client.Shared/Npm install ./Client.Shared/Npm
-
     - name: dotnet publish
       run: dotnet publish ./Server/Fishbowl.Net.Server.csproj -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
