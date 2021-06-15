@@ -24,4 +24,29 @@
     <ProjectReference Include="..\Client.Shared\Fishbowl.Net.Client.Shared.csproj" />
   </ItemGroup>
 
+  <Target Name="Build" DependsOnTargets="Clean" />
+  <Target Name="Publish" DependsOnTargets="Build" />
+
+  <Import Project="../Client.Shared/Replace.targets" />
+
+  <Target Name="UpdateLink" Condition="$(Configuration) == 'Release'" AfterTargets="Npm" BeforeTargets="PreBuildEvent">
+    <Replace DirectoryPath="..\Client.Shared\wwwroot\css" ReplaceFile="wwwroot/index.html" />
+    <ItemGroup>
+      <None Include="wwwroot/index.html" />
+    </ItemGroup>
+    <ItemGroup>
+      <Content Include="wwwroot/index.html" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="RevertLink" Condition="$(Configuration) == 'Release'" AfterTargets="AfterPublish">
+    <Replace DirectoryPath="..\Client.Shared\wwwroot\css" ReplaceFile="wwwroot/index.html" Revert="True" />
+    <ItemGroup>
+      <None Include="wwwroot/index.html" />
+    </ItemGroup>
+    <ItemGroup>
+      <Content Include="wwwroot/index.html" />
+    </ItemGroup>
+  </Target>
+
 </Project>

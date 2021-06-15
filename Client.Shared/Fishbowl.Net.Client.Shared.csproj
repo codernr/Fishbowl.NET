@@ -25,9 +25,9 @@
     <ProjectReference Include="..\Shared\Fishbowl.Net.Shared.csproj" />
   </ItemGroup>
 
-  <Target Name="Npm" BeforeTargets="PreBuildEvent">
+  <Target Name="Npm" BeforeTargets="PreBuildEvent" DependsOnTargets="Clean">
     <Exec WorkingDirectory="$(NpmRoot)" Command="npm install" />
-    <Exec WorkingDirectory="$(NpmRoot)" Command="npm run build" />
+    <Exec WorkingDirectory="$(NpmRoot)" Command="npm run build -- $(Configuration)" />
     <ItemGroup>
       <Content Include="wwwroot/css/styles*.css" />
     </ItemGroup>

@@ -1,0 +1,23 @@
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <UsingTask
+    TaskName="Replace"
+    TaskFactory="RoslynCodeTaskFactory"
+    AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll" >
+    <ParameterGroup>
+        <DirectoryPath Required="True" />
+        <ReplaceFile Required="True" />
+        <Revert ParameterType="System.Boolean" />
+    </ParameterGroup>
+    <Task>
+      <Using Namespace="System.IO"/>
+      <Code Type="Fragment" Language="cs">
+        <![CDATA[
+          var fileName = Path.GetFileName(Directory.GetFiles(DirectoryPath, "styles.*.css")[0]);
+          var toReplace = Revert ? fileName : "styles.css";
+          var replaceWith = Revert ? "styles.css" : fileName;
+          File.WriteAllText(ReplaceFile, File.ReadAllText(ReplaceFile).Replace(toReplace, replaceWith));
+        ]]>
+      </Code>
+    </Task>
+  </UsingTask>
+</Project>
