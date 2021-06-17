@@ -5,6 +5,7 @@
     <BlazorWebAssemblyLoadAllGlobalizationData>true</BlazorWebAssemblyLoadAllGlobalizationData>
     <PublishDependsOn>ResolveReferences; $(PublishDependsOn)</PublishDependsOn>
     <BuildDependsOn>ResolveReferences; $(BuildDependsOn)</BuildDependsOn>
+    <PublishTrimmed>false</PublishTrimmed>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="*" />
