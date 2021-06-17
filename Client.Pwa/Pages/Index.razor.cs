@@ -54,11 +54,14 @@ namespace Fishbowl.Net.Client.Pwa.Pages
                 this.Transition<PlayerCount>());
         }
 
-        private Task SetPlayerCount(int playerCount)
+        private async Task SetPlayerCount(int playerCount)
         {
             this.playerCount = playerCount;
 
-            return this.StateManager.SetStateAsync<TeamCount>(teamCount => teamCount.MaxTeamCount = playerCount / 2);
+            await this.ScreenService.RequestWakeLock();
+            await this.ScreenService.RequestFullScreen();
+
+            await this.StateManager.SetStateAsync<TeamCount>(teamCount => teamCount.MaxTeamCount = playerCount / 2);
         }
 
         private Task SetTeamCount(int teamCount)

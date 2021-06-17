@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <TrimmerRootAssembly Include="System.Private.Runtime.InteropServices.JavaScript" />
+    <TrimmerRootAssembly Include="System.Net.Http" />
   </ItemGroup>
 
   <ItemGroup>

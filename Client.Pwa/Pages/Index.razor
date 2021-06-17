@@ -3,6 +3,7 @@
 @inject NavigationManager NavigationManager
 @inject IStringLocalizer<Resources> StringLocalizer
 @inject GameProperty PersistedGame
+@inject IScreenService ScreenService
 
 <div class="position-fixed top-0 start-50 translate-middle-x mt-1 pt-2">
     <Toast @ref="this.playerSetupDisplay"
