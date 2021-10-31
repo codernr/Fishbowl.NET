@@ -147,6 +147,9 @@
     <data name="Components.States.RoundTypes.Types.Taboo">
         <value>Taboo</value>
     </data>
+    <data name="Components.States.RoundTypes.Types.Drawing">
+        <value>Drawing</value>
+    </data>
     <data name="Components.States.RoundTypes.Types.Charades">
         <value>Charades</value>
     </data>

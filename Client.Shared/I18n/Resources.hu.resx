@@ -147,6 +147,9 @@
     <data name="Components.States.RoundTypes.Types.Taboo">
         <value>Körülírás</value>
     </data>
+    <data name="Components.States.RoundTypes.Types.Drawing">
+        <value>Rajzolás</value>
+    </data>
     <data name="Components.States.RoundTypes.Types.Charades">
         <value>Mutogatás</value>
     </data>

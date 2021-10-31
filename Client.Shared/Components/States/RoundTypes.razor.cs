@@ -25,6 +25,7 @@ namespace Fishbowl.Net.Client.Shared.Components.States
             this.options = new()
             {
                 (L["Components.States.RoundTypes.Types.Taboo"]?.Value ?? "Taboo", true),
+                (L["Components.States.RoundTypes.Types.Drawing"]?.Value ?? "Taboo", true),
                 (L["Components.States.RoundTypes.Types.Charades"]?.Value ?? "Charades", true),
                 (L["Components.States.RoundTypes.Types.Password"]?.Value ?? "Password", true),
                 (L["Components.States.RoundTypes.Types.Humming"]?.Value ?? "Humming", true)
