@@ -242,7 +242,7 @@ namespace Fishbowl.Net.Client.Online.Pages
         public Task ReceiveLastScoreRevoked(ScoreViewModel score)
         {
             this.ClientState.PeriodScores.Remove(score);
-            this.Notify($"{this.L("Pages.Play.ScoreRevoked")}: {score.Word.Value}", ContextCssClass.Warning);
+            this.Notify($"{this.L("Pages.Play.ScoreRevoked")}", ContextCssClass.Warning);
             this.StateManager.SetParameters<PeriodPlay>(state =>
             {
                 state.ScoreCount = this.ClientState.PeriodScores.Count;
