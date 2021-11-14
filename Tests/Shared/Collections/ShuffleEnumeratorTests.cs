@@ -41,7 +41,9 @@ namespace Fishbowl.Net.Tests.Collections
             Assert.Equal("b", enumerator.Current);
             Assert.True(enumerator.MovePrevious());
             Assert.Equal("a", enumerator.Current);
-            Assert.False(enumerator.MovePrevious());
+            Assert.True(enumerator.MovePrevious());
+            Assert.True(enumerator.MoveNext());
+            Assert.Equal("a", enumerator.Current);
             Assert.True(enumerator.MoveNext());
             Assert.Equal("b", enumerator.Current);
             Assert.True(enumerator.MovePrevious());

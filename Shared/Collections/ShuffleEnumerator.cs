@@ -46,6 +46,12 @@ namespace Fishbowl.Net.Shared.Collections
 
         public bool MovePrevious()
         {
+            if (this.id == 0)
+            {
+                this.id--;
+                return true;
+            }
+            
             if (this.id > 0)
             {
                 this.id--;
