@@ -15,10 +15,10 @@ namespace Fishbowl.Net.Shared.Serialization
         public override void Write(Utf8JsonWriter writer, Round value, JsonSerializerOptions options) =>
             JsonSerializer.Serialize(writer, Map(value), options);
 
-        private record Data(string Type, RandomEnumerator<Word> WordEnumerator, List<Period> Periods);
+        private record Data(string Type, ShuffleEnumerator<Word> WordEnumerator, List<Period> Periods);
 
         private static Data Map(Round round) =>
-            new(round.Type, round.WordEnumerator as RandomEnumerator<Word> ?? throw new InvalidOperationException(), round.Periods);
+            new(round.Type, round.WordEnumerator as ShuffleEnumerator<Word> ?? throw new InvalidOperationException(), round.Periods);
 
         private static Round? Map(Data? data) => data is null ? null :
             new(data.Type, data.WordEnumerator, data.Periods);

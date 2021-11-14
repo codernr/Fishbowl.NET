@@ -256,17 +256,21 @@ namespace Fishbowl.Net.Client.Pwa.Pages
 
         private void RevokeLastScore()
         {
+            var score = this.Game.Game.CurrentRound.CurrentPeriod.Scores.Last();
             this.Game.RevokeLastScore();
-            this.UpdateScore();
+            this.UpdateScore(score.Word);
         }
 
-        private void UpdateScore() =>
+        private void UpdateScore(Word? previousWord = null) =>
             this.transition = this.transition
                 .ContinueWith(_ =>
                 {
                     this.PersistGame();
                     this.StateManager.SetParameters<PeriodPlay>(state =>
-                    state.ScoreCount = this.Game.Game.CurrentRound.CurrentPeriod.Scores.Count);
+                    {
+                        state.ScoreCount = this.Game.Game.CurrentRound.CurrentPeriod.Scores.Count;
+                        if (previousWord is not null) state.Word = previousWord.Map();
+                    });
                 });
 
         private async Task Abort(string messageKey)
