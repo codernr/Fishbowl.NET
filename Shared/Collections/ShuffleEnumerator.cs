@@ -71,6 +71,6 @@ namespace Fishbowl.Net.Shared.Collections
             this.PreviousItems.Clear();
         }
 
-        public void Shuffle() => this.NextItems.Randomize();
+        public void Shuffle() => this.NextItems = new Stack<T>(this.NextItems.Randomize());
     }
 }
