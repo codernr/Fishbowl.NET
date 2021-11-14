@@ -18,7 +18,7 @@ namespace Fishbowl.Net.Tests.Shared.Serialization
             options.Converters.Add(new GameConverter());
             options.Converters.Add(new TeamConverter());
             options.Converters.Add(new RoundConverter());
-            options.Converters.Add(new RandomEnumeratorConverter());
+            options.Converters.Add(new ShuffleEnumeratorConverter());
             options.WriteIndented = true;
 
             var teams = CreatePlayers(5, 2).CreateTeams(2);

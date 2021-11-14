@@ -8,7 +8,7 @@ using Xunit;
 
 namespace Fishbowl.Net.Tests.Shared.Serialization
 {
-    public class RandomEnumeratorConverterTests
+    public class ShuffleEnumeratorConverterTests
     {
         [Fact]
         public void ShouldSerializeCorrectly()
@@ -23,9 +23,9 @@ namespace Fishbowl.Net.Tests.Shared.Serialization
             };
 
             var options = new JsonSerializerOptions(JsonSerializerDefaults.Web);
-            options.Converters.Add(new RandomEnumeratorConverter());
+            options.Converters.Add(new ShuffleEnumeratorConverter());
 
-            var original = new RandomEnumerator<Word>(list);
+            var original = new ShuffleEnumerator<Word>(list);
 
             var json1 = JsonSerializer.Serialize(original, options);
             
@@ -34,13 +34,15 @@ namespace Fishbowl.Net.Tests.Shared.Serialization
 
             var json2 = JsonSerializer.Serialize(original, options);
 
-            var deserialized1 = JsonSerializer.Deserialize<RandomEnumerator<Word>>(json1, options);
-            var deserialized2 = JsonSerializer.Deserialize<RandomEnumerator<Word>>(json2, options);
+            var deserialized1 = JsonSerializer.Deserialize<ShuffleEnumerator<Word>>(json1, options);
+            var deserialized2 = JsonSerializer.Deserialize<ShuffleEnumerator<Word>>(json2, options);
 
-            Assert.True(deserialized1!.Stack.All(item => deserialized1.List.Contains(item)));
-            Assert.Null(deserialized1.Current);
-            Assert.Equal(original.Current, deserialized2!.Current);
-            Assert.Equal(3, deserialized2.Stack.Count);
+            Assert.Throws<InvalidOperationException>(() => deserialized1!.Current);
+            Assert.Equal(0, deserialized1!.PreviousItems.Count);
+            Assert.Equal(5, deserialized1!.NextItems.Count);
+            Assert.Equal("w1", deserialized2!.Current.Value);
+            Assert.Equal(1, deserialized2!.PreviousItems.Count);
+            Assert.Equal(4, deserialized2!.NextItems.Count);
         }
     }
 }

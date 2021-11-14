@@ -7,19 +7,22 @@ namespace Fishbowl.Net.Shared.Collections
 {
     public class ShuffleEnumerator<T> : IShuffleEnumerator<T>
     {
-        public T Current => this.id > -1 ? this.nextItems.Peek() : throw new InvalidOperationException("Invalid state.");
+        public T Current => this.Id > -1 ? this.NextItems.Peek() : throw new InvalidOperationException("Invalid state.");
 
         object IEnumerator.Current => this.Current ??
             throw new InvalidOperationException("Invalid state.");
 
-        private Stack<T> previousItems = new();
+        public Stack<T> PreviousItems { get; private set; } = new();
 
-        private Stack<T> nextItems;
+        public Stack<T> NextItems { get; private set; }
 
-        private int id = -1;
+        public int Id { get; private set; } = -1;
 
         public ShuffleEnumerator(IEnumerable<T> collection) =>
-            this.nextItems = new(collection);
+            this.NextItems = new(collection);
+
+        public ShuffleEnumerator(int id, IEnumerable<T> nextItems, IEnumerable<T> previousItems) =>
+            (this.Id, this.NextItems, this.PreviousItems) = (id, new(nextItems), new(previousItems));
 
         public void Dispose()
         {
@@ -28,16 +31,16 @@ namespace Fishbowl.Net.Shared.Collections
 
         public bool MoveNext()
         {
-            if (this.id < 0)
+            if (this.Id < 0)
             {
-                this.id++;
+                this.Id++;
                 return true;
             }
 
-            if (this.id < this.nextItems.Count + this.previousItems.Count - 1)
+            if (this.Id < this.NextItems.Count + this.PreviousItems.Count - 1)
             {
-                this.id++;
-                this.previousItems.Push(this.nextItems.Pop());
+                this.Id++;
+                this.PreviousItems.Push(this.NextItems.Pop());
                 return true;
             }
 
@@ -46,16 +49,16 @@ namespace Fishbowl.Net.Shared.Collections
 
         public bool MovePrevious()
         {
-            if (this.id == 0)
+            if (this.Id == 0)
             {
-                this.id--;
+                this.Id--;
                 return true;
             }
             
-            if (this.id > 0)
+            if (this.Id > 0)
             {
-                this.id--;
-                this.nextItems.Push(this.previousItems.Pop());
+                this.Id--;
+                this.NextItems.Push(this.PreviousItems.Pop());
                 return true;
             }
 
@@ -64,10 +67,10 @@ namespace Fishbowl.Net.Shared.Collections
 
         public void Reset()
         {
-            this.nextItems = new Stack<T>(this.nextItems.Concat(this.previousItems).Randomize());
-            this.previousItems.Clear();
+            this.NextItems = new Stack<T>(this.NextItems.Concat(this.PreviousItems).Randomize());
+            this.PreviousItems.Clear();
         }
 
-        public void Shuffle() => this.nextItems.Randomize();
+        public void Shuffle() => this.NextItems.Randomize();
     }
 }

@@ -32,7 +32,7 @@ namespace Fishbowl.Net.Client.Shared
                 options.Converters.Add(new GameConverter());
                 options.Converters.Add(new TeamConverter());
                 options.Converters.Add(new RoundConverter());
-                options.Converters.Add(new RandomEnumeratorConverter());
+                options.Converters.Add(new ShuffleEnumeratorConverter());
                 options.Converters.Add(new TimeSpanConverter());
 
                 return options;
