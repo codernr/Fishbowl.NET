@@ -82,8 +82,11 @@ namespace Fishbowl.Net.Shared.GameEntities
             }
         }
 
-        public void StartPeriod(DateTimeOffset timestamp) =>
+        public void StartPeriod(DateTimeOffset timestamp)
+        {
             this.roundEnumerator.Current.CurrentPeriod.StartedAt = timestamp;
+            if (this.randomize) this.CurrentRound.WordEnumerator.Shuffle();
+        }
 
         public void FinishPeriod(DateTimeOffset timestamp) =>
             this.FinishPeriod(timestamp, true);
@@ -97,7 +100,6 @@ namespace Fishbowl.Net.Shared.GameEntities
 
             if (rewindWord)
             {
-                if (this.randomize) this.CurrentRound.WordEnumerator.Shuffle();
                 this.CurrentRound.WordEnumerator.MovePrevious();
             }
         }
