@@ -8,11 +8,11 @@ namespace Fishbowl.Net.Client.Online.Services
     {
         Task Connected() => Task.CompletedTask;
 
-        Task Reconnecting(Exception exception) => Task.CompletedTask;
+        Task Reconnecting(Exception? exception) => Task.CompletedTask;
 
-        Task Reconnected(string connectionId) => Task.CompletedTask;
+        Task Reconnected(string? connectionId) => Task.CompletedTask;
 
-        Task Closed(Exception error) => Task.CompletedTask;
+        Task Closed(Exception? error) => Task.CompletedTask;
 
         Task ReceiveSetupPlayer(GameSetupViewModel setup) => Task.CompletedTask;
 

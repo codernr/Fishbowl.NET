@@ -65,7 +65,7 @@ namespace Fishbowl.Net.Client.Online.Pages
             await this.StateManager.SetStateAsync<Password>();
         }
 
-        public Task Reconnecting(Exception exception) =>
+        public Task Reconnecting(Exception? exception) =>
             this.StateManager.SetStateAsync<Info>(state =>
                 {
                     state.ContextClass = ContextCssClass.Danger;
@@ -74,9 +74,9 @@ namespace Fishbowl.Net.Client.Online.Pages
                     state.Loading = true;
                 });
 
-        public Task Reconnected(string connectionId) => this.JoinGameContext();
+        public Task Reconnected(string? connectionId) => this.JoinGameContext();
 
-        public Task Closed(Exception error) =>
+        public Task Closed(Exception? error) =>
             this.StateManager.SetStateAsync<ConnectionClosed>();
 
         public async Task ReceiveSetupPlayer(GameSetupViewModel gameSetup)
