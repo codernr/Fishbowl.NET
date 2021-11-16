@@ -27,6 +27,8 @@ namespace Fishbowl.Net.Shared.GameEntities
 
         private TimeSpan? remaining;
 
+        private bool randomize = true;
+
         public Game(Guid id, GameOptions options, IEnumerable<Team> teams, IEnumerable<string> roundTypes, bool randomize = true)
         {
             this.Id = id;
@@ -48,6 +50,8 @@ namespace Fishbowl.Net.Shared.GameEntities
                 .ToList();
 
             this.roundEnumerator = this.Rounds.GetEnumerator();
+
+            this.randomize = randomize;
         }
 
         public Game(
@@ -81,15 +85,21 @@ namespace Fishbowl.Net.Shared.GameEntities
         public void StartPeriod(DateTimeOffset timestamp) =>
             this.roundEnumerator.Current.CurrentPeriod.StartedAt = timestamp;
 
-        public void FinishPeriod(DateTimeOffset timestamp)
+        public void FinishPeriod(DateTimeOffset timestamp) =>
+            this.FinishPeriod(timestamp, true);
+
+        public void FinishPeriod(DateTimeOffset timestamp, bool rewindWord)
         {
             this.roundEnumerator.Current.CurrentPeriod.FinishedAt = timestamp;
             this.remaining = null;
             this.TeamEnumerator.Current.PlayerEnumerator.MoveNext();
             this.TeamEnumerator.MoveNext();
 
-            this.CurrentRound.WordEnumerator.Shuffle();
-            this.CurrentRound.WordEnumerator.MovePrevious();
+            if (rewindWord)
+            {
+                if (this.randomize) this.CurrentRound.WordEnumerator.Shuffle();
+                this.CurrentRound.WordEnumerator.MovePrevious();
+            }
         }
 
         public void AddScore(Score score) => this.roundEnumerator.Current.CurrentPeriod.Scores.Add(score);
@@ -100,7 +110,7 @@ namespace Fishbowl.Net.Shared.GameEntities
 
             if (score is not null)
             {
-                this.CurrentRound.WordEnumerator.Shuffle();
+                if (this.randomize) this.CurrentRound.WordEnumerator.Shuffle();
                 this.CurrentRound.WordEnumerator.MovePrevious();
             }
 
@@ -113,7 +123,7 @@ namespace Fishbowl.Net.Shared.GameEntities
 
             if (timestamp >= period.StartedAt + period.Length - this.periodThreshold)
             {
-                this.FinishPeriod(timestamp);
+                this.FinishPeriod(timestamp, false);
                 return false;
             }
 
