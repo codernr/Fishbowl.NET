@@ -7,7 +7,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/Server/bin/Debug/net5.0/Fishbowl.Net.Server.dll",
+            "program": "${workspaceFolder}/Server/bin/Debug/net6.0/Fishbowl.Net.Server.dll",
             "args": [],
             "cwd": "${workspaceFolder}/Server",
             "stopAtEntry": false,
@@ -32,7 +32,7 @@
             "type": "blazorwasm",
             "browser": "edge",
             "hosted": true,
-            "program": "${workspaceFolder}/Server/bin/Debug/net5.0/Fishbowl.Net.Server.dll",
+            "program": "${workspaceFolder}/Server/bin/Debug/net6.0/Fishbowl.Net.Server.dll",
             "request": "launch",
             "cwd": "${workspaceFolder}/Server",
             "env": {
