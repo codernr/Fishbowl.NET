@@ -10,28 +10,13 @@ namespace Fishbowl.Net.Tests.Shared.GameEntities
     public class GameTests
     {
         [Fact]
-        public void ShouldThrowWithInvalidTeamConfig()
-        {
-            Assert.Throws<ArgumentException>(() => new Game(
-                Guid.NewGuid(),
-                new(),
-                (new[]
-                {
-                    new Player(Guid.NewGuid(), "Player1", new Word[0]),
-                    new Player(Guid.NewGuid(), "Player2", new Word[0]),
-                    new Player(Guid.NewGuid(), "Player3", new Word[0]),
-                }).CreateTeams(2),
-                new string[0]));
-        }
-
-        [Fact]
         public void TestRunWithNoPasses()
         {
             var teams = CreatePlayers(5, 2).CreateTeams(2);
 
             var rounds = new[] { "GameType1", "GameType2" };
 
-            var game = new Game(Guid.NewGuid(), new(), teams, rounds, false);
+            var game = new Game(Guid.NewGuid(), new() { PeriodThresholdInSeconds = 0 }, teams, rounds, false);
 
             int roundCount = 0;
             int periodCount = 0;
@@ -43,14 +28,14 @@ namespace Fishbowl.Net.Tests.Shared.GameEntities
             {
                 new[]
                 {
-                    new[] { "Player0Word0", "Player0Word1", "Player1Word0", "Player1Word1", "Player2Word0", "Player2Word1" },
-                    new[] { "Player3Word0", "Player3Word1", "Player4Word0", "Player4Word1" }
+                    new[] { "Player3Word1", "Player3Word0", "Player1Word1", "Player1Word0", "Player4Word1", "Player4Word0" },
+                    new[] { "Player2Word1", "Player2Word0", "Player0Word1", "Player0Word0" }
                 },
                 new[]
                 {
-                    new[] { "Player0Word0", "Player0Word1" },
-                    new[] { "Player1Word0", "Player1Word1", "Player2Word0", "Player2Word1", "Player3Word0", "Player3Word1" },
-                    new[] { "Player4Word0", "Player4Word1" }
+                    new[] { "Player3Word1", "Player3Word0" },
+                    new[] { "Player1Word1", "Player1Word0", "Player4Word1", "Player4Word0", "Player2Word1", "Player2Word0" },
+                    new[] { "Player0Word1", "Player0Word0" }
                 }
             };
 
@@ -113,14 +98,14 @@ namespace Fishbowl.Net.Tests.Shared.GameEntities
             {
                 new[]
                 {
-                    new[] { "Player0Word0", "Player0Word1", "Player1Word0", "Player1Word1", "Player2Word0", "Player2Word1" },
-                    new[] { "Player2Word1", "Player3Word0", "Player3Word1", "Player4Word0", "Player4Word1" }
+                    new[] { "Player3Word1", "Player3Word0", "Player1Word1", "Player1Word0", "Player4Word1", "Player4Word0" },
+                    new[] { "Player4Word0", "Player2Word1", "Player2Word0", "Player0Word1", "Player0Word0" }
                 },
                 new[]
                 {
-                    new[] { "Player0Word0" },
-                    new[] { "Player0Word0", "Player0Word1", "Player1Word0", "Player1Word1", "Player2Word0", "Player2Word1" },
-                    new[] { "Player2Word1", "Player3Word0", "Player3Word1", "Player4Word0", "Player4Word1" }
+                    new[] { "Player3Word1" },
+                    new[] { "Player3Word1", "Player3Word0", "Player1Word1", "Player1Word0", "Player4Word1", "Player4Word0" },
+                    new[] { "Player4Word0", "Player2Word1", "Player2Word0", "Player0Word1", "Player0Word0" }
                 }
             };
 
