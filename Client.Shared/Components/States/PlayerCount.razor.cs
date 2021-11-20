@@ -8,7 +8,7 @@ namespace Fishbowl.Net.Client.Shared.Components.States
         [Parameter]
         public EventCallback<int> OnPlayerCountSet { get; set; } = default!;
 
-        public MudForm? form;
+        private MudForm? form;
 
         private int playerCount = 4;
     }
