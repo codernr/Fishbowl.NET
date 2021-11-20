@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Components;
+using MudBlazor;
 
 namespace Fishbowl.Net.Client.Shared.Components.States
 {
@@ -6,6 +7,8 @@ namespace Fishbowl.Net.Client.Shared.Components.States
     {
         [Parameter]
         public EventCallback<int> OnPlayerCountSet { get; set; } = default!;
+
+        public MudForm? form;
 
         private int playerCount = 4;
     }

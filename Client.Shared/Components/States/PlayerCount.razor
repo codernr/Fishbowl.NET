@@ -8,30 +8,22 @@
             Title="@(L["Components.States.Common.SetupGame"])"
             Subtitle="@(L["Components.States.PlayerCount.Title"])"
             TotalSteps="4" Step="1">
-            <form @onsubmit="_ => this.Submit(() => this.OnPlayerCountSet.InvokeAsync(this.playerCount))" @onsubmit:preventDefault>
-                <div class="row mb-3">
-                    <div class="col">
-                        <div class="form-floating text-dark">
-                            <input
-                                type="number"
-                                class="form-control"
-                                id="player-count"
-                                name="player-count"
-                                placeholder="@(L["Components.States.PlayerCount.Title"])"
-                                @bind="this.playerCount"
-                                min="4"
-                                required>
-                            <label for="player-count">@L["Components.States.PlayerCount.Title"]</label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="d-grid col">
-                        <button class="btn btn-success btn-lg" type="submit">
-                            @L["Components.States.PlayerCount.SubmitButton"]
-                        </button>
-                    </div>
-                </div>
-            </form>
+            <MudForm @ref="this.form">
+                <MudNumericField
+                    @bind-Value="this.playerCount"
+                    Label="@(L["Components.States.PlayerCount.Title"])"
+                    Min="4"
+                    Max="20"
+                    Class="my-10" />
+                <MudButton
+                    Variant="Variant.Filled"
+                    Color="Color.Primary"
+                    FullWidth="true"
+                    Size="Size.Large"
+                    Disabled="@(!this.form!.IsValid)"
+                    @onclick="_ => this.Submit(() => this.OnPlayerCountSet.InvokeAsync(this.playerCount))">
+                    @L["Components.States.PlayerCount.SubmitButton"]
+                </MudButton>
+            </MudForm>
         </StepContainer>;
 }
