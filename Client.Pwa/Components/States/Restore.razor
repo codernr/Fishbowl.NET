@@ -5,25 +5,27 @@
 {
     protected override RenderFragment Content =>
         @<StateContainer Title="@(L["Components.States.Restore.Title"])">
-            <div class="row mb-3">
-                <div class="d-grid col">
-                    <button
-                        class="btn btn-success btn-lg"
-                        type="button"
+            <MudGrid>
+                <MudItem xs="12">
+                    <MudButton
+                        Variant="Variant.Filled"
+                        Color="Color.Primary"
+                        Size="Size.Large"
+                        FullWidth="true"
                         @onclick="e => this.Submit(() => this.OnRestoreRequested.InvokeAsync())">
-                        @L["Components.States.Restore.RestoreButton"]
-                    </button>
-                </div>
-            </div>
-            <div class="row mb-3">
-                <div class="d-grid col">
-                    <button
-                        class="btn btn-warning btn-lg"
-                        type="button"
+                        @L["Components.States.Restore.RestoreButton"] 
+                    </MudButton>
+                </MudItem>
+                <MudItem xs="12">
+                    <MudButton
+                        Variant="Variant.Filled"
+                        Color="Color.Warning"
+                        Size="Size.Large"
+                        FullWidth="true"
                         @onclick="e => this.Submit(() => this.OnNewGameRequested.InvokeAsync())">
                         @L["Components.States.Restore.NewGameButton"]
-                    </button>
-                </div>
-            </div>
+                    </MudButton>
+                </MudItem>
+            </MudGrid>
         </StateContainer>;
 }
