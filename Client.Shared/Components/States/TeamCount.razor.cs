@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Components;
+using MudBlazor;
 
 namespace Fishbowl.Net.Client.Shared.Components.States
 {
@@ -8,6 +9,8 @@ namespace Fishbowl.Net.Client.Shared.Components.States
         public EventCallback<int> OnTeamCountSet { get; set; } = default!;
 
         public int MaxTeamCount { get; set; } = 2;
+
+        private MudForm? form;
 
         private int teamCount = 2;
     }

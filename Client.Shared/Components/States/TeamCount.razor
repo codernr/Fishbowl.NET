@@ -8,25 +8,24 @@
             Title="@(L["Components.States.Common.SetupGame"])"
             Subtitle="@(L["Components.States.TeamCount.Title"])"
             TotalSteps="4" Step="2">
-            <form @onsubmit="_ => this.Submit(() => this.OnTeamCountSet.InvokeAsync(this.teamCount))" @onsubmit:preventDefault>
-                <div class="row mb-3">
-                    <div class="col">
-                        <select class="form-select form-select-lg mb-3" @bind="this.teamCount">
-                            <option selected value="2">2</option>
-                            @for (var i = 3; i <= this.MaxTeamCount; i++)
-                            {
-                                <option value="@i">@i</option>
-                            }
-                        </select>
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="d-grid col">
-                        <button class="btn btn-success btn-lg" type="submit">
-                            @L["Components.States.TeamCount.SubmitButton"]
-                        </button>
-                    </div>
-                </div>
-            </form>
+            <MudForm @ref="this.form">
+                <MudSelect
+                    T="int"
+                    @bind-Value="this.teamCount"
+                    Class="my-10">
+                    @for (var i = this.teamCount; i <= this.MaxTeamCount; i++)
+                    {
+                        <MudSelectItem T="int" Value="@i" />
+                    }
+                </MudSelect>
+                <MudButton
+                    Variant="Variant.Filled"
+                    Color="Color.Primary"
+                    FullWidth="true"
+                    Size="Size.Large"
+                    @onclick="_ => this.Submit(() => this.OnTeamCountSet.InvokeAsync(this.teamCount))">
+                    @L["Components.States.TeamCount.SubmitButton"]
+                </MudButton>
+            </MudForm>
         </StepContainer>;
 }
