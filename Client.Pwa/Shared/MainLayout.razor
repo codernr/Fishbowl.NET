@@ -5,4 +5,11 @@
 <MudDialogProvider/>
 <MudSnackbarProvider/>
 
-@Body
+<MudLayout>
+    <MudAppBar Elevation="1">
+        <MudText Typo="Typo.h5" Class="ml-3">Application</MudText>
+    </MudAppBar>
+    <MudMainContent Class="mud-height-full">
+        @Body
+    </MudMainContent>
+</MudLayout>
