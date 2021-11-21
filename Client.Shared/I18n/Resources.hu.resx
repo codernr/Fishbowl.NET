@@ -9,6 +9,9 @@
     <data name="Common.Abort.Timeout">
         <value>Túl sokáig nem játszottatok, a játék leállt.</value>
     </data>
+    <data name="Common.Error.Required">
+        <value>Kötelező mező</value>
+    </data>
     <data name="Components.TeamMembers.Title">
         <value>Csapatod</value>
     </data>
@@ -125,6 +128,9 @@
     </data>
     <data name="Components.States.PlayerWords.SubmitButton">
         <value>Beállít</value>
+    </data>
+    <data name="Components.States.PlayerWords.MinLengthError">
+        <value>Minimum két karakter</value>
     </data>
     <data name="Components.States.Restore.Title">
         <value>Folytatod a játékot?</value>

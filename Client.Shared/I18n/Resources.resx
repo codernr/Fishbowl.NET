@@ -9,6 +9,9 @@
     <data name="Common.Abort.Timeout">
         <value>You have been idle for too much time, game has been shut down.</value>
     </data>
+    <data name="Common.Error.Required">
+        <value>Required field</value>
+    </data>
     <data name="Components.TeamMembers.Title">
         <value>Your team</value>
     </data>
@@ -125,6 +128,9 @@
     </data>
     <data name="Components.States.PlayerWords.SubmitButton">
         <value>Set</value>
+    </data>
+    <data name="Components.States.PlayerWords.MinLengthError">
+        <value>At least two characters long</value>
     </data>
     <data name="Components.States.Restore.Title">
         <value>Restore saved game?</value>

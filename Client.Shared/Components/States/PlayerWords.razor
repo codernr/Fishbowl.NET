@@ -1,3 +1,5 @@
+@using System.ComponentModel.DataAnnotations
+
 @inherits InputState
 @inject IStringLocalizer<Resources> L
 
@@ -8,36 +10,29 @@
             Title="@(L["Components.States.Common.SetupPlayer"])"
             Subtitle="@(L["Components.States.PlayerWords.Title"])"
             TotalSteps="2" Step="2">
-            <form @onsubmit="_ => this.Submit(() => this.OnPlayerWordsSet.InvokeAsync(this.words))" @onsubmit:preventDefault>
-
+            <MudForm @bind-IsValid="this.IsValid">
                 @for (int i = 0; i < this.words.Length; i++)
                 {
                     var id = i;
-                    <div class="row mb-3">
-                        <div class="col">
-                            <div class="form-floating text-dark">
-                                <input
-                                    type="text"
-                                    class="form-control"
-                                    id="word-@id"
-                                    name="words[]"
-                                    placeholder="@(L[$"Components.States.PlayerWords.Word.{id}"])"
-                                    @bind="this.words[id]"
-                                    minlength="2"
-                                    required>
-                                <label for="word-@id">@L[$"Components.States.PlayerWords.Word.{id}"]</label>
-                            </div>
-                        </div>
-                    </div>
+                    <MudTextField
+                        T="string"
+                        Label="@(L[$"Components.States.PlayerWords.Word.{id}"])"
+                        Required="true"
+                        RequiredError="@(L["Common.Error.Required"])"
+                        Validation="@(new MinLengthAttribute(2) { ErrorMessage = L["Components.States.PlayerWords.MinLengthError"] })"
+                        @bind-Value="this.words[id]"
+                        Immediate="true"
+                        Class="my-10" />
                 }
-            
-                <div class="row mb-3">
-                    <div class="d-grid col">
-                        <button class="btn btn-success btn-lg" type="submit">
-                            @L["Components.States.PlayerWords.SubmitButton"]
-                        </button>
-                    </div>
-                </div>
-            </form>
+                <MudButton
+                    Variant="Variant.Filled"
+                    Color="Color.Primary"
+                    FullWidth="true"
+                    Size="Size.Large"
+                    Disabled="!this.IsValid"
+                    @onclick="_ => this.Submit(() => this.OnPlayerWordsSet.InvokeAsync(this.words))">
+                    @L["Components.States.PlayerName.SubmitButton"]
+                </MudButton>
+            </MudForm>
         </StepContainer>;
 }
