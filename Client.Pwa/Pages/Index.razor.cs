@@ -126,7 +126,7 @@ namespace Fishbowl.Net.Client.Pwa.Pages
                 this.StateManager.SetStateAsync<TeamName>(state =>
                 {
                     state.Team = nextTeam.Map();
-                    state.Value = string.Empty;
+                    state.Reset();
                 });
         }
 
