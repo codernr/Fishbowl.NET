@@ -17,7 +17,7 @@ namespace Fishbowl.Net.Client.Shared.Components.States
             }
         }
 
-        private bool IsValid
+        public bool IsValid
         {
             get => this.isValid;
             set

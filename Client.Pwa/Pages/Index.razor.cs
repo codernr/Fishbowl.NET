@@ -88,7 +88,11 @@ namespace Fishbowl.Net.Client.Pwa.Pages
         {
             this.currentPlayerName = name;
 
-            return this.StateManager.SetStateAsync<PlayerWords>(state => state.WordCount = this.wordCount);
+            return this.StateManager.SetStateAsync<PlayerWords>(state =>
+            {
+                state.WordCount = this.wordCount;
+                state.IsValid = false;
+            });
         }
 
         private Task SetPlayerData(string[] words)
