@@ -5,25 +5,30 @@
 {
     protected override RenderFragment Content =>
         @<StateContainer Title="@(L["Components.States.PeriodFinished.Title"])">
-            <div class="row mb-3">
-                <div class="col">
-                    <h4>
-                        @this.Period.Player.Name @L["Components.States.PeriodFinished.Scores"]:
-                        @this.Period.Scores.Count
-                    </h4>
-                </div>
-            </div>
+            <MudText Typo="Typo.h5" Class="mb-5">
+                @this.Period.Player.Name @L["Components.States.PeriodFinished.Scores"]:
+                @this.Period.Scores.Count
+            </MudText>
 
-            <div class="row">
-                <div class="col">
-                    <h4>@L["Components.States.PeriodFinished.GuessedWords"]</h4>
-                    <ul class="list-group">
-                        @foreach (var score in this.Period.Scores)
+            <MudText Typo="Typo.h5" Class="mb-2">
+                @L["Components.States.PeriodFinished.GuessedWords"]
+            </MudText>
+
+            <MudPaper Class="mx-auto">
+                <MudList>
+                    @for (int i = 0; i < this.Period.Scores.Count; i++)
+                    {
+                        var index = i;
+                        <MudListItem>
+                            <MudText Align="Align.Center">@this.Period.Scores[index].Word.Value</MudText>
+                        </MudListItem>
+
+                        @if (index < this.Period.Scores.Count - 1)
                         {
-                            <li class="list-group-item">@score.Word.Value</li>
+                            <MudDivider />
                         }
-                    </ul>
-                </div>
-            </div>
+                    }
+                </MudList>
+            </MudPaper>
         </StateContainer>;
 }
