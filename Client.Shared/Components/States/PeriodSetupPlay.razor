@@ -5,23 +5,19 @@
 {
     protected override RenderFragment Content =>
         @<StateContainer Title="@($"{this.Period.Round.Type}: {this.Period.Player.Name}")">
-            <div class="row mb-5">
-                <div class="col">
-                    <h4>@L["Components.States.PeriodSetupPlay.PeriodLength"]: @(string.Format("{0:m\\:ss}", this.Period.Length))</h4>
-                </div>
-            </div>
-            <div class="row mb-2">
-                <div class="col">
-                    <h4>@L["Components.States.PeriodSetupPlay.Subtitle"]</h4>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col d-grid">
-                    <button class="btn btn-success btn-lg" type="button"
-                        @onclick="_ => this.Submit(() => this.OnStarted.InvokeAsync(DateTimeOffset.UtcNow))">
-                        @L["Components.States.PeriodSetupPlay.StartButton"]
-                    </button>
-                </div>
-            </div>
+            <MudText Typo="Typo.h5" Class="mb-5">
+                @L["Components.States.PeriodSetupPlay.PeriodLength"]: @(string.Format("{0:m\\:ss}", this.Period.Length))
+            </MudText>
+            <MudText Typo="Typo.h5" Class="mb-10">
+                @L["Components.States.PeriodSetupPlay.Subtitle"]
+            </MudText>
+            <MudButton
+                Variant="Variant.Filled"
+                Color="Color.Primary"
+                FullWidth="true"
+                Size="Size.Large"
+                @onclick="_ => this.Submit(() => this.OnStarted.InvokeAsync(DateTimeOffset.UtcNow))">
+                @L["Components.States.PeriodSetupPlay.StartButton"]
+            </MudButton>
         </StateContainer>;
 }
