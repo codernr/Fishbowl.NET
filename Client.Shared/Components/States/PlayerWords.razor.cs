@@ -7,7 +7,7 @@ namespace Fishbowl.Net.Client.Shared.Components.States
         [Parameter]
         public EventCallback<string[]> OnPlayerWordsSet { get; set; } = default!;
 
-        public int WordCount
+        private int WordCount
         {
             get => this.wordCount;
             set
@@ -17,7 +17,7 @@ namespace Fishbowl.Net.Client.Shared.Components.States
             }
         }
 
-        public bool IsValid
+        private bool IsValid
         {
             get => this.isValid;
             set
@@ -32,5 +32,11 @@ namespace Fishbowl.Net.Client.Shared.Components.States
         private bool isValid = false;
 
         private string[] words = new string[2];
+
+        public void Reset(int wordCount)
+        {
+            this.WordCount = wordCount;
+            this.IsValid = false;
+        }
     }
 }

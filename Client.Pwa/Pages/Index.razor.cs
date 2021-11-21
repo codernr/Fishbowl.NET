@@ -88,11 +88,7 @@ namespace Fishbowl.Net.Client.Pwa.Pages
         {
             this.currentPlayerName = name;
 
-            return this.StateManager.SetStateAsync<PlayerWords>(state =>
-            {
-                state.WordCount = this.wordCount;
-                state.IsValid = false;
-            });
+            return this.StateManager.SetStateAsync<PlayerWords>(state => state.Reset(this.wordCount));
         }
 
         private Task SetPlayerData(string[] words)
@@ -106,11 +102,7 @@ namespace Fishbowl.Net.Client.Pwa.Pages
 
             if (this.players.Count < this.playerCount)
             {
-                return this.StateManager.SetStateAsync<PlayerName>(state =>
-                {
-                    state.Value = string.Empty;
-                    state.IsValid = false;
-                });
+                return this.StateManager.SetStateAsync<PlayerName>(state => state.Reset());
             }
 
             this.isPlayerSetupPopoverVisible = false;

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Components;
+using MudBlazor;
 
 namespace Fishbowl.Net.Client.Shared.Components.States
 {
@@ -7,9 +8,7 @@ namespace Fishbowl.Net.Client.Shared.Components.States
         [Parameter]
         public EventCallback<string> OnPlayerNameSet { get; set; } = default!;
 
-        private bool isValid = false;
-
-        public bool IsValid
+        private bool IsValid
         {
             get => this.isValid;
             set
@@ -19,6 +18,14 @@ namespace Fishbowl.Net.Client.Shared.Components.States
             }
         }
 
-        public string Value { get; set; } = string.Empty;
+        private string Value { get; set; } = string.Empty;
+
+        private bool isValid = false;
+
+        public void Reset()
+        {
+            this.Value = string.Empty;
+            this.IsValid = false;
+        }
     }
 }
