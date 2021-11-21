@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Components;
-using MudBlazor;
 
 namespace Fishbowl.Net.Client.Shared.Components.States
 {

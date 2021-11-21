@@ -8,24 +8,22 @@
             Title="@(L["Components.States.Common.SetupGame"])"
             Subtitle="@(L["Components.States.WordCount.Title"])"
             TotalSteps="4" Step="3">
-            <MudForm @ref="this.form">
-                <MudSelect
-                    T="int"
-                    @bind-Value="this.wordCount"
-                    Class="my-10">
-                    @for (var i = 1; i <= 4; i++)
-                    {
-                        <MudSelectItem T="int" Value="@i" />
-                    }
-                </MudSelect>
-                <MudButton
-                    Variant="Variant.Filled"
-                    Color="Color.Primary"
-                    FullWidth="true"
-                    Size="Size.Large"
-                    @onclick="_ => this.Submit(() => this.OnWordCountSet.InvokeAsync(this.wordCount))">
-                    @L["Components.States.TeamCount.SubmitButton"]
+            <MudSelect
+                T="int"
+                @bind-Value="this.wordCount"
+                Class="my-10">
+                @for (var i = 1; i <= 4; i++)
+                {
+                    <MudSelectItem T="int" Value="@i" />
+                }
+            </MudSelect>
+            <MudButton
+                Variant="Variant.Filled"
+                Color="Color.Primary"
+                FullWidth="true"
+                Size="Size.Large"
+                @onclick="_ => this.Submit(() => this.OnWordCountSet.InvokeAsync(this.wordCount))">
+                @L["Components.States.TeamCount.SubmitButton"]
                 </MudButton>
-            </MudForm>
         </StepContainer>;
 }
