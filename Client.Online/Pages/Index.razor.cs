@@ -341,7 +341,7 @@ namespace Fishbowl.Net.Client.Online.Pages
         private Task SetPlayerName(string name)
         {
             this.ClientState.Name = name;
-            return this.StateManager.SetStateAsync<PlayerWords>(state => state.WordCount = this.ClientState.WordCount);
+            return this.StateManager.SetStateAsync<PlayerWords>(state => state.Reset(this.ClientState.WordCount));
         }
 
         private Task SubmitPlayerData(string[] words) =>

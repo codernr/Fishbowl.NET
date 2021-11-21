@@ -18,7 +18,7 @@ namespace Fishbowl.Net.Client.Shared.Components.States
             }
         }
 
-        private string Value { get; set; } = string.Empty;
+        public string Value { get; set; } = string.Empty;
 
         private bool isValid = false;
 
