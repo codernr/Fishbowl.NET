@@ -17,7 +17,7 @@ namespace Fishbowl.Net.Client.Shared.Components
         public EventCallback OnExpired { get; set; }
 
         private string Classes => this.remaining > TimeSpan.FromSeconds(15) ?
-            "bg-info text-dark" : (this.remaining > TimeSpan.FromSeconds(5) ? "bg-warning text-dark" : "bg-danger text-light");
+            "mud-theme-info" : (this.remaining > TimeSpan.FromSeconds(5) ? "mud-theme-warning" : "mud-theme-error");
 
         private string TimeFormat =>
             string.Format("{0}{1:mm\\:ss}", this.Prefix, this.remaining);
