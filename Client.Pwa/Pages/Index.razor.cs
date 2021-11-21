@@ -102,7 +102,11 @@ namespace Fishbowl.Net.Client.Pwa.Pages
 
             if (this.players.Count < this.playerCount)
             {
-                return this.StateManager.SetStateAsync<PlayerName>(state => state.Value = string.Empty);
+                return this.StateManager.SetStateAsync<PlayerName>(state =>
+                {
+                    state.Value = string.Empty;
+                    state.IsValid = false;
+                });
             }
 
             this.isPlayerSetupPopoverVisible = false;
