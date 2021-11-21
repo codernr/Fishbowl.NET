@@ -205,11 +205,7 @@ namespace Fishbowl.Net.Client.Pwa.Pages
         private Task OnGameFinished(Game game)
         {
             this.ClearPersistedGame();
-            return this.StateManager.SetStateAsync<GameFinished>(state =>
-            {
-                state.Game = game.Map();
-                state.Winner = true;
-            });
+            return this.StateManager.SetStateAsync<GameFinished>(state => state.Game = game.Map());
         }
 
         private Task OnRoundStarted(Round round) =>

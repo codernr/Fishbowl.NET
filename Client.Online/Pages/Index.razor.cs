@@ -184,11 +184,7 @@ namespace Fishbowl.Net.Client.Online.Pages
         public Task ReceiveGameFinished(GameSummaryViewModel game)
         {
             this.ClientState.Password = null;
-            return this.StateManager.SetStateAsync<GameFinished>(state =>
-            {
-                state.Game = game;
-                state.Winner = game.Teams[0].Players.Any(player => player.Id == this.ClientState.Id);
-            });
+            return this.StateManager.SetStateAsync<GameFinished>(state => state.Game = game);
         }
 
         public Task ReceiveRoundStarted(RoundViewModel round) =>

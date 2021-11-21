@@ -9,7 +9,5 @@ namespace Fishbowl.Net.Client.Shared.Components.States
         public EventCallback ReloadRequested { get; set; } = default!;
         
         public GameSummaryViewModel Game { get; set; } = default!;
-
-        public bool Winner { get; set; } = false;
     }
 }
