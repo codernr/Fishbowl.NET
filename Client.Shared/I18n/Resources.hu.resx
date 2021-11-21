@@ -102,6 +102,9 @@
     <data name="Components.States.PlayerName.InputPlaceholder">
         <value>Név</value>
     </data>
+    <data name="Components.States.PlayerName.ErrorMessage">
+        <value>A névnek minimum 3 karakter hosszúnak kell lennie</value>
+    </data>
     <data name="Components.States.PlayerName.SubmitButton">
         <value>Beállít</value>
     </data>
