@@ -180,6 +180,9 @@
     <data name="Components.States.TeamName.Button">
         <value>Set</value>
     </data>
+    <data name="Components.States.TeamName.MinLengthError">
+        <value>At least 3 characters long</value>
+    </data>
     <data name="Components.States.WaitingForPlayers.Title">
         <value>Waiting...</value>
     </data>

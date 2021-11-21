@@ -180,6 +180,9 @@
     <data name="Components.States.TeamName.Button">
         <value>Beállít</value>
     </data>
+    <data name="Components.States.TeamName.MinLengthError">
+        <value>Minimum 3 karakter</value>
+    </data>
     <data name="Components.States.WaitingForPlayers.Title">
         <value>Várakozás...</value>
     </data>

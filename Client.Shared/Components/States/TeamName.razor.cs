@@ -11,7 +11,25 @@ namespace Fishbowl.Net.Client.Shared.Components.States
 
         public string Value { get; set; } = string.Empty;
 
+        private bool IsValid
+        {
+            get => this.isValid;
+            set
+            {
+                this.isValid = value;
+                this.Update();
+            }
+        }
+
         [Parameter]
         public EventCallback<TeamNameViewModel> OnTeamNameSet { get; set; } = default!;
+
+        private bool isValid;
+
+        public void Reset()
+        {
+            this.Value = string.Empty;
+            this.IsValid = false;
+        }
     }
 }
