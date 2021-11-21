@@ -5,7 +5,7 @@
 {
     protected override RenderFragment Content =>
         @<StateContainer Title="@this.Period.Round.Type">
-            <MudContainer Class="@($"fade {this.Show(this.showRevoke)}")">
+            <MudContainer>
                 <MudButton
                     Variant="Variant.Filled"
                     Color="Color.Error"
@@ -21,14 +21,14 @@
             </MudContainer>
 
             <MudContainer Class="my-10">
-                <MudCard Class="@($"mud-theme-primary fade {this.Show(this.Word is not null)}")">
+                <MudCard Class="mud-theme-primary">
                     <MudCardContent>
                         <MudText Typo="Typo.h4">@(this.Word?.Value ?? string.Empty)</MudText>
                     </MudCardContent>
                 </MudCard>
             </MudContainer>
 
-            <MudContainer Class="@($"fade my-5 {this.Show(this.Word is not null)}")">
+            <MudContainer Class="my-5">
                 <MudButton
                     Variant="Variant.Filled"
                     Color="Color.Success"
@@ -40,7 +40,7 @@
                 </MudButton>
             </MudContainer>
 
-            <MudContainer Class="@($"fade my-5 {this.Show(this.Expired)}")">
+            <MudContainer Class="my-5">
                 <MudButton
                     Variant="Variant.Filled"
                     Color="Color.Error"

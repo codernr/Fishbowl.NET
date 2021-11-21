@@ -47,8 +47,6 @@ namespace Fishbowl.Net.Client.Shared.Components.States
 
         private bool showRevoke = false;
 
-        private string Show(bool show) => show ? "show" : string.Empty;
-
         private Task ScoreAdded(EventArgs e)
         {
             var score = new ScoreViewModel(this.Word!, DateTimeOffset.UtcNow);
