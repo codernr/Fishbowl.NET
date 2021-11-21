@@ -1,3 +1,5 @@
+@using System.ComponentModel.DataAnnotations
+
 @inherits InputState
 @inject IStringLocalizer<Resources> L
 
@@ -8,31 +10,24 @@
             Title="@(L["Components.States.Common.SetupPlayer"])"
             Subtitle="@(L["Components.States.PlayerName.Title"])"
             TotalSteps="2" Step="1">
-            <form @onsubmit="_ => this.Submit(() => this.OnPlayerNameSet.InvokeAsync(this.Value))" @onsubmit:preventDefault>
-                <div class="row mb-3">
-                    <div class="col">
-                        <div class="form-floating text-dark">
-                            <input
-                                type="text"
-                                class="form-control"
-                                id="name"
-                                name="name"
-                                autocomplete="nickname"
-                                placeholder="@(L["Components.States.PlayerName.InputPlaceholder"])"
-                                @bind="this.Value"
-                                minlength="3"
-                                required>
-                            <label for="name">@L["Components.States.PlayerName.Title"]</label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="d-grid col">
-                        <button class="btn btn-success btn-lg" type="submit">
-                            @L["Components.States.PlayerName.SubmitButton"]
-                        </button>
-                    </div>
-                </div>
-            </form>
+            <MudForm @bind-IsValid="this.IsValid">
+                <MudTextField
+                    T="string"
+                    Label="@(L["Components.States.PlayerName.InputPlaceholder"])"
+                    Required="true"
+                    Validation="@(new MinLengthAttribute(3) { ErrorMessage = L["Components.States.PlayerName.ErrorMessage"] })"
+                    @bind-Value="this.Value"
+                    Immediate="true"
+                    Class="my-10" />
+                <MudButton
+                    Variant="Variant.Filled"
+                    Color="Color.Primary"
+                    FullWidth="true"
+                    Size="Size.Large"
+                    Disabled="!this.IsValid"
+                    @onclick="_ => this.Submit(() => this.OnPlayerNameSet.InvokeAsync(this.Value))">
+                    @L["Components.States.PlayerName.SubmitButton"]
+                </MudButton>
+            </MudForm>
         </StepContainer>;
 }
