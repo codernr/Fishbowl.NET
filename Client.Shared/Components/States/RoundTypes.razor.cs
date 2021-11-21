@@ -9,33 +9,27 @@ namespace Fishbowl.Net.Client.Shared.Components.States
         [Parameter]
         public EventCallback<string[]> OnRoundTypesSet { get; set; } = default!;
 
-        private bool IsValid => this.options.Any(option => option.selected);
+        private bool IsValid => this.selected.Count() > 0;
 
-        private List<(string name, bool selected)> options = default!;
+        private string[] options = default!;
 
-        private string[] SelectedOptions =>
-            this.options
-                .Where(option => option.selected)
-                .Select(option => option.name)
-                .ToArray();
+        private IEnumerable<string> selected = default!;
+
+        private string[] SelectedOptions => this.selected.ToArray();
 
         protected override void OnInitialized()
         {
             base.OnInitialized();
-            this.options = new()
+            this.options = new[]
             {
-                (L["Components.States.RoundTypes.Types.Taboo"]?.Value ?? "Taboo", true),
-                (L["Components.States.RoundTypes.Types.Drawing"]?.Value ?? "Taboo", true),
-                (L["Components.States.RoundTypes.Types.Charades"]?.Value ?? "Charades", true),
-                (L["Components.States.RoundTypes.Types.Password"]?.Value ?? "Password", true),
-                (L["Components.States.RoundTypes.Types.Humming"]?.Value ?? "Humming", true)
+                L["Components.States.RoundTypes.Types.Taboo"]?.Value ?? "Taboo",
+                L["Components.States.RoundTypes.Types.Drawing"]?.Value ?? "Drawing",
+                L["Components.States.RoundTypes.Types.Charades"]?.Value ?? "Charades",
+                L["Components.States.RoundTypes.Types.Password"]?.Value ?? "Password",
+                L["Components.States.RoundTypes.Types.Humming"]?.Value ?? "Humming",
             };
-        }
 
-        private void ToggleOption(int id)
-        {
-            this.options[id] = (this.options[id].name, !this.options[id].selected);
-            this.Update();
+            this.selected = new HashSet<string>(this.options);
         }
     }
 }
