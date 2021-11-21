@@ -5,55 +5,51 @@
 {
     protected override RenderFragment Content =>
         @<StateContainer Title="@this.Period.Round.Type">
-            <div class="row mb-3 fade @this.Show(this.showRevoke)">
-                <div class="col d-grid">
-                    <button
-                        class="btn btn-danger"
-                        type="button"
-                        disabled="@(!this.showRevoke)"
-                        @onclick="e => this.OnLastScoreRevoked.InvokeAsync()">
-                        @L["Components.States.PeriodPlay.RevokeButton"]
-                    </button>
-                </div>
-            </div>
-            <div class="row mb-3">
-                <div class="col">
-                    <Timer Start="this.Period.StartedAt" Length="this.Period.Length" OnExpired="() => this.Expired = true" />
-                </div>
-            </div>
+            <MudContainer Class="@($"fade {this.Show(this.showRevoke)}")">
+                <MudButton
+                    Variant="Variant.Filled"
+                    Color="Color.Error"
+                    FullWidth="true"
+                    Disabled="!this.showRevoke"
+                    @onclick="e => this.OnLastScoreRevoked.InvokeAsync()">
+                    @L["Components.States.PeriodPlay.RevokeButton"]
+                </MudButton>
+            </MudContainer>
 
-            <div class="row mb-3 fade @this.Show(this.Word is not null)">
-                <div class="col">
-                    <div class="card text-white bg-primary">
-                        <div class="card-body fs-3">
-                            @(this.Word?.Value ?? ".")
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <MudContainer Class="my-5">
+                <Timer Start="this.Period.StartedAt" Length="this.Period.Length" OnExpired="() => this.Expired = true" />
+            </MudContainer>
 
-            <div class="row mb-3 fade @this.Show(this.Word is not null)">
-                <div class="col d-grid">
-                    <button
-                        class="btn btn-success btn-lg"
-                        type="button"
-                        disabled="@(this.Word is null)"
-                        @onclick="this.ScoreAdded">
-                        @L["Components.States.PeriodPlay.GuessedButton"]
-                    </button>
-                </div>
-            </div>
-        
-            <div class="row mb-3 fade @this.Show(this.Expired)">
-                <div class="col d-grid">
-                    <button
-                        class="btn btn-danger btn-lg"
-                        type="button"
-                        disabled="@(!this.Expired)"
-                        @onclick="_ => this.Submit(() => this.OnPeriodFinished.InvokeAsync(DateTimeOffset.UtcNow))">
-                        @L["Components.States.PeriodPlay.PassButton"]
-                    </button>
-                </div>
-            </div>
+            <MudContainer Class="my-10">
+                <MudCard Class="@($"mud-theme-primary fade {this.Show(this.Word is not null)}")">
+                    <MudCardContent>
+                        <MudText Typo="Typo.h4">@(this.Word?.Value ?? string.Empty)</MudText>
+                    </MudCardContent>
+                </MudCard>
+            </MudContainer>
+
+            <MudContainer Class="@($"fade my-5 {this.Show(this.Word is not null)}")">
+                <MudButton
+                    Variant="Variant.Filled"
+                    Color="Color.Success"
+                    Size="Size.Large"
+                    FullWidth="true"
+                    Disabled="@(this.Word is null)"
+                    @onclick="this.ScoreAdded">
+                    @L["Components.States.PeriodPlay.GuessedButton"]
+                </MudButton>
+            </MudContainer>
+
+            <MudContainer Class="@($"fade my-5 {this.Show(this.Expired)}")">
+                <MudButton
+                    Variant="Variant.Filled"
+                    Color="Color.Error"
+                    Size="Size.Large"
+                    FullWidth="true"
+                    Disabled="!this.Expired"
+                    @onclick="_ => this.Submit(() => this.OnPeriodFinished.InvokeAsync(DateTimeOffset.UtcNow))">
+                    @L["Components.States.PeriodPlay.PassButton"]
+                </MudButton>
+            </MudContainer>
         </StateContainer>;   
 }
