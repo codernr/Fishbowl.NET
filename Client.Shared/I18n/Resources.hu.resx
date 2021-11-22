@@ -49,7 +49,7 @@
         <value>Jelszó</value>
     </data>
     <data name="Components.States.Password.ErrorMessage">
-        <value>3 és 30 közötti hosszúság, csak kisbetűk, kötőjelek és számok</value>
+        <value>3 és 32 közötti hosszúság, csak angol kisbetűk, kötőjel, pont és számok</value>
     </data>
     <data name="Components.States.Password.CreateButton">
         <value>Új játék</value>
