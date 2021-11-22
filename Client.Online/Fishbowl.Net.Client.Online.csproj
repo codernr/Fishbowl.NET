@@ -5,8 +5,6 @@
     <VersionPrefix>1.0.0</VersionPrefix>
     <VersionSuffix>beta17</VersionSuffix>
     <BlazorWebAssemblyLoadAllGlobalizationData>true</BlazorWebAssemblyLoadAllGlobalizationData>
-    <PublishDependsOn>ResolveReferences; $(PublishDependsOn)</PublishDependsOn>
-    <BuildDependsOn>ResolveReferences; $(BuildDependsOn)</BuildDependsOn>
     <TrimMode>copyused</TrimMode>
   </PropertyGroup>
 
