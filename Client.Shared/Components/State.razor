@@ -1,7 +1,7 @@
 @code
 {
     public RenderFragment Container =>
-        @<MudContainer Class="@(this.ShowClass + " mud-height-full")">
+        @<MudContainer Class="@($"mud-height-full fade-container {this.ShowClass}")">
             @this.Content
         </MudContainer>;
 }
