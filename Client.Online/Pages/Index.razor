@@ -8,6 +8,7 @@
 @inject ILoggerFactory LoggerFactory
 @inject IStringLocalizer<Resources> StringLocalizer
 @inject IClientState ClientState
+@inject ISnackbar Snackbar
 
 <StateManager @ref="this.stateManager" TransitionStarted="@this.OnStateTransition">
     <ConnectionClosed ReloadRequested="this.Reload" />
@@ -50,5 +51,3 @@
         </MudText>
     </MudPaper>
 </MudPopover>
-
-<ToastContainer @ref="this.toastContainer" />

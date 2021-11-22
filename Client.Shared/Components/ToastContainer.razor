@@ -1,8 +1,0 @@
-<div class="position-fixed bottom-0 start-50 translate-middle-x mb-1 pb-2">
-    <div class="toast-container">
-        @foreach (var toast in toasts)
-        {
-            <Toast @key="toast.key" Message="@toast.message" ContextClass="@toast.contextClass" AnimationFinished="@this.AnimationFinished" />
-        }
-    </div>
-</div>

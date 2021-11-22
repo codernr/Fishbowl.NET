@@ -11,6 +11,7 @@ using Fishbowl.Net.Shared;
 using Fishbowl.Net.Shared.GameEntities;
 using Fishbowl.Net.Shared.ViewModels;
 using Microsoft.Extensions.Logging;
+using MudBlazor;
 
 namespace Fishbowl.Net.Client.Online.Pages
 {
@@ -33,15 +34,11 @@ namespace Fishbowl.Net.Client.Online.Pages
             }
         }
 
-        private ToastContainer? toastContainer;
-
         private ClientConnection Connection => this.connection ?? throw new InvalidOperationException();
 
         private ClientConnection? connection;
 
         private string L(string key) => this.StringLocalizer[key]?.Value ?? key;
-
-        private void Notify(string message, string contextClass) => this.toastContainer?.DisplayToast(message, contextClass);
 
         protected override Task OnInitializedAsync()
         {
@@ -235,7 +232,7 @@ namespace Fishbowl.Net.Client.Online.Pages
         public Task ReceiveScoreAdded(ScoreViewModel score)
         {
             this.ClientState.PeriodScores.Add(score);
-            this.Notify($"{this.L("Pages.Play.Scored")}: {score.Word.Value}", ContextCssClass.Primary);
+            this.Snackbar?.Add($"{this.L("Pages.Play.Scored")}: {score.Word.Value}", Severity.Success);
             this.StateManager.SetParameters<PeriodPlay>(state => state.ScoreCount = this.ClientState.PeriodScores.Count);
             return Task.CompletedTask;
         }
@@ -243,7 +240,7 @@ namespace Fishbowl.Net.Client.Online.Pages
         public Task ReceiveLastScoreRevoked(ScoreViewModel score)
         {
             this.ClientState.PeriodScores.Remove(score);
-            this.Notify($"{this.L("Pages.Play.ScoreRevoked")}", ContextCssClass.Warning);
+            this.Snackbar?.Add(this.L("Pages.Play.ScoreRevoked"), Severity.Warning);
             this.StateManager.SetParameters<PeriodPlay>(state =>
             {
                 state.ScoreCount = this.ClientState.PeriodScores.Count;

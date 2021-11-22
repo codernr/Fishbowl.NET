@@ -9,6 +9,7 @@ using Fishbowl.Net.Client.Online.Services;
 using Microsoft.AspNetCore.Components.Web;
 using Fishbowl.Net.Client.Online;
 using MudBlazor.Services;
+using MudBlazor;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
@@ -23,7 +24,14 @@ builder
         .AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) })
         .AddTransient<IClientState, ClientState>()
         .AddLocalization()
-        .AddMudServices();
+        .AddMudServices(config =>
+        {
+            config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomCenter;
+            config.SnackbarConfiguration.ShowCloseIcon = false;
+            config.SnackbarConfiguration.VisibleStateDuration = 3000;
+            config.SnackbarConfiguration.ShowTransitionDuration = 300;
+            config.SnackbarConfiguration.HideTransitionDuration = 300;
+        });
 
 var culture = new CultureInfo("hu");
 CultureInfo.DefaultThreadCurrentCulture = culture;
