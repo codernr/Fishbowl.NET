@@ -47,7 +47,7 @@ namespace Fishbowl.Net.Tests.Shared.GameEntities
 
                 foreach (var period in game.PeriodLoop())
                 {
-                    Assert.Equal(playerList[totalPeriodCount], period.Player.Name);
+                    Assert.Equal(playerList[totalPeriodCount], period.Player.Username);
 
                     var now = new DateTimeOffset(2021, 3, 31, 10, 0, 0, TimeSpan.Zero);
 
@@ -117,7 +117,7 @@ namespace Fishbowl.Net.Tests.Shared.GameEntities
 
                 foreach (var period in game.PeriodLoop())
                 {
-                    Assert.Equal(playerList[totalPeriodCount], period.Player.Name);
+                    Assert.Equal(playerList[totalPeriodCount], period.Player.Username);
 
                     var start = new DateTimeOffset(2021, 3, 31, 10, 0, 0, TimeSpan.Zero);
                     var now = start;
@@ -161,7 +161,6 @@ namespace Fishbowl.Net.Tests.Shared.GameEntities
         private static IEnumerable<Player> CreatePlayers(int count, int wordCount) =>
             Enumerable.Range(0, count)
                 .Select(i => new Player(
-                    Guid.NewGuid(),
                     $"Player{i}",
                     Enumerable.Range(0, wordCount)
                         .Select(j => new Word(Guid.NewGuid(), $"Player{i}Word{j}"))
@@ -172,7 +171,7 @@ namespace Fishbowl.Net.Tests.Shared.GameEntities
         {
             var playerScores = game.Rounds
                 .SelectMany(round => round.Periods)
-                .GroupBy(period => period.Player.Id)
+                .GroupBy(period => period.Player.Username)
                 .ToDictionary(item => item.Key, item => item.SelectMany(p => p.Scores).Count());
 
             var teamScores = game.Teams
@@ -180,7 +179,7 @@ namespace Fishbowl.Net.Tests.Shared.GameEntities
                     team => team.Id,
                     team => playerScores
                         .Where(score => team.Players
-                            .Any(player => player.Id == score.Key))
+                            .Any(player => player.Username == score.Key))
                         .Select(item => item.Value)
                         .Sum())
                 .OrderByDescending(entry => entry.Value)

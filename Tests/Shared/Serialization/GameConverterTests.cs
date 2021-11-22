@@ -77,7 +77,6 @@ namespace Fishbowl.Net.Tests.Shared.Serialization
         private static IEnumerable<Player> CreatePlayers(int count, int wordCount) =>
             Enumerable.Range(0, count)
                 .Select(i => new Player(
-                    Guid.NewGuid(),
                     $"Player{i}",
                     Enumerable.Range(0, wordCount)
                         .Select(j => new Word(Guid.NewGuid(), $"Player{i}Word{j}"))

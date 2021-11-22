@@ -37,17 +37,17 @@ namespace Fishbowl.Net.Tests.Shared.Serialization
 
             Assert.Equal(0, deserialized1!.Id);
 
-            var playerIds = players.Select(player => player.Id);
-            var deserializedIds = deserialized1.Players.Select(player => player.Id).ToList();
+            var playerIds = players.Select(player => player.Username);
+            var deserializedIds = deserialized1.Players.Select(player => player.Username).ToList();
 
             Assert.True(playerIds.All(deserializedIds.Contains));
             Assert.Null(deserialized1.Name);
 
             Assert.Equal("TeamName", deserialized2!.Name);
-            Assert.Equal(players[2].Id, deserialized2.PlayerEnumerator.Current.Id);
+            Assert.Equal(players[2].Username, deserialized2.PlayerEnumerator.Current.Username);
         }
 
-        private static Player CreatePlayer(string name, params string[] words) =>
-            new(Guid.NewGuid(), name, words.Select(word => new Word(Guid.NewGuid(), word)));
+        private static Player CreatePlayer(string username, params string[] words) =>
+            new(username, words.Select(word => new Word(Guid.NewGuid(), word)));
     }
 }
