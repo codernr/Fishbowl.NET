@@ -5,15 +5,9 @@
 {
     protected override RenderFragment Content =>
         @<StateContainer Title="@(L["Components.States.WaitingForPlayers.Title"])">
-            <div class="row">
-                <div class="col">
-                    @L["Components.States.WaitingForPlayers.Message"]
-                </div>
-            </div>
-            <div class="row">
-                <div class="col">
-                    <Spinner />
-                </div>
-            </div>
+            <MudText Class="mb-10">
+                @L["Components.States.WaitingForPlayers.Message"]
+            </MudText>
+            <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
         </StateContainer>;
 }
