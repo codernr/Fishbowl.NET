@@ -57,7 +57,7 @@ namespace Fishbowl.Net.Server.Services
 
         public bool CanRegister(string username)
         {
-            var result = this.groupHubContext.ContainsKey(username) || this.groupHubContext.Count < this.gameSetup.PlayerCount;
+            var result = this.groupHubContext.IsDisconnected(username) || this.groupHubContext.Count < this.gameSetup.PlayerCount;
             this.Log(nameof(this.CanRegister), username, result);
             return result;
         }

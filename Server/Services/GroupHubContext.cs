@@ -15,6 +15,8 @@ namespace Fishbowl.Net.Server.Services
 
         bool ContainsKey(string username);
 
+        bool IsDisconnected(string username);
+
         IGameClient Group();
 
         IGameClient GroupExcept(IEnumerable<string> usernames);
@@ -50,6 +52,9 @@ namespace Fishbowl.Net.Server.Services
             (hubContext, password, logger);
 
         public bool ContainsKey(string username) => this.usernameConnectionMap.ContainsKey(username);
+
+        public bool IsDisconnected(string username) =>
+            this.ContainsKey(username) && this.usernameConnectionMap[username] is null;
 
         public IGameClient Client(string username)
         {
