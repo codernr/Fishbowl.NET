@@ -94,7 +94,6 @@ namespace Fishbowl.Net.Client.Pwa.Pages
         private Task SetPlayerData(string[] words)
         {
             this.players.Add(new Player(
-                Guid.NewGuid(),
                 this.currentPlayerName,
                 words.Select(word => new Word(Guid.NewGuid(), word)).ToList()));
 
