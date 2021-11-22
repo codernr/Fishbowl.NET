@@ -1,12 +1,14 @@
-<MudGrid Class="@($"mud-height-full {this.Class}")">
-    <MudItem xs="12" md="10" lg="8" Class="ma-auto">
-        <MudGrid>
-            <MudItem xs="12">
-                <MudText Typo="Typo.h4" Align="Align.Center">@this.Title</MudText>
-            </MudItem>
-            <MudItem xs="12" Class="mud-text-align-center">
-                @this.ChildContent
-            </MudItem>
-        </MudGrid>
-    </MudItem>
-</MudGrid>
+<MudContainer Class="@($"d-flex mud-height-full {this.Class}")">
+    <MudGrid Class="mud-height-full">
+        <MudItem xs="12" md="10" lg="8" Class="ma-auto">
+            <MudGrid>
+                <MudItem xs="12">
+                    <MudText Typo="Typo.h4" Align="Align.Center">@this.Title</MudText>
+                </MudItem>
+                <MudItem xs="12" Class="mud-text-align-center">
+                    @this.ChildContent
+                </MudItem>
+            </MudGrid>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
