@@ -42,19 +42,19 @@
     <data name="Components.States.GameFinished.Button">
         <value>New game</value>
     </data>
-    <data name="Components.States.Password.Title">
-        <value>Set game password</value>
+    <data name="Components.States.UsernamePassword.Title">
+        <value>Set username and password</value>
     </data>
-    <data name="Components.States.Password.InputPlaceholder">
+    <data name="Components.States.UsernamePassword.InputPlaceholder">
         <value>Password</value>
     </data>
-    <data name="Components.States.Password.ErrorMessage">
+    <data name="Components.States.UsernamePassword.ErrorMessage">
         <value>Lowercase, dash, dot and numbers between 3 and 32 characters</value>
     </data>
-    <data name="Components.States.Password.CreateButton">
+    <data name="Components.States.UsernamePassword.CreateButton">
         <value>Create</value>
     </data>
-    <data name="Components.States.Password.JoinButton">
+    <data name="Components.States.UsernamePassword.JoinButton">
         <value>Join</value>
     </data>
     <data name="Components.States.PeriodFinished.Title">

@@ -42,19 +42,19 @@
     <data name="Components.States.GameFinished.Button">
         <value>Új játék</value>
     </data>
-    <data name="Components.States.Password.Title">
-        <value>Add meg a játék jelszavát</value>
+    <data name="Components.States.UsernamePassword.Title">
+        <value>Add meg a neved és a jelszót</value>
     </data>
-    <data name="Components.States.Password.InputPlaceholder">
+    <data name="Components.States.UsernamePassword.InputPlaceholder">
         <value>Jelszó</value>
     </data>
-    <data name="Components.States.Password.ErrorMessage">
+    <data name="Components.States.UsernamePassword.ErrorMessage">
         <value>3 és 32 közötti hosszúság, csak angol kisbetűk, kötőjel, pont és számok</value>
     </data>
-    <data name="Components.States.Password.CreateButton">
+    <data name="Components.States.UsernamePassword.CreateButton">
         <value>Új játék</value>
     </data>
-    <data name="Components.States.Password.JoinButton">
+    <data name="Components.States.UsernamePassword.JoinButton">
         <value>Csatlakozás</value>
     </data>
     <data name="Components.States.PeriodFinished.Title">

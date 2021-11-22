@@ -58,14 +58,15 @@ namespace Fishbowl.Net.Client.Online.Pages
 
         public async Task Connected()
         {
-            if (this.ClientState.Password is not null)
+            if (this.ClientState.Password is not null && this.ClientState.Username is not null)
             {
                 var response = await this.Connection.JoinGameContext(
                     new(this.ClientState.Password, this.ClientState.Username));
                 if (response.Status == StatusCode.Ok) return;
             }
 
-            await this.StateManager.SetStateAsync<Password>();
+            await this.StateManager.SetStateAsync<UsernamePassword>(state =>
+                state.Username = this.ClientState.Username ?? string.Empty);
         }
 
         public Task Reconnecting(Exception? exception) =>
@@ -101,7 +102,7 @@ namespace Fishbowl.Net.Client.Online.Pages
             this.ClientState.TeamCount = gameSetup.TeamCount;
             this.ClientState.RoundTypes = gameSetup.RoundTypes;
 
-            await this.StateManager.SetStateAsync<PlayerName>(state => state.Value = this.ClientState.Username);
+            await this.StateManager.SetStateAsync<PlayerWords>(state => state.Reset(this.ClientState.WordCount));
         }
 
         public Task ReceivePlayerCount(PlayerCountViewModel playerCount)
@@ -256,9 +257,10 @@ namespace Fishbowl.Net.Client.Online.Pages
 
         public ValueTask DisposeAsync() => this.Connection.DisposeAsync();
 
-        private async Task CreateGame(string password)
+        private async Task CreateGame((string username, string password) input)
         {
-            this.ClientState.Password = password;
+            this.ClientState.Username = input.username;
+            this.ClientState.Password = input.password;
             
             await this.ScreenService.RequestWakeLock();
             await this.ScreenService.RequestFullScreen();
@@ -304,9 +306,10 @@ namespace Fishbowl.Net.Client.Online.Pages
             await this.StateManager.SetStateAsync<TNextState>(setParameters);
         }
 
-        private async Task JoinGame(string password)
+        private async Task JoinGame((string username, string password) input)
         {
-            this.ClientState.Password = password;
+            this.ClientState.Username = input.username;
+            this.ClientState.Password = input.password;
 
             await this.ScreenService.RequestWakeLock();
             await this.ScreenService.RequestFullScreen();
@@ -332,13 +335,7 @@ namespace Fishbowl.Net.Client.Online.Pages
                 state.Message = L($"Pages.Play.StatusCode.{status}");
                 state.Loading = false;
             });
-            await this.StateManager.SetStateAsync<Password>();
-        }
-
-        private Task SetPlayerName(string name)
-        {
-            this.ClientState.Username = name;
-            return this.StateManager.SetStateAsync<PlayerWords>(state => state.Reset(this.ClientState.WordCount));
+            await this.StateManager.SetStateAsync<UsernamePassword>();
         }
 
         private Task SubmitPlayerData(string[] words) =>
