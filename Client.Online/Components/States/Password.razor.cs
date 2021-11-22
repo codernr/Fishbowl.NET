@@ -11,10 +11,18 @@ namespace Fishbowl.Net.Client.Online.Components.States
         [Parameter]
         public EventCallback<string> OnCreateGame { get; set; } = default!;
 
+        private bool IsValid
+        {
+            get => this.isValid;
+            set
+            {
+                this.isValid = value;
+                this.Update();
+            }
+        }
+
+        private bool isValid = false;
+
         private string password = string.Empty;
-
-        private bool create = false;
-
-        private EventCallback<string> Callback => this.create ? this.OnCreateGame : this.OnJoinGame;
     }
 }

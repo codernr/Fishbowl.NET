@@ -48,7 +48,7 @@
     <data name="Components.States.Password.InputPlaceholder">
         <value>Jelszó</value>
     </data>
-    <data name="Components.States.Password.InputTitle">
+    <data name="Components.States.Password.ErrorMessage">
         <value>3 és 30 közötti hosszúság, csak kisbetűk, kötőjelek és számok</value>
     </data>
     <data name="Components.States.Password.CreateButton">

@@ -48,7 +48,7 @@
     <data name="Components.States.Password.InputPlaceholder">
         <value>Password</value>
     </data>
-    <data name="Components.States.Password.InputTitle">
+    <data name="Components.States.Password.ErrorMessage">
         <value>Lowercase, dash and numbers between 3 and 30 characters</value>
     </data>
     <data name="Components.States.Password.CreateButton">
