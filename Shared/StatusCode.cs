@@ -7,6 +7,7 @@ namespace Fishbowl.Net.Shared
         GameContextExists,
         GameContextNotFound,
         GameContextFull,
-        ConcurrencyError
+        ConcurrencyError,
+        UsernameTaken
     }
 }

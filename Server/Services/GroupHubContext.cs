@@ -15,7 +15,7 @@ namespace Fishbowl.Net.Server.Services
 
         bool ContainsKey(string username);
 
-        bool IsDisconnected(string username);
+        bool IsUsernameTaken(string username);
 
         IGameClient Group();
 
@@ -53,8 +53,8 @@ namespace Fishbowl.Net.Server.Services
 
         public bool ContainsKey(string username) => this.usernameConnectionMap.ContainsKey(username);
 
-        public bool IsDisconnected(string username) =>
-            this.ContainsKey(username) && this.usernameConnectionMap[username] is null;
+        public bool IsUsernameTaken(string username) =>
+            this.ContainsKey(username) && this.usernameConnectionMap[username] is not null;
 
         public IGameClient Client(string username)
         {

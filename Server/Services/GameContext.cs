@@ -55,9 +55,11 @@ namespace Fishbowl.Net.Server.Services
             (this.gameSetup, this.groupHubContext, this.timer, this.gameOptions, this.logger) =
             (gameSetup, groupHubContext, timerFactory(() => this.Abort("Common.Abort.Timeout")), gameOptions.Value, logger);
 
+        public bool IsUsernameTaken(string username) => this.groupHubContext.IsUsernameTaken(username);
+
         public bool CanRegister(string username)
         {
-            var result = this.groupHubContext.IsDisconnected(username) || this.groupHubContext.Count < this.gameSetup.PlayerCount;
+            var result = this.groupHubContext.ContainsKey(username) || this.groupHubContext.Count < this.gameSetup.PlayerCount;
             this.Log(nameof(this.CanRegister), username, result);
             return result;
         }

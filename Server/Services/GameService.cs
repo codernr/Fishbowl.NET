@@ -77,6 +77,12 @@ namespace Fishbowl.Net.Server.Services
                 return new(StatusCode.GameContextNotFound);
             }
 
+            if (context.IsUsernameTaken(request.Username))
+            {
+                this.logger.LogWarning(StatusCode.UsernameTaken.ToString());
+                return new(StatusCode.UsernameTaken);
+            }
+
             if (!context.CanRegister(request.Username))
             {
                 this.logger.LogWarning(StatusCode.GameContextFull.ToString());
