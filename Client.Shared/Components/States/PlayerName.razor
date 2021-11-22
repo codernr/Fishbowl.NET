@@ -15,7 +15,10 @@
                     T="string"
                     Label="@(L["Components.States.PlayerName.InputPlaceholder"])"
                     Required="true"
-                    Validation="@(new MinLengthAttribute(3) { ErrorMessage = L["Components.States.PlayerName.ErrorMessage"] })"
+                    Validation="@(new RegularExpressionAttribute(@"^[a-z0-9\-\.]{3,32}$")
+                    {
+                        ErrorMessage = L["Components.States.PlayerName.ErrorMessage"]
+                    })"
                     @bind-Value="this.Value"
                     Immediate="true"
                     Class="my-10" />

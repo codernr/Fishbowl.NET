@@ -106,7 +106,7 @@
         <value>Név</value>
     </data>
     <data name="Components.States.PlayerName.ErrorMessage">
-        <value>A névnek minimum 3 karakter hosszúnak kell lennie</value>
+        <value>3 és 32 közötti hosszúság, csak angol kisbetűk, kötőjel, pont és számok</value>
     </data>
     <data name="Components.States.PlayerName.SubmitButton">
         <value>Beállít</value>

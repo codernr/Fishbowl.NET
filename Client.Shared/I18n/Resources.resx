@@ -106,7 +106,7 @@
         <value>Name</value>
     </data>
     <data name="Components.States.PlayerName.ErrorMessage">
-        <value>Player name must be at least 3 characters long</value>
+        <value>Lowercase, dash, dot and numbers between 3 and 32 characters</value>
     </data>
     <data name="Components.States.PlayerName.SubmitButton">
         <value>Set</value>
