@@ -13,28 +13,28 @@ namespace Fishbowl.Net.Server.Services
     {
         int Count { get; }
 
-        bool ContainsKey(Guid id);
+        bool ContainsKey(string username);
 
         IGameClient Group();
 
-        IGameClient GroupExcept(IEnumerable<Guid> ids);
+        IGameClient GroupExcept(IEnumerable<string> usernames);
 
-        IGameClient Client(Guid id);
+        IGameClient Client(string username);
 
-        IGameClient Clients(IEnumerable<Guid> ids);
+        IGameClient Clients(IEnumerable<string> usernames);
 
-        Task RegisterConnection(Guid id, string connectionId);
+        Task RegisterConnection(string username, string connectionId);
 
         Task RemoveConnection(string connectionId);
     }
 
     public class GroupHubContext : IGroupHubContext
     {
-        public int Count => this.idConnectionMap.Count;
+        public int Count => this.usernameConnectionMap.Count;
 
         private static readonly IGameClient NullClient = new NullGameClient();
 
-        private readonly Dictionary<Guid, string?> idConnectionMap = new();
+        private readonly Dictionary<string, string?> usernameConnectionMap = new();
 
         private readonly IHubContext<GameHub, IGameClient> hubContext;
 
@@ -49,33 +49,33 @@ namespace Fishbowl.Net.Server.Services
             (this.hubContext, this.password, this.logger) =
             (hubContext, password, logger);
 
-        public bool ContainsKey(Guid id) => this.idConnectionMap.ContainsKey(id);
+        public bool ContainsKey(string username) => this.usernameConnectionMap.ContainsKey(username);
 
-        public IGameClient Client(Guid playerId)
+        public IGameClient Client(string username)
         {
-            var connectionId = this.idConnectionMap[playerId];
+            var connectionId = this.usernameConnectionMap[username];
 
             return (connectionId is null) ? NullClient : this.hubContext.Clients.Clients(connectionId);
         }
 
-        public IGameClient Clients(IEnumerable<Guid> playerIds) =>
-            this.hubContext.Clients.Clients(this.GetConnections(playerIds));
+        public IGameClient Clients(IEnumerable<string> usernames) =>
+            this.hubContext.Clients.Clients(this.GetConnections(usernames));
 
         public IGameClient Group() => this.hubContext.Clients.Group(this.password);
 
-        public IGameClient GroupExcept(IEnumerable<Guid> playerIds) =>
-            this.hubContext.Clients.GroupExcept(this.password, this.GetConnections(playerIds));
+        public IGameClient GroupExcept(IEnumerable<string> usernames) =>
+            this.hubContext.Clients.GroupExcept(this.password, this.GetConnections(usernames));
 
-        public Task RegisterConnection(Guid playerId, string connectionId)
+        public Task RegisterConnection(string username, string connectionId)
         {
-            this.idConnectionMap[playerId] = connectionId;
+            this.usernameConnectionMap[username] = connectionId;
 
             return this.hubContext.Groups.AddToGroupAsync(connectionId, this.password);
         }
 
         public Task RemoveConnection(string connectionId)
         {
-            var entries = this.idConnectionMap.Where(entry => entry.Value == connectionId).ToList();
+            var entries = this.usernameConnectionMap.Where(entry => entry.Value == connectionId).ToList();
 
             if (entries.Count < 1)
             {
@@ -83,7 +83,7 @@ namespace Fishbowl.Net.Server.Services
                 return Task.CompletedTask;
             }
 
-            this.idConnectionMap[entries[0].Key] = null;
+            this.usernameConnectionMap[entries[0].Key] = null;
 
             return this.hubContext.Groups.RemoveFromGroupAsync(connectionId, this.password);
         }
@@ -92,17 +92,17 @@ namespace Fishbowl.Net.Server.Services
 
         protected virtual async ValueTask DisposeAsyncCore()
         {
-            foreach (var entry in this.idConnectionMap)
+            foreach (var entry in this.usernameConnectionMap)
             {
                 if (entry.Value is not null) await this.RemoveConnection(entry.Value);
             }
         }
 
-        private IEnumerable<string> GetConnections(IEnumerable<Guid> ids)
+        private IEnumerable<string> GetConnections(IEnumerable<string> usernames)
         {
-            foreach (var id in ids)
+            foreach (var username in usernames)
             {
-                var connectionId = this.idConnectionMap[id];
+                var connectionId = this.usernameConnectionMap[username];
                 if (connectionId is not null)
                 {
                     yield return connectionId;
