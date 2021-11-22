@@ -4,7 +4,7 @@ namespace Fishbowl.Net.Client.Shared.Components.States
 {
     public partial class Info
     {
-        public string ContextClass { get; set; } = ContextCssClass.Primary;
+        public string ContextClass { get; set; } = ContextCssClass.Default;
 
         public string Title { get; set; } = string.Empty;
 

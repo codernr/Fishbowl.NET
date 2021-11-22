@@ -68,7 +68,7 @@ namespace Fishbowl.Net.Client.Online.Pages
         public Task Reconnecting(Exception? exception) =>
             this.StateManager.SetStateAsync<Info>(state =>
                 {
-                    state.ContextClass = ContextCssClass.Danger;
+                    state.ContextClass = ContextCssClass.Error;
                     state.Title = L("Pages.Play.ErrorTitle");
                     state.Message = L("Pages.Play.Reconnecting");
                     state.Loading = true;
@@ -159,7 +159,7 @@ namespace Fishbowl.Net.Client.Online.Pages
         {
             await this.StateManager.SetStateAsync<Info>(state => 
             {
-                state.ContextClass = ContextCssClass.Danger;
+                state.ContextClass = ContextCssClass.Error;
                 state.Title = L("Pages.Play.ErrorTitle");
                 state.Message = L(abort.MessageKey);
                 state.Loading = false;
@@ -174,7 +174,7 @@ namespace Fishbowl.Net.Client.Online.Pages
 
             await this.StateManager.SetStateAsync<Info>(state =>
             {
-                state.ContextClass = ContextCssClass.Dark;
+                state.ContextClass = ContextCssClass.Default;
                 state.Title = L("Pages.Play.GameStartedTitle");
                 state.Message = string.Empty;
                 state.Loading = true;
@@ -190,7 +190,7 @@ namespace Fishbowl.Net.Client.Online.Pages
         public Task ReceiveRoundStarted(RoundViewModel round) =>
             this.StateManager.SetStateAsync<Info>(state =>
             {
-                state.ContextClass = ContextCssClass.Dark;
+                state.ContextClass = ContextCssClass.Default;
                 state.Title = $"{L("Pages.Play.RoundStartedTitle")}: {round.Type}";
                 state.Message = string.Empty;
                 state.Loading = true;
@@ -326,7 +326,7 @@ namespace Fishbowl.Net.Client.Online.Pages
         {
             await this.StateManager.SetStateAsync<Info>(state =>
             {
-                state.ContextClass = ContextCssClass.Danger;
+                state.ContextClass = ContextCssClass.Error;
                 state.Title = L("Pages.Play.ErrorTitle");
                 state.Message = L($"Pages.Play.StatusCode.{status}");
                 state.Loading = false;

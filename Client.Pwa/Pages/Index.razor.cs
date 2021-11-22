@@ -195,7 +195,7 @@ namespace Fishbowl.Net.Client.Pwa.Pages
 
             await this.StateManager.SetStateAsync<Info>(state =>
             {
-                state.ContextClass = ContextCssClass.Dark;
+                state.ContextClass = ContextCssClass.Default;
                 state.Title = L("Pages.Play.GameStartedTitle");
                 state.Message = string.Empty;
                 state.Loading = true;
@@ -211,7 +211,7 @@ namespace Fishbowl.Net.Client.Pwa.Pages
         private Task OnRoundStarted(Round round) =>
             this.StateManager.SetStateAsync<Info>(state =>
             {
-                state.ContextClass = ContextCssClass.Dark;
+                state.ContextClass = ContextCssClass.Default;
                 state.Title = $"{L("Pages.Play.RoundStartedTitle")}: {round.Type}";
                 state.Message = string.Empty;
                 state.Loading = true;
@@ -274,7 +274,7 @@ namespace Fishbowl.Net.Client.Pwa.Pages
         {
             await this.StateManager.SetStateAsync<Info>(state => 
             {
-                state.ContextClass = ContextCssClass.Danger;
+                state.ContextClass = ContextCssClass.Default;
                 state.Title = L("Pages.Play.ErrorTitle");
                 state.Message = L(messageKey);
                 state.Loading = false;
