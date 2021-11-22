@@ -8,17 +8,18 @@
 
     protected override RenderFragment Content =>
         @<StateContainer Title="@(L["Components.States.ConnectionClosed.Title"])">
-            <div class="row mb-5">
-                <div class="col">
-                    @L["Components.States.ConnectionClosed.Description"]
-                </div>
-            </div>
-            <div class="row">
-                <div class="d-grid col">
-                    <button class="btn btn-warning btn-lg" type="button" @onclick="e => this.ReloadRequested.InvokeAsync()">
-                        @L["Components.States.ConnectionClosed.Button"]
-                    </button>
-                </div>
-            </div>
+            <MudText>
+                @L["Components.States.ConnectionClosed.Description"]
+            </MudText>
+            <MudContainer>
+                <MudButton
+                    Variant="Variant.Filled"
+                    Color="Color.Warning"
+                    Size="Size.Large"
+                    FullWidth="true"
+                    @onclick="_ => this.ReloadRequested.InvokeAsync()">
+                    @L["Components.States.ConnectionClosed.Button"]
+                </MudButton>
+            </MudContainer>
         </StateContainer>;
 }
