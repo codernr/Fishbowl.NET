@@ -1,37 +1,24 @@
 <!DOCTYPE html>
-<html class="h-100">
+<html class="mud-height-full">
 
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Japán activity</title>
     <base href="/" />
+    <link href="_content/Fishbowl.Net.Client.Shared/css/roboto.css" rel="stylesheet" />
     <link href="_content/Fishbowl.Net.Client.Shared/css/styles.css" rel="stylesheet" />
+    <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
     <link rel="icon" href="_content/Fishbowl.Net.Client.Shared/icon.svg" />
 </head>
 
-<body class="h-100 bg-dark text-light overflow-hidden">
-    <div class="position-fixed top-50 start-50 translate-middle splash">
-        <div class="container text-center my-5">
-            <div class="row">
-                <div class="col mb-3">
-                    <h1 class="display-4">Japán activity</h1>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col col-sm-6 mx-auto">
-                    <img src="_content/Fishbowl.Net.Client.Shared/icon.svg" class="img-fluid" alt="Japán activity"/>
-                </div>
-            </div>
-        </div>
-        <div class="spinner">
-            <div class="bounce1"></div>
-            <div class="bounce2"></div>
-            <div class="bounce3"></div>
+<body class="mud-height-full">
+    
+    <div id="app" class="mud-height-full">
+        <div class="splash">
+            <img src="_content/Fishbowl.Net.Client.Shared/icon.svg" class="mud-width-full" alt="Japán activity"/>
         </div>
     </div>
-
-    <div id="app" class="h-100 w-100"></div>
 
     <div id="blazor-error-ui">
         An unhandled error has occurred.
