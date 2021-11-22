@@ -22,6 +22,17 @@ namespace Fishbowl.Net.Client.Online.Pages
 
         private bool isPlayerCountPopoverVisible;
 
+        private bool IsPlayerCountPopoverVisible
+        {
+            get => this.isPlayerCountPopoverVisible;
+            set
+            {
+                var changed = this.isPlayerCountPopoverVisible != value;
+                this.isPlayerCountPopoverVisible = value;
+                if (changed) this.StateHasChanged();
+            }
+        }
+
         private ToastContainer? toastContainer;
 
         private ClientConnection Connection => this.connection ?? throw new InvalidOperationException();
@@ -44,7 +55,7 @@ namespace Fishbowl.Net.Client.Online.Pages
 
         private void OnStateTransition(State newState)
         {
-            this.isPlayerCountPopoverVisible =
+            this.IsPlayerCountPopoverVisible = 
                 newState is PlayerName || newState is PlayerWords || newState is WaitingForPlayers;
         }
 
