@@ -5,36 +5,22 @@
 {
     protected override RenderFragment Content =>
         @<StateContainer Title="@(L["Components.States.WaitingForTeamNames.Title"])">
-            <div class="row mb-5">
-                <div class="col">
-                    <TeamMembers Players="this.Team.Players" />
-                </div>
-            </div>
-            @if (this.Teams.Count > 0)
-            {
-                <div class="row">
-                    <div class="col">
-                        <h4>@L["Components.States.WaitingForTeamNames.TeamNames"]</h4>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                        <ul class="list-group">
-                            @foreach (var team in this.Teams)
-                            {
-                                <li class="list-group-item">@team.Name</li>
-                            }
-                        </ul>
-                    </div>
-                </div>
-            }
-            else
-            {
-                <div class="row">
-                    <div class="col">
-                        <Spinner />
-                    </div>
-                </div>
-            }
+            <MudContainer Class="mb-10">
+                <TeamMembers Players="this.Team.Players" />
+            </MudContainer>
+            
+            <MudContainer>
+                @if (this.Teams.Count > 0)
+                {
+                    <MudText>
+                        <strong>@L["Components.States.WaitingForTeamNames.TeamNames"]:</strong>
+                        @(string.Join(", ", this.Teams.Select(team => team.Name)))
+                    </MudText>
+                }
+                else
+                {
+                    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+                }
+            </MudContainer>
         </StateContainer>;
 }
