@@ -35,9 +35,9 @@ namespace Fishbowl.Net.Shared.ViewModels
 
     public record PlayerCountViewModel(int TotalCount, int ConnectedCount, int SetupCount);
 
-    public record PlayerViewModel(Guid Id, string Name);
+    public record PlayerViewModel(string Username);
 
-    public record AddPlayerViewModel(Guid Id, string Name, IEnumerable<Word> Words);
+    public record AddPlayerViewModel(string Username, IEnumerable<Word> Words);
 
     public record TeamViewModel(int Id, List<PlayerViewModel> Players, string? Name = null);
 
@@ -49,7 +49,7 @@ namespace Fishbowl.Net.Shared.ViewModels
 
     public record RoundSummaryViewModel(string Type, List<PeriodSummaryViewModel> Periods);
 
-    public record PlayerSummaryViewModel(Guid Id, string Name, List<ScoreViewModel> Scores);
+    public record PlayerSummaryViewModel(string Username, List<ScoreViewModel> Scores);
 
     public record TeamSummaryViewModel(int Id, string Name, List<PlayerSummaryViewModel> Players);
 
@@ -75,13 +75,13 @@ namespace Fishbowl.Net.Shared.ViewModels
 
     public record GameSetupViewModel(int PlayerCount, int WordCount, int TeamCount, string[] RoundTypes);
     
-    public record GameContextJoinViewModel(string Password, Guid UserId);
+    public record GameContextJoinViewModel(string Password, string Username);
 
     public record GameContextSetupViewModel(GameContextJoinViewModel GameContextJoin, GameSetupViewModel GameSetup);
 
     public static class ViewModelExtensions
     {
-        public static PlayerViewModel Map(this Player player) => new(player.Id, player.Name);
+        public static PlayerViewModel Map(this Player player) => new(player.Username);
 
         public static TeamViewModel Map(this Team team) => new(team.Id, team.Players
             .Select(player => player.Map()).ToList(), team.Name);
@@ -89,10 +89,10 @@ namespace Fishbowl.Net.Shared.ViewModels
         public static RoundViewModel Map(this Round round) => new(round.Type);
 
         public static PeriodSetupViewModel Map(this Period period, Round round) =>
-            new(new(round.Type), new(period.Player.Id, period.Player.Name), period.Length.TotalSeconds);
+            new(new(round.Type), new(period.Player.Username), period.Length.TotalSeconds);
 
         public static PeriodRunningViewModel MapRunning(this Period period, Round round) =>
-            new(new(round.Type), new(period.Player.Id, period.Player.Name), period.Length.TotalSeconds,
+            new(new(round.Type), new(period.Player.Username), period.Length.TotalSeconds,
             period.StartedAt ?? throw new InvalidOperationException(), period.Scores.Count);
 
         public static PeriodSummaryViewModel Map(this Period period) =>
@@ -110,9 +110,9 @@ namespace Fishbowl.Net.Shared.ViewModels
             new(round.Type, round.Periods.Select(period => period.Map()).ToList());
 
         public static PlayerSummaryViewModel Map(this Player player, Game game) =>
-            new(player.Id, player.Name, game.Rounds
+            new(player.Username, game.Rounds
                 .SelectMany(round => round.Periods)
-                .Where(period => period.Player.Id == player.Id)
+                .Where(period => period.Player.Username == player.Username)
                 .SelectMany(period => period.Scores.Select(score => score.Map()))
                 .ToList());
 
@@ -129,6 +129,6 @@ namespace Fishbowl.Net.Shared.ViewModels
             .ToList());
 
         public static Player Map(this AddPlayerViewModel player) =>
-            new(player.Id, player.Name, player.Words);
+            new(player.Username, player.Words);
     }
 }
