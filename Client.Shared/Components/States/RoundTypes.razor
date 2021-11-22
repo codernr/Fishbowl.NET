@@ -8,25 +8,27 @@
             Title="@(L["Components.States.Common.SetupGame"])"
             Subtitle="@(L["Components.States.RoundTypes.Title"])"
             TotalSteps="4" Step="4">
-            <MudSelect 
-                T="string"
-                Label="@(L["Components.States.RoundTypes.Title"])"
-                MultiSelection="true"
-                @bind-SelectedValues="this.selected"
-                Class="my-10">
-                @foreach (var option in this.options)
-                {
-                    <MudSelectItem T="string" Value="@option">@option</MudSelectItem>
-                }
-            </MudSelect>
-            <MudButton
-                Variant="Variant.Filled"
-                Color="Color.Primary"
-                FullWidth="true"
-                Size="Size.Large"
-                Disabled="@(!this.IsValid)"
-                @onclick="_ => this.Submit(() => this.OnRoundTypesSet.InvokeAsync(this.SelectedOptions))">
-                @L["Components.States.RoundTypes.SubmitButton"]
-            </MudButton>
+                <MudSelect 
+                    T="string"
+                    Label="@(L["Components.States.RoundTypes.Title"])"
+                    MultiSelection="true"
+                    Required="true"
+                    RequiredError="@(L["Common.Error.Required"])"
+                    @bind-SelectedValues="this.Selected"
+                    Class="my-10">
+                    @foreach (var option in this.options)
+                    {
+                        <MudSelectItem T="string" Value="@option">@option</MudSelectItem>
+                    }
+                </MudSelect>
+                <MudButton
+                    Variant="Variant.Filled"
+                    Color="Color.Primary"
+                    FullWidth="true"
+                    Size="Size.Large"
+                    Disabled="!this.IsValid"
+                    @onclick="_ => this.Submit(() => this.OnRoundTypesSet.InvokeAsync(this.SelectedOptions))">
+                    @L["Components.States.RoundTypes.SubmitButton"]
+                </MudButton>
         </StepContainer>;
 }

@@ -1,5 +1,3 @@
-using System;
-using System.Threading.Tasks;
 using Fishbowl.Net.Shared.ViewModels;
 using Microsoft.AspNetCore.Components;
 
@@ -9,7 +7,7 @@ namespace Fishbowl.Net.Client.Shared.Components.States
     {
         public TeamViewModel Team { get; set; } = default!;
 
-        public string Value { get; set; } = string.Empty;
+        private string Value { get; set; } = string.Empty;
 
         private bool IsValid
         {

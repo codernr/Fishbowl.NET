@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Components;
+using MudBlazor;
 
 namespace Fishbowl.Net.Client.Shared.Components.States
 {
@@ -9,11 +10,21 @@ namespace Fishbowl.Net.Client.Shared.Components.States
         [Parameter]
         public EventCallback<string[]> OnRoundTypesSet { get; set; } = default!;
 
+        public IEnumerable<string> Selected
+        {
+            get => this.selected;
+            set
+            {
+                this.selected = new HashSet<string>(value);
+                this.Update();
+            }
+        }
+
         private bool IsValid => this.selected.Count() > 0;
 
         private string[] options = default!;
 
-        private IEnumerable<string> selected = default!;
+        private HashSet<string> selected = default!;
 
         private string[] SelectedOptions => this.selected.ToArray();
 
