@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using Fishbowl.Net.Client.Online.Services;
 using Microsoft.AspNetCore.Components.Web;
 using Fishbowl.Net.Client.Online;
+using MudBlazor.Services;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
@@ -21,7 +22,8 @@ builder
     .Services
         .AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) })
         .AddTransient<IClientState, ClientState>()
-        .AddLocalization();
+        .AddLocalization()
+        .AddMudServices();
 
 var culture = new CultureInfo("hu");
 CultureInfo.DefaultThreadCurrentCulture = culture;
