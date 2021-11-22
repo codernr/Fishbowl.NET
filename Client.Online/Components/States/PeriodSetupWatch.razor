@@ -5,20 +5,12 @@
 {
     protected override RenderFragment Content =>
         @<StateContainer Title="@this.Period.Round.Type">
-            <div class="row mb-5">
-                <div class="col">
-                    <h4>@L["Components.States.PeriodSetupWatch.NextPlayer"]: @this.Period.Player.Name</h4>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col">
-                    <h4>@L["Components.States.PeriodSetupWatch.PeriodLength"]: @(string.Format("{0:m\\:ss}", this.Period.Length))</h4>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col">
-                    <Spinner />
-                </div>
-            </div>
+            <MudText Typo="Typo.h5" Class="mb-5">
+                @L["Components.States.PeriodSetupWatch.NextPlayer"]: @this.Period.Player.Name
+            </MudText>
+            <MudText Typo="Typo.h5" Class="mb-10">
+                @L["Components.States.PeriodSetupWatch.PeriodLength"]: @(string.Format("{0:m\\:ss}", this.Period.Length))
+            </MudText>
+            <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
         </StateContainer>;
 }
