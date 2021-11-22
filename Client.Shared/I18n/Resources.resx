@@ -234,6 +234,9 @@
     <data name="Pages.Play.StatusCode.ConcurrencyError">
         <value>Something went wrong. Try reloading the page.</value>
     </data>
+    <data name="Pages.Play.StatusCode.UsernameTaken">
+        <value>The selected username is taken.</value>
+    </data>
     <data name="Pages.Play.GameCreatedTitle">
         <value>Game created!</value>
     </data>

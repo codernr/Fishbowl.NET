@@ -234,6 +234,9 @@
     <data name="Pages.Play.StatusCode.ConcurrencyError">
         <value>Váratlan hiba történt! Próbáld meg újratölteni a lapot!</value>
     </data>
+    <data name="Pages.Play.StatusCode.UsernameTaken">
+        <value>A felhasználónév foglalt.</value>
+    </data>
     <data name="Pages.Play.GameCreatedTitle">
         <value>Játék létrehozva!</value>
     </data>
