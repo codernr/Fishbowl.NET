@@ -60,7 +60,8 @@ namespace Fishbowl.Net.Client.Online.Pages
         {
             if (this.ClientState.Password is not null)
             {
-                var response = await this.Connection.JoinGameContext(new(this.ClientState.Password, this.ClientState.Id));
+                var response = await this.Connection.JoinGameContext(
+                    new(this.ClientState.Password, this.ClientState.Username));
                 if (response.Status == StatusCode.Ok) return;
             }
 
@@ -100,7 +101,7 @@ namespace Fishbowl.Net.Client.Online.Pages
             this.ClientState.TeamCount = gameSetup.TeamCount;
             this.ClientState.RoundTypes = gameSetup.RoundTypes;
 
-            await this.StateManager.SetStateAsync<PlayerName>(state => state.Value = this.ClientState.Name);
+            await this.StateManager.SetStateAsync<PlayerName>(state => state.Value = this.ClientState.Username);
         }
 
         public Task ReceivePlayerCount(PlayerCountViewModel playerCount)
@@ -114,8 +115,7 @@ namespace Fishbowl.Net.Client.Online.Pages
 
         public async Task ReceiveWaitForOtherPlayers(PlayerViewModel player)
         {
-            this.ClientState.Id = player.Id;
-            this.ClientState.Name = player.Name;
+            this.ClientState.Username = player.Username;
 
             await this.StateManager.SetStateAsync<WaitingForPlayers>();
         }
@@ -152,8 +152,7 @@ namespace Fishbowl.Net.Client.Online.Pages
 
         public Task ReceiveRestoreState(PlayerViewModel player)
         {
-            this.ClientState.Id = player.Id;
-            this.ClientState.Name = player.Name;
+            this.ClientState.Username = player.Username;
             return Task.CompletedTask;
         }
 
@@ -202,7 +201,7 @@ namespace Fishbowl.Net.Client.Online.Pages
             this.StateManager.SetStateAsync<RoundFinished>(state => state.Round = round);
 
         public Task ReceivePeriodSetup(PeriodSetupViewModel period) =>
-            period.Player.Id == this.ClientState.Id ?
+            period.Player.Username == this.ClientState.Username ?
                 this.StateManager.SetStateAsync<PeriodSetupPlay>(state => state.Period = period) :
                 this.StateManager.SetStateAsync<PeriodSetupWatch>(state => state.Period = period);
 
@@ -210,7 +209,7 @@ namespace Fishbowl.Net.Client.Online.Pages
         {
             this.ClientState.PeriodScores.Clear();
 
-            return period.Player.Id == this.ClientState.Id ?
+            return period.Player.Username == this.ClientState.Username ?
                 this.StateManager.SetStateAsync<PeriodPlay>(state => {
                     state.Word = null;
                     state.Expired = period.StartedAt + period.Length < DateTimeOffset.UtcNow;
@@ -282,7 +281,7 @@ namespace Fishbowl.Net.Client.Online.Pages
             this.ClientState.RoundTypes = roundTypes;
             this.ClientState.IsCreating = true;
             var response = await this.Connection.CreateGameContext(new(
-                new(this.ClientState.Password ?? throw new InvalidOperationException(), this.ClientState.Id),
+                new(this.ClientState.Password ?? throw new InvalidOperationException(), this.ClientState.Username),
                 new(this.ClientState.TotalPlayerCount, this.ClientState.WordCount, this.ClientState.TeamCount, this.ClientState.RoundTypes)));
 
             if (response.Status == StatusCode.Ok) return;
@@ -317,7 +316,7 @@ namespace Fishbowl.Net.Client.Online.Pages
         private async Task JoinGameContext()
         {
             var response = await this.Connection.JoinGameContext(
-                new(this.ClientState.Password ?? throw new InvalidOperationException(), this.ClientState.Id));
+                new(this.ClientState.Password ?? throw new InvalidOperationException(), this.ClientState.Username));
             
             if (response.Status == StatusCode.Ok) return;
 
@@ -338,14 +337,13 @@ namespace Fishbowl.Net.Client.Online.Pages
 
         private Task SetPlayerName(string name)
         {
-            this.ClientState.Name = name;
+            this.ClientState.Username = name;
             return this.StateManager.SetStateAsync<PlayerWords>(state => state.Reset(this.ClientState.WordCount));
         }
 
         private Task SubmitPlayerData(string[] words) =>
             this.Connection.AddPlayer(new(
-                this.ClientState.Id,
-                this.ClientState.Name,
+                this.ClientState.Username,
                 words.Select(word => new Word(Guid.NewGuid(), word))));
 
         private Task SetTeamName(TeamNameViewModel teamName) =>

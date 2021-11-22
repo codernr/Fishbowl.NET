@@ -9,9 +9,7 @@ namespace Fishbowl.Net.Client.Online.Services
 {
     public interface IClientState
     {
-        Guid Id { get; set; }
-
-        string Name { get; set; }
+        string Username { get; set; }
 
         string? Password { get; set; }
 
@@ -32,7 +30,7 @@ namespace Fishbowl.Net.Client.Online.Services
         List<TeamViewModel> Teams { get; set; }
 
         TeamViewModel Team => this.Teams.First(team =>
-            team.Players.Any(player => player.Id == this.Id));
+            team.Players.Any(player => player.Username == this.Username));
 
         List<ScoreViewModel> PeriodScores { get; }
     }
@@ -43,9 +41,9 @@ namespace Fishbowl.Net.Client.Online.Services
 
         private readonly PersistedProperty<Guid> id;
 
-        public string Name { get => this.name.Value; set => this.name.Value = value; }
+        public string Username { get => this.username.Value; set => this.username.Value = value; }
 
-        private readonly PersistedProperty<string> name;
+        private readonly PersistedProperty<string> username;
 
         public string? Password
         {
@@ -84,7 +82,7 @@ namespace Fishbowl.Net.Client.Online.Services
         public ClientState(IStorageService storageService)
         {
             this.id = new IdProperty(storageService);
-            this.name = new NameProperty(storageService);
+            this.username = new NameProperty(storageService);
             this.password = new PasswordProperty(storageService);
             this.expires = new ExpiresProperty(storageService);
         }
