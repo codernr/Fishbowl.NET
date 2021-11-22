@@ -20,9 +20,7 @@ namespace Fishbowl.Net.Client.Online.Pages
 
         private StateManager StateManager => this.stateManager ?? throw new InvalidOperationException();
 
-        private Toast? playerCountDisplay;
-
-        private Toast PlayerCountDisplay => this.playerCountDisplay ?? throw new InvalidOperationException();
+        private bool isPlayerCountPopoverVisible;
 
         private ToastContainer? toastContainer;
 
@@ -44,14 +42,10 @@ namespace Fishbowl.Net.Client.Online.Pages
             return this.Connection.StartAsync();
         }
 
-        private async void OnStateTransition(State newState)
+        private void OnStateTransition(State newState)
         {
-            if (newState is PlayerName || newState is PlayerWords || newState is WaitingForPlayers)
-            {
-                await this.PlayerCountDisplay.Show();
-                return;
-            }
-            await this.PlayerCountDisplay.Hide();
+            this.isPlayerCountPopoverVisible =
+                newState is PlayerName || newState is PlayerWords || newState is WaitingForPlayers;
         }
 
         public async Task Connected()

@@ -9,12 +9,6 @@
 @inject IStringLocalizer<Resources> StringLocalizer
 @inject IClientState ClientState
 
-<div class="position-fixed top-0 start-50 translate-middle-x mt-1 pt-2">
-    <Toast @ref="this.playerCountDisplay"
-        Auto="false"
-        Message="@(string.Format(L("Pages.Play.PlayerCount"), this.ClientState.TotalPlayerCount, this.ClientState.ConnectedPlayerCount, this.ClientState.SetupPlayerCount))" />
-</div>
-
 <StateManager @ref="this.stateManager" TransitionStarted="@this.OnStateTransition">
     <ConnectionClosed ReloadRequested="this.Reload" />
     <Password OnCreateGame="this.CreateGame" OnJoinGame="this.JoinGame" />
@@ -39,5 +33,22 @@
     <GameFinished ReloadRequested="this.Reload" />
     <Info Delay="@TimeSpan.FromSeconds(2)" />
 </StateManager>
+
+<MudPopover
+    Open="this.isPlayerCountPopoverVisible"
+    AnchorOrigin="Origin.BottomCenter"
+    TransformOrigin="Origin.BottomCenter"
+    Class="pa-5"
+    Paper="false">
+    <MudPaper Class="mud-theme-primary pa-2" Elevation="8">
+        <MudText>
+            @(string.Format(
+                L("Pages.Play.PlayerCount"),
+                this.ClientState.TotalPlayerCount,
+                this.ClientState.ConnectedPlayerCount,
+                this.ClientState.SetupPlayerCount))
+        </MudText>
+    </MudPaper>
+</MudPopover>
 
 <ToastContainer @ref="this.toastContainer" />
