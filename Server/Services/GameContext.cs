@@ -55,16 +55,16 @@ namespace Fishbowl.Net.Server.Services
             (this.gameSetup, this.groupHubContext, this.timer, this.gameOptions, this.logger) =
             (gameSetup, groupHubContext, timerFactory(() => this.Abort("Common.Abort.Timeout")), gameOptions.Value, logger);
 
-        public bool CanRegister(Guid playerId)
+        public bool CanRegister(string username)
         {
-            var result = this.groupHubContext.ContainsKey(playerId) || this.groupHubContext.Count < this.gameSetup.PlayerCount;
-            this.Log(nameof(this.CanRegister), playerId, result);
+            var result = this.groupHubContext.ContainsKey(username) || this.groupHubContext.Count < this.gameSetup.PlayerCount;
+            this.Log(nameof(this.CanRegister), username, result);
             return result;
         }
 
-        public async Task<bool> TryRegisterConnection(Guid playerId, string connectionId)
+        public async Task<bool> TryRegisterConnection(string username, string connectionId)
         {
-            this.Log(nameof(this.TryRegisterConnection), playerId, connectionId);
+            this.Log(nameof(this.TryRegisterConnection), username, connectionId);
 
             if (this.isDisposing)
             {
@@ -74,15 +74,15 @@ namespace Fishbowl.Net.Server.Services
 
             this.timer.Restart();
 
-            await this.groupHubContext.RegisterConnection(playerId, connectionId);
+            await this.groupHubContext.RegisterConnection(username, connectionId);
             await this.groupHubContext.Group().ReceivePlayerCount(
                 new PlayerCountViewModel(this.gameSetup.PlayerCount, this.groupHubContext.Count, this.players.Count));
 
-            var existingPlayer = this.players.SingleOrDefault(player => player.Id == playerId);
+            var existingPlayer = this.players.SingleOrDefault(player => player.Username == username);
 
             var clientTask =
-                existingPlayer is null  ? this.groupHubContext.Client(playerId).ReceiveSetupPlayer(this.gameSetup) :
-                (this.teams is null     ? this.groupHubContext.Client(playerId).ReceiveWaitForOtherPlayers(existingPlayer.Map()) :
+                existingPlayer is null  ? this.groupHubContext.Client(username).ReceiveSetupPlayer(this.gameSetup) :
+                (this.teams is null     ? this.groupHubContext.Client(username).ReceiveWaitForOtherPlayers(existingPlayer.Map()) :
                 (this.game is null      ? this.RestoreTeamSetup(existingPlayer, this.teams) :
                 this.RestoreGame(existingPlayer, this.game)));
 
@@ -98,7 +98,7 @@ namespace Fishbowl.Net.Server.Services
         {
             this.Log(nameof(this.AddPlayer), player);
 
-            if (!this.groupHubContext.ContainsKey(player.Id))
+            if (!this.groupHubContext.ContainsKey(player.Username))
             {
                 throw new InvalidOperationException("Invalid player connection");
             }
@@ -114,7 +114,7 @@ namespace Fishbowl.Net.Server.Services
 
             if (this.players.Count != this.gameSetup.PlayerCount)
             {
-                await this.groupHubContext.Client(player.Id).ReceiveWaitForOtherPlayers(entity.Map());
+                await this.groupHubContext.Client(player.Username).ReceiveWaitForOtherPlayers(entity.Map());
                 return;
             }
 
@@ -128,7 +128,7 @@ namespace Fishbowl.Net.Server.Services
             this.Teams[teamName.Id].Name = teamName.Name;
 
             await this.groupHubContext
-                .Client(this.Teams[teamName.Id].Players[0].Id)
+                .Client(this.Teams[teamName.Id].Players[0].Username)
                 .ReceiveWaitForTeamSetup(new(this.Teams.Select(team => team.Map()).ToList()));
 
             await this.groupHubContext.Group().ReceiveTeamName(teamName);
@@ -145,7 +145,7 @@ namespace Fishbowl.Net.Server.Services
 
             var setupPlayerIds = this.teams
                 .Select(team => team.Players.First())
-                .Select(player => player.Id);
+                .Select(player => player.Username);
 
             TeamSetupViewModel data = this.Teams.Map();
 
@@ -218,7 +218,7 @@ namespace Fishbowl.Net.Server.Services
             await this.groupHubContext.Group().ReceiveLastScoreRevoked(score.Map());
 
         private async void WordSetup(Player player, Word word) =>
-            await this.groupHubContext.Client(player.Id).ReceiveWordSetup(word.Map());
+            await this.groupHubContext.Client(player.Username).ReceiveWordSetup(word.Map());
 
         private async Task Abort(string messageKey)
         {
@@ -230,11 +230,11 @@ namespace Fishbowl.Net.Server.Services
         {
             this.Log(nameof(this.RestoreTeamSetup), player, teams);
 
-            var playerTeam = teams.First(team => team.Players.Any(teamPlayer => teamPlayer.Id == player.Id));
+            var playerTeam = teams.First(team => team.Players.Any(teamPlayer => teamPlayer.Username == player.Username));
 
-            var client = this.groupHubContext.Client(player.Id);
+            var client = this.groupHubContext.Client(player.Username);
 
-            return (playerTeam.Players[0].Id == player.Id && playerTeam.Name is null) ?
+            return (playerTeam.Players[0].Username == player.Username && playerTeam.Name is null) ?
                 client.ReceiveSetTeamName(this.Teams.Map()) : client.ReceiveWaitForTeamSetup(this.Teams.Map());
         }
 
@@ -244,7 +244,7 @@ namespace Fishbowl.Net.Server.Services
             
             var round = game.Game.CurrentRound;
             var period = round.CurrentPeriod;
-            var client = this.groupHubContext.Client(player.Id);
+            var client = this.groupHubContext.Client(player.Username);
 
             await client.ReceiveRestoreState(player.Map());
 
@@ -256,7 +256,7 @@ namespace Fishbowl.Net.Server.Services
 
             await client.ReceivePeriodStarted(period.MapRunning(round));
 
-            if (player.Id == period.Player.Id)
+            if (player.Username == period.Player.Username)
             {
                 await client.ReceiveWordSetup(game.Game.CurrentWord.Map());
             }
