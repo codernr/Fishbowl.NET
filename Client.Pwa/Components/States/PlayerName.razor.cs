@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
-namespace Fishbowl.Net.Client.Shared.Components.States
+namespace Fishbowl.Net.Client.Pwa.Components.States
 {
     public partial class PlayerName
     {

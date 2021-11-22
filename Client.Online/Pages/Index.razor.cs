@@ -52,8 +52,7 @@ namespace Fishbowl.Net.Client.Online.Pages
 
         private void OnStateTransition(State newState)
         {
-            this.IsPlayerCountPopoverVisible = 
-                newState is PlayerName || newState is PlayerWords || newState is WaitingForPlayers;
+            this.IsPlayerCountPopoverVisible = newState is PlayerWords || newState is WaitingForPlayers;
         }
 
         public async Task Connected()
