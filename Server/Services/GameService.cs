@@ -50,7 +50,7 @@ namespace Fishbowl.Net.Server.Services
                 return new(StatusCode.GameContextExists);
             }
 
-            if (await context.TryRegisterConnection(request.GameContextJoin.UserId, connectionId) &&
+            if (await context.TryRegisterConnection(request.GameContextJoin.Username, connectionId) &&
                 this.connectionContextMap.TryAdd(connectionId, context))
             {
                 this.logger.LogInformation(StatusCode.Ok.ToString());
@@ -77,13 +77,13 @@ namespace Fishbowl.Net.Server.Services
                 return new(StatusCode.GameContextNotFound);
             }
 
-            if (!context.CanRegister(request.UserId))
+            if (!context.CanRegister(request.Username))
             {
                 this.logger.LogWarning(StatusCode.GameContextFull.ToString());
                 return new(StatusCode.GameContextFull);
             }
 
-            if (await context.TryRegisterConnection(request.UserId, connectionId) &&
+            if (await context.TryRegisterConnection(request.Username, connectionId) &&
                 this.connectionContextMap.TryAdd(connectionId, context))
             {
                 this.logger.LogInformation(StatusCode.Ok.ToString());
