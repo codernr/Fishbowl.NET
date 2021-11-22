@@ -3,6 +3,6 @@
 <MudCard Class="mud-theme-success">
     <MudCardContent>
         <MudText Typo="Typo.h6">@L["Components.TeamMembers.Title"]</MudText>
-        <MudText Typo="Typo.subtitle1">@string.Join(", ", this.Players.Select(player => player.Name))</MudText>
+        <MudText Typo="Typo.subtitle1">@string.Join(", ", this.Players.Select(player => player.Username))</MudText>
     </MudCardContent>
 </MudCard>

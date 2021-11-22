@@ -6,7 +6,7 @@
     protected override RenderFragment Content =>
         @<StateContainer Title="@(L["Components.States.PeriodFinished.Title"])">
             <MudText Typo="Typo.h5" Class="mb-5">
-                @this.Period.Player.Name @L["Components.States.PeriodFinished.Scores"]:
+                @this.Period.Player.Username @L["Components.States.PeriodFinished.Scores"]:
                 @this.Period.Scores.Count
             </MudText>
 
