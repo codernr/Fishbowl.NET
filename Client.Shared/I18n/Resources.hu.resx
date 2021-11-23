@@ -18,14 +18,44 @@
     <data name="Components.Timer.Remaining">
         <value>Hátralévő idő</value>
     </data>
-    <data name="Components.States.Common.SetupGame">
-        <value>Játék beállítása</value>
-    </data>
     <data name="Components.States.Common.SetupPlayer">
         <value>Játékos beállítása</value>
     </data>
     <data name="Components.States.Connecting.Title">
         <value>Japán activity</value>
+    </data>
+    <data name="Components.States.GameSetup.Title">
+        <value>Játék beállítása</value>
+    </data>
+    <data name="Components.States.GameSetup.PlayerCount">
+        <value>Játékosok száma</value>
+    </data>
+    <data name="Components.States.GameSetup.TeamCount">
+        <value>Csapatok száma</value>
+    </data>
+    <data name="Components.States.GameSetup.WordCount">
+        <value>Szavak száma játékosonként</value>
+    </data>
+    <data name="Components.States.GameSetup.RoundTypes">
+        <value>Szakaszok</value>
+    </data>
+    <data name="Components.States.GameSetup.RoundTypes.Taboo">
+        <value>Körülírás</value>
+    </data>
+    <data name="Components.States.GameSetup.RoundTypes.Drawing">
+        <value>Rajzolás</value>
+    </data>
+    <data name="Components.States.GameSetup.RoundTypes.Charades">
+        <value>Mutogatás</value>
+    </data>
+    <data name="Components.States.GameSetup.RoundTypes.Password">
+        <value>Egy szó</value>
+    </data>
+    <data name="Components.States.GameSetup.RoundTypes.Humming">
+        <value>Hümmögés</value>
+    </data>
+    <data name="Components.States.GameSetup.SubmitButton">
+        <value>Beállít</value>
     </data>
     <data name="Components.States.ConnectionClosed.Title">
         <value>Megszűnt a kapcsolat</value>
@@ -93,12 +123,6 @@
     <data name="Components.States.PeriodWatch.Playing">
         <value>Aktuális játékos</value>
     </data>
-    <data name="Components.States.PlayerCount.Title">
-        <value>Add meg a játékosok számát</value>
-    </data>
-    <data name="Components.States.PlayerCount.SubmitButton">
-        <value>Beállít</value>
-    </data>
     <data name="Components.States.PlayerName.Title">
         <value>Add meg a neved</value>
     </data>
@@ -147,33 +171,6 @@
     <data name="Components.States.RoundFinished.Scores">
         <value>Pontok</value>
     </data>
-    <data name="Components.States.RoundTypes.Title">
-        <value>Válaszd ki a szakaszokat</value>
-    </data>
-    <data name="Components.States.RoundTypes.SubmitButton">
-        <value>Beállít</value>
-    </data>
-    <data name="Components.States.RoundTypes.Types.Taboo">
-        <value>Körülírás</value>
-    </data>
-    <data name="Components.States.RoundTypes.Types.Drawing">
-        <value>Rajzolás</value>
-    </data>
-    <data name="Components.States.RoundTypes.Types.Charades">
-        <value>Mutogatás</value>
-    </data>
-    <data name="Components.States.RoundTypes.Types.Password">
-        <value>Egy szó</value>
-    </data>
-    <data name="Components.States.RoundTypes.Types.Humming">
-        <value>Hümmögés</value>
-    </data>
-    <data name="Components.States.TeamCount.Title">
-        <value>Add meg a csapatok számát</value>
-    </data>
-    <data name="Components.States.TeamCount.SubmitButton">
-        <value>Beállít</value>
-    </data>
     <data name="Components.States.TeamName.Title">
         <value>Nevezd el a csapatod</value>
     </data>
@@ -194,12 +191,6 @@
     </data>
     <data name="Components.States.WaitingForTeamNames.TeamNames">
         <value>Csapatnevek</value>
-    </data>
-    <data name="Components.States.WordCount.Title">
-        <value>Add meg a szavak számát játékosonként</value>
-    </data>
-    <data name="Components.States.WordCount.SubmitButton">
-        <value>Beállít</value>
     </data>
     <data name="Pages.Play.Reconnecting">
         <value>Megszakadt a kapcsolat, újracsatlakozás...</value>

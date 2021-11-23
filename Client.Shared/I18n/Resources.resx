@@ -18,11 +18,41 @@
     <data name="Components.Timer.Remaining">
         <value>Remaining</value>
     </data>
-    <data name="Components.States.Common.SetupGame">
-        <value>Setup game</value>
-    </data>
     <data name="Components.States.Common.SetupPlayer">
         <value>Setup player</value>
+    </data>
+    <data name="Components.States.GameSetup.Title">
+        <value>Setup game</value>
+    </data>
+    <data name="Components.States.GameSetup.PlayerCount">
+        <value>Number of players</value>
+    </data>
+    <data name="Components.States.GameSetup.TeamCount">
+        <value>Number of teams</value>
+    </data>
+    <data name="Components.States.GameSetup.WordCount">
+        <value>Number of words per player</value>
+    </data>
+    <data name="Components.States.GameSetup.RoundTypes">
+        <value>Rounds</value>
+    </data>
+    <data name="Components.States.GameSetup.RoundTypes.Taboo">
+        <value>Taboo</value>
+    </data>
+    <data name="Components.States.GameSetup.RoundTypes.Drawing">
+        <value>Drawing</value>
+    </data>
+    <data name="Components.States.GameSetup.RoundTypes.Charades">
+        <value>Charades</value>
+    </data>
+    <data name="Components.States.GameSetup.RoundTypes.Password">
+        <value>Password</value>
+    </data>
+    <data name="Components.States.GameSetup.RoundTypes.Humming">
+        <value>Humming</value>
+    </data>
+    <data name="Components.States.GameSetup.SubmitButton">
+        <value>Submit</value>
     </data>
     <data name="Components.States.Connecting.Title">
         <value>Fishbowl game</value>
@@ -93,12 +123,6 @@
     <data name="Components.States.PeriodWatch.Playing">
         <value>Playing</value>
     </data>
-    <data name="Components.States.PlayerCount.Title">
-        <value>Set player count</value>
-    </data>
-    <data name="Components.States.PlayerCount.SubmitButton">
-        <value>Set</value>
-    </data>
     <data name="Components.States.PlayerName.Title">
         <value>Set player name</value>
     </data>
@@ -147,33 +171,6 @@
     <data name="Components.States.RoundFinished.Scores">
         <value>Scores</value>
     </data>
-    <data name="Components.States.RoundTypes.Title">
-        <value>Select round types</value>
-    </data>
-    <data name="Components.States.RoundTypes.SubmitButton">
-        <value>Set</value>
-    </data>
-    <data name="Components.States.RoundTypes.Types.Taboo">
-        <value>Taboo</value>
-    </data>
-    <data name="Components.States.RoundTypes.Types.Drawing">
-        <value>Drawing</value>
-    </data>
-    <data name="Components.States.RoundTypes.Types.Charades">
-        <value>Charades</value>
-    </data>
-    <data name="Components.States.RoundTypes.Types.Password">
-        <value>Password</value>
-    </data>
-    <data name="Components.States.RoundTypes.Types.Humming">
-        <value>Humming</value>
-    </data>
-    <data name="Components.States.TeamCount.Title">
-        <value>Set team count</value>
-    </data>
-    <data name="Components.States.TeamCount.SubmitButton">
-        <value>Set</value>
-    </data>
     <data name="Components.States.TeamName.Title">
         <value>Give your team a name</value>
     </data>
@@ -194,12 +191,6 @@
     </data>
     <data name="Components.States.WaitingForTeamNames.TeamNames">
         <value>Team names</value>
-    </data>
-    <data name="Components.States.WordCount.Title">
-        <value>Set word count per player</value>
-    </data>
-    <data name="Components.States.WordCount.SubmitButton">
-        <value>Set</value>
     </data>
     <data name="Pages.Play.Reconnecting">
         <value>Connection lost, reconnecting...</value>
