@@ -52,20 +52,27 @@ namespace Fishbowl.Net.Client.Pwa.Pages
         {
             this.setup = setup;
             
-            return this.Transition<PlayerSetup>();
+            return this.Transition<PlayerName>();
         }
 
-        private Task SetupPlayer(PlayerSetup.PlayerData data)
+        private Task SetPlayerName(string name)
+        {
+            this.currentPlayerName = name;
+
+            return this.StateManager.SetStateAsync<PlayerWords>(state => state.Reset(this.Setup.WordCount));
+        }
+
+        private Task SetPlayerData(string[] words)
         {
             this.players.Add(new Player(
-                data.Name,
-                data.Words.Select(word => new Word(Guid.NewGuid(), word)).ToList()));
+                this.currentPlayerName,
+                words.Select(word => new Word(Guid.NewGuid(), word)).ToList()));
 
             this.StateHasChanged();
 
             if (this.players.Count < this.Setup.PlayerCount)
             {
-                return this.StateManager.SetStateAsync<PlayerSetup>(state => state.Reset(this.Setup.WordCount));
+                return this.StateManager.SetStateAsync<PlayerName>(state => state.Reset());
             }
 
             this.isPlayerSetupPopoverVisible = false;
