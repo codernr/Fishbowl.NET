@@ -11,15 +11,7 @@ namespace Fishbowl.Net.Client.Shared.Components.States
         [Parameter]
         public EventCallback<GameSetupViewModel> OnGameSetup { get; set; } = default!;
 
-        private bool IsValid
-        {
-            get => this.isValid;
-            set
-            {
-                this.isValid = value;
-                this.Update();
-            }
-        }
+        private bool IsValid => this.SelectedRoundTypes.Count() > 0;
 
         private int PlayerCount
         {
@@ -27,11 +19,22 @@ namespace Fishbowl.Net.Client.Shared.Components.States
             set
             {
                 this.playerCount = value;
+                this.teamCount = 2;
                 this.Update();
             }
         }
 
         private int MaxTeamCount => this.PlayerCount / 2;
+
+        private IEnumerable<string> SelectedRoundTypes
+        {
+            get => this.selectedRoundTypes;
+            set
+            {
+                this.selectedRoundTypes = value;
+                this.Update();
+            }
+        }
 
         private bool isValid = false;
 
@@ -50,6 +53,7 @@ namespace Fishbowl.Net.Client.Shared.Components.States
             base.OnInitialized();
             this.roundTypes = new[] { "Taboo", "Drawing", "Charades", "Password", "Humming" }
                 .Select(item => L[$"Components.States.GameSetup.RoundTypes.{item}"].Value);
+            this.SelectedRoundTypes = this.roundTypes;
         }
 
         private Task SetupGame() =>
