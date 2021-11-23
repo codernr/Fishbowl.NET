@@ -36,8 +36,6 @@ namespace Fishbowl.Net.Client.Shared.Components.States
             }
         }
 
-        private bool isValid = false;
-
         private int playerCount = 4;
 
         private int teamCount = 2;
