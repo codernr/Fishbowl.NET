@@ -1,4 +1,4 @@
-using System;
+using Fishbowl.Net.Shared.ViewModels;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -7,10 +7,10 @@ namespace Fishbowl.Net.Client.Online.Components.States
     public partial class UsernamePassword
     {
         [Parameter]
-        public EventCallback<(string, string)> OnJoinGame { get; set; } = default!;
+        public EventCallback<GameContextJoinViewModel> OnJoinGame { get; set; } = default!;
 
         [Parameter]
-        public EventCallback<(string, string)> OnCreateGame { get; set; } = default!;
+        public EventCallback<GameContextJoinViewModel> OnCreateGame { get; set; } = default!;
 
         public string Username { get; set; } = string.Empty;
 

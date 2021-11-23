@@ -256,10 +256,10 @@ namespace Fishbowl.Net.Client.Online.Pages
 
         public ValueTask DisposeAsync() => this.Connection.DisposeAsync();
 
-        private async Task CreateGame((string username, string password) input)
+        private async Task CreateGame(GameContextJoinViewModel input)
         {
-            this.ClientState.Username = input.username;
-            this.ClientState.Password = input.password;
+            this.ClientState.Username = input.Username;
+            this.ClientState.Password = input.Password;
             
             await this.ScreenService.RequestWakeLock();
             await this.ScreenService.RequestFullScreen();
@@ -301,10 +301,10 @@ namespace Fishbowl.Net.Client.Online.Pages
             await this.StateManager.SetStateAsync<TNextState>(setParameters);
         }
 
-        private async Task JoinGame((string username, string password) input)
+        private async Task JoinGame(GameContextJoinViewModel input)
         {
-            this.ClientState.Username = input.username;
-            this.ClientState.Password = input.password;
+            this.ClientState.Username = input.Username;
+            this.ClientState.Password = input.Password;
 
             await this.ScreenService.RequestWakeLock();
             await this.ScreenService.RequestFullScreen();
