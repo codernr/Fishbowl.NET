@@ -13,10 +13,7 @@
 <StateManager @ref="this.stateManager" TransitionStarted="@this.OnStateTransition">
     <ConnectionClosed ReloadRequested="this.Reload" />
     <UsernamePassword OnCreateGame="this.CreateGame" OnJoinGame="this.JoinGame" />
-    <PlayerCount OnPlayerCountSet="this.SetPlayerCount" />
-    <TeamCount OnTeamCountSet="this.SetTeamCount" />
-    <WordCount OnWordCountSet="this.SetWordCount" />
-    <RoundTypes OnRoundTypesSet="this.SetRoundTypes" />
+    <GameSetup OnGameSetup="this.SetupGame" />
     <PlayerWords OnPlayerWordsSet="this.SubmitPlayerData" />
     <WaitingForPlayers />
     <TeamName OnTeamNameSet="this.SetTeamName" />

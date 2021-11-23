@@ -263,30 +263,25 @@ namespace Fishbowl.Net.Client.Online.Pages
             
             await this.ScreenService.RequestWakeLock();
             await this.ScreenService.RequestFullScreen();
-            await this.AfterPasswordCheck<PlayerCount>(() => {});
+            await this.StateManager.SetStateAsync<GameSetup>();
         }
 
-        private Task SetPlayerCount(int playerCount) =>
-            this.AfterPasswordCheck<TeamCount>(
-                () => this.ClientState.TotalPlayerCount = playerCount,
-                teamCount => teamCount.MaxTeamCount = playerCount / 2);
-
-        private Task SetTeamCount(int teamCount) =>
-            this.AfterPasswordCheck<WordCount>(() => this.ClientState.TeamCount = teamCount);
-
-        private Task SetWordCount(int wordCount) =>
-            this.AfterPasswordCheck<RoundTypes>(() => this.ClientState.WordCount = wordCount);
-
-        private async Task SetRoundTypes(string[] roundTypes)
+        private async Task SetupGame(GameSetupViewModel setup)
         {
-            this.ClientState.RoundTypes = roundTypes;
-            this.ClientState.IsCreating = true;
+            this.ClientState.TotalPlayerCount = setup.PlayerCount;
+            this.ClientState.TeamCount = setup.TeamCount;
+            this.ClientState.WordCount = setup.WordCount;
+            this.ClientState.RoundTypes = setup.RoundTypes;
+
             var response = await this.Connection.CreateGameContext(new(
                 new(this.ClientState.Password ?? throw new InvalidOperationException(), this.ClientState.Username),
                 new(this.ClientState.TotalPlayerCount, this.ClientState.WordCount, this.ClientState.TeamCount, this.ClientState.RoundTypes)));
 
             if (response.Status == StatusCode.Ok) return;
+
             this.StatusError(response.Status);
+
+            await this.StateManager.SetStateAsync<UsernamePassword>();
         }
 
         private async Task AfterPasswordCheck<TNextState>(
