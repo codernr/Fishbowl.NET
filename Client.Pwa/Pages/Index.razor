@@ -8,11 +8,8 @@
 <StateManager @ref="this.stateManager">
     <Restore
         OnRestoreRequested="this.RestoreGame"
-        OnNewGameRequested="_ => this.StateManager.SetStateAsync<PlayerCount>()" />
-    <PlayerCount OnPlayerCountSet="this.SetPlayerCount" />
-    <TeamCount OnTeamCountSet="this.SetTeamCount" />
-    <WordCount OnWordCountSet="this.SetWordCount" />
-    <RoundTypes OnRoundTypesSet="this.SetRoundTypes" />
+        OnNewGameRequested="_ => this.StateManager.SetStateAsync<GameSetup>()" />
+    <GameSetup OnGameSetup="this.SetupGame" />
     <PlayerName OnPlayerNameSet="this.SetPlayerName" />
     <PlayerWords OnPlayerWordsSet="this.SetPlayerData" />
     <TeamName OnTeamNameSet="this.SetTeamName" />

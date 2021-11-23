@@ -21,13 +21,9 @@ namespace Fishbowl.Net.Client.Pwa.Pages
 
         private bool isPlayerSetupPopoverVisible = false;
 
-        private int playerCount = 4;
+        private GameSetupViewModel? setup;
 
-        private int teamCount = 2;
-
-        private int wordCount = 1;
-
-        private string[] roundTypes = new string[0];
+        private GameSetupViewModel Setup => this.setup ?? throw new InvalidOperationException();
 
         private List<Player> players = new();
 
@@ -49,46 +45,21 @@ namespace Fishbowl.Net.Client.Pwa.Pages
             
             await (this.PersistedGame.Value is not null ?
                 this.Transition<Restore>() :
-                this.Transition<PlayerCount>());
+                this.Transition<GameSetup>());
         }
 
-        private async Task SetPlayerCount(int playerCount)
+        private Task SetupGame(GameSetupViewModel setup)
         {
-            this.playerCount = playerCount;
-
-            await this.ScreenService.RequestWakeLock();
-            await this.ScreenService.RequestFullScreen();
-
-            await this.StateManager.SetStateAsync<TeamCount>(teamCount => teamCount.MaxTeamCount = playerCount / 2);
-        }
-
-        private Task SetTeamCount(int teamCount)
-        {
-            this.teamCount = teamCount;
-
-            return this.StateManager.SetStateAsync<WordCount>();
-        }
-
-        private Task SetWordCount(int wordCount)
-        {
-            this.wordCount = wordCount;
-
-            return this.StateManager.SetStateAsync<RoundTypes>();
-        }
-
-        private Task SetRoundTypes(string[] roundTypes)
-        {
-            this.roundTypes = roundTypes;
-            this.isPlayerSetupPopoverVisible = true;
-
-            return this.StateManager.SetStateAsync<PlayerName>();
+            this.setup = setup;
+            
+            return this.Transition<PlayerName>();
         }
 
         private Task SetPlayerName(string name)
         {
             this.currentPlayerName = name;
 
-            return this.StateManager.SetStateAsync<PlayerWords>(state => state.Reset(this.wordCount));
+            return this.StateManager.SetStateAsync<PlayerWords>(state => state.Reset(this.Setup.WordCount));
         }
 
         private Task SetPlayerData(string[] words)
@@ -99,7 +70,7 @@ namespace Fishbowl.Net.Client.Pwa.Pages
 
             this.StateHasChanged();
 
-            if (this.players.Count < this.playerCount)
+            if (this.players.Count < this.Setup.PlayerCount)
             {
                 return this.StateManager.SetStateAsync<PlayerName>(state => state.Reset());
             }
@@ -110,7 +81,7 @@ namespace Fishbowl.Net.Client.Pwa.Pages
 
         private Task CreateTeams()
         {
-            this.teams = this.players.Randomize().ToList().CreateTeams(this.teamCount).ToList();
+            this.teams = this.players.Randomize().ToList().CreateTeams(this.Setup.TeamCount).ToList();
 
             return this.StateManager.SetStateAsync<TeamName>(state => state.Team = this.teams[0].Map());
         }
@@ -133,7 +104,7 @@ namespace Fishbowl.Net.Client.Pwa.Pages
         {
             try
             {
-                this.game = new(new(), this.teams, this.roundTypes);
+                this.game = new(new(), this.teams, this.Setup.RoundTypes);
                 this.SetEventHandlers();
                 this.PersistGame();
                 this.Game.Run();
