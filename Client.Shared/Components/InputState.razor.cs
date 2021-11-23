@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Fishbowl.Net.Client.Shared.Components
 {
-    public abstract class InputState
+    public abstract class InputState : State
     {
         protected bool submitted = false;
 

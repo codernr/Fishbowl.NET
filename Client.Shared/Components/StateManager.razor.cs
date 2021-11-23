@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 
@@ -10,7 +9,7 @@ namespace Fishbowl.Net.Client.Shared.Components
         private static readonly TimeSpan TransitionDuration = TimeSpan.FromMilliseconds(300);
 
         [Parameter]
-        public Action<object>? TransitionStarted { get; set; }
+        public Action<State>? TransitionStarted { get; set; }
 
         private DynamicComponent Component => this.component ?? throw new InvalidOperationException();
 
@@ -22,13 +21,17 @@ namespace Fishbowl.Net.Client.Shared.Components
 
         private Task transition = Task.CompletedTask;
 
-        private T Instance<T>() where T : class =>
+        private T Instance<T>() where T : State =>
             this.Component.Instance as T ?? throw new InvalidOperationException();
 
-        public void SetParameters<T>(Action<T> setParameters) where T : class =>
-            setParameters(this.Instance<T>());
+        public void SetParameters<T>(Action<T> setParameters) where T : State
+        {
+            var instance = this.Instance<T>();
+            setParameters(instance);
+            instance.Update();
+        }
 
-        public Task SetStateAsync<T>(Action<T>? setParameters = null, TimeSpan delay = default) where T : class
+        public Task SetStateAsync<T>(Action<T>? setParameters = null, TimeSpan delay = default) where T : State
         {
             this.transition = this.transition
                 .ContinueWith(_ => this.TransitionAsync<T>(setParameters ?? (_ => {}), delay))
@@ -37,7 +40,7 @@ namespace Fishbowl.Net.Client.Shared.Components
             return this.transition;
         }
 
-        private async Task TransitionAsync<T>(Action<T> setParameters, TimeSpan delay = default) where T : class
+        private async Task TransitionAsync<T>(Action<T> setParameters, TimeSpan delay = default) where T : State
         {
             await this.DisableAsync();
 
