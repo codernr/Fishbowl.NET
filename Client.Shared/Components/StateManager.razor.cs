@@ -2,72 +2,79 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
-using Microsoft.Extensions.Logging;
 
 namespace Fishbowl.Net.Client.Shared.Components
 {
     public partial class StateManager
     {
-        [Parameter]
-        public RenderFragment ChildContent { get; set; } = default!;
+        private static readonly TimeSpan TransitionDuration = TimeSpan.FromMilliseconds(300);
 
         [Parameter]
-        public Action<State>? TransitionStarted { get; set; }
+        public Action<object>? TransitionStarted { get; set; }
 
-        private Dictionary<Type, State> states = new();
+        private DynamicComponent Component => this.component ?? throw new InvalidOperationException();
+
+        private DynamicComponent? component; 
+
+        private Type? type;
+
+        private bool show = false;
 
         private Task transition = Task.CompletedTask;
 
-        private State? activeState;
+        private T Instance<T>() where T : class =>
+            this.Component.Instance as T ?? throw new InvalidOperationException();
 
-        private State? ActiveState
-        {
-            get => this.activeState;
-            set
-            {
-                this.activeState = value;
-                this.StateHasChanged();
-            }
-        }
+        public void SetParameters<T>(Action<T> setParameters) where T : class =>
+            setParameters(this.Instance<T>());
 
-        public void Add(State state)
-        {
-            this.Logger.LogInformation("Add state: {StateType}", state.GetType().Name);
-            this.states.Add(state.GetType(), state);
-            state.Updated += this.StateHasChanged;
-        }
-
-        public void SetParameters<TState>(Action<TState> setParameters) where TState : State
-        {
-            var state = this.GetState<TState>();
-            setParameters(state);
-            this.StateHasChanged();
-        }
-
-        public Task SetStateAsync<TState>(Action<TState>? setParameters = null) where TState : State
+        public Task SetStateAsync<T>(Action<T>? setParameters = null, TimeSpan delay = default) where T : class
         {
             this.transition = this.transition
-                .ContinueWith(_ => this.TransitionAsync<TState>(setParameters ?? (_ => {})))
+                .ContinueWith(_ => this.TransitionAsync<T>(setParameters ?? (_ => {}), delay))
                 .Unwrap();
 
             return this.transition;
         }
 
-        private TState GetState<TState>() where TState : State => (TState)this.states[typeof(TState)];
-
-        private async Task TransitionAsync<TState>(Action<TState> setParameters) where TState : State
+        private async Task TransitionAsync<T>(Action<T> setParameters, TimeSpan delay = default) where T : class
         {
-            var newState = this.GetState<TState>();
+            await this.DisableAsync();
 
-            this.TransitionStarted?.Invoke(newState);
+            this.type = typeof(T);
 
-            if (this.ActiveState is not null) await this.ActiveState.DisableAsync();
+            this.StateHasChanged();
+         
+            this.TransitionStarted?.Invoke(this.Instance<T>());
 
-            setParameters(newState);
+            this.SetParameters<T>(setParameters);
 
-            this.ActiveState = newState;
-            
-            await this.ActiveState.EnableAsync();
+            await this.EnableAsync(delay);
+        }
+
+        private async Task EnableAsync(TimeSpan delay)
+        {
+            await Task.Delay(100);
+
+            this.show = true;
+
+            this.StateHasChanged();
+
+            await Task.Delay(TransitionDuration + delay);
+        }
+
+        private async Task DisableAsync()
+        {
+            if (this.type is null)
+            {
+                return;
+            }
+
+            this.show = false;
+
+            this.StateHasChanged();
+
+            await Task.Delay(TransitionDuration);
         }
     }
 }

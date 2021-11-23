@@ -2,11 +2,9 @@
 
 @inject ILogger<StateManager> Logger;
 
-<CascadingValue Value="this">
-    @ChildContent
-
-    @if (this.ActiveState is not null)
-    {
-        @this.ActiveState.Container
-    }
-</CascadingValue>
+<MudContainer Class="@($"pa-0 d-flex mud-height-full fade-container {(this.show ? "show" : string.Empty)}")">
+@if (this.type is not null)
+{
+    <DynamicComponent @ref="this.component" Type="this.type" />
+}
+</MudContainer>
