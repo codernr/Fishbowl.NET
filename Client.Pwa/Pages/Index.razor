@@ -10,8 +10,7 @@
         OnRestoreRequested="this.RestoreGame"
         OnNewGameRequested="_ => this.StateManager.SetStateAsync<GameSetup>()" />
     <GameSetup OnGameSetup="this.SetupGame" />
-    <PlayerName OnPlayerNameSet="this.SetPlayerName" />
-    <PlayerWords OnPlayerWordsSet="this.SetPlayerData" />
+    <PlayerSetup OnPlayerSetup="this.SetupPlayer" />
     <TeamName OnTeamNameSet="this.SetTeamName" />
     <PeriodSetupPlay OnStarted="this.StartPeriod" />
     <PeriodPlay
