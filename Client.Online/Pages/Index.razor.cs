@@ -286,7 +286,7 @@ namespace Fishbowl.Net.Client.Online.Pages
                 new(this.ClientState.TotalPlayerCount, this.ClientState.WordCount, this.ClientState.TeamCount, this.ClientState.RoundTypes)));
 
             if (response.Status == StatusCode.Ok) return;
-            await this.StatusError(response.Status);
+            this.StatusError(response.Status);
         }
 
         private async Task AfterPasswordCheck<TNextState>(
@@ -297,7 +297,8 @@ namespace Fishbowl.Net.Client.Online.Pages
 
             if (passwordExists)
             {
-                await this.StatusError(StatusCode.GameContextExists);
+                this.StatusError(StatusCode.GameContextExists);
+                await this.StateManager.SetStateAsync<UsernamePassword>();
                 return;
             }
             
@@ -322,20 +323,11 @@ namespace Fishbowl.Net.Client.Online.Pages
             
             if (response.Status == StatusCode.Ok) return;
 
-            await this.StatusError(response.Status);
+            this.StatusError(response.Status);
         }
 
-        private async Task StatusError(StatusCode status)
-        {
-            await this.StateManager.SetStateAsync<Info>(state =>
-            {
-                state.ContextClass = ContextCssClass.Error;
-                state.Title = L("Pages.Play.ErrorTitle");
-                state.Message = L($"Pages.Play.StatusCode.{status}");
-                state.Loading = false;
-            });
-            await this.StateManager.SetStateAsync<UsernamePassword>();
-        }
+        private void StatusError(StatusCode status) =>
+            this.Snackbar.Add(L($"Pages.Play.StatusCode.{status}"), Severity.Error);
 
         private Task SubmitPlayerData(string[] words) =>
             this.Connection.AddPlayer(new(
