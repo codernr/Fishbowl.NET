@@ -50,7 +50,7 @@ namespace Fishbowl.Net.Client.Online.Pages
             return this.Connection.StartAsync();
         }
 
-        private void OnStateTransition(State newState)
+        private void OnStateTransition(object newState)
         {
             this.IsPlayerCountPopoverVisible = newState is PlayerWords || newState is WaitingForPlayers;
         }
@@ -65,7 +65,11 @@ namespace Fishbowl.Net.Client.Online.Pages
             }
 
             await this.StateManager.SetStateAsync<UsernamePassword>(state =>
-                state.Username = this.ClientState.Username ?? string.Empty);
+            {
+                state.OnCreateGame = this.CreateGame;
+                state.OnJoinGame = this.JoinGame;
+                state.Username = this.ClientState.Username ?? string.Empty;
+            });
         }
 
         public Task Reconnecting(Exception? exception) =>
@@ -80,7 +84,7 @@ namespace Fishbowl.Net.Client.Online.Pages
         public Task Reconnected(string? connectionId) => this.JoinGameContext();
 
         public Task Closed(Exception? error) =>
-            this.StateManager.SetStateAsync<ConnectionClosed>();
+            this.StateManager.SetStateAsync<ConnectionClosed>(state => state.ReloadRequested = this.Reload);
 
         public async Task ReceiveSetupPlayer(GameSetupViewModel gameSetup)
         {
@@ -92,7 +96,7 @@ namespace Fishbowl.Net.Client.Online.Pages
                     state.Title = L("Pages.Play.GameCreatedTitle");
                     state.Message = L("Pages.Play.GameCreatedMessage");
                     state.Loading = false;
-                });
+                }, TimeSpan.FromSeconds(2));
                 this.ClientState.IsCreating = false;
             }
             
@@ -101,7 +105,11 @@ namespace Fishbowl.Net.Client.Online.Pages
             this.ClientState.TeamCount = gameSetup.TeamCount;
             this.ClientState.RoundTypes = gameSetup.RoundTypes;
 
-            await this.StateManager.SetStateAsync<PlayerWords>(state => state.Reset(this.ClientState.WordCount));
+            await this.StateManager.SetStateAsync<PlayerWords>(state =>
+            {
+                state.OnPlayerWordsSet = this.SubmitPlayerData;
+                state.Reset(this.ClientState.WordCount);
+            });
         }
 
         public Task ReceivePlayerCount(PlayerCountViewModel playerCount)
@@ -125,7 +133,10 @@ namespace Fishbowl.Net.Client.Online.Pages
             this.ClientState.Teams = teamSetup.Teams;
 
             return this.StateManager.SetStateAsync<TeamName>(state =>
-                state.Team = this.ClientState.Team);
+            {
+                state.OnTeamNameSet = this.SetTeamName;
+                state.Team = this.ClientState.Team;
+            });
         }
 
         public Task ReceiveWaitForTeamSetup(TeamSetupViewModel teamSetup)
@@ -164,28 +175,30 @@ namespace Fishbowl.Net.Client.Online.Pages
                 state.Title = L("Pages.Play.ErrorTitle");
                 state.Message = L(abort.MessageKey);
                 state.Loading = false;
-            });
+            }, TimeSpan.FromSeconds(2));
             await this.Connection.StopAsync();
             this.Reload();
         }
 
         public async Task ReceiveGameStarted()
         {
-            await Task.Delay(1000);
-
             await this.StateManager.SetStateAsync<Info>(state =>
             {
                 state.ContextClass = ContextCssClass.Default;
                 state.Title = L("Pages.Play.GameStartedTitle");
                 state.Message = string.Empty;
                 state.Loading = true;
-            });
+            }, TimeSpan.FromSeconds(2));
         }
 
         public Task ReceiveGameFinished(GameSummaryViewModel game)
         {
             this.ClientState.Password = null;
-            return this.StateManager.SetStateAsync<GameFinished>(state => state.Game = game);
+            return this.StateManager.SetStateAsync<GameFinished>(state =>
+            {
+                state.ReloadRequested = this.Reload;
+                state.Game = game;
+            });
         }
 
         public Task ReceiveRoundStarted(RoundViewModel round) =>
@@ -195,14 +208,19 @@ namespace Fishbowl.Net.Client.Online.Pages
                 state.Title = $"{L("Pages.Play.RoundStartedTitle")}: {round.Type}";
                 state.Message = string.Empty;
                 state.Loading = true;
-            });
+            }, TimeSpan.FromSeconds(2));
 
         public Task ReceiveRoundFinished(RoundSummaryViewModel round) =>
-            this.StateManager.SetStateAsync<RoundFinished>(state => state.Round = round);
+            this.StateManager.SetStateAsync<RoundFinished>(
+                state => state.Round = round, TimeSpan.FromSeconds(4));
 
         public Task ReceivePeriodSetup(PeriodSetupViewModel period) =>
             period.Player.Username == this.ClientState.Username ?
-                this.StateManager.SetStateAsync<PeriodSetupPlay>(state => state.Period = period) :
+                this.StateManager.SetStateAsync<PeriodSetupPlay>(state =>
+                {
+                    state.OnStarted = this.Connection.StartPeriod;
+                    state.Period = period;
+                }) :
                 this.StateManager.SetStateAsync<PeriodSetupWatch>(state => state.Period = period);
 
         public Task ReceivePeriodStarted(PeriodRunningViewModel period)
@@ -211,6 +229,9 @@ namespace Fishbowl.Net.Client.Online.Pages
 
             return period.Player.Username == this.ClientState.Username ?
                 this.StateManager.SetStateAsync<PeriodPlay>(state => {
+                    state.OnScoreAdded = this.AddScore;
+                    state.OnPeriodFinished = this.Connection.FinishPeriod;
+                    state.OnLastScoreRevoked = this.Connection.RevokeLastScore;
                     state.Word = null;
                     state.Expired = period.StartedAt + period.Length < DateTimeOffset.UtcNow;
                     state.ScoreCount = period.ScoreCount;
@@ -220,7 +241,7 @@ namespace Fishbowl.Net.Client.Online.Pages
         }
 
         public Task ReceivePeriodFinished(PeriodSummaryViewModel period) =>
-            this.StateManager.SetStateAsync<PeriodFinished>(state => state.Period = period);
+            this.StateManager.SetStateAsync<PeriodFinished>(state => state.Period = period, TimeSpan.FromSeconds(4));
 
         public Task ReceiveWordSetup(WordViewModel word)
         {
@@ -263,7 +284,7 @@ namespace Fishbowl.Net.Client.Online.Pages
             
             await this.ScreenService.RequestWakeLock();
             await this.ScreenService.RequestFullScreen();
-            await this.StateManager.SetStateAsync<GameSetup>();
+            await this.StateManager.SetStateAsync<GameSetup>(state => state.OnGameSetup = this.SetupGame);
         }
 
         private async Task SetupGame(GameSetupViewModel setup)
@@ -281,11 +302,15 @@ namespace Fishbowl.Net.Client.Online.Pages
 
             this.StatusError(response.Status);
 
-            await this.StateManager.SetStateAsync<UsernamePassword>();
+            await this.StateManager.SetStateAsync<UsernamePassword>(state =>
+            {
+                state.OnCreateGame = this.CreateGame;
+                state.OnJoinGame = this.JoinGame;
+            });
         }
 
-        private async Task AfterPasswordCheck<TNextState>(
-            Action setup, Action<TNextState>? setParameters = null) where TNextState : State
+        private async Task AfterPasswordCheck<T>(
+            Action setup, Action<T>? setParameters = null) where T : State<T>
         {
             var passwordExists = this.ClientState.Password is null ?
                 false : (await this.Connection.GameContextExists(this.ClientState.Password)).Data;
@@ -293,12 +318,16 @@ namespace Fishbowl.Net.Client.Online.Pages
             if (passwordExists)
             {
                 this.StatusError(StatusCode.GameContextExists);
-                await this.StateManager.SetStateAsync<UsernamePassword>();
+                await this.StateManager.SetStateAsync<UsernamePassword>(state =>
+                {
+                    state.OnCreateGame = this.CreateGame;
+                    state.OnJoinGame = this.JoinGame;
+                });
                 return;
             }
             
             setup();
-            await this.StateManager.SetStateAsync<TNextState>(setParameters);
+            await this.StateManager.SetStateAsync<T>(setParameters);
         }
 
         private async Task JoinGame(GameContextJoinViewModel input)

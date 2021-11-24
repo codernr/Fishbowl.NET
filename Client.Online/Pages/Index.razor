@@ -10,26 +10,7 @@
 @inject IClientState ClientState
 @inject ISnackbar Snackbar
 
-<StateManager @ref="this.stateManager" TransitionStarted="@this.OnStateTransition">
-    <ConnectionClosed ReloadRequested="this.Reload" />
-    <UsernamePassword OnCreateGame="this.CreateGame" OnJoinGame="this.JoinGame" />
-    <GameSetup OnGameSetup="this.SetupGame" />
-    <PlayerWords OnPlayerWordsSet="this.SubmitPlayerData" />
-    <WaitingForPlayers />
-    <TeamName OnTeamNameSet="this.SetTeamName" />
-    <WaitingForTeamNames />
-    <PeriodSetupPlay OnStarted="this.Connection.StartPeriod" />
-    <PeriodSetupWatch />
-    <PeriodPlay
-        OnScoreAdded="this.AddScore"
-        OnPeriodFinished="this.Connection.FinishPeriod"
-        OnLastScoreRevoked="this.Connection.RevokeLastScore" />
-    <PeriodWatch />
-    <PeriodFinished Delay="@TimeSpan.FromSeconds(4)" />
-    <RoundFinished Delay="@TimeSpan.FromSeconds(4)" />
-    <GameFinished ReloadRequested="this.Reload" />
-    <Info Delay="@TimeSpan.FromSeconds(2)" />
-</StateManager>
+<StateManager @ref="this.stateManager" TransitionStarted="@this.OnStateTransition" />
 
 <MudPopover
     Open="this.IsPlayerCountPopoverVisible"
