@@ -1,5 +1,6 @@
 using System;
 using Fishbowl.Net.Client.Shared.I18n;
+using Fishbowl.Net.Client.Shared.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Localization;
 
@@ -9,6 +10,9 @@ namespace Fishbowl.Net.Client.Shared.Components
     {
         [Inject]
         public IStringLocalizer<Resources> L { get; set; } = default!;
+
+        [Inject]
+        public AppStateService AppState { get; set; } = default!;
 
         [Parameter]
         public Action<T>? SetParameters { get; set; }
@@ -26,6 +30,13 @@ namespace Fishbowl.Net.Client.Shared.Components
             base.OnInitialized();
 
             this.SetParameters?.Invoke(this.Instance);
+
+            this.SetTitle();
+        }
+
+        protected virtual void SetTitle()
+        {
+            this.AppState.Title = this.L[$"Components.States.{this.GetType().Name}.Title"];
         }
     }
 }
