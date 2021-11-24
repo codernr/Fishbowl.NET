@@ -13,7 +13,7 @@ namespace Fishbowl.Net.Client.Pwa.Components.States
             set
             {
                 this.isValid = value;
-                this.Update();
+                this.StateHasChanged();
             }
         }
 
