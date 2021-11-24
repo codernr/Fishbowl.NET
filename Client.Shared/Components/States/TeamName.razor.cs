@@ -8,7 +8,7 @@ namespace Fishbowl.Net.Client.Shared.Components.States
     {
         public Func<TeamNameViewModel, Task> OnTeamNameSet { get; set; } = default!;
 
-        public TeamViewModel? Team { get; set; }
+        public TeamViewModel Team { get; set; } = default!;
 
         private string Value { get; set; } = string.Empty;
 

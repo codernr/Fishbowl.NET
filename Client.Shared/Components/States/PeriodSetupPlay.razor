@@ -1,22 +1,19 @@
-@inherits InputState
+@inherits InputState<PeriodSetupPlay>
 @inject IStringLocalizer<Resources> L
 
-@if (this.Period is not null)
-{
-    <StateContainer Title="@($"{this.Period.Round.Type}: {this.Period.Player.Username}")">
-        <MudText Typo="Typo.h5" Class="mb-5">
-            @L["Components.States.PeriodSetupPlay.PeriodLength"]: @(string.Format("{0:m\\:ss}", this.Period.Length))
-        </MudText>
-        <MudText Typo="Typo.h5" Class="mb-10">
-            @L["Components.States.PeriodSetupPlay.Subtitle"]
-        </MudText>
-        <MudButton
-            Variant="Variant.Filled"
-            Color="Color.Primary"
-            FullWidth="true"
-            Size="Size.Large"
-            @onclick="_ => this.Submit(() => this.OnStarted(DateTimeOffset.UtcNow))">
-            @L["Components.States.PeriodSetupPlay.StartButton"]
-        </MudButton>
-    </StateContainer>
-}
+<StateContainer Title="@($"{this.Period.Round.Type}: {this.Period.Player.Username}")">
+    <MudText Typo="Typo.h5" Class="mb-5">
+        @L["Components.States.PeriodSetupPlay.PeriodLength"]: @(string.Format("{0:m\\:ss}", this.Period.Length))
+    </MudText>
+    <MudText Typo="Typo.h5" Class="mb-10">
+        @L["Components.States.PeriodSetupPlay.Subtitle"]
+    </MudText>
+    <MudButton
+        Variant="Variant.Filled"
+        Color="Color.Primary"
+        FullWidth="true"
+        Size="Size.Large"
+        @onclick="_ => this.Submit(() => this.OnStarted(DateTimeOffset.UtcNow))">
+        @L["Components.States.PeriodSetupPlay.StartButton"]
+    </MudButton>
+</StateContainer>

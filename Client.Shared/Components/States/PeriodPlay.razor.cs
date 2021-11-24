@@ -12,7 +12,7 @@ namespace Fishbowl.Net.Client.Shared.Components.States
 
         public Action OnLastScoreRevoked { get; set; } = default!;
         
-        public PeriodRunningViewModel? Period { get; set; }
+        public PeriodRunningViewModel Period { get; set; } = default!;
 
         public bool Expired
         {

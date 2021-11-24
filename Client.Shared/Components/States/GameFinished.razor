@@ -1,32 +1,29 @@
-@inherits State
+@inherits State<GameFinished>
 @inject IStringLocalizer<Resources> L
 
-@if(this.Game is not null)
-{
-    <StateContainer Title="@(L["Components.States.GameFinished.Title"])">
-        <MudPaper Class="mb-10">
-            <MudList>
-                @for (int i = 0; i < this.Game.Teams.Count; i++)
-                {
-                    var index = i;
-                    var team = this.Game.Teams[index];
-                    <MudListItem>
-                        <MudText Align="Align.Center">
-                            @team.Name (@team.Players.Sum(player => player.Scores.Count))
-                        </MudText>
-                    </MudListItem>
-                }
-            </MudList>
-        </MudPaper>
-        <MudContainer>
-            <MudButton
-                Variant="Variant.Filled"
-                Color="Color.Warning"
-                Size="Size.Large"
-                FullWidth="true"
-                @onclick="this.ReloadRequested">
-                @L["Components.States.GameFinished.Button"]
-            </MudButton>
-        </MudContainer>
-    </StateContainer>
-}
+<StateContainer Title="@(L["Components.States.GameFinished.Title"])">
+    <MudPaper Class="mb-10">
+        <MudList>
+            @for (int i = 0; i < this.Game.Teams.Count; i++)
+            {
+                var index = i;
+                var team = this.Game.Teams[index];
+                <MudListItem>
+                    <MudText Align="Align.Center">
+                        @team.Name (@team.Players.Sum(player => player.Scores.Count))
+                    </MudText>
+                </MudListItem>
+            }
+        </MudList>
+    </MudPaper>
+    <MudContainer>
+        <MudButton
+            Variant="Variant.Filled"
+            Color="Color.Warning"
+            Size="Size.Large"
+            FullWidth="true"
+            @onclick="this.ReloadRequested">
+            @L["Components.States.GameFinished.Button"]
+        </MudButton>
+    </MudContainer>
+</StateContainer>

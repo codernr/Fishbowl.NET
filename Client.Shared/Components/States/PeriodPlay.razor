@@ -1,54 +1,51 @@
-@inherits InputState
+@inherits InputState<PeriodPlay>
 @inject IStringLocalizer<Resources> L
 
-@if(this.Period is not null)
-{
-    <StateContainer Title="@this.Period.Round.Type">
-        <MudContainer>
-            <MudButton
-                Variant="Variant.Filled"
-                Color="Color.Error"
-                FullWidth="true"
-                Disabled="!this.showRevoke"
-                @onclick="e => this.OnLastScoreRevoked()">
-                @L["Components.States.PeriodPlay.RevokeButton"]
-            </MudButton>
-        </MudContainer>
+<StateContainer Title="@this.Period.Round.Type">
+    <MudContainer>
+        <MudButton
+            Variant="Variant.Filled"
+            Color="Color.Error"
+            FullWidth="true"
+            Disabled="!this.showRevoke"
+            @onclick="e => this.OnLastScoreRevoked()">
+            @L["Components.States.PeriodPlay.RevokeButton"]
+        </MudButton>
+    </MudContainer>
 
-        <MudContainer Class="my-5">
-            <Timer Start="this.Period.StartedAt" Length="this.Period.Length" OnExpired="() => this.Expired = true" />
-        </MudContainer>
+    <MudContainer Class="my-5">
+        <Timer Start="this.Period.StartedAt" Length="this.Period.Length" OnExpired="() => this.Expired = true" />
+    </MudContainer>
 
-        <MudContainer Class="my-10">
-            <MudCard Class="mud-theme-primary">
-                <MudCardContent>
-                    <MudText Typo="Typo.h4">@(this.Word?.Value ?? string.Empty)</MudText>
-                </MudCardContent>
-            </MudCard>
-        </MudContainer>
+    <MudContainer Class="my-10">
+        <MudCard Class="mud-theme-primary">
+            <MudCardContent>
+                <MudText Typo="Typo.h4">@(this.Word?.Value ?? string.Empty)</MudText>
+            </MudCardContent>
+        </MudCard>
+    </MudContainer>
 
-        <MudContainer Class="my-5">
-            <MudButton
-                Variant="Variant.Filled"
-                Color="Color.Success"
-                Size="Size.Large"
-                FullWidth="true"
-                Disabled="@(this.Word is null)"
-                @onclick="this.ScoreAdded">
-                @L["Components.States.PeriodPlay.GuessedButton"]
-            </MudButton>
-        </MudContainer>
+    <MudContainer Class="my-5">
+        <MudButton
+            Variant="Variant.Filled"
+            Color="Color.Success"
+            Size="Size.Large"
+            FullWidth="true"
+            Disabled="@(this.Word is null)"
+            @onclick="this.ScoreAdded">
+            @L["Components.States.PeriodPlay.GuessedButton"]
+        </MudButton>
+    </MudContainer>
 
-        <MudContainer Class="my-5">
-            <MudButton
-                Variant="Variant.Filled"
-                Color="Color.Error"
-                Size="Size.Large"
-                FullWidth="true"
-                Disabled="!this.Expired"
-                @onclick="_ => this.Submit(() => this.OnPeriodFinished(DateTimeOffset.UtcNow))">
-                @L["Components.States.PeriodPlay.PassButton"]
-            </MudButton>
-        </MudContainer>
-    </StateContainer>
-}
+    <MudContainer Class="my-5">
+        <MudButton
+            Variant="Variant.Filled"
+            Color="Color.Error"
+            Size="Size.Large"
+            FullWidth="true"
+            Disabled="!this.Expired"
+            @onclick="_ => this.Submit(() => this.OnPeriodFinished(DateTimeOffset.UtcNow))">
+            @L["Components.States.PeriodPlay.PassButton"]
+        </MudButton>
+    </MudContainer>
+</StateContainer>
