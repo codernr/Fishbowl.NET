@@ -1,16 +1,12 @@
-@inherits State
+@inherits State<PeriodSetupWatch>
 @inject IStringLocalizer<Resources> L
 
-@code
-{
-    protected override RenderFragment Content =>
-        @<StateContainer Title="@this.Period.Round.Type">
-            <MudText Typo="Typo.h5" Class="mb-5">
-                @L["Components.States.PeriodSetupWatch.NextPlayer"]: @this.Period.Player.Username
-            </MudText>
-            <MudText Typo="Typo.h5" Class="mb-10">
-                @L["Components.States.PeriodSetupWatch.PeriodLength"]: @(string.Format("{0:m\\:ss}", this.Period.Length))
-            </MudText>
-            <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
-        </StateContainer>;
-}
+<StateContainer Title="@this.Period.Round.Type">
+    <MudText Typo="Typo.h5" Class="mb-5">
+        @L["Components.States.PeriodSetupWatch.NextPlayer"]: @this.Period.Player.Username
+    </MudText>
+    <MudText Typo="Typo.h5" Class="mb-10">
+        @L["Components.States.PeriodSetupWatch.PeriodLength"]: @(string.Format("{0:m\\:ss}", this.Period.Length))
+    </MudText>
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+</StateContainer>

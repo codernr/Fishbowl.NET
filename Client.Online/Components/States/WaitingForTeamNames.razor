@@ -1,26 +1,22 @@
-@inherits State
+@inherits State<WaitingForTeamNames>
 @inject IStringLocalizer<Resources> L
 
-@code
-{
-    protected override RenderFragment Content =>
-        @<StateContainer Title="@(L["Components.States.WaitingForTeamNames.Title"])">
-            <MudContainer Class="mb-10">
-                <TeamMembers Players="this.Team.Players" />
-            </MudContainer>
-            
-            <MudContainer>
-                @if (this.Teams.Count > 0)
-                {
-                    <MudText>
-                        <strong>@L["Components.States.WaitingForTeamNames.TeamNames"]:</strong>
-                        @(string.Join(", ", this.Teams.Select(team => team.Name)))
-                    </MudText>
-                }
-                else
-                {
-                    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
-                }
-            </MudContainer>
-        </StateContainer>;
-}
+<StateContainer Title="@(L["Components.States.WaitingForTeamNames.Title"])">
+    <MudContainer Class="mb-10">
+        <TeamMembers Players="this.Team.Players" />
+    </MudContainer>
+    
+    <MudContainer>
+        @if (this.Teams.Count > 0)
+        {
+            <MudText>
+                <strong>@L["Components.States.WaitingForTeamNames.TeamNames"]:</strong>
+                @(string.Join(", ", this.Teams.Select(team => team.Name)))
+            </MudText>
+        }
+        else
+        {
+            <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+        }
+    </MudContainer>
+</StateContainer>

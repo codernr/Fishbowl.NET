@@ -1,16 +1,15 @@
+using System;
+using System.Threading.Tasks;
 using Fishbowl.Net.Shared.ViewModels;
-using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
 namespace Fishbowl.Net.Client.Online.Components.States
 {
     public partial class UsernamePassword
     {
-        [Parameter]
-        public EventCallback<GameContextJoinViewModel> OnJoinGame { get; set; } = default!;
+        public Func<GameContextJoinViewModel, Task> OnJoinGame { get; set; } = default!;
 
-        [Parameter]
-        public EventCallback<GameContextJoinViewModel> OnCreateGame { get; set; } = default!;
+        public Func<GameContextJoinViewModel, Task> OnCreateGame { get; set; } = default!;
 
         public string Username { get; set; } = string.Empty;
 

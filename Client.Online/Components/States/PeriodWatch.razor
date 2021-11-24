@@ -1,18 +1,14 @@
-@inherits State
+@inherits State<PeriodWatch>
 @inject IStringLocalizer<Resources> L
 
-@code
-{
-    protected override RenderFragment Content =>
-        @<StateContainer Title="@this.Period.Round.Type">
-            <MudContainer>
-                <MudText Typo="Typo.h5">
-                    @L["Components.States.PeriodWatch.Playing"]: @this.Period.Player.Username
-                </MudText>
-            </MudContainer>
+<StateContainer Title="@this.Period.Round.Type">
+    <MudContainer>
+        <MudText Typo="Typo.h5">
+            @L["Components.States.PeriodWatch.Playing"]: @this.Period.Player.Username
+        </MudText>
+    </MudContainer>
 
-            <MudContainer Class="mt-10">
-                <Timer Start="this.Period.StartedAt" Length="this.Period.Length" />
-            </MudContainer>
-        </StateContainer>;
-}
+    <MudContainer Class="mt-10">
+        <Timer Start="this.Period.StartedAt" Length="this.Period.Length" />
+    </MudContainer>
+</StateContainer>

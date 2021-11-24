@@ -1,13 +1,9 @@
-@inherits State
+@inherits State<WaitingForPlayers>
 @inject IStringLocalizer<Resources> L
 
-@code
-{
-    protected override RenderFragment Content =>
-        @<StateContainer Title="@(L["Components.States.WaitingForPlayers.Title"])">
-            <MudText Class="mb-10">
-                @L["Components.States.WaitingForPlayers.Message"]
-            </MudText>
-            <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
-        </StateContainer>;
-}
+<StateContainer Title="@(L["Components.States.WaitingForPlayers.Title"])">
+    <MudText Class="mb-10">
+        @L["Components.States.WaitingForPlayers.Message"]
+    </MudText>
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+</StateContainer>

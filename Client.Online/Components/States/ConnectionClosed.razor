@@ -1,25 +1,18 @@
-@inherits State
+@inherits State<ConnectionClosed>
 @inject IStringLocalizer<Resources> L
 
-@code
-{
-    [Parameter]
-    public EventCallback ReloadRequested { get; set; } = default!;
-
-    protected override RenderFragment Content =>
-        @<StateContainer Title="@(L["Components.States.ConnectionClosed.Title"])">
-            <MudText>
-                @L["Components.States.ConnectionClosed.Description"]
-            </MudText>
-            <MudContainer>
-                <MudButton
-                    Variant="Variant.Filled"
-                    Color="Color.Warning"
-                    Size="Size.Large"
-                    FullWidth="true"
-                    @onclick="_ => this.ReloadRequested.InvokeAsync()">
-                    @L["Components.States.ConnectionClosed.Button"]
-                </MudButton>
-            </MudContainer>
-        </StateContainer>;
-}
+<StateContainer Title="@(L["Components.States.ConnectionClosed.Title"])">
+    <MudText>
+        @L["Components.States.ConnectionClosed.Description"]
+    </MudText>
+    <MudContainer>
+        <MudButton
+            Variant="Variant.Filled"
+            Color="Color.Warning"
+            Size="Size.Large"
+            FullWidth="true"
+            @onclick="this.ReloadRequested">
+            @L["Components.States.ConnectionClosed.Button"]
+        </MudButton>
+    </MudContainer>
+</StateContainer>
