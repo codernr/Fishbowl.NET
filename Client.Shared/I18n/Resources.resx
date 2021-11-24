@@ -18,9 +18,6 @@
     <data name="Components.Timer.Remaining">
         <value>Remaining</value>
     </data>
-    <data name="Components.States.Common.SetupPlayer">
-        <value>Setup player</value>
-    </data>
     <data name="Components.States.Common.PlayerWords.Word.0">
         <value>First word</value>
     </data>

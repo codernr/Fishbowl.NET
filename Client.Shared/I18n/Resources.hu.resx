@@ -18,9 +18,6 @@
     <data name="Components.Timer.Remaining">
         <value>Hátralévő idő</value>
     </data>
-    <data name="Components.States.Common.SetupPlayer">
-        <value>Játékos beállítása</value>
-    </data>
     <data name="Components.States.Common.PlayerWords.Word.0">
         <value>Első szó</value>
     </data>

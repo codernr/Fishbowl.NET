@@ -3,10 +3,7 @@
 @inherits State<PlayerWords>
 @inject IStringLocalizer<Resources> L
 
-<StepContainer
-    Title="@(L["Components.States.Common.SetupPlayer"])"
-    Subtitle="@(L["Components.States.PlayerWords.Title"])"
-    TotalSteps="2" Step="2">
+<StateContainer Title="@(L["Components.States.PlayerWords.Title"])">
     <MudForm @ref="this.form" IsValidChanged="_ => this.StateHasChanged()">
         @for (int i = 0; i < this.words.Length; i++)
         {
@@ -34,4 +31,4 @@
             @L["Components.States.PlayerWords.SubmitButton"]
         </MudButton>
     </MudForm>
-</StepContainer>
+</StateContainer>
