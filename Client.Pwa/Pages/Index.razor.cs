@@ -238,22 +238,32 @@ namespace Fishbowl.Net.Client.Pwa.Pages
             this.transition = this.transition
                 .ContinueWith(_ => this.StateManager.SetParameters<PeriodPlay>(state => state.Word = word.Map()));
 
-        private void StartPeriod(DateTimeOffset timestamp) => this.Game.StartPeriod(timestamp);
+        private Task StartPeriod(DateTimeOffset timestamp)
+        {
+            this.Game.StartPeriod(timestamp);
+            return Task.CompletedTask;
+        }
 
-        private void AddScore(ScoreViewModel score)
+        private Task AddScore(ScoreViewModel score)
         {
             this.Game.AddScore(score.Map());
             this.UpdateScore();
             this.Game.NextWord(score.Timestamp);
+            return Task.CompletedTask;
         }
 
-        private void FinishPeriod(DateTimeOffset timestamp) => this.Game.FinishPeriod(timestamp);
+        private Task FinishPeriod(DateTimeOffset timestamp)
+        {
+            this.Game.FinishPeriod(timestamp);
+            return Task.CompletedTask;
+        }
 
-        private void RevokeLastScore()
+        private Task RevokeLastScore()
         {
             var score = this.Game.Game.CurrentRound.CurrentPeriod.Scores.Last();
             this.Game.RevokeLastScore();
             this.UpdateScore(score.Word);
+            return Task.CompletedTask;
         }
 
         private void UpdateScore(Word? previousWord = null) =>

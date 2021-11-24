@@ -6,11 +6,11 @@ namespace Fishbowl.Net.Client.Shared.Components.States
 {
     public partial class PeriodPlay
     {
-        public Action<ScoreViewModel> OnScoreAdded { get; set; } = default!;
+        public Func<ScoreViewModel, Task> OnScoreAdded { get; set; } = default!;
 
-        public Action<DateTimeOffset> OnPeriodFinished { get; set; } = default!;
+        public Func<DateTimeOffset, Task> OnPeriodFinished { get; set; } = default!;
 
-        public Action OnLastScoreRevoked { get; set; } = default!;
+        public Func<Task> OnLastScoreRevoked { get; set; } = default!;
         
         public PeriodRunningViewModel Period { get; set; } = default!;
 
