@@ -3,35 +3,31 @@
 @inherits InputState
 @inject IStringLocalizer<Resources> L
 
-@code
-{
-    protected override RenderFragment Content =>
-        @<StateContainer Title="@(L["Components.States.TeamName.Title"])">
-            <div class="row mb-5">
-                <div class="col">
-                    <TeamMembers Players="this.Team.Players" />
-                </div>
-            </div>
-            <MudForm @bind-IsValid="this.IsValid">
-                <MudTextField
-                    T="string"
-                    Label="@(L[$"Components.States.TeamName.Title"])"
-                    Required="true"
-                    RequiredError="@(L["Common.Error.Required"])"
-                    Validation="@(new MinLengthAttribute(2) { ErrorMessage = L["Components.States.TeamName.MinLengthError"] })"
-                    MaxLength="30"
-                    @bind-Value="this.Value"
-                    Immediate="true"
-                    Class="my-10" />
-                <MudButton
-                    Variant="Variant.Filled"
-                    Color="Color.Primary"
-                    FullWidth="true"
-                    Size="Size.Large"
-                    Disabled="!this.IsValid"
-                    @onclick="_ => this.Submit(() => this.OnTeamNameSet.InvokeAsync(new(this.Team.Id, this.Value)))">
-                    @L["Components.States.TeamName.Button"]
-                </MudButton>
-            </MudForm>
-        </StateContainer>;
-}
+<StateContainer Title="@(L["Components.States.TeamName.Title"])">
+    <div class="row mb-5">
+        <div class="col">
+            <TeamMembers Players="this.Team.Players" />
+        </div>
+    </div>
+    <MudForm @bind-IsValid="this.IsValid">
+        <MudTextField
+            T="string"
+            Label="@(L[$"Components.States.TeamName.Title"])"
+            Required="true"
+            RequiredError="@(L["Common.Error.Required"])"
+            Validation="@(new MinLengthAttribute(2) { ErrorMessage = L["Components.States.TeamName.MinLengthError"] })"
+            MaxLength="30"
+            @bind-Value="this.Value"
+            Immediate="true"
+            Class="my-10" />
+        <MudButton
+            Variant="Variant.Filled"
+            Color="Color.Primary"
+            FullWidth="true"
+            Size="Size.Large"
+            Disabled="!this.IsValid"
+            @onclick="_ => this.Submit(() => this.OnTeamNameSet(new(this.Team.Id, this.Value)))">
+            @L["Components.States.TeamName.Button"]
+        </MudButton>
+    </MudForm>
+</StateContainer>

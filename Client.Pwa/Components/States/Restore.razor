@@ -1,31 +1,27 @@
 @inherits InputState
 @inject IStringLocalizer<Resources> L
 
-@code
-{
-    protected override RenderFragment Content =>
-        @<StateContainer Title="@(L["Components.States.Restore.Title"])">
-            <MudGrid>
-                <MudItem xs="12">
-                    <MudButton
-                        Variant="Variant.Filled"
-                        Color="Color.Primary"
-                        Size="Size.Large"
-                        FullWidth="true"
-                        @onclick="e => this.Submit(() => this.OnRestoreRequested.InvokeAsync())">
-                        @L["Components.States.Restore.RestoreButton"] 
-                    </MudButton>
-                </MudItem>
-                <MudItem xs="12">
-                    <MudButton
-                        Variant="Variant.Filled"
-                        Color="Color.Warning"
-                        Size="Size.Large"
-                        FullWidth="true"
-                        @onclick="e => this.Submit(() => this.OnNewGameRequested.InvokeAsync())">
-                        @L["Components.States.Restore.NewGameButton"]
-                    </MudButton>
-                </MudItem>
-            </MudGrid>
-        </StateContainer>;
-}
+<StateContainer Title="@(L["Components.States.Restore.Title"])">
+    <MudGrid>
+        <MudItem xs="12">
+            <MudButton
+                Variant="Variant.Filled"
+                Color="Color.Primary"
+                Size="Size.Large"
+                FullWidth="true"
+                @onclick="e => this.Submit(() => this.OnRestoreRequested())">
+                @L["Components.States.Restore.RestoreButton"] 
+            </MudButton>
+        </MudItem>
+        <MudItem xs="12">
+            <MudButton
+                Variant="Variant.Filled"
+                Color="Color.Warning"
+                Size="Size.Large"
+                FullWidth="true"
+                @onclick="e => this.Submit(() => this.OnNewGameRequested())">
+                @L["Components.States.Restore.NewGameButton"]
+            </MudButton>
+        </MudItem>
+    </MudGrid>
+</StateContainer>

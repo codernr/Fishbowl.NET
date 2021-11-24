@@ -1,57 +1,53 @@
 @inherits InputState
 @inject IStringLocalizer<Resources> L
 
-@code
-{
-    protected override RenderFragment Content =>
-        @<StateContainer Title="@L["Components.States.GameSetup.Title"]">
-            <MudNumericField
-                @bind-Value="this.PlayerCount"
-                Label="@(L["Components.States.GameSetup.PlayerCount"])"
-                Min="4"
-                Max="20"
-                Class="mb-3" />
-            <MudSelect
-                T="int"
-                @bind-Value="this.teamCount"
-                Label="@(L["Components.States.GameSetup.TeamCount"])"
-                Class="mb-3">
-                @for (var i = 2; i <= this.MaxTeamCount; i++)
-                {
-                    <MudSelectItem T="int" Value="@i" />
-                }
-            </MudSelect>
-            <MudSelect
-                T="int"
-                @bind-Value="this.wordCount"
-                Label="@(L["Components.States.GameSetup.WordCount"])"
-                Class="mb-3">
-                @for (var i = 1; i <= 4; i++)
-                {
-                    <MudSelectItem T="int" Value="@i" />
-                }
-            </MudSelect>
-            <MudSelect 
-                T="string"
-                Label="@(L["Components.States.GameSetup.RoundTypes"])"
-                MultiSelection="true"
-                Required="true"
-                RequiredError="@(L["Common.Error.Required"])"
-                @bind-SelectedValues="this.SelectedRoundTypes"
-                Class="mb-6">
-                @foreach (var roundType in this.roundTypes)
-                {
-                    <MudSelectItem T="string" Value="@roundType" />
-                }
-            </MudSelect>
-            <MudButton
-                Variant="Variant.Filled"
-                Color="Color.Primary"
-                FullWidth="true"
-                Size="Size.Large"
-                Disabled="!this.IsValid"
-                @onclick="this.SetupGame">
-                @L["Components.States.GameSetup.SubmitButton"]
-            </MudButton>
-        </StateContainer>;
-}
+<StateContainer Title="@L["Components.States.GameSetup.Title"]">
+    <MudNumericField
+        @bind-Value="this.PlayerCount"
+        Label="@(L["Components.States.GameSetup.PlayerCount"])"
+        Min="4"
+        Max="20"
+        Class="mb-3" />
+    <MudSelect
+        T="int"
+        @bind-Value="this.teamCount"
+        Label="@(L["Components.States.GameSetup.TeamCount"])"
+        Class="mb-3">
+        @for (var i = 2; i <= this.MaxTeamCount; i++)
+        {
+            <MudSelectItem T="int" Value="@i" />
+        }
+    </MudSelect>
+    <MudSelect
+        T="int"
+        @bind-Value="this.wordCount"
+        Label="@(L["Components.States.GameSetup.WordCount"])"
+        Class="mb-3">
+        @for (var i = 1; i <= 4; i++)
+        {
+            <MudSelectItem T="int" Value="@i" />
+        }
+    </MudSelect>
+    <MudSelect 
+        T="string"
+        Label="@(L["Components.States.GameSetup.RoundTypes"])"
+        MultiSelection="true"
+        Required="true"
+        RequiredError="@(L["Common.Error.Required"])"
+        @bind-SelectedValues="this.SelectedRoundTypes"
+        Class="mb-6">
+        @foreach (var roundType in this.roundTypes)
+        {
+            <MudSelectItem T="string" Value="@roundType" />
+        }
+    </MudSelect>
+    <MudButton
+        Variant="Variant.Filled"
+        Color="Color.Primary"
+        FullWidth="true"
+        Size="Size.Large"
+        Disabled="!this.IsValid"
+        @onclick="this.SetupGame">
+        @L["Components.States.GameSetup.SubmitButton"]
+    </MudButton>
+</StateContainer>

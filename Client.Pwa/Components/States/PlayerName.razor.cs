@@ -1,12 +1,11 @@
-using Microsoft.AspNetCore.Components;
-using MudBlazor;
+using System;
+using System.Threading.Tasks;
 
 namespace Fishbowl.Net.Client.Pwa.Components.States
 {
     public partial class PlayerName
     {
-        [Parameter]
-        public EventCallback<string> OnPlayerNameSet { get; set; } = default!;
+        public Func<string, Task> OnPlayerNameSet { get; set; } = default!;
 
         private bool IsValid
         {

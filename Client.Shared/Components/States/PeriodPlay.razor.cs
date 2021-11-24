@@ -1,21 +1,16 @@
 using System;
 using System.Threading.Tasks;
-using Fishbowl.Net.Shared.GameEntities;
 using Fishbowl.Net.Shared.ViewModels;
-using Microsoft.AspNetCore.Components;
 
 namespace Fishbowl.Net.Client.Shared.Components.States
 {
     public partial class PeriodPlay
     {
-        [Parameter]
-        public EventCallback<ScoreViewModel> OnScoreAdded { get; set; } = default!;
+        public Action<ScoreViewModel> OnScoreAdded { get; set; } = default!;
 
-        [Parameter]
-        public EventCallback<DateTimeOffset> OnPeriodFinished { get; set; } = default!;
+        public Action<DateTimeOffset> OnPeriodFinished { get; set; } = default!;
 
-        [Parameter]
-        public EventCallback OnLastScoreRevoked { get; set; } = default!;
+        public Action OnLastScoreRevoked { get; set; } = default!;
         
         public PeriodRunningViewModel Period { get; set; } = default!;
 
@@ -25,7 +20,7 @@ namespace Fishbowl.Net.Client.Shared.Components.States
             set
             {
                 this.expired = value;
-                this.Update();
+                this.StateHasChanged();
             }
         }
         
@@ -47,10 +42,10 @@ namespace Fishbowl.Net.Client.Shared.Components.States
 
         private bool showRevoke = false;
 
-        private Task ScoreAdded(EventArgs e)
+        private void ScoreAdded(EventArgs e)
         {
             var score = new ScoreViewModel(this.Word!, DateTimeOffset.UtcNow);
-            return this.OnScoreAdded.InvokeAsync(score);
+            this.OnScoreAdded(score);
         }
     }
 }

@@ -1,15 +1,14 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Fishbowl.Net.Shared.ViewModels;
-using Microsoft.AspNetCore.Components;
 
 namespace Fishbowl.Net.Client.Shared.Components.States
 {
     public partial class GameSetup
     {
-        [Parameter]
-        public EventCallback<GameSetupViewModel> OnGameSetup { get; set; } = default!;
+        public Func<GameSetupViewModel, Task> OnGameSetup { get; set; } = default!;
 
         private bool IsValid => this.SelectedRoundTypes.Count() > 0;
 
@@ -20,7 +19,7 @@ namespace Fishbowl.Net.Client.Shared.Components.States
             {
                 this.playerCount = value;
                 this.teamCount = 2;
-                this.Update();
+                this.StateHasChanged();
             }
         }
 
@@ -32,7 +31,7 @@ namespace Fishbowl.Net.Client.Shared.Components.States
             set
             {
                 this.selectedRoundTypes = value;
-                this.Update();
+                this.StateHasChanged();
             }
         }
 
@@ -55,7 +54,7 @@ namespace Fishbowl.Net.Client.Shared.Components.States
         }
 
         private Task SetupGame() =>
-            this.Submit(() => this.OnGameSetup.InvokeAsync(
+            this.Submit(() => this.OnGameSetup(
                 new(this.PlayerCount, this.wordCount, this.teamCount, this.selectedRoundTypes.ToArray())));
     }
 }

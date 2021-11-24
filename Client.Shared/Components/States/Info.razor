@@ -1,14 +1,10 @@
 @inherits State
 @inject IStringLocalizer<Resources> L
 
-@code
-{
-    protected override RenderFragment Content =>
-        @<StateContainer Title="@this.Title" Class="@this.ContextClass">
-            <MudText>@this.Message</MudText>
-            @if (this.Loading)
-            {
-                <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
-            }
-        </StateContainer>;
-}
+<StateContainer Title="@this.Title" Class="@this.ContextClass">
+    <MudText>@this.Message</MudText>
+    @if (this.Loading)
+    {
+        <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+    }
+</StateContainer>

@@ -5,24 +5,7 @@
 @inject GameProperty PersistedGame
 @inject IScreenService ScreenService
 
-<StateManager @ref="this.stateManager">
-    <Restore
-        OnRestoreRequested="this.RestoreGame"
-        OnNewGameRequested="_ => this.StateManager.SetStateAsync<GameSetup>()" />
-    <GameSetup OnGameSetup="this.SetupGame" />
-    <PlayerName OnPlayerNameSet="this.SetPlayerName" />
-    <PlayerWords OnPlayerWordsSet="this.SetPlayerData" />
-    <TeamName OnTeamNameSet="this.SetTeamName" />
-    <PeriodSetupPlay OnStarted="this.StartPeriod" />
-    <PeriodPlay
-        OnScoreAdded="this.AddScore"
-        OnPeriodFinished="this.FinishPeriod"
-        OnLastScoreRevoked="this.RevokeLastScore" />
-    <PeriodFinished Delay="@TimeSpan.FromSeconds(4)" />
-    <RoundFinished Delay="@TimeSpan.FromSeconds(4)" />
-    <GameFinished ReloadRequested="this.Reload" />
-    <Info Delay="@TimeSpan.FromSeconds(2)" />
-</StateManager>
+<StateManager @ref="this.stateManager" />
 
 <MudPopover Open="this.isPlayerSetupPopoverVisible" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.BottomCenter" Class="pa-5" Paper="false">
     <MudPaper Class="mud-theme-primary pa-2" Elevation="8">

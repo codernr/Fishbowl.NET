@@ -1,11 +1,11 @@
-using Microsoft.AspNetCore.Components;
+using System;
+using System.Threading.Tasks;
 
 namespace Fishbowl.Net.Client.Shared.Components.States
 {
     public partial class PlayerWords
     {
-        [Parameter]
-        public EventCallback<string[]> OnPlayerWordsSet { get; set; } = default!;
+        public Func<string[], Task> OnPlayerWordsSet { get; set; } = default!;
 
         private int WordCount
         {
@@ -23,7 +23,7 @@ namespace Fishbowl.Net.Client.Shared.Components.States
             set
             {
                 this.isValid = value;
-                this.Update();
+                this.StateHasChanged();
             }
         }
 

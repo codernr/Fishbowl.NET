@@ -44,22 +44,30 @@ namespace Fishbowl.Net.Client.Pwa.Pages
             if (!firstRender) return;
             
             await (this.PersistedGame.Value is not null ?
-                this.Transition<Restore>() :
-                this.Transition<GameSetup>());
+                this.Transition<Restore>(state =>
+                {
+                    state.OnNewGameRequested = () => this.StateManager.SetStateAsync<GameSetup>();
+                    state.OnRestoreRequested = this.RestoreGame;
+                }) :
+                this.Transition<GameSetup>(state => state.OnGameSetup = this.SetupGame));
         }
 
         private Task SetupGame(GameSetupViewModel setup)
         {
             this.setup = setup;
             
-            return this.Transition<PlayerName>();
+            return this.Transition<PlayerName>(state => state.OnPlayerNameSet = this.SetPlayerName);
         }
 
         private Task SetPlayerName(string name)
         {
             this.currentPlayerName = name;
 
-            return this.StateManager.SetStateAsync<PlayerWords>(state => state.Reset(this.Setup.WordCount));
+            return this.StateManager.SetStateAsync<PlayerWords>(state =>
+            {
+                state.Reset(this.Setup.WordCount);
+                state.OnPlayerWordsSet = this.SetPlayerData;
+            });
         }
 
         private Task SetPlayerData(string[] words)
@@ -72,7 +80,11 @@ namespace Fishbowl.Net.Client.Pwa.Pages
 
             if (this.players.Count < this.Setup.PlayerCount)
             {
-                return this.StateManager.SetStateAsync<PlayerName>(state => state.Reset());
+                return this.StateManager.SetStateAsync<PlayerName>(state =>
+                {
+                    state.Reset();
+                    state.OnPlayerNameSet = this.SetPlayerName;
+                });
             }
 
             this.isPlayerSetupPopoverVisible = false;
@@ -83,7 +95,11 @@ namespace Fishbowl.Net.Client.Pwa.Pages
         {
             this.teams = this.players.Randomize().ToList().CreateTeams(this.Setup.TeamCount).ToList();
 
-            return this.StateManager.SetStateAsync<TeamName>(state => state.Team = this.teams[0].Map());
+            return this.StateManager.SetStateAsync<TeamName>(state =>
+            {
+                state.Team = this.teams[0].Map();
+                state.OnTeamNameSet = this.SetTeamName;
+            });
         }
 
         private Task SetTeamName(TeamNameViewModel teamName)
@@ -97,6 +113,7 @@ namespace Fishbowl.Net.Client.Pwa.Pages
                 {
                     state.Team = nextTeam.Map();
                     state.Reset();
+                    state.OnTeamNameSet = this.SetTeamName;
                 });
         }
 
@@ -142,10 +159,10 @@ namespace Fishbowl.Net.Client.Pwa.Pages
             this.Game.WordSetup += this.OnWordSetup;
         }
 
-        private Task Transition<TState>() where TState : State
+        private Task Transition<TState>(Action<TState>? setParameters = null) where TState : State
         {
             this.transition = this.transition
-                .ContinueWith(_ => this.StateManager.SetStateAsync<TState>()).Unwrap();
+                .ContinueWith(_ => this.StateManager.SetStateAsync<TState>(setParameters)).Unwrap();
             return this.transition;
         }
 
@@ -169,13 +186,17 @@ namespace Fishbowl.Net.Client.Pwa.Pages
                 state.Title = L("Pages.Play.GameStartedTitle");
                 state.Message = string.Empty;
                 state.Loading = true;
-            });
+            }, TimeSpan.FromSeconds(2));
         }
 
         private Task OnGameFinished(Game game)
         {
             this.ClearPersistedGame();
-            return this.StateManager.SetStateAsync<GameFinished>(state => state.Game = game.Map());
+            return this.StateManager.SetStateAsync<GameFinished>(state =>
+            {
+                state.Game = game.Map();
+                state.ReloadRequested = this.Reload;
+            });
         }
 
         private Task OnRoundStarted(Round round) =>
@@ -185,14 +206,18 @@ namespace Fishbowl.Net.Client.Pwa.Pages
                 state.Title = $"{L("Pages.Play.RoundStartedTitle")}: {round.Type}";
                 state.Message = string.Empty;
                 state.Loading = true;
-            });
+            }, TimeSpan.FromSeconds(2));
 
         private Task OnRoundFinished(Round round) =>
-            this.StateManager.SetStateAsync<RoundFinished>(state => state.Round = round.MapSummary());
+            this.StateManager.SetStateAsync<RoundFinished>(
+                state =>state.Round = round.MapSummary(), TimeSpan.FromSeconds(4));
 
         private Task OnPeriodSetup(Period period) =>
-            this.StateManager.SetStateAsync<PeriodSetupPlay>(
-                state => state.Period = period.Map(this.Game.Game.CurrentRound));
+            this.StateManager.SetStateAsync<PeriodSetupPlay>(state =>
+            {
+                state.Period = period.Map(this.Game.Game.CurrentRound);
+                state.OnStarted = this.StartPeriod;
+            });
 
         private Task OnPeriodStarted(Period period) =>
             this.StateManager.SetStateAsync<PeriodPlay>(state =>
@@ -201,10 +226,14 @@ namespace Fishbowl.Net.Client.Pwa.Pages
                 state.Expired = period.StartedAt!.Value + period.Length < DateTimeOffset.UtcNow;
                 state.ScoreCount = period.Scores.Count;
                 state.Period = period.MapRunning(this.Game.Game.CurrentRound);
+                state.OnScoreAdded = this.AddScore;
+                state.OnPeriodFinished = this.FinishPeriod;
+                state.OnLastScoreRevoked = this.RevokeLastScore;
             });
 
         private Task OnPeriodFinished(Period period) =>
-            this.StateManager.SetStateAsync<PeriodFinished>(state => state.Period = period.Map());
+            this.StateManager.SetStateAsync<PeriodFinished>(
+                state => state.Period = period.Map(), TimeSpan.FromSeconds(4));
 
         private void OnWordSetup(Player player, Word word) =>
             this.transition = this.transition
@@ -248,7 +277,7 @@ namespace Fishbowl.Net.Client.Pwa.Pages
                 state.Title = L("Pages.Play.ErrorTitle");
                 state.Message = L(messageKey);
                 state.Loading = false;
-            });
+            }, TimeSpan.FromSeconds(2));
             this.ClearPersistedGame();
             this.Reload();
         }

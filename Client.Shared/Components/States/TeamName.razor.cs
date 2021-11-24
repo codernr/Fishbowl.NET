@@ -1,10 +1,13 @@
+using System;
+using System.Threading.Tasks;
 using Fishbowl.Net.Shared.ViewModels;
-using Microsoft.AspNetCore.Components;
 
 namespace Fishbowl.Net.Client.Shared.Components.States
 {
     public partial class TeamName
     {
+        public Func<TeamNameViewModel, Task> OnTeamNameSet { get; set; } = default!;
+
         public TeamViewModel Team { get; set; } = default!;
 
         private string Value { get; set; } = string.Empty;
@@ -15,12 +18,9 @@ namespace Fishbowl.Net.Client.Shared.Components.States
             set
             {
                 this.isValid = value;
-                this.Update();
+                this.StateHasChanged();
             }
         }
-
-        [Parameter]
-        public EventCallback<TeamNameViewModel> OnTeamNameSet { get; set; } = default!;
 
         private bool isValid;
 

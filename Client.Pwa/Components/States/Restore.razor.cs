@@ -1,13 +1,12 @@
-using Microsoft.AspNetCore.Components;
+using System;
+using System.Threading.Tasks;
 
 namespace Fishbowl.Net.Client.Pwa.Components.States
 {
     public partial class Restore
     {
-        [Parameter]
-        public EventCallback OnRestoreRequested { get; set; } = default!;
+        public Func<Task> OnRestoreRequested { get; set; } = default!;
 
-        [Parameter]
-        public EventCallback OnNewGameRequested { get; set; } = default!;
+        public Func<Task> OnNewGameRequested { get; set; } = default!;
     }
 }
