@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 
@@ -9,7 +10,7 @@ namespace Fishbowl.Net.Client.Shared.Components
         private static readonly TimeSpan TransitionDuration = TimeSpan.FromMilliseconds(300);
 
         [Parameter]
-        public Action<State>? TransitionStarted { get; set; }
+        public Action<object>? TransitionStarted { get; set; }
 
         private DynamicComponent Component => this.component ?? throw new InvalidOperationException();
 
@@ -17,21 +18,19 @@ namespace Fishbowl.Net.Client.Shared.Components
 
         private Type? type;
 
+        private Dictionary<string, object> parameters = new();
+
         private bool show = false;
 
         private Task transition = Task.CompletedTask;
 
-        private T Instance<T>() where T : State =>
+        private T Instance<T>() where T : State<T> =>
             this.Component.Instance as T ?? throw new InvalidOperationException();
 
-        public void SetParameters<T>(Action<T> setParameters) where T : State
-        {
-            var instance = this.Instance<T>();
-            setParameters(instance);
-            instance.Update();
-        }
+        public void SetParameters<T>(Action<T> setParameters) where T : State<T> =>
+            this.Instance<T>().Update(setParameters);
 
-        public Task SetStateAsync<T>(Action<T>? setParameters = null, TimeSpan delay = default) where T : State
+        public Task SetStateAsync<T>(Action<T>? setParameters = null, TimeSpan delay = default) where T : State<T>
         {
             this.transition = this.transition
                 .ContinueWith(_ => this.TransitionAsync<T>(setParameters ?? (_ => {}), delay))
@@ -40,7 +39,7 @@ namespace Fishbowl.Net.Client.Shared.Components
             return this.transition;
         }
 
-        private async Task TransitionAsync<T>(Action<T> setParameters, TimeSpan delay = default) where T : State
+        private async Task TransitionAsync<T>(Action<T> setParameters, TimeSpan delay = default) where T : State<T>
         {
             await this.DisableAsync();
 
@@ -51,12 +50,11 @@ namespace Fishbowl.Net.Client.Shared.Components
             }
 
             this.type = typeof(T);
+            this.parameters = new() { { "SetParameters", setParameters } };
 
             this.StateHasChanged();
          
             this.TransitionStarted?.Invoke(this.Instance<T>());
-
-            this.SetParameters<T>(setParameters);
 
             await this.EnableAsync(delay);
         }

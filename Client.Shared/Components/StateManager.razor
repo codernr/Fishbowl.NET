@@ -5,6 +5,6 @@
 <MudContainer Class="@($"pa-0 d-flex mud-height-full fade-container {(this.show ? "show" : string.Empty)}")">
 @if (this.type is not null)
 {
-    <DynamicComponent @ref="this.component" Type="this.type" />
+    <DynamicComponent @ref="this.component" Type="this.type" Parameters="this.parameters" />
 }
 </MudContainer>
