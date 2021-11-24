@@ -15,5 +15,14 @@ namespace Fishbowl.Net.Client.Shared.Components
 
             return submitAction();
         }
+
+        protected virtual void Submit(Action submitAction)
+        {
+            if (this.submitted) return;
+            
+            this.submitted = true;
+
+            submitAction();
+        }
     }
 }
