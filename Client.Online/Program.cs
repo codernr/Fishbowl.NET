@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Components.Web;
 using Fishbowl.Net.Client.Online;
 using MudBlazor.Services;
 using MudBlazor;
+using Fishbowl.Net.Client.Shared.Services;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
@@ -23,6 +24,7 @@ builder
     .Services
         .AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) })
         .AddTransient<IClientState, ClientState>()
+        .AddSingleton<AppStateService>()
         .AddLocalization()
         .AddMudServices(config =>
         {

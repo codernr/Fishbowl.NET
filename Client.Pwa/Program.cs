@@ -1,6 +1,7 @@
 using System.Globalization;
 using Fishbowl.Net.Client.Pwa.Common;
 using Fishbowl.Net.Client.Shared;
+using Fishbowl.Net.Client.Shared.Services;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Fishbowl.Net.Client.Pwa;
@@ -17,6 +18,7 @@ builder
         .AddLocalization()
         .AddJsonSerializationOptions()
         .AddSingleton<GameProperty>()
+        .AddSingleton<AppStateService>()
         .AddMudServices();
 
 var culture = new CultureInfo("hu");
