@@ -7,12 +7,12 @@
     <MudForm @ref="this.form" IsValidChanged="_ => this.StateHasChanged()">
         <MudTextField
             T="string"
-            Label="@(L["Components.States.PlayerSetup.InputPlaceholder"])"
+            Label="@(L["Components.States.Common.PlayerName"])"
             Required="true"
             RequiredError="@(L["Common.Error.Required"])"
             Validation="@(new RegularExpressionAttribute(@"^[a-z0-9\-\.]{3,32}$")
             {
-                ErrorMessage = L["Components.States.PlayerSetup.ErrorMessage"]
+                ErrorMessage = L["Components.States.Common.PlayerName.ErrorMessage"]
             })"
             @bind-Value="this.playerName"
             Immediate="true"

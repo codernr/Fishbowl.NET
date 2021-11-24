@@ -18,6 +18,12 @@
     <data name="Components.Timer.Remaining">
         <value>Hátralévő idő</value>
     </data>
+    <data name="Components.States.Common.PlayerName">
+        <value>Név</value>
+    </data>
+    <data name="Components.States.Common.PlayerName.ErrorMessage">
+        <value>3 és 32 közötti hosszúság, csak angol kisbetűk, kötőjel, pont és számok</value>
+    </data>
     <data name="Components.States.Common.PlayerWords.Word.0">
         <value>Első szó</value>
     </data>
@@ -87,10 +93,10 @@
     <data name="Components.States.UsernamePassword.Title">
         <value>Add meg a neved és a jelszót</value>
     </data>
-    <data name="Components.States.UsernamePassword.InputPlaceholder">
+    <data name="Components.States.UsernamePassword.Password">
         <value>Jelszó</value>
     </data>
-    <data name="Components.States.UsernamePassword.ErrorMessage">
+    <data name="Components.States.UsernamePassword.Password.ErrorMessage">
         <value>3 és 32 közötti hosszúság, csak angol kisbetűk, kötőjel, pont és számok</value>
     </data>
     <data name="Components.States.UsernamePassword.CreateButton">
@@ -137,12 +143,6 @@
     </data>
     <data name="Components.States.PlayerSetup.Title">
         <value>Add meg a neved és a szavaidat</value>
-    </data>
-    <data name="Components.States.PlayerSetup.InputPlaceholder">
-        <value>Név</value>
-    </data>
-    <data name="Components.States.PlayerSetup.ErrorMessage">
-        <value>3 és 32 közötti hosszúság, csak angol kisbetűk, kötőjel, pont és számok</value>
     </data>
     <data name="Components.States.PlayerSetup.SubmitButton">
         <value>Beállít</value>
