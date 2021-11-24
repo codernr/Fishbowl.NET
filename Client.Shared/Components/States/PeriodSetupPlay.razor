@@ -1,4 +1,4 @@
-@inherits InputState<PeriodSetupPlay>
+@inherits State<PeriodSetupPlay>
 @inject IStringLocalizer<Resources> L
 
 <StateContainer Title="@($"{this.Period.Round.Type}: {this.Period.Player.Username}")">
@@ -13,7 +13,7 @@
         Color="Color.Primary"
         FullWidth="true"
         Size="Size.Large"
-        @onclick="_ => this.Submit(() => this.OnStarted(DateTimeOffset.UtcNow))">
+        @onclick="this.Start">
         @L["Components.States.PeriodSetupPlay.StartButton"]
     </MudButton>
 </StateContainer>

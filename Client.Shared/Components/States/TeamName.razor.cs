@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Fishbowl.Net.Client.Shared.Common;
 using Fishbowl.Net.Shared.ViewModels;
 using MudBlazor;
 
@@ -13,6 +14,11 @@ namespace Fishbowl.Net.Client.Shared.Components.States
 
         private MudForm? form;
 
+        private Once once = new();
+
         private string teamName = string.Empty;
+
+        private Task Submit() =>
+            this.once.Fire(() => this.OnTeamNameSet(new(this.Team.Id, this.teamName)));
     }
 }

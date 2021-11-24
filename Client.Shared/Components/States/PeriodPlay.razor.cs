@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Fishbowl.Net.Client.Shared.Common;
 using Fishbowl.Net.Shared.ViewModels;
 
 namespace Fishbowl.Net.Client.Shared.Components.States
@@ -42,10 +43,15 @@ namespace Fishbowl.Net.Client.Shared.Components.States
 
         private bool showRevoke = false;
 
-        private void ScoreAdded(EventArgs e)
+        private Once once = new();
+
+        private Task AddScore()
         {
             var score = new ScoreViewModel(this.Word!, DateTimeOffset.UtcNow);
-            this.OnScoreAdded(score);
+            return this.OnScoreAdded(score);
         }
+
+        private Task FinishPeriod() =>
+            this.once.Fire(() => this.OnPeriodFinished(DateTimeOffset.UtcNow));
     }
 }

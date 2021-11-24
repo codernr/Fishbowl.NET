@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Fishbowl.Net.Client.Shared.Common;
 using MudBlazor;
 
 namespace Fishbowl.Net.Client.Shared.Components.States
@@ -20,8 +21,13 @@ namespace Fishbowl.Net.Client.Shared.Components.States
 
         private MudForm? form;
 
+        private Once once = new();
+
         private int wordCount = 2;
 
         private string[] words = new string[2];
+
+        private Task Submit() =>
+            this.once.Fire(() => this.OnPlayerWordsSet(this.words));
     }
 }

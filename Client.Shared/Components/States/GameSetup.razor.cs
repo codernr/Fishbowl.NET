@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Fishbowl.Net.Client.Shared.Common;
 using Fishbowl.Net.Shared.ViewModels;
 using MudBlazor;
 
@@ -36,6 +37,8 @@ namespace Fishbowl.Net.Client.Shared.Components.States
 
         private MudForm? form;
 
+        private Once once = new();
+
         private int playerCount = 4;
 
         private int teamCount = 2;
@@ -61,7 +64,7 @@ namespace Fishbowl.Net.Client.Shared.Components.States
         }
 
         private Task SetupGame() =>
-            this.Submit(() => this.OnGameSetup(
+            this.once.Fire(() => this.OnGameSetup(
                 new(this.PlayerCount, this.wordCount, this.teamCount, this.selectedRoundTypes.ToArray())));
     }
 }

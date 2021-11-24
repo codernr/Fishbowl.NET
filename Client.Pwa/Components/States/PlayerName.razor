@@ -1,6 +1,6 @@
 @using System.ComponentModel.DataAnnotations
 
-@inherits InputState<PlayerName>
+@inherits State<PlayerName>
 @inject IStringLocalizer<Resources> L
 
 <StepContainer
@@ -25,7 +25,7 @@
             FullWidth="true"
             Size="Size.Large"
             Disabled="!this.form!.IsValid"
-            @onclick="_ => this.Submit(() => this.OnPlayerNameSet(this.playerName))">
+            @onclick="this.Submit">
             @L["Components.States.PlayerName.SubmitButton"]
         </MudButton>
     </MudForm>
