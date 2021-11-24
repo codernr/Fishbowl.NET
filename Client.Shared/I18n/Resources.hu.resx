@@ -114,9 +114,6 @@
     <data name="Components.States.PeriodFinished.GuessedWords">
         <value>Kitalált szavak</value>
     </data>
-    <data name="Components.States.PeriodPlay.Title">
-        <value>A te köröd</value>
-    </data>
     <data name="Components.States.PeriodPlay.GuessedButton">
         <value>Kitaláltuk!</value>
     </data>

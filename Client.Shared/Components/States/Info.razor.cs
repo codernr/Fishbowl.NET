@@ -11,5 +11,10 @@ namespace Fishbowl.Net.Client.Shared.Components.States
         public string Message { get; set; } = string.Empty;
 
         public bool Loading { get; set; }
+
+        protected override void SetTitle()
+        {
+            this.AppState.Title = this.Title;
+        }
     }
 }

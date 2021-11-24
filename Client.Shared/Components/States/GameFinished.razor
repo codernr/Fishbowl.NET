@@ -1,6 +1,6 @@
 @inherits State<GameFinished>
 
-<StateContainer Title="@(L["Components.States.GameFinished.Title"])">
+<StateContainer>
     <MudPaper Class="mb-10">
         <MudList>
             @for (int i = 0; i < this.Game.Teams.Count; i++)

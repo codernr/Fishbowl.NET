@@ -1,6 +1,6 @@
 @inherits State<PeriodSetupPlay>
 
-<StateContainer Title="@($"{this.Period.Round.Type}: {this.Period.Player.Username}")">
+<StateContainer>
     <MudText Typo="Typo.h5" Class="mb-5">
         @L["Components.States.PeriodSetupPlay.PeriodLength"]: @(string.Format("{0:m\\:ss}", this.Period.Length))
     </MudText>

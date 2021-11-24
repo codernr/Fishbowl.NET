@@ -45,6 +45,11 @@ namespace Fishbowl.Net.Client.Shared.Components.States
 
         private Once once = new();
 
+        protected override void SetTitle()
+        {
+            this.AppState.Title = this.Period.Round.Type;
+        }
+
         private Task AddScore()
         {
             var score = new ScoreViewModel(this.Word!, DateTimeOffset.UtcNow);

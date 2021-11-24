@@ -1,6 +1,6 @@
 @inherits State<GameSetup>
 
-<StateContainer Title="@L["Components.States.GameSetup.Title"]">
+<StateContainer>
     <MudForm @ref="this.form" IsValidChanged="_ => this.StateHasChanged()">
         <MudNumericField
             @bind-Value="this.PlayerCount"

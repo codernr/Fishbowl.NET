@@ -13,6 +13,11 @@ namespace Fishbowl.Net.Client.Shared.Components.States
 
         private Once once = new();
 
+        protected override void SetTitle()
+        {
+            this.AppState.Title = $"{this.Period.Round.Type}: {this.Period.Player.Username}";
+        }
+
         private Task Start() =>
             this.once.Fire(() => this.OnStarted(DateTimeOffset.UtcNow));
     }

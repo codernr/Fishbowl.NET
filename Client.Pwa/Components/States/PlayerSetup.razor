@@ -2,7 +2,7 @@
 
 @inherits State<PlayerSetup>
 
-<StateContainer Title="@(L["Components.States.PlayerSetup.Title"])">
+<StateContainer>
     <MudForm @ref="this.form" IsValidChanged="_ => this.StateHasChanged()">
         <MudTextField
             T="string"
