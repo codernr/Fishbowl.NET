@@ -44,6 +44,12 @@ namespace Fishbowl.Net.Client.Shared.Components
         {
             await this.DisableAsync();
 
+            if (this.type == typeof(T))
+            {
+                this.type = null;
+                this.StateHasChanged();
+            }
+
             this.type = typeof(T);
 
             this.StateHasChanged();
