@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Fishbowl.Net.Client.Shared.Common;
 using MudBlazor;
 
-namespace Fishbowl.Net.Client.Shared.Components.States
+namespace Fishbowl.Net.Client.Online.Components.States
 {
     public partial class PlayerWords
     {

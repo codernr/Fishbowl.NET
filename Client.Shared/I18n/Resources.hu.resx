@@ -21,6 +21,21 @@
     <data name="Components.States.Common.SetupPlayer">
         <value>Játékos beállítása</value>
     </data>
+    <data name="Components.States.Common.PlayerWords.Word.0">
+        <value>Első szó</value>
+    </data>
+    <data name="Components.States.Common.PlayerWords.Word.1">
+        <value>Második szó</value>
+    </data>
+    <data name="Components.States.Common.PlayerWords.Word.2">
+        <value>Harmadik szó</value>
+    </data>
+    <data name="Components.States.Common.PlayerWords.Word.3">
+        <value>Negyedik szó</value>
+    </data>
+    <data name="Components.States.Common.PlayerWords.MinLengthError">
+        <value>Minimum két karakter</value>
+    </data>
     <data name="Components.States.Connecting.Title">
         <value>Japán activity</value>
     </data>
@@ -123,38 +138,23 @@
     <data name="Components.States.PeriodWatch.Playing">
         <value>Aktuális játékos</value>
     </data>
-    <data name="Components.States.PlayerName.Title">
-        <value>Add meg a neved</value>
+    <data name="Components.States.PlayerSetup.Title">
+        <value>Add meg a neved és a szavaidat</value>
     </data>
-    <data name="Components.States.PlayerName.InputPlaceholder">
+    <data name="Components.States.PlayerSetup.InputPlaceholder">
         <value>Név</value>
     </data>
-    <data name="Components.States.PlayerName.ErrorMessage">
+    <data name="Components.States.PlayerSetup.ErrorMessage">
         <value>3 és 32 közötti hosszúság, csak angol kisbetűk, kötőjel, pont és számok</value>
     </data>
-    <data name="Components.States.PlayerName.SubmitButton">
+    <data name="Components.States.PlayerSetup.SubmitButton">
         <value>Beállít</value>
     </data>
     <data name="Components.States.PlayerWords.Title">
         <value>Add meg a szavaidat</value>
     </data>
-    <data name="Components.States.PlayerWords.Word.0">
-        <value>Első szó</value>
-    </data>
-    <data name="Components.States.PlayerWords.Word.1">
-        <value>Második szó</value>
-    </data>
-    <data name="Components.States.PlayerWords.Word.2">
-        <value>Harmadik szó</value>
-    </data>
-    <data name="Components.States.PlayerWords.Word.3">
-        <value>Negyedik szó</value>
-    </data>
     <data name="Components.States.PlayerWords.SubmitButton">
         <value>Beállít</value>
-    </data>
-    <data name="Components.States.PlayerWords.MinLengthError">
-        <value>Minimum két karakter</value>
     </data>
     <data name="Components.States.Restore.Title">
         <value>Folytatod a játékot?</value>

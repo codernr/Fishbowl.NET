@@ -21,6 +21,21 @@
     <data name="Components.States.Common.SetupPlayer">
         <value>Setup player</value>
     </data>
+    <data name="Components.States.Common.PlayerWords.Word.0">
+        <value>First word</value>
+    </data>
+    <data name="Components.States.Common.PlayerWords.Word.1">
+        <value>Second word</value>
+    </data>
+    <data name="Components.States.Common.PlayerWords.Word.2">
+        <value>Third word</value>
+    </data>
+    <data name="Components.States.Common.PlayerWords.Word.3">
+        <value>Fourth word</value>
+    </data>
+    <data name="Components.States.Common.PlayerWords.MinLengthError">
+        <value>At least two characters long</value>
+    </data>
     <data name="Components.States.GameSetup.Title">
         <value>Setup game</value>
     </data>
@@ -123,38 +138,23 @@
     <data name="Components.States.PeriodWatch.Playing">
         <value>Playing</value>
     </data>
-    <data name="Components.States.PlayerName.Title">
-        <value>Set player name</value>
+    <data name="Components.States.PlayerSetup.Title">
+        <value>Set your name and words</value>
     </data>
-    <data name="Components.States.PlayerName.InputPlaceholder">
+    <data name="Components.States.PlayerSetup.InputPlaceholder">
         <value>Name</value>
     </data>
-    <data name="Components.States.PlayerName.ErrorMessage">
+    <data name="Components.States.PlayerSetup.ErrorMessage">
         <value>Lowercase, dash, dot and numbers between 3 and 32 characters</value>
     </data>
-    <data name="Components.States.PlayerName.SubmitButton">
+    <data name="Components.States.PlayerSetup.SubmitButton">
         <value>Set</value>
     </data>
     <data name="Components.States.PlayerWords.Title">
         <value>Set player words</value>
     </data>
-    <data name="Components.States.PlayerWords.Word.0">
-        <value>First word</value>
-    </data>
-    <data name="Components.States.PlayerWords.Word.1">
-        <value>Second word</value>
-    </data>
-    <data name="Components.States.PlayerWords.Word.2">
-        <value>Third word</value>
-    </data>
-    <data name="Components.States.PlayerWords.Word.3">
-        <value>Fourth word</value>
-    </data>
     <data name="Components.States.PlayerWords.SubmitButton">
         <value>Set</value>
-    </data>
-    <data name="Components.States.PlayerWords.MinLengthError">
-        <value>At least two characters long</value>
     </data>
     <data name="Components.States.Restore.Title">
         <value>Restore saved game?</value>

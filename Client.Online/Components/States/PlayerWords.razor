@@ -13,10 +13,13 @@
             var id = i;
             <MudTextField
                 T="string"
-                Label="@(L[$"Components.States.PlayerWords.Word.{id}"])"
+                Label="@(L[$"Components.States.Common.PlayerWords.Word.{id}"])"
                 Required="true"
                 RequiredError="@(L["Common.Error.Required"])"
-                Validation="@(new MinLengthAttribute(2) { ErrorMessage = L["Components.States.PlayerWords.MinLengthError"] })"
+                Validation="@(new MinLengthAttribute(2)
+                {
+                    ErrorMessage = L["Components.States.Common.PlayerWords.MinLengthError"]
+                })"
                 @bind-Value="this.words[id]"
                 Immediate="true"
                 Class="my-10" />
@@ -28,7 +31,7 @@
             Size="Size.Large"
             Disabled="!this.form!.IsValid"
             @onclick="this.Submit">
-            @L["Components.States.PlayerName.SubmitButton"]
+            @L["Components.States.PlayerWords.SubmitButton"]
         </MudButton>
     </MudForm>
 </StepContainer>

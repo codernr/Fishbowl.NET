@@ -1,0 +1,52 @@
+@using System.ComponentModel.DataAnnotations
+
+@inherits State<PlayerSetup>
+@inject IStringLocalizer<Resources> L
+
+<StepContainer
+    Title="@(L["Components.States.Common.SetupPlayer"])"
+    Subtitle="@(L["Components.States.PlayerSetup.Title"])"
+    TotalSteps="2" Step="1">
+    <MudForm @ref="this.form" IsValidChanged="_ => this.StateHasChanged()">
+        <MudTextField
+            T="string"
+            Label="@(L["Components.States.PlayerSetup.InputPlaceholder"])"
+            Required="true"
+            RequiredError="@(L["Common.Error.Required"])"
+            Validation="@(new RegularExpressionAttribute(@"^[a-z0-9\-\.]{3,32}$")
+            {
+                ErrorMessage = L["Components.States.PlayerSetup.ErrorMessage"]
+            })"
+            @bind-Value="this.playerName"
+            Immediate="true"
+            Class="mb-3" />
+
+        @for (int i = 0; i < this.words.Length; i++)
+        {
+            var id = i;
+            <MudTextField
+                T="string"
+                Label="@(L[$"Components.States.Common.PlayerWords.Word.{id}"])"
+                Required="true"
+                RequiredError="@(L["Common.Error.Required"])"
+                Validation="@(new MinLengthAttribute(2)
+                {
+                    ErrorMessage = L["Components.States.Common.PlayerWords.MinLengthError"]
+                })"
+                @bind-Value="this.words[id]"
+                Immediate="true"
+                Class="mb-3" />
+        }
+
+        <MudButton
+            Variant="Variant.Filled"
+            Color="Color.Primary"
+            Class="mt-3"
+            FullWidth="true"
+            Size="Size.Large"
+            Disabled="!this.form!.IsValid"
+            @onclick="this.Submit">
+            @L["Components.States.PlayerSetup.SubmitButton"]
+        </MudButton>
+    </MudForm>
+</StepContainer>
