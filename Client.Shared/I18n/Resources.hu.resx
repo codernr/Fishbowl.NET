@@ -114,6 +114,9 @@
     <data name="Components.States.PeriodFinished.GuessedWords">
         <value>Kitalált szavak</value>
     </data>
+    <data name="Components.States.PeriodPlay.Title">
+        <value>A te köröd</value>
+    </data>
     <data name="Components.States.PeriodPlay.GuessedButton">
         <value>Kitaláltuk!</value>
     </data>
@@ -122,6 +125,9 @@
     </data>
     <data name="Components.States.PeriodPlay.RevokeButton">
         <value>Visszavonás</value>
+    </data>
+    <data name="Components.States.PeriodSetupPlay.Title">
+        <value>A te köröd</value>
     </data>
     <data name="Components.States.PeriodSetupPlay.Subtitle">
         <value>Nyomd meg a kör kezdéséhez</value>

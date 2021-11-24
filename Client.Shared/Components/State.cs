@@ -1,10 +1,15 @@
 using System;
+using Fishbowl.Net.Client.Shared.I18n;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Localization;
 
 namespace Fishbowl.Net.Client.Shared.Components
 {
     public abstract class State<T> : ComponentBase where T : State<T>
     {
+        [Inject]
+        public IStringLocalizer<Resources> L { get; set; } = default!;
+
         [Parameter]
         public Action<T>? SetParameters { get; set; }
 

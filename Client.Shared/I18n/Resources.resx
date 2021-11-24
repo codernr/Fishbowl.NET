@@ -114,6 +114,9 @@
     <data name="Components.States.PeriodFinished.GuessedWords">
         <value>Guessed words</value>
     </data>
+    <data name="Components.States.PeriodPlay.Title">
+        <value>Your turn</value>
+    </data>
     <data name="Components.States.PeriodPlay.GuessedButton">
         <value>Guessed</value>
     </data>
@@ -122,6 +125,9 @@
     </data>
     <data name="Components.States.PeriodPlay.RevokeButton">
         <value>Revoke</value>
+    </data>
+    <data name="Components.States.PeriodSetupPlay.Title">
+        <value>Your turn</value>
     </data>
     <data name="Components.States.PeriodSetupPlay.Subtitle">
         <value>Start period by clicking button</value>

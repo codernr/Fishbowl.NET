@@ -1,5 +1,4 @@
 @inherits State<GameSetup>
-@inject IStringLocalizer<Resources> L
 
 <StateContainer Title="@L["Components.States.GameSetup.Title"]">
     <MudForm @ref="this.form" IsValidChanged="_ => this.StateHasChanged()">
