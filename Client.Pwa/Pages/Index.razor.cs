@@ -46,7 +46,8 @@ namespace Fishbowl.Net.Client.Pwa.Pages
             await (this.PersistedGame.Value is not null ?
                 this.Transition<Restore>(state =>
                 {
-                    state.OnNewGameRequested = () => this.StateManager.SetStateAsync<GameSetup>();
+                    state.OnNewGameRequested = () => this.StateManager.SetStateAsync<GameSetup>(
+                        state => state.OnGameSetup = this.SetupGame);
                     state.OnRestoreRequested = this.RestoreGame;
                 }) :
                 this.Transition<GameSetup>(state => state.OnGameSetup = this.SetupGame));
@@ -178,8 +179,6 @@ namespace Fishbowl.Net.Client.Pwa.Pages
 
         private async Task OnGameStarted(Game game)
         {
-            await Task.Delay(1000);
-
             await this.StateManager.SetStateAsync<Info>(state =>
             {
                 state.ContextClass = ContextCssClass.Default;
