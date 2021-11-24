@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using MudBlazor;
 
 namespace Fishbowl.Net.Client.Shared.Components.States
 {
@@ -7,7 +8,7 @@ namespace Fishbowl.Net.Client.Shared.Components.States
     {
         public Func<string[], Task> OnPlayerWordsSet { get; set; } = default!;
 
-        private int WordCount
+        public int WordCount
         {
             get => this.wordCount;
             set
@@ -17,26 +18,10 @@ namespace Fishbowl.Net.Client.Shared.Components.States
             }
         }
 
-        private bool IsValid
-        {
-            get => this.isValid;
-            set
-            {
-                this.isValid = value;
-                this.StateHasChanged();
-            }
-        }
+        private MudForm? form;
 
         private int wordCount = 2;
 
-        private bool isValid = false;
-
         private string[] words = new string[2];
-
-        public void Reset(int wordCount)
-        {
-            this.WordCount = wordCount;
-            this.IsValid = false;
-        }
     }
 }

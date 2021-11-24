@@ -108,7 +108,7 @@ namespace Fishbowl.Net.Client.Online.Pages
             await this.StateManager.SetStateAsync<PlayerWords>(state =>
             {
                 state.OnPlayerWordsSet = this.SubmitPlayerData;
-                state.Reset(this.ClientState.WordCount);
+                state.WordCount = this.ClientState.WordCount;
             });
         }
 

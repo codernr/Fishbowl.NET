@@ -7,7 +7,7 @@
     Title="@(L["Components.States.Common.SetupPlayer"])"
     Subtitle="@(L["Components.States.PlayerName.Title"])"
     TotalSteps="2" Step="1">
-    <MudForm @bind-IsValid="this.IsValid">
+    <MudForm @ref="this.form" IsValidChanged="_ => this.StateHasChanged()">
         <MudTextField
             T="string"
             Label="@(L["Components.States.PlayerName.InputPlaceholder"])"
@@ -16,7 +16,7 @@
             {
                 ErrorMessage = L["Components.States.PlayerName.ErrorMessage"]
             })"
-            @bind-Value="this.Value"
+            @bind-Value="this.playerName"
             Immediate="true"
             Class="my-10" />
         <MudButton
@@ -24,8 +24,8 @@
             Color="Color.Primary"
             FullWidth="true"
             Size="Size.Large"
-            Disabled="!this.IsValid"
-            @onclick="_ => this.Submit(() => this.OnPlayerNameSet(this.Value))">
+            Disabled="!this.form!.IsValid"
+            @onclick="_ => this.Submit(() => this.OnPlayerNameSet(this.playerName))">
             @L["Components.States.PlayerName.SubmitButton"]
         </MudButton>
     </MudForm>

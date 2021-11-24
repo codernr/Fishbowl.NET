@@ -7,7 +7,7 @@
     Title="@(L["Components.States.Common.SetupPlayer"])"
     Subtitle="@(L["Components.States.PlayerWords.Title"])"
     TotalSteps="2" Step="2">
-    <MudForm @bind-IsValid="this.IsValid">
+    <MudForm @ref="this.form" IsValidChanged="_ => this.StateHasChanged()">
         @for (int i = 0; i < this.words.Length; i++)
         {
             var id = i;
@@ -26,7 +26,7 @@
             Color="Color.Primary"
             FullWidth="true"
             Size="Size.Large"
-            Disabled="!this.IsValid"
+            Disabled="!this.form!.IsValid"
             @onclick="_ => this.Submit(() => this.OnPlayerWordsSet(this.words))">
             @L["Components.States.PlayerName.SubmitButton"]
         </MudButton>

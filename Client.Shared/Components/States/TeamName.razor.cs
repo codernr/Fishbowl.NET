@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Fishbowl.Net.Shared.ViewModels;
+using MudBlazor;
 
 namespace Fishbowl.Net.Client.Shared.Components.States
 {
@@ -10,24 +11,8 @@ namespace Fishbowl.Net.Client.Shared.Components.States
 
         public TeamViewModel Team { get; set; } = default!;
 
-        private string Value { get; set; } = string.Empty;
+        private MudForm? form;
 
-        private bool IsValid
-        {
-            get => this.isValid;
-            set
-            {
-                this.isValid = value;
-                this.StateHasChanged();
-            }
-        }
-
-        private bool isValid;
-
-        public void Reset()
-        {
-            this.Value = string.Empty;
-            this.IsValid = false;
-        }
+        private string teamName = string.Empty;
     }
 }

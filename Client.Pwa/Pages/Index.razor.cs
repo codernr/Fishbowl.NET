@@ -66,7 +66,7 @@ namespace Fishbowl.Net.Client.Pwa.Pages
 
             return this.StateManager.SetStateAsync<PlayerWords>(state =>
             {
-                state.Reset(this.Setup.WordCount);
+                state.WordCount = this.Setup.WordCount;
                 state.OnPlayerWordsSet = this.SetPlayerData;
             });
         }
@@ -83,7 +83,6 @@ namespace Fishbowl.Net.Client.Pwa.Pages
             {
                 return this.StateManager.SetStateAsync<PlayerName>(state =>
                 {
-                    state.Reset();
                     state.OnPlayerNameSet = this.SetPlayerName;
                 });
             }
@@ -113,7 +112,6 @@ namespace Fishbowl.Net.Client.Pwa.Pages
                 this.StateManager.SetStateAsync<TeamName>(state =>
                 {
                     state.Team = nextTeam.Map();
-                    state.Reset();
                     state.OnTeamNameSet = this.SetTeamName;
                 });
         }

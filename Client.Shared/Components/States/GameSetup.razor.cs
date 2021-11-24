@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Fishbowl.Net.Shared.ViewModels;
+using MudBlazor;
 
 namespace Fishbowl.Net.Client.Shared.Components.States
 {
     public partial class GameSetup
     {
         public Func<GameSetupViewModel, Task> OnGameSetup { get; set; } = default!;
-
-        private bool IsValid => this.SelectedRoundTypes.Count() > 0;
 
         private int PlayerCount
         {
@@ -35,6 +34,8 @@ namespace Fishbowl.Net.Client.Shared.Components.States
             }
         }
 
+        private MudForm? form;
+
         private int playerCount = 4;
 
         private int teamCount = 2;
@@ -51,6 +52,12 @@ namespace Fishbowl.Net.Client.Shared.Components.States
             this.roundTypes = new[] { "Taboo", "Drawing", "Charades", "Password", "Humming" }
                 .Select(item => L[$"Components.States.GameSetup.RoundTypes.{item}"].Value);
             this.SelectedRoundTypes = this.roundTypes;
+        }
+
+        protected override void OnAfterRender(bool firstRender)
+        {
+            base.OnAfterRender(firstRender);
+            this.form?.Validate();
         }
 
         private Task SetupGame() =>

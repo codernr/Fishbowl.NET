@@ -9,7 +9,7 @@
             <TeamMembers Players="this.Team.Players" />
         </div>
     </div>
-    <MudForm @bind-IsValid="this.IsValid">
+    <MudForm @ref="this.form" IsValidChanged="_ => this.StateHasChanged()">
         <MudTextField
             T="string"
             Label="@(L[$"Components.States.TeamName.Title"])"
@@ -17,7 +17,7 @@
             RequiredError="@(L["Common.Error.Required"])"
             Validation="@(new MinLengthAttribute(2) { ErrorMessage = L["Components.States.TeamName.MinLengthError"] })"
             MaxLength="30"
-            @bind-Value="this.Value"
+            @bind-Value="this.teamName"
             Immediate="true"
             Class="my-10" />
         <MudButton
@@ -25,8 +25,8 @@
             Color="Color.Primary"
             FullWidth="true"
             Size="Size.Large"
-            Disabled="!this.IsValid"
-            @onclick="_ => this.Submit(() => this.OnTeamNameSet(new(this.Team.Id, this.Value)))">
+            Disabled="!this.form!.IsValid"
+            @onclick="_ => this.Submit(() => this.OnTeamNameSet(new(this.Team.Id, this.teamName)))">
             @L["Components.States.TeamName.Button"]
         </MudButton>
     </MudForm>
