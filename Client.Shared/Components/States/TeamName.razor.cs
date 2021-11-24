@@ -27,6 +27,7 @@ namespace Fishbowl.Net.Client.Shared.Components.States
         public void Reset()
         {
             this.Value = string.Empty;
+            this.submitted = false;
             this.IsValid = false;
         }
     }
