@@ -1,30 +1,33 @@
 @inherits State
 @inject IStringLocalizer<Resources> L
 
-<StateContainer Title="@(L["Components.States.PeriodFinished.Title"])">
-    <MudText Typo="Typo.h5" Class="mb-5">
-        @this.Period.Player.Username @L["Components.States.PeriodFinished.Scores"]:
-        @this.Period.Scores.Count
-    </MudText>
+@if(this.Period is not null)
+{
+    <StateContainer Title="@(L["Components.States.PeriodFinished.Title"])">
+        <MudText Typo="Typo.h5" Class="mb-5">
+            @this.Period.Player.Username @L["Components.States.PeriodFinished.Scores"]:
+            @this.Period.Scores.Count
+        </MudText>
 
-    <MudText Typo="Typo.h5" Class="mb-2">
-        @L["Components.States.PeriodFinished.GuessedWords"]
-    </MudText>
+        <MudText Typo="Typo.h5" Class="mb-2">
+            @L["Components.States.PeriodFinished.GuessedWords"]
+        </MudText>
 
-    <MudPaper Class="mx-auto">
-        <MudList>
-            @for (int i = 0; i < this.Period.Scores.Count; i++)
-            {
-                var index = i;
-                <MudListItem>
-                    <MudText Align="Align.Center">@this.Period.Scores[index].Word.Value</MudText>
-                </MudListItem>
-
-                @if (index < this.Period.Scores.Count - 1)
+        <MudPaper Class="mx-auto">
+            <MudList>
+                @for (int i = 0; i < this.Period.Scores.Count; i++)
                 {
-                    <MudDivider />
+                    var index = i;
+                    <MudListItem>
+                        <MudText Align="Align.Center">@this.Period.Scores[index].Word.Value</MudText>
+                    </MudListItem>
+
+                    @if (index < this.Period.Scores.Count - 1)
+                    {
+                        <MudDivider />
+                    }
                 }
-            }
-        </MudList>
-    </MudPaper>
-</StateContainer>
+            </MudList>
+        </MudPaper>
+    </StateContainer>
+}

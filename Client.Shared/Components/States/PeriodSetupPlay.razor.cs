@@ -7,6 +7,6 @@ namespace Fishbowl.Net.Client.Shared.Components.States
     {
         public Action<DateTimeOffset> OnStarted { get; set; } = default!;
 
-        public PeriodSetupViewModel Period { get; set; } = default!;
+        public PeriodSetupViewModel? Period { get; set; }
     }
 }
