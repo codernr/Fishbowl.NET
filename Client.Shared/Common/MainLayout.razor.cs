@@ -7,11 +7,6 @@ namespace Fishbowl.Net.Client.Shared.Common
             base.OnInitialized();
 
             this.AppState.PropertyChanged += this.StateHasChanged;
-            
-            if (this.AppState.Title is null)
-            {
-                this.AppState.Title = this.L["Common.GameName"];
-            }
         }
     }
 }

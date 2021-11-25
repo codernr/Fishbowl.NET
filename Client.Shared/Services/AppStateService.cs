@@ -6,7 +6,7 @@ namespace Fishbowl.Net.Client.Shared.Services
     {
         public event Action? PropertyChanged;
 
-        public string? Title
+        public string Title
         {
             get => this.title;
             set
@@ -16,6 +16,6 @@ namespace Fishbowl.Net.Client.Shared.Services
             }
         }
 
-        private string? title;
+        private string title = string.Empty;
     }
 }
