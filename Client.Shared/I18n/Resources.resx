@@ -90,6 +90,12 @@
     <data name="Components.States.GameFinished.Title">
         <value>Results</value>
     </data>
+    <data name="Components.States.GameFinished.Winner">
+        <value>Winner team:</value>
+    </data>
+    <data name="Components.States.GameFinished.Draw">
+        <value>Draw! Winner teams:</value>
+    </data>
     <data name="Components.States.GameFinished.Button">
         <value>New game</value>
     </data>

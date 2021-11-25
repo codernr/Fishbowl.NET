@@ -90,6 +90,12 @@
     <data name="Components.States.GameFinished.Title">
         <value>Eredmények</value>
     </data>
+    <data name="Components.States.GameFinished.Winner">
+        <value>Nyertes csapat:</value>
+    </data>
+    <data name="Components.States.GameFinished.Draw">
+        <value>Döntetlen! Nyertes csapatok:</value>
+    </data>
     <data name="Components.States.GameFinished.Button">
         <value>Új játék</value>
     </data>
