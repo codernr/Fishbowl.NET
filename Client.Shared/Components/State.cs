@@ -17,6 +17,18 @@ namespace Fishbowl.Net.Client.Shared.Components
         [Parameter]
         public Action<T>? SetParameters { get; set; }
 
+        public string Title
+        {
+            get => this.title;
+            set
+            {
+                this.title = value;
+                this.AppState.Title = value;
+            }
+        }
+
+        private string title = default!;
+
         public void Update(Action<T> updateParameters)
         {
             updateParameters(this.Instance);
@@ -29,14 +41,9 @@ namespace Fishbowl.Net.Client.Shared.Components
         {
             base.OnInitialized();
 
+            this.Title = this.L[$"Components.States.{this.GetType().Name}.Title"];
+
             this.SetParameters?.Invoke(this.Instance);
-
-            this.SetTitle();
-        }
-
-        protected virtual void SetTitle()
-        {
-            this.AppState.Title = this.L[$"Components.States.{this.GetType().Name}.Title"];
         }
     }
 }
