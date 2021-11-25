@@ -1,7 +1,7 @@
 @inherits State<PeriodPlay>
 
 <StateContainer>
-    <MudContainer>
+    <MudContainer Class="mb-3">
         <MudButton
             Variant="Variant.Filled"
             Color="Color.Error"
@@ -12,11 +12,11 @@
         </MudButton>
     </MudContainer>
 
-    <MudContainer Class="my-5">
+    <MudContainer Class="mt-7 mb-3">
         <Timer Start="this.Period.StartedAt" Length="this.Period.Length" OnExpired="() => this.Expired = true" />
     </MudContainer>
 
-    <MudContainer Class="my-10">
+    <MudContainer Class="mt-3 mb-7">
         <MudCard Class="mud-theme-primary">
             <MudCardContent>
                 <MudText Typo="Typo.h4">@(this.Word?.Value ?? string.Empty)</MudText>
@@ -24,7 +24,7 @@
         </MudCard>
     </MudContainer>
 
-    <MudContainer Class="my-5">
+    <MudContainer Class="my-3">
         <MudButton
             Variant="Variant.Filled"
             Color="Color.Success"
@@ -36,7 +36,7 @@
         </MudButton>
     </MudContainer>
 
-    <MudContainer Class="my-5">
+    <MudContainer>
         <MudButton
             Variant="Variant.Filled"
             Color="Color.Error"

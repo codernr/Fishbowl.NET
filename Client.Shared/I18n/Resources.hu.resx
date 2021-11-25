@@ -21,9 +21,6 @@
     <data name="Components.TeamMembers.Title">
         <value>Csapatod</value>
     </data>
-    <data name="Components.Timer.Remaining">
-        <value>Hátralévő idő</value>
-    </data>
     <data name="Components.States.Common.PlayerName">
         <value>Név</value>
     </data>

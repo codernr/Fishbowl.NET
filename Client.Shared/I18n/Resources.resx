@@ -21,9 +21,6 @@
     <data name="Components.TeamMembers.Title">
         <value>Your team</value>
     </data>
-    <data name="Components.Timer.Remaining">
-        <value>Remaining</value>
-    </data>
     <data name="Components.States.Common.PlayerName">
         <value>Name</value>
     </data>
