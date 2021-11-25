@@ -131,7 +131,7 @@ namespace Fishbowl.Net.Server.Services
 
             await this.groupHubContext
                 .Client(this.Teams[teamName.Id].Players[0].Username)
-                .ReceiveWaitForTeamSetup(new(this.Teams.Select(team => team.Map()).ToList()));
+                .ReceiveWaitForTeamSetup(new(null, new(this.Teams.Select(team => team.Map()).ToList())));
 
             await this.groupHubContext.Group().ReceiveTeamName(teamName);
 
@@ -145,15 +145,23 @@ namespace Fishbowl.Net.Server.Services
         {
             this.teams = players.Randomize().ToList().CreateTeams(teamCount).ToList();
 
-            var setupPlayerIds = this.teams
-                .Select(team => team.Players.First())
-                .Select(player => player.Username);
-
             TeamSetupViewModel data = this.Teams.Map();
+            List<Task> tasks = new();
 
-            return Task.WhenAll(
-                this.groupHubContext.Clients(setupPlayerIds).ReceiveSetTeamName(data),
-                this.groupHubContext.GroupExcept(setupPlayerIds).ReceiveWaitForTeamSetup(data));
+            foreach(var team in this.Teams)
+            {
+                var setupPlayer = team.Players.First();
+
+                tasks.Add(this.groupHubContext.Client(setupPlayer.Username).ReceiveSetTeamName(data));
+
+                for (int i = 1; i < team.Players.Count; i++)
+                {
+                    tasks.Add(this.groupHubContext.Client(team.Players[i].Username).ReceiveWaitForTeamSetup(
+                        new(setupPlayer.Map(), data.Teams)));
+                }
+            }
+
+            return Task.WhenAll(tasks);
         }
 
         private async Task StartGame(List<Team> teams, IEnumerable<string> roundTypes)
@@ -236,8 +244,11 @@ namespace Fishbowl.Net.Server.Services
 
             var client = this.groupHubContext.Client(player.Username);
 
+            var teamViewModels = this.Teams.Map();
+
             return (playerTeam.Players[0].Username == player.Username && playerTeam.Name is null) ?
-                client.ReceiveSetTeamName(this.Teams.Map()) : client.ReceiveWaitForTeamSetup(this.Teams.Map());
+                client.ReceiveSetTeamName(teamViewModels) :
+                client.ReceiveWaitForTeamSetup(new(playerTeam.Players[0].Map(), teamViewModels.Teams));
         }
 
         private async Task RestoreGame(Player player, AsyncGame game)

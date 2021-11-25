@@ -192,6 +192,9 @@
     <data name="Components.States.WaitingForTeamNames.Title">
         <value>Team name setup</value>
     </data>
+    <data name="Components.States.WaitingForTeamNames.SetupPlayer">
+        <value>The player who sets team name: {0}</value>
+    </data>
     <data name="Components.States.WaitingForTeamNames.TeamNames">
         <value>Team names</value>
     </data>

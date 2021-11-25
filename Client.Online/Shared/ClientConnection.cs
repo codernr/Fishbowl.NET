@@ -39,7 +39,7 @@ namespace Fishbowl.Net.Client.Online.Shared
                 .On<PlayerCountViewModel>(nameof(client.ReceivePlayerCount), client.ReceivePlayerCount)
                 .On<PlayerViewModel>(nameof(client.ReceiveWaitForOtherPlayers), client.ReceiveWaitForOtherPlayers)
                 .On<TeamSetupViewModel>(nameof(client.ReceiveSetTeamName), client.ReceiveSetTeamName)
-                .On<TeamSetupViewModel>(nameof(client.ReceiveWaitForTeamSetup), client.ReceiveWaitForTeamSetup)
+                .On<TeamSetupWatchViewModel>(nameof(client.ReceiveWaitForTeamSetup), client.ReceiveWaitForTeamSetup)
                 .On<TeamNameViewModel>(nameof(client.ReceiveTeamName), client.ReceiveTeamName)
                 .On<PlayerViewModel>(nameof(client.ReceiveRestoreState), client.ReceiveRestoreState)
                 .On<GameAbortViewModel>(nameof(client.ReceiveGameAborted), client.ReceiveGameAborted)

@@ -139,15 +139,16 @@ namespace Fishbowl.Net.Client.Online.Pages
             });
         }
 
-        public Task ReceiveWaitForTeamSetup(TeamSetupViewModel teamSetup)
+        public Task ReceiveWaitForTeamSetup(TeamSetupWatchViewModel teamSetup)
         {
             this.ClientState.Teams = teamSetup.Teams;
 
             return this.StateManager.SetStateAsync<WaitingForTeamNames>(state =>
             {
+                state.SetupPlayer = teamSetup.SetupPlayer;
                 state.Team = this.ClientState.Team;
                 state.Teams = this.ClientState.Teams.Where(team => team.Name is not null).ToList();
-            });
+            }, TimeSpan.FromSeconds(2));
         }
 
         public Task ReceiveTeamName(TeamNameViewModel teamName)

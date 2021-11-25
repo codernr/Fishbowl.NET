@@ -192,6 +192,9 @@
     <data name="Components.States.WaitingForTeamNames.Title">
         <value>Csapatnevek megadása</value>
     </data>
+    <data name="Components.States.WaitingForTeamNames.SetupPlayer">
+        <value>A csapat nevét ő állítja be: {0}</value>
+    </data>
     <data name="Components.States.WaitingForTeamNames.TeamNames">
         <value>Csapatnevek</value>
     </data>

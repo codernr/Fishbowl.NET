@@ -1,6 +1,15 @@
 @inherits State<WaitingForTeamNames>
 
 <StateContainer>
+    @if(this.SetupPlayer is not null)
+    {
+        <MudContainer Class="mb-5">
+            <MudAlert Severity="Severity.Info">
+                @string.Format(L["Components.States.WaitingForTeamNames.SetupPlayer"], this.SetupPlayer.Username)
+            </MudAlert>
+        </MudContainer>
+    }
+
     <MudContainer Class="mb-10">
         <TeamMembers Players="this.Team.Players" />
     </MudContainer>

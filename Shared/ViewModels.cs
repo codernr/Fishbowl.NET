@@ -43,6 +43,8 @@ namespace Fishbowl.Net.Shared.ViewModels
 
     public record TeamSetupViewModel(List<TeamViewModel> Teams);
 
+    public record TeamSetupWatchViewModel(PlayerViewModel? SetupPlayer, List<TeamViewModel> Teams);
+
     public record TeamNameViewModel(int Id, string Name);
 
     public record RoundViewModel(string Type);
