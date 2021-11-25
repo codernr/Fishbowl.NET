@@ -9,9 +9,6 @@ namespace Fishbowl.Net.Client.Shared.Components
     {
         private static readonly TimeSpan TransitionDuration = TimeSpan.FromMilliseconds(300);
 
-        [Parameter]
-        public Action<object>? TransitionStarted { get; set; }
-
         private DynamicComponent Component => this.component ?? throw new InvalidOperationException();
 
         private DynamicComponent? component; 
@@ -54,8 +51,6 @@ namespace Fishbowl.Net.Client.Shared.Components
 
             this.StateHasChanged();
          
-            this.TransitionStarted?.Invoke(this.Instance<T>());
-
             await this.EnableAsync(delay);
         }
 

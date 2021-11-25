@@ -52,7 +52,7 @@ namespace Fishbowl.Net.Client.Online.Pages
 
         private void OnStateTransition(object newState)
         {
-            this.IsPlayerCountPopoverVisible = newState is PlayerWords || newState is WaitingForPlayers;
+            this.IsPlayerCountPopoverVisible = newState is PlayerWords || newState is Info;
         }
 
         public async Task Connected()
@@ -93,6 +93,8 @@ namespace Fishbowl.Net.Client.Online.Pages
             this.ClientState.TeamCount = gameSetup.TeamCount;
             this.ClientState.RoundTypes = gameSetup.RoundTypes;
 
+            this.IsPlayerCountPopoverVisible = true;
+
             await this.StateManager.SetStateAsync<PlayerWords>(state =>
             {
                 state.OnPlayerWordsSet = this.SubmitPlayerData;
@@ -109,11 +111,18 @@ namespace Fishbowl.Net.Client.Online.Pages
             return Task.CompletedTask;
         }
 
-        public async Task ReceiveWaitForOtherPlayers(PlayerViewModel player)
+        public Task ReceiveWaitForOtherPlayers(PlayerViewModel player)
         {
+            this.IsPlayerCountPopoverVisible = true;
             this.ClientState.Username = player.Username;
 
-            await this.StateManager.SetStateAsync<WaitingForPlayers>();
+            return this.StateManager.SetStateAsync<Info>(state =>
+            {
+                state.Title = L("Components.States.WaitingForPlayers.Title");
+                state.Severity = Severity.Info;
+                state.Message = L($"Components.States.WaitingForPlayers.Message");
+                state.Loading = true;
+            });
         }
 
         public Task ReceiveSetTeamName(TeamSetupViewModel teamSetup)
