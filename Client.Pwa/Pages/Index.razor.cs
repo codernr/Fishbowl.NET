@@ -19,8 +19,6 @@ namespace Fishbowl.Net.Client.Pwa.Pages
 
         private StateManager StateManager => this.stateManager ?? throw new InvalidOperationException();
 
-        private bool isPlayerSetupPopoverVisible = false;
-
         private GameSetupViewModel? setup;
 
         private GameSetupViewModel Setup => this.setup ?? throw new InvalidOperationException();
@@ -83,7 +81,6 @@ namespace Fishbowl.Net.Client.Pwa.Pages
                 });
             }
 
-            this.isPlayerSetupPopoverVisible = false;
             return this.CreateTeams();
         }
 

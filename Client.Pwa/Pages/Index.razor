@@ -6,9 +6,3 @@
 @inject IScreenService ScreenService
 
 <StateManager @ref="this.stateManager" />
-
-<MudPopover Open="this.isPlayerSetupPopoverVisible" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.BottomCenter" Class="pa-5" Paper="false">
-    <MudPaper Class="mud-theme-primary pa-2" Elevation="8">
-        <MudText>@(string.Format(L("Pages.Play.SetupCount"), this.players.Count + 1))</MudText>
-    </MudPaper>
-</MudPopover>
