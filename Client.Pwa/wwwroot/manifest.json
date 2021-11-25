@@ -13,5 +13,6 @@
     }
   ],
   "lang": "hu",
-  "orientation": "portrait"
+  "orientation": "portrait",
+  "version": "1.0.0"
 }
