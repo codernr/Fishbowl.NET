@@ -61,6 +61,7 @@ namespace Fishbowl.Net.Client.Pwa.Pages
             {
                 state.OnPlayerSetup = this.SetupPlayer;
                 state.WordCount = this.Setup.WordCount;
+                state.Title = string.Format(L("Components.States.PlayerSetup.Title"), 1);
             });
         }
 
@@ -78,6 +79,7 @@ namespace Fishbowl.Net.Client.Pwa.Pages
                 {
                     state.OnPlayerSetup = this.SetupPlayer;
                     state.WordCount = this.Setup.WordCount;
+                    state.Title = string.Format(L("Components.States.PlayerSetup.Title"), this.players.Count + 1);
                 });
             }
 

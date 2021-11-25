@@ -160,7 +160,7 @@
         <value>Aktuális játékos</value>
     </data>
     <data name="Components.States.PlayerSetup.Title">
-        <value>Add meg a neved és a szavaidat</value>
+        <value>{0}. játékos neve és szavai</value>
     </data>
     <data name="Components.States.PlayerSetup.SubmitButton">
         <value>Beállít</value>

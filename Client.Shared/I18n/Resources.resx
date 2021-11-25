@@ -160,7 +160,7 @@
         <value>Playing</value>
     </data>
     <data name="Components.States.PlayerSetup.Title">
-        <value>Set your name and words</value>
+        <value>Set player #{0} name and words</value>
     </data>
     <data name="Components.States.PlayerSetup.SubmitButton">
         <value>Set</value>
