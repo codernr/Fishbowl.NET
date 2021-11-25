@@ -1,12 +1,12 @@
-using Fishbowl.Net.Client.Shared.Common;
+using MudBlazor;
 
 namespace Fishbowl.Net.Client.Shared.Components.States
 {
     public partial class Info
     {
-        public string ContextClass { get; set; } = ContextCssClass.Default;
+        public Severity Severity { get; set; }
 
-        public string Message { get; set; } = string.Empty;
+        public string? Message { get; set; }
 
         public bool Loading { get; set; }
     }

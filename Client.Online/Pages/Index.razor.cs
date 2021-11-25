@@ -75,8 +75,8 @@ namespace Fishbowl.Net.Client.Online.Pages
         public Task Reconnecting(Exception? exception) =>
             this.StateManager.SetStateAsync<Info>(state =>
                 {
-                    state.ContextClass = ContextCssClass.Error;
                     state.Title = L("Pages.Play.ErrorTitle");
+                    state.Severity = Severity.Error;
                     state.Message = L("Pages.Play.Reconnecting");
                     state.Loading = true;
                 });
@@ -161,8 +161,8 @@ namespace Fishbowl.Net.Client.Online.Pages
         {
             await this.StateManager.SetStateAsync<Info>(state => 
             {
-                state.ContextClass = ContextCssClass.Error;
                 state.Title = L("Pages.Play.ErrorTitle");
+                state.Severity = Severity.Error;
                 state.Message = L(abort.MessageKey);
                 state.Loading = false;
             }, TimeSpan.FromSeconds(2));
@@ -174,9 +174,7 @@ namespace Fishbowl.Net.Client.Online.Pages
         {
             await this.StateManager.SetStateAsync<Info>(state =>
             {
-                state.ContextClass = ContextCssClass.Default;
                 state.Title = L("Pages.Play.GameStartedTitle");
-                state.Message = string.Empty;
                 state.Loading = true;
             }, TimeSpan.FromSeconds(2));
         }
@@ -194,9 +192,9 @@ namespace Fishbowl.Net.Client.Online.Pages
         public Task ReceiveRoundStarted(RoundViewModel round) =>
             this.StateManager.SetStateAsync<Info>(state =>
             {
-                state.ContextClass = ContextCssClass.Default;
                 state.Title = $"{L("Pages.Play.RoundStartedTitle")}: {round.Type}";
-                state.Message = string.Empty;
+                state.Severity = Severity.Info;
+                state.Message = L($"Components.States.Common.RoundTypes.{round.Type}.Description");
                 state.Loading = true;
             }, TimeSpan.FromSeconds(2));
 

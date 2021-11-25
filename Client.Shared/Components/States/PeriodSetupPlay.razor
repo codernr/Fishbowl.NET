@@ -1,18 +1,26 @@
 @inherits State<PeriodSetupPlay>
 
 <StateContainer>
-    <MudText Typo="Typo.h5" Class="mb-5">
-        @L["Components.States.PeriodSetupPlay.PeriodLength"]: @(string.Format("{0:m\\:ss}", this.Period.Length))
-    </MudText>
-    <MudText Typo="Typo.h5" Class="mb-10">
-        @L["Components.States.PeriodSetupPlay.Subtitle"]
-    </MudText>
-    <MudButton
-        Variant="Variant.Filled"
-        Color="Color.Primary"
-        FullWidth="true"
-        Size="Size.Large"
-        @onclick="this.Start">
-        @L["Components.States.PeriodSetupPlay.StartButton"]
-    </MudButton>
+    <MudContainer Class="my-6">
+        <MudText Typo="Typo.h5">
+            @L["Components.States.PeriodSetupPlay.PeriodLength"]: @(string.Format("{0:m\\:ss}", this.Period.Length))
+        </MudText>
+    </MudContainer>
+    
+    <MudContainer Class="my-6">
+        <MudButton
+            Variant="Variant.Filled"
+            Color="Color.Primary"
+            FullWidth="true"
+            Size="Size.Large"
+            @onclick="this.Start">
+            @L["Components.States.PeriodSetupPlay.StartButton"]
+        </MudButton>
+    </MudContainer>
+
+    <MudContainer class="mt-3">
+        <MudAlert Severity="Severity.Info">
+            @L[$"Components.States.Common.RoundTypes.{this.Period.Round.Type}.Description"]
+        </MudAlert>
+    </MudContainer>
 </StateContainer>

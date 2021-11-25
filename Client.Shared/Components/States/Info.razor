@@ -1,7 +1,16 @@
 @inherits State<Info>
 
-<StateContainer Class="@this.ContextClass">
-    <MudText>@this.Message</MudText>
+<StateContainer>
+    @if(this.Message is not null)
+    {
+        <MudContainer Class="mb-10">
+            <MudAlert Severity="this.Severity">
+                @this.Message
+            </MudAlert>
+        </MudContainer>
+
+    }
+
     @if (this.Loading)
     {
         <MudProgressCircular Color="Color.Primary" Indeterminate="true" />

@@ -42,6 +42,21 @@
     <data name="Components.States.Common.PlayerWords.MinLengthError">
         <value>At least two characters long</value>
     </data>
+    <data name="Components.States.Common.RoundTypes.Taboo.Description">
+        <value>Describe the word without saying it.</value>
+    </data>
+    <data name="Components.States.Common.RoundTypes.Drawing.Description">
+        <value>Draw the word.</value>
+    </data>
+    <data name="Components.States.Common.RoundTypes.Charades.Description">
+        <value>Act the word without speaking.</value>
+    </data>
+    <data name="Components.States.Common.RoundTypes.Password.Description">
+        <value>You can say only one word that is related to the original.</value>
+    </data>
+    <data name="Components.States.Common.RoundTypes.Humming.Description">
+        <value>Act the word by only moving your head. You can make sounds bot not speak.</value>
+    </data>
     <data name="Components.States.GameSetup.Title">
         <value>Setup game</value>
     </data>
@@ -140,9 +155,6 @@
     </data>
     <data name="Components.States.PeriodPlay.WarningAlert">
         <value>Your team has one guess, press Pass button if missed.</value>
-    </data>
-    <data name="Components.States.PeriodSetupPlay.Subtitle">
-        <value>Start period by clicking button</value>
     </data>
     <data name="Components.States.PeriodSetupPlay.PeriodLength">
         <value>Period length</value>

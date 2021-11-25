@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Fishbowl.Net.Client.Pwa.Components.States;
-using Fishbowl.Net.Client.Shared.Common;
 using Fishbowl.Net.Client.Shared.Components;
 using Fishbowl.Net.Client.Shared.Components.States;
 using Fishbowl.Net.Shared;
 using Fishbowl.Net.Shared.Exceptions;
 using Fishbowl.Net.Shared.GameEntities;
 using Fishbowl.Net.Shared.ViewModels;
+using MudBlazor;
 
 namespace Fishbowl.Net.Client.Pwa.Pages
 {
@@ -175,9 +175,7 @@ namespace Fishbowl.Net.Client.Pwa.Pages
         {
             await this.StateManager.SetStateAsync<Info>(state =>
             {
-                state.ContextClass = ContextCssClass.Default;
                 state.Title = L("Pages.Play.GameStartedTitle");
-                state.Message = string.Empty;
                 state.Loading = true;
             }, TimeSpan.FromSeconds(2));
         }
@@ -195,9 +193,9 @@ namespace Fishbowl.Net.Client.Pwa.Pages
         private Task OnRoundStarted(Round round) =>
             this.StateManager.SetStateAsync<Info>(state =>
             {
-                state.ContextClass = ContextCssClass.Default;
                 state.Title = $"{L("Pages.Play.RoundStartedTitle")}: {round.Type}";
-                state.Message = string.Empty;
+                state.Severity = Severity.Info;
+                state.Message = L($"Components.States.Common.RoundTypes.{round.Type}.Description");
                 state.Loading = true;
             }, TimeSpan.FromSeconds(2));
 
@@ -276,8 +274,8 @@ namespace Fishbowl.Net.Client.Pwa.Pages
         {
             await this.StateManager.SetStateAsync<Info>(state => 
             {
-                state.ContextClass = ContextCssClass.Default;
                 state.Title = L("Pages.Play.ErrorTitle");
+                state.Severity = Severity.Error;
                 state.Message = L(messageKey);
                 state.Loading = false;
             }, TimeSpan.FromSeconds(2));

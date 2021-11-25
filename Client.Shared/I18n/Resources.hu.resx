@@ -42,6 +42,21 @@
     <data name="Components.States.Common.PlayerWords.MinLengthError">
         <value>Minimum két karakter</value>
     </data>
+    <data name="Components.States.Common.RoundTypes.Körülírás.Description">
+        <value>Írd körül a szót anélkül, hogy kimondanád!</value>
+    </data>
+    <data name="Components.States.Common.RoundTypes.Rajzolás.Description">
+        <value>Rajzold le a szót!</value>
+    </data>
+    <data name="Components.States.Common.RoundTypes.Mutogatás.Description">
+        <value>Mutogasd el a szót!</value>
+    </data>
+    <data name="Components.States.Common.RoundTypes.Egy szó.Description">
+        <value>Egy szót mondhatsz, erre asszociálva kell megfejteni a többieknek.</value>
+    </data>
+    <data name="Components.States.Common.RoundTypes.Hümmögés.Description">
+        <value>Mutogasd el a szót úgy, hogy csak a fejed mozog! Hangokat adhatsz, de nem beszélhetsz!</value>
+    </data>
     <data name="Components.States.GameSetup.Title">
         <value>Játék beállítása</value>
     </data>
@@ -140,9 +155,6 @@
     </data>
     <data name="Components.States.PeriodSetupPlay.Title">
         <value>A te köröd</value>
-    </data>
-    <data name="Components.States.PeriodSetupPlay.Subtitle">
-        <value>Nyomd meg a kör kezdéséhez</value>
     </data>
     <data name="Components.States.PeriodSetupPlay.PeriodLength">
         <value>Kör hossza</value>
