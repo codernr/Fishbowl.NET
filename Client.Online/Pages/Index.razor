@@ -18,13 +18,11 @@
     TransformOrigin="Origin.BottomCenter"
     Class="pa-5"
     Paper="false">
-    <MudPaper Class="mud-theme-primary pa-2" Elevation="8">
-        <MudText>
-            @(string.Format(
-                L("Pages.Play.PlayerCount"),
-                this.ClientState.TotalPlayerCount,
-                this.ClientState.ConnectedPlayerCount,
-                this.ClientState.SetupPlayerCount))
-        </MudText>
-    </MudPaper>
+    <MudAlert Severity="Severity.Info">
+        @(string.Format(
+            L("Pages.Play.PlayerCount"),
+            this.ClientState.TotalPlayerCount,
+            this.ClientState.ConnectedPlayerCount,
+            this.ClientState.SetupPlayerCount))
+    </MudAlert>
 </MudPopover>
