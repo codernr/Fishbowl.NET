@@ -12,7 +12,7 @@
 }
 
 .timer {
-    transition: background-color 300ms, color 300ms;
+    transition: background-color 300ms, color 300ms !important;
 }
 
 .splash {
