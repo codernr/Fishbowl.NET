@@ -252,7 +252,7 @@ namespace Fishbowl.Net.Client.Online.Pages
         public Task ReceiveScoreAdded(ScoreViewModel score)
         {
             this.ClientState.PeriodScores.Add(score);
-            this.Snackbar?.Add($"{this.L("Pages.Play.Scored")}: {score.Word.Value}", Severity.Success);
+            this.Snackbar?.Add($"{this.L("Pages.Play.Scored")}", Severity.Success);
             this.StateManager.SetParameters<PeriodPlay>(state => state.ScoreCount = this.ClientState.PeriodScores.Count);
             return Task.CompletedTask;
         }
