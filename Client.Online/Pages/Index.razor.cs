@@ -88,18 +88,6 @@ namespace Fishbowl.Net.Client.Online.Pages
 
         public async Task ReceiveSetupPlayer(GameSetupViewModel gameSetup)
         {
-            if (this.ClientState.IsCreating)
-            {
-                await this.StateManager.SetStateAsync<Info>(state =>
-                {
-                    state.ContextClass = ContextCssClass.Success;
-                    state.Title = L("Pages.Play.GameCreatedTitle");
-                    state.Message = L("Pages.Play.GameCreatedMessage");
-                    state.Loading = false;
-                }, TimeSpan.FromSeconds(2));
-                this.ClientState.IsCreating = false;
-            }
-            
             this.ClientState.TotalPlayerCount = gameSetup.PlayerCount;
             this.ClientState.WordCount = gameSetup.WordCount;
             this.ClientState.TeamCount = gameSetup.TeamCount;

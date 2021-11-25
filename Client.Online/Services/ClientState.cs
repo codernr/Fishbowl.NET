@@ -13,8 +13,6 @@ namespace Fishbowl.Net.Client.Online.Services
 
         string? Password { get; set; }
 
-        bool IsCreating { get; set; }
-
         int TotalPlayerCount { get; set; }
 
         int SetupPlayerCount { get; set; }
