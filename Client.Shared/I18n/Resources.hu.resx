@@ -186,8 +186,14 @@
     <data name="Components.States.RoundFinished.Scores">
         <value>Pontok</value>
     </data>
-    <data name="Components.States.TeamName.Title">
+    <data name="Components.States.TeamName.Title.Online">
         <value>Nevezd el a csapatod</value>
+    </data>
+    <data name="Components.States.TeamName.Title.Pwa">
+        <value>{0}. csapat elnevezése</value>
+    </data>
+    <data name="Components.States.TeamName.Label">
+        <value>Név</value>
     </data>
     <data name="Components.States.TeamName.Button">
         <value>Beállít</value>

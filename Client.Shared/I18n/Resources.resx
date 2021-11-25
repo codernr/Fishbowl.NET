@@ -186,8 +186,14 @@
     <data name="Components.States.RoundFinished.Scores">
         <value>Scores</value>
     </data>
-    <data name="Components.States.TeamName.Title">
-        <value>Give your team a name</value>
+    <data name="Components.States.TeamName.Title.Online">
+        <value>Name your team</value>
+    </data>
+    <data name="Components.States.TeamName.Title.Pwa">
+        <value>Name team #{0}</value>
+    </data>
+    <data name="Components.States.TeamName.Label">
+        <value>Name</value>
     </data>
     <data name="Components.States.TeamName.Button">
         <value>Set</value>

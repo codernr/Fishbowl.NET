@@ -11,7 +11,7 @@
     <MudForm @ref="this.form" IsValidChanged="_ => this.StateHasChanged()">
         <MudTextField
             T="string"
-            Label="@(L[$"Components.States.TeamName.Title"])"
+            Label="@(L[$"Components.States.TeamName.Label"])"
             Required="true"
             RequiredError="@(L["Common.Error.Required"])"
             Validation="@(new MinLengthAttribute(2) { ErrorMessage = L["Components.States.TeamName.MinLengthError"] })"

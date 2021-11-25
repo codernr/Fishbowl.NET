@@ -93,6 +93,7 @@ namespace Fishbowl.Net.Client.Pwa.Pages
             {
                 state.Team = this.teams[0].Map();
                 state.OnTeamNameSet = this.SetTeamName;
+                state.Title = string.Format(L("Components.States.TeamName.Title.Pwa"), 1);
             });
         }
 
@@ -101,12 +102,14 @@ namespace Fishbowl.Net.Client.Pwa.Pages
             this.teams[teamName.Id].Name = teamName.Name;
 
             var nextTeam = this.teams.FirstOrDefault(team => team.Name is null);
+            var nextTeamIndex = this.teams.Where(team => team.Name is not null).Count() + 1;
 
             return nextTeam is null ? this.StartGame() :
                 this.StateManager.SetStateAsync<TeamName>(state =>
                 {
                     state.Team = nextTeam.Map();
                     state.OnTeamNameSet = this.SetTeamName;
+                    state.Title = string.Format(L("Components.States.TeamName.Title.Pwa"), nextTeamIndex);
                 });
         }
 

@@ -136,6 +136,7 @@ namespace Fishbowl.Net.Client.Online.Pages
             {
                 state.OnTeamNameSet = this.SetTeamName;
                 state.Team = this.ClientState.Team;
+                state.Title = L("Components.States.TeamName.Title.Online");
             });
         }
 
