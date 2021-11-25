@@ -6,24 +6,27 @@
         @this.Period.Scores.Count
     </MudText>
 
-    <MudText Typo="Typo.h5" Class="mb-2">
-        @L["Components.States.PeriodFinished.GuessedWords"]
-    </MudText>
+    @if(this.Period.Scores.Count > 0)
+    {
+        <MudText Typo="Typo.h5" Class="mb-2">
+            @L["Components.States.PeriodFinished.GuessedWords"]
+        </MudText>
 
-    <MudPaper Class="mx-auto">
-        <MudList>
-            @for (int i = 0; i < this.Period.Scores.Count; i++)
-            {
-                var index = i;
-                <MudListItem>
-                    <MudText Align="Align.Center">@this.Period.Scores[index].Word.Value</MudText>
-                </MudListItem>
-
-                @if (index < this.Period.Scores.Count - 1)
+        <MudPaper Class="mx-auto">
+            <MudList>
+                @for (int i = 0; i < this.Period.Scores.Count; i++)
                 {
-                    <MudDivider />
+                    var index = i;
+                    <MudListItem>
+                        <MudText Align="Align.Center">@this.Period.Scores[index].Word.Value</MudText>
+                    </MudListItem>
+
+                    @if (index < this.Period.Scores.Count - 1)
+                    {
+                        <MudDivider />
+                    }
                 }
-            }
-        </MudList>
-    </MudPaper>
+            </MudList>
+        </MudPaper>
+    }
 </StateContainer>
