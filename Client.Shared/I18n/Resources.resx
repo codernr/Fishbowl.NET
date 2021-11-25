@@ -15,6 +15,9 @@
     <data name="Common.Error.Required">
         <value>Required field</value>
     </data>
+    <data name="Common.GameCreated">
+        <value>Game created! Now your friends can join the game with the password you set.</value>
+    </data>
     <data name="Components.TeamMembers.Title">
         <value>Your team</value>
     </data>
@@ -227,12 +230,6 @@
     </data>
     <data name="Pages.Play.StatusCode.UsernameTaken">
         <value>The selected username is taken.</value>
-    </data>
-    <data name="Pages.Play.GameCreatedTitle">
-        <value>Game created!</value>
-    </data>
-    <data name="Pages.Play.GameCreatedMessage">
-        <value>Now your friends can join the game with the password you set.</value>
     </data>
     <data name="Pages.Play.GameStartedTitle">
         <value>Starting the game</value>

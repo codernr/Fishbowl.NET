@@ -298,7 +298,11 @@ namespace Fishbowl.Net.Client.Online.Pages
                 new(this.ClientState.Password ?? throw new InvalidOperationException(), this.ClientState.Username),
                 new(this.ClientState.TotalPlayerCount, this.ClientState.WordCount, this.ClientState.TeamCount, this.ClientState.RoundTypes)));
 
-            if (response.Status == StatusCode.Ok) return;
+            if (response.Status == StatusCode.Ok)
+            {
+                this.Snackbar.Add(L("Common.GameCreated"), Severity.Success);
+                return;
+            }
 
             this.StatusError(response.Status);
 

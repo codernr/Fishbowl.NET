@@ -15,6 +15,9 @@
     <data name="Common.Error.Required">
         <value>Kötelező mező</value>
     </data>
+    <data name="Common.GameCreated">
+        <value>Játék létrehozva! Most már csatlakozhatnak a többiek a megadott jelszóval!</value>
+    </data>
     <data name="Components.TeamMembers.Title">
         <value>Csapatod</value>
     </data>
@@ -227,12 +230,6 @@
     </data>
     <data name="Pages.Play.StatusCode.UsernameTaken">
         <value>A felhasználónév foglalt.</value>
-    </data>
-    <data name="Pages.Play.GameCreatedTitle">
-        <value>Játék létrehozva!</value>
-    </data>
-    <data name="Pages.Play.GameCreatedMessage">
-        <value>Most már csatlakozhatnak a többiek a megadott jelszóval!</value>
     </data>
     <data name="Pages.Play.GameStartedTitle">
         <value>Kezdődik a játék</value>
