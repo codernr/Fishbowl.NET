@@ -12,11 +12,11 @@
         </MudButton>
     </MudContainer>
 
-    <MudContainer Class="mt-7 mb-3">
+    <MudContainer Class="my-3">
         <Timer Start="this.Period.StartedAt" Length="this.Period.Length" OnExpired="() => this.Expired = true" />
     </MudContainer>
 
-    <MudContainer Class="mt-3 mb-7">
+    <MudContainer Class="my-3">
         <MudCard Class="mud-theme-primary">
             <MudCardContent>
                 <MudText Typo="Typo.h4">@(this.Word?.Value ?? string.Empty)</MudText>
@@ -36,7 +36,7 @@
         </MudButton>
     </MudContainer>
 
-    <MudContainer>
+    <MudContainer Class="my-3">
         <MudButton
             Variant="Variant.Filled"
             Color="Color.Error"
@@ -46,5 +46,11 @@
             @onclick="this.FinishPeriod">
             @L["Components.States.PeriodPlay.PassButton"]
         </MudButton>
+    </MudContainer>
+
+    <MudContainer>
+        <MudAlert Severity="@(this.Expired ? Severity.Warning : Severity.Info)">
+            @L[$"Components.States.PeriodPlay.{(this.Expired ? "Warning" : "Info")}Alert"] 
+        </MudAlert>
     </MudContainer>
 </StateContainer>

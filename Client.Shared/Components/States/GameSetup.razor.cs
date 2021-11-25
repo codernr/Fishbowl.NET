@@ -12,6 +12,8 @@ namespace Fishbowl.Net.Client.Shared.Components.States
     {
         public Func<GameSetupViewModel, Task> OnGameSetup { get; set; } = default!;
 
+        public string? Info { get; set; }
+
         private int PlayerCount
         {
             get => this.playerCount;

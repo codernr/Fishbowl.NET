@@ -45,6 +45,9 @@
     <data name="Components.States.GameSetup.Title">
         <value>Setup game</value>
     </data>
+    <data name="Components.States.GameSetup.Info">
+        <value>Others can join the game with given password after setup.</value>
+    </data>
     <data name="Components.States.GameSetup.PlayerCount">
         <value>Number of players</value>
     </data>
@@ -131,6 +134,12 @@
     </data>
     <data name="Components.States.PeriodPlay.RevokeButton">
         <value>Revoke</value>
+    </data>
+    <data name="Components.States.PeriodPlay.InfoAlert">
+        <value>You can try on with the last word if others don't accept your last guess.</value>
+    </data>
+    <data name="Components.States.PeriodPlay.WarningAlert">
+        <value>Your team has one guess, press Pass button if missed.</value>
     </data>
     <data name="Components.States.PeriodSetupPlay.Subtitle">
         <value>Start period by clicking button</value>

@@ -285,7 +285,11 @@ namespace Fishbowl.Net.Client.Online.Pages
             
             await this.ScreenService.RequestWakeLock();
             await this.ScreenService.RequestFullScreen();
-            await this.StateManager.SetStateAsync<GameSetup>(state => state.OnGameSetup = this.SetupGame);
+            await this.StateManager.SetStateAsync<GameSetup>(state =>
+            {
+                state.OnGameSetup = this.SetupGame;
+                state.Info = L("Components.States.GameSetup.Info");
+            });
         }
 
         private async Task SetupGame(GameSetupViewModel setup)

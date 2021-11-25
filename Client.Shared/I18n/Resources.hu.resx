@@ -45,6 +45,9 @@
     <data name="Components.States.GameSetup.Title">
         <value>Játék beállítása</value>
     </data>
+    <data name="Components.States.GameSetup.Info">
+        <value>A beállítás után csatlakozhatnak a többiek a megadott jelszóval.</value>
+    </data>
     <data name="Components.States.GameSetup.PlayerCount">
         <value>Játékosok száma</value>
     </data>
@@ -128,6 +131,12 @@
     </data>
     <data name="Components.States.PeriodPlay.RevokeButton">
         <value>Visszavonás</value>
+    </data>
+    <data name="Components.States.PeriodPlay.InfoAlert">
+        <value>Ha a többiek nem fogadják el az utolsó találatot, a visszavonás gombbal tovább próbálkozhattok.</value>
+    </data>
+    <data name="Components.States.PeriodPlay.WarningAlert">
+        <value>Most már csak egyet tippelhet a csapat, ha nem talált, nyomd meg a passz gombot!</value>
     </data>
     <data name="Components.States.PeriodSetupPlay.Title">
         <value>A te köröd</value>
