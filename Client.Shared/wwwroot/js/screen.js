@@ -3,6 +3,7 @@ export const ScreenModule = {
         if ('wakeLock' in window.navigator) window.navigator.wakeLock.request('screen').catch(() => {});
     },
     requestFullScreen: function() {
-        window.document.documentElement.requestFullscreen().catch(() => {});
+        if (window.document.documentElement?.requestFullscreen)
+            window.document.documentElement.requestFullscreen().catch(() => {});
     }
 };
