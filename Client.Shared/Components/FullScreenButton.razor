@@ -1,13 +1,13 @@
 @inject IScreenService ScreenService
 
 <MudPopover
-    Open="this.RequestFullScreenEnabled"
+    Open="this.RequestFullscreenEnabled"
     AnchorOrigin="Origin.BottomRight"
     TransformOrigin="Origin.BottomRight"
     Class="pa-5"
     Paper="false">
     <MudFab
         Color="Color.Tertiary"
-        Icon="@(this.IsInFullScreenMode ? Icons.Material.Filled.CloseFullscreen : Icons.Material.Filled.OpenInFull)"
+        Icon="@(this.IsInFullscreenMode ? Icons.Material.Filled.CloseFullscreen : Icons.Material.Filled.OpenInFull)"
         OnClick="this.Switch" />
 </MudPopover>

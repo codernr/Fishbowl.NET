@@ -8,26 +8,26 @@ namespace Fishbowl.Net.Client.Shared.Services
     {
         event Action? PropertyChanged;
 
-        bool RequestFullScreenEnabled { get; }
+        bool RequestFullscreenEnabled { get; }
 
-        bool IsInFullScreenMode { get; }
+        bool IsInFullscreenMode { get; }
 
         Task InitializeAsync();
 
         ValueTask RequestWakeLock();
 
-        ValueTask RequestFullScreen();
+        ValueTask RequestFullscreen();
 
-        ValueTask ExitFullScreen();
+        ValueTask ExitFullscreen();
     }
 
     public class ScreenService : IScreenService, IDisposable
     {
         public event Action? PropertyChanged;
 
-        public bool RequestFullScreenEnabled { get; private set; }
+        public bool RequestFullscreenEnabled { get; private set; }
 
-        public bool IsInFullScreenMode { get; private set; }
+        public bool IsInFullscreenMode { get; private set; }
 
         private const string JSModuleName = "ScreenModule";
 
@@ -47,21 +47,21 @@ namespace Fishbowl.Net.Client.Shared.Services
             this.module = await js.InvokeAsync<IJSObjectReference>(
                 "import", "./_content/Fishbowl.Net.Client.Shared/js/screen.js");
 
-            this.RequestFullScreenEnabled = await this.InvokeAsync<bool>("requestFullScreenEnabled");
+            this.RequestFullscreenEnabled = await this.InvokeAsync<bool>("requestFullscreenEnabled");
 
             await this.InvokeVoidAsync("initialize", this.objectReference);
         }
 
         public ValueTask RequestWakeLock() => this.InvokeVoidAsync("requestWakeLock");
 
-        public ValueTask RequestFullScreen() => this.InvokeVoidAsync("requestFullScreen");
+        public ValueTask RequestFullscreen() => this.InvokeVoidAsync("requestFullscreen");
 
-        public ValueTask ExitFullScreen() => this.InvokeVoidAsync("exitFullScreen");
+        public ValueTask ExitFullscreen() => this.InvokeVoidAsync("exitFullscreen");
 
         [JSInvokable]
-        public void OnFullScreenChange(bool isInFullScreenMode)
+        public void OnFullscreenChange(bool isInFullscreenMode)
         {
-            this.IsInFullScreenMode = isInFullScreenMode;
+            this.IsInFullscreenMode = isInFullscreenMode;
             this.PropertyChanged?.Invoke();
         }
 

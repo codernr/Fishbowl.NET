@@ -4,26 +4,26 @@ export const ScreenModule = {
     initialize: function(objectReference) {
         this.objectReference = objectReference;
 
-        if (!this.requestFullScreenEnabled()) return;
+        if (!this.requestFullscreenEnabled()) return;
 
         window.document.addEventListener('fullscreenchange', () =>
-            this.objectReference.invokeMethodAsync('OnFullScreenChange', window.document.fullscreenElement ? true : false));
+            this.objectReference.invokeMethodAsync('OnFullscreenChange', window.document.fullscreenElement ? true : false));
     },
 
     requestWakeLock: function() {
         if ('wakeLock' in window.navigator) window.navigator.wakeLock.request('screen').catch(() => {});
     },
 
-    requestFullScreen: function() {
-        if (this.requestFullScreenEnabled())
+    requestFullscreen: function() {
+        if (this.requestFullscreenEnabled())
             window.document.documentElement.requestFullscreen().catch(() => {});
     },
 
-    exitFullScreen: function() {
+    exitFullscreen: function() {
         if (window.document.exitFullscreen) window.document.exitFullscreen().catch(() => {});
     },
 
-    requestFullScreenEnabled: function() {
+    requestFullscreenEnabled: function() {
         return window.document.documentElement?.requestFullscreen ? true : false;
     }
 };

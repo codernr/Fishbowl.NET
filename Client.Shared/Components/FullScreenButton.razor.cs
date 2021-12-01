@@ -2,13 +2,13 @@ using System.Threading.Tasks;
 
 namespace Fishbowl.Net.Client.Shared.Components
 {
-    public partial class FullScreenButton
+    public partial class FullscreenButton
     {
-        private bool RequestFullScreenEnabled =>
-            this.ScreenService.RequestFullScreenEnabled;
+        private bool RequestFullscreenEnabled =>
+            this.ScreenService.RequestFullscreenEnabled;
 
-        private bool IsInFullScreenMode =>
-            this.ScreenService.IsInFullScreenMode;
+        private bool IsInFullscreenMode =>
+            this.ScreenService.IsInFullscreenMode;
 
         protected override void OnInitialized()
         {
@@ -19,13 +19,13 @@ namespace Fishbowl.Net.Client.Shared.Components
 
         private async Task Switch()
         {
-            if (this.IsInFullScreenMode)
+            if (this.IsInFullscreenMode)
             {
-                await this.ScreenService.ExitFullScreen();
+                await this.ScreenService.ExitFullscreen();
             }
             else
             {
-                await this.ScreenService.RequestFullScreen();
+                await this.ScreenService.RequestFullscreen();
                 await this.ScreenService.RequestWakeLock();
             }
         }
