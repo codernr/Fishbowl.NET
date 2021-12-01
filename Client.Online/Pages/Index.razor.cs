@@ -279,8 +279,6 @@ namespace Fishbowl.Net.Client.Online.Pages
             this.ClientState.Username = input.Username;
             this.ClientState.Password = input.Password;
             
-            await this.ScreenService.RequestWakeLock();
-            await this.ScreenService.RequestFullScreen();
             await this.StateManager.SetStateAsync<GameSetup>(state =>
             {
                 state.OnGameSetup = this.SetupGame;
@@ -340,8 +338,6 @@ namespace Fishbowl.Net.Client.Online.Pages
             this.ClientState.Username = input.Username;
             this.ClientState.Password = input.Password;
 
-            await this.ScreenService.RequestWakeLock();
-            await this.ScreenService.RequestFullScreen();
             await this.JoinGameContext();
         }
 

@@ -11,16 +11,9 @@ namespace Fishbowl.Net.Client.Shared
     {
         public static WebAssemblyHostBuilder AddInteropServices(this WebAssemblyHostBuilder builder)
         {
-            builder.Services.AddSingleton<IStorageService, StorageService>();
-
-            if (builder.HostEnvironment.IsDevelopment())
-            {
-                builder.Services.AddSingleton<IScreenService, DevScreenService>();
-            }
-            else
-            {
-                builder.Services.AddSingleton<IScreenService, ScreenService>();
-            }
+            builder.Services
+                .AddSingleton<IStorageService, StorageService>()
+                .AddSingleton<IScreenService, ScreenService>();
 
             return builder;
         }
