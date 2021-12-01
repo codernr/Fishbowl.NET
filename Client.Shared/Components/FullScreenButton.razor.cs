@@ -7,10 +7,27 @@ namespace Fishbowl.Net.Client.Shared.Components
         private bool RequestFullScreenEnabled =>
             this.ScreenService.RequestFullScreenEnabled;
 
-        private async Task RequestFullScreen()
+        private bool IsInFullScreenMode =>
+            this.ScreenService.IsInFullScreenMode;
+
+        protected override void OnInitialized()
         {
-            await this.ScreenService.RequestFullScreen();
-            await this.ScreenService.RequestWakeLock();
+            base.OnInitialized();
+
+            this.ScreenService.PropertyChanged += this.StateHasChanged;
+        }
+
+        private async Task Switch()
+        {
+            if (this.IsInFullScreenMode)
+            {
+                await this.ScreenService.ExitFullScreen();
+            }
+            else
+            {
+                await this.ScreenService.RequestFullScreen();
+                await this.ScreenService.RequestWakeLock();
+            }
         }
     }
 }

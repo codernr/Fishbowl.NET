@@ -8,6 +8,6 @@
     Paper="false">
     <MudFab
         Color="Color.Tertiary"
-        Icon="@Icons.Material.Filled.OpenInFull"
-        OnClick="this.RequestFullScreen" />
+        Icon="@(this.IsInFullScreenMode ? Icons.Material.Filled.CloseFullscreen : Icons.Material.Filled.OpenInFull)"
+        OnClick="this.Switch" />
 </MudPopover>
