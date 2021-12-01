@@ -1,4 +1,6 @@
 @inject IScreenService ScreenService
+@inject IDialogService DialogService
+@inject IStringLocalizer<Resources> L
 
 <MudPopover
     Open="this.Open"
@@ -9,5 +11,5 @@
     <MudFab
         Color="Color.Tertiary"
         Icon="@(this.IsInFullscreenMode ? Icons.Material.Filled.CloseFullscreen : Icons.Material.Filled.OpenInFull)"
-        OnClick="this.Switch" />
+        OnClick="this.OnButtonClick" />
 </MudPopover>
