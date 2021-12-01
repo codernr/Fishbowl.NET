@@ -1,6 +1,5 @@
 @page "/"
 @using Microsoft.Extensions.Logging
-@using Fishbowl.Net.Client.Online.Components.States
 
 @inject NavigationManager NavigationManager
 @inject IStorageService StorageService
@@ -26,3 +25,5 @@
             this.ClientState.SetupPlayerCount))
     </MudAlert>
 </MudPopover>
+
+<FullScreenButton />
