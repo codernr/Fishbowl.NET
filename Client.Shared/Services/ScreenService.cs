@@ -12,6 +12,8 @@ namespace Fishbowl.Net.Client.Shared.Services
 
         bool IsInFullscreenMode { get; }
 
+        bool IsStandalone { get; }
+
         Task InitializeAsync();
 
         ValueTask RequestWakeLock();
@@ -28,6 +30,8 @@ namespace Fishbowl.Net.Client.Shared.Services
         public bool RequestFullscreenEnabled { get; private set; }
 
         public bool IsInFullscreenMode { get; private set; }
+
+        public bool IsStandalone { get; private set; }
 
         private const string JSModuleName = "ScreenModule";
 
@@ -48,6 +52,7 @@ namespace Fishbowl.Net.Client.Shared.Services
                 "import", "./_content/Fishbowl.Net.Client.Shared/js/screen.js");
 
             this.RequestFullscreenEnabled = await this.InvokeAsync<bool>("requestFullscreenEnabled");
+            this.IsStandalone = await this.InvokeAsync<bool>("isStandalone");
 
             await this.InvokeVoidAsync("initialize", this.objectReference);
         }
@@ -62,6 +67,13 @@ namespace Fishbowl.Net.Client.Shared.Services
         public void OnFullscreenChange(bool isInFullscreenMode)
         {
             this.IsInFullscreenMode = isInFullscreenMode;
+            this.PropertyChanged?.Invoke();
+        }
+
+        [JSInvokable]
+        public void OnStandaloneChange(bool isStandalone)
+        {
+            this.IsStandalone = isStandalone;
             this.PropertyChanged?.Invoke();
         }
 

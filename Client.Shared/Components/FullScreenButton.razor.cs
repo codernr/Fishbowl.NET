@@ -4,8 +4,8 @@ namespace Fishbowl.Net.Client.Shared.Components
 {
     public partial class FullscreenButton
     {
-        private bool RequestFullscreenEnabled =>
-            this.ScreenService.RequestFullscreenEnabled;
+        private bool Open =>
+            this.ScreenService.RequestFullscreenEnabled && !this.ScreenService.IsStandalone;
 
         private bool IsInFullscreenMode =>
             this.ScreenService.IsInFullscreenMode;
