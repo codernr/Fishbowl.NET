@@ -7,6 +7,8 @@ namespace Fishbowl.Net.Client.Shared.Components
 {
     public partial class StateManager
     {
+        public object? CurrentState => this.component?.Instance;
+        
         private static readonly TimeSpan TransitionDuration = TimeSpan.FromMilliseconds(300);
 
         private DynamicComponent Component => this.component ?? throw new InvalidOperationException();

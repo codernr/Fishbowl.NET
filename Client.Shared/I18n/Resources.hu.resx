@@ -63,6 +63,9 @@
     <data name="Components.States.Common.RoundTypes.Hümmögés.Description">
         <value>Mutogasd el a szót úgy, hogy csak a fejed mozog! Hangokat adhatsz, de nem beszélhetsz!</value>
     </data>
+    <data name="Components.States.Common.PlayerCount">
+        <value>Kapcsolódva: {1}/{0} | Beállítva: {2}/{0}</value>
+    </data>
     <data name="Components.States.GameSetup.Title">
         <value>Játék beállítása</value>
     </data>
@@ -242,9 +245,6 @@
     </data>
     <data name="Pages.Play.ScoreRevoked">
         <value>Visszavont pont</value>
-    </data>
-    <data name="Pages.Play.PlayerCount">
-        <value>Kapcsolódva: {1}/{0} | Beállítva: {2}/{0}</value>
     </data>
     <data name="Pages.Play.SetupCount">
         <value>{0}. játékos beállítása</value>

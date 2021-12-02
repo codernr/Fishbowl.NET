@@ -11,19 +11,4 @@
 
 <StateManager @ref="this.stateManager"/>
 
-<MudPopover
-    Open="this.IsPlayerCountPopoverVisible"
-    AnchorOrigin="Origin.BottomCenter"
-    TransformOrigin="Origin.BottomCenter"
-    Class="pa-5"
-    Paper="false">
-    <MudAlert Severity="Severity.Info">
-        @(string.Format(
-            L("Pages.Play.PlayerCount"),
-            this.ClientState.TotalPlayerCount,
-            this.ClientState.ConnectedPlayerCount,
-            this.ClientState.SetupPlayerCount))
-    </MudAlert>
-</MudPopover>
-
 <FullscreenButton />

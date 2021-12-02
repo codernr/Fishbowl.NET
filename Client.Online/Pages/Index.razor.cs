@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Fishbowl.Net.Client.Online.Components.States;
 using Fishbowl.Net.Client.Online.Services;
 using Fishbowl.Net.Client.Online.Shared;
-using Fishbowl.Net.Client.Shared.Common;
 using Fishbowl.Net.Client.Shared.Components;
 using Fishbowl.Net.Client.Shared.Components.States;
 using Fishbowl.Net.Shared;
@@ -21,22 +20,15 @@ namespace Fishbowl.Net.Client.Online.Pages
 
         private StateManager StateManager => this.stateManager ?? throw new InvalidOperationException();
 
-        private bool isPlayerCountPopoverVisible;
-
-        private bool IsPlayerCountPopoverVisible
-        {
-            get => this.isPlayerCountPopoverVisible;
-            set
-            {
-                var changed = this.isPlayerCountPopoverVisible != value;
-                this.isPlayerCountPopoverVisible = value;
-                if (changed) this.StateHasChanged();
-            }
-        }
-
         private ClientConnection Connection => this.connection ?? throw new InvalidOperationException();
 
         private ClientConnection? connection;
+
+        private string PlayerCountMessage => string.Format(
+            L("Components.States.Common.PlayerCount"),
+            this.ClientState.TotalPlayerCount,
+            this.ClientState.ConnectedPlayerCount,
+            this.ClientState.SetupPlayerCount);
 
         private string L(string key) => this.StringLocalizer[key]?.Value ?? key;
 
@@ -48,11 +40,6 @@ namespace Fishbowl.Net.Client.Online.Pages
                 this.LoggerFactory.CreateLogger<ClientConnection>());
 
             return this.Connection.StartAsync();
-        }
-
-        private void OnStateTransition(object newState)
-        {
-            this.IsPlayerCountPopoverVisible = newState is PlayerWords || newState is Info;
         }
 
         public async Task Connected()
@@ -93,11 +80,10 @@ namespace Fishbowl.Net.Client.Online.Pages
             this.ClientState.TeamCount = gameSetup.TeamCount;
             this.ClientState.RoundTypes = gameSetup.RoundTypes;
 
-            this.IsPlayerCountPopoverVisible = true;
-
             await this.StateManager.SetStateAsync<PlayerWords>(state =>
             {
                 state.OnPlayerWordsSet = this.SubmitPlayerData;
+                state.Message = this.PlayerCountMessage;
                 state.WordCount = this.ClientState.WordCount;
             });
         }
@@ -107,20 +93,30 @@ namespace Fishbowl.Net.Client.Online.Pages
             this.ClientState.TotalPlayerCount = playerCount.TotalCount;
             this.ClientState.SetupPlayerCount = playerCount.SetupCount;
             this.ClientState.ConnectedPlayerCount = playerCount.ConnectedCount;
-            this.StateHasChanged();
+
+            if (this.StateManager.CurrentState is Info info && info.Title == L("Components.States.WaitingForPlayers.Title"))
+            {
+                this.StateManager.SetParameters<Info>(state => state.Message = this.PlayerCountMessage);
+            }
+
+            if (this.StateManager.CurrentState is PlayerWords)
+            {
+                this.StateManager.SetParameters<PlayerWords>(state => state.Message = this.PlayerCountMessage);
+            }
+
             return Task.CompletedTask;
         }
 
         public Task ReceiveWaitForOtherPlayers(PlayerViewModel player)
         {
-            this.IsPlayerCountPopoverVisible = true;
             this.ClientState.Username = player.Username;
 
             return this.StateManager.SetStateAsync<Info>(state =>
             {
                 state.Title = L("Components.States.WaitingForPlayers.Title");
                 state.Severity = Severity.Info;
-                state.Message = L($"Components.States.WaitingForPlayers.Message");
+                state.Message = this.PlayerCountMessage;
+                // state.Message = L($"Components.States.WaitingForPlayers.Message");
                 state.Loading = true;
             });
         }

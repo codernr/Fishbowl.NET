@@ -9,6 +9,8 @@ namespace Fishbowl.Net.Client.Online.Components.States
     {
         public Func<string[], Task> OnPlayerWordsSet { get; set; } = default!;
 
+        public string Message { get; set; } = default!;
+
         public int WordCount
         {
             get => this.wordCount;

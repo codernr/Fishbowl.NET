@@ -4,30 +4,39 @@
 
 <StateContainer>
     <MudForm @ref="this.form" IsValidChanged="_ => this.StateHasChanged()">
+        <MudContainer>
+            <MudAlert Severity="Severity.Info">
+                @this.Message
+            </MudAlert>
+        </MudContainer>
+        
         @for (int i = 0; i < this.words.Length; i++)
         {
             var id = i;
-            <MudTextField
-                T="string"
-                Label="@(L[$"Components.States.Common.PlayerWords.Word.{id}"])"
-                Required="true"
-                RequiredError="@(L["Common.Error.Required"])"
-                Validation="@(new MinLengthAttribute(2)
-                {
-                    ErrorMessage = L["Components.States.Common.PlayerWords.MinLengthError"]
-                })"
-                @bind-Value="this.words[id]"
-                Immediate="true"
-                Class="my-10" />
+            <MudContainer Class="my-6">
+                <MudTextField
+                    T="string"
+                    Label="@(L[$"Components.States.Common.PlayerWords.Word.{id}"])"
+                    Required="true"
+                    RequiredError="@(L["Common.Error.Required"])"
+                    Validation="@(new MinLengthAttribute(2)
+                    {
+                        ErrorMessage = L["Components.States.Common.PlayerWords.MinLengthError"]
+                    })"
+                    @bind-Value="this.words[id]"
+                    Immediate="true" />
+            </MudContainer>
         }
-        <MudButton
-            Variant="Variant.Filled"
-            Color="Color.Primary"
-            FullWidth="true"
-            Size="Size.Large"
-            Disabled="!this.form!.IsValid"
-            @onclick="this.Submit">
-            @L["Components.States.PlayerWords.SubmitButton"]
-        </MudButton>
+        <MudContainer>
+            <MudButton
+                Variant="Variant.Filled"
+                Color="Color.Primary"
+                FullWidth="true"
+                Size="Size.Large"
+                Disabled="!this.form!.IsValid"
+                @onclick="this.Submit">
+                @L["Components.States.PlayerWords.SubmitButton"]
+            </MudButton>
+        </MudContainer>
     </MudForm>
 </StateContainer>

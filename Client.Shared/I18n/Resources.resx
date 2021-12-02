@@ -63,6 +63,9 @@
     <data name="Components.States.Common.RoundTypes.Humming.Description">
         <value>Act the word by only moving your head. You can make sounds bot not speak.</value>
     </data>
+    <data name="Components.States.Common.PlayerCount">
+        <value>Connected players: {1}/{0} | Players ready: {2}/{0}</value>
+    </data>
     <data name="Components.States.GameSetup.Title">
         <value>Setup game</value>
     </data>
@@ -242,9 +245,6 @@
     </data>
     <data name="Pages.Play.ScoreRevoked">
         <value>Score revoked</value>
-    </data>
-    <data name="Pages.Play.PlayerCount">
-        <value>Connected: {1}/{0} | Waiting: {2}/{0}</value>
     </data>
     <data name="Pages.Play.SetupCount">
         <value>Setup player no. {0}</value>
