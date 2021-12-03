@@ -117,8 +117,20 @@
     <data name="Components.States.GameFinished.Winner">
         <value>Nyertes csapat:</value>
     </data>
-    <data name="Components.States.GameFinished.Draw">
-        <value>Döntetlen! Nyertes csapatok:</value>
+    <data name="Components.States.GameFinished.BestPlayer">
+        <value>Legjobb játékos:</value>
+    </data>
+    <data name="Components.States.GameFinished.EasiestWord">
+        <value>Legkönnyebb szó:</value>
+    </data>
+    <data name="Components.States.GameFinished.HardestWord">
+        <value>Legnehezebb szó:</value>
+    </data>
+    <data name="Components.States.GameFinished.Scores">
+        <value>pont:</value>
+    </data>
+    <data name="Components.States.GameFinished.TotalTime">
+        <value>idő:</value>
     </data>
     <data name="Components.States.GameFinished.Button">
         <value>Új játék</value>

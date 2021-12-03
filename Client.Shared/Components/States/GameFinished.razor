@@ -2,28 +2,30 @@
 
 <StateContainer>
     <MudContainer>
-        <MudAlert Severity="Severity.Success">
-            @if(this.winnerTeams.Length > 1)
-            {
-                @L["Components.States.GameFinished.Draw"] <strong>@string.Join(", ", this.winnerTeams)</strong>
-            }
-            else
-            {
-                @L["Components.States.GameFinished.Winner"] <strong>@this.winnerTeams[0]</strong>
-            }
+        <MudAlert Severity="Severity.Success" Variant="Variant.Filled" Class="mb-1">
+            @L["Components.States.GameFinished.Winner"] <strong>@this.Game.Teams[0].Name</strong>
+        </MudAlert>
+        <MudAlert Severity="Severity.Success" Class="mb-1">
+            @L["Components.States.GameFinished.BestPlayer"] <strong>@this.bestPlayer.Username</strong>
+        </MudAlert>
+        <MudAlert Severity="Severity.Info" Variant="Variant.Outlined" Class="mb-1">
+            @L["Components.States.GameFinished.EasiestWord"] <strong>@this.wordRank.Last().Value</strong>
+        </MudAlert>
+        <MudAlert Severity="Severity.Warning" Variant="Variant.Outlined">
+            @L["Components.States.GameFinished.HardestWord"] <strong>@this.wordRank.First().Value</strong>
         </MudAlert>
     </MudContainer>
 
-    <MudContainer Class="my-10">
+    <MudContainer Class="my-6">
         <MudPaper>
             <MudList>
-                @for (int i = 0; i < this.Game.Teams.Count; i++)
+                @foreach (var team in this.Game.Teams)
                 {
-                    var index = i;
-                    var team = this.Game.Teams[index];
                     <MudListItem>
                         <MudText Align="Align.Center">
-                            @team.Name (@team.Players.Sum(player => player.Scores.Count))
+                            @team.Name
+                            (@L["Components.States.GameFinished.Scores"] @team.TotalScoreCount,
+                            @L["Components.States.GameFinished.TotalTime"] @team.TotalTime.ToString(@"mm\:ss\.fff"))
                         </MudText>
                     </MudListItem>
                 }

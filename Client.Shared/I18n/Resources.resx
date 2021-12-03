@@ -117,8 +117,20 @@
     <data name="Components.States.GameFinished.Winner">
         <value>Winner team:</value>
     </data>
-    <data name="Components.States.GameFinished.Draw">
-        <value>Draw! Winner teams:</value>
+    <data name="Components.States.GameFinished.BestPlayer">
+        <value>Best player:</value>
+    </data>
+    <data name="Components.States.GameFinished.EasiestWord">
+        <value>Easiest word:</value>
+    </data>
+    <data name="Components.States.GameFinished.HardestWord">
+        <value>Hardest word:</value>
+    </data>
+    <data name="Components.States.GameFinished.Scores">
+        <value>scores:</value>
+    </data>
+    <data name="Components.States.GameFinished.TotalTime">
+        <value>time:</value>
     </data>
     <data name="Components.States.GameFinished.Button">
         <value>New game</value>

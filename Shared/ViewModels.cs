@@ -51,9 +51,9 @@ namespace Fishbowl.Net.Shared.ViewModels
 
     public record RoundSummaryViewModel(string Type, List<PeriodSummaryViewModel> Periods);
 
-    public record PlayerSummaryViewModel(string Username, List<ScoreViewModel> Scores);
+    public record PlayerSummaryViewModel(string Username, List<ScoreSummaryViewModel> Scores);
 
-    public record TeamSummaryViewModel(int Id, string Name, List<PlayerSummaryViewModel> Players);
+    public record TeamSummaryViewModel(int Id, string Name, List<PlayerSummaryViewModel> Players, int TotalScoreCount, TimeSpan TotalTime);
 
     public record GameSummaryViewModel(List<TeamSummaryViewModel> Teams);
 
@@ -72,6 +72,8 @@ namespace Fishbowl.Net.Shared.ViewModels
     public record WordViewModel(Guid Id, string Value);
 
     public record ScoreViewModel(WordViewModel Word, DateTimeOffset Timestamp);
+
+    public record ScoreSummaryViewModel(WordViewModel Word, TimeSpan GuessedTime);
 
     public record GameAbortViewModel(string MessageKey);
 
@@ -106,6 +108,9 @@ namespace Fishbowl.Net.Shared.ViewModels
 
         public static ScoreViewModel Map(this Score score) => new(score.Word.Map(), score.Timestamp);
 
+        public static ScoreSummaryViewModel Map(this Score score, DateTimeOffset previous) =>
+            new(score.Word.Map(), score.Timestamp - previous);
+
         public static Score Map(this ScoreViewModel score) => new(score.Word.Map(), score.Timestamp);
 
         public static RoundSummaryViewModel MapSummary(this Round round) =>
@@ -115,19 +120,27 @@ namespace Fishbowl.Net.Shared.ViewModels
             new(player.Username, game.Rounds
                 .SelectMany(round => round.Periods)
                 .Where(period => period.Player.Username == player.Username)
-                .SelectMany(period => period.Scores.Select(score => score.Map()))
+                .SelectMany(period => period.MapScores())
                 .ToList());
 
-        public static TeamSummaryViewModel Map(this Team team, Game game) =>
-            new(team.Id, team.Name ?? throw new InvalidOperationException(),
-                team.Players.Select(player => player.Map(game)).ToList());
+        public static IEnumerable<ScoreSummaryViewModel> MapScores(this Period period) =>
+            period.Scores.Select((score, i) => score.Map((i > 0 ? period.Scores[i - 1].Timestamp : period.StartedAt!.Value)));
+
+        public static TeamSummaryViewModel Map(this Team team, Game game)
+        {
+            var players = team.Players.Select(player => player.Map(game)).ToList();
+            return new(team.Id, team.Name!, players, 
+                players.Sum(player => player.Scores.Count()),
+                new TimeSpan(players.Sum(player => player.Scores.Sum(score => score.GuessedTime.Ticks))));
+        }
 
         public static TeamSetupViewModel Map(this IEnumerable<Team> teams) =>
             new(teams.Select(team => team.Map()).ToList());
 
         public static GameSummaryViewModel Map(this Game game) => new(game.Teams
             .Select(team => team.Map(game))
-            .OrderByDescending(team => team.Players.Sum(player => player.Scores.Count))
+            .OrderByDescending(team => team.TotalScoreCount)
+            .ThenBy(team => team.TotalTime)
             .ToList());
 
         public static Player Map(this AddPlayerViewModel player) =>

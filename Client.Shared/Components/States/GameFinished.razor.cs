@@ -11,24 +11,26 @@ namespace Fishbowl.Net.Client.Shared.Components.States
         
         public GameSummaryViewModel Game { get; set; } = default!;
 
-        private Dictionary<string, int> teamScores = default!;
+        private PlayerSummaryViewModel bestPlayer = default!;
 
-        private string[] winnerTeams = default!;
+        private WordViewModel[] wordRank = default!;
 
         protected override void OnInitialized()
         {
             base.OnInitialized();
 
-            this.teamScores = this.Game.Teams
-                .ToDictionary(
-                    team => team.Name,
-                    team => team.Players.Sum(player => player.Scores.Count));
+            this.bestPlayer = this.Game.Teams
+                .SelectMany(team => team.Players)
+                .OrderByDescending(player => player.Scores.Count)
+                .ThenBy(player => player.Scores.Sum(score => score.GuessedTime.Ticks))
+                .First();
 
-            var max = this.teamScores.Max(team => team.Value);
-
-            this.winnerTeams = this.teamScores
-                .Where(team => team.Value == max)
-                .Select(team => team.Key)
+            this.wordRank = this.Game.Teams
+                .SelectMany(team => team.Players)
+                .SelectMany(player => player.Scores)
+                .GroupBy(score => score.Word.Id)
+                .OrderByDescending(g => g.Average(score => score.GuessedTime.Ticks))
+                .Select(group => group.First().Word)
                 .ToArray();
         }
     }
