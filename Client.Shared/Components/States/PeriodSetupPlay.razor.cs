@@ -16,7 +16,7 @@ namespace Fishbowl.Net.Client.Shared.Components.States
         protected override void OnInitialized()
         {
             base.OnInitialized();
-            this.Title = this.Period.Round.Type;
+            this.Title = $"{this.Period.Round.Type}: {this.Period.Player.Username}";
         }
 
         private Task Start() =>
