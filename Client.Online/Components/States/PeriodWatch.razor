@@ -7,7 +7,25 @@
         </MudText>
     </MudContainer>
 
-    <MudContainer Class="mt-10">
-        <Timer Start="this.Period.StartedAt" Length="this.Period.Length" />
+    <MudContainer Class="my-10">
+        <Timer Start="this.Period.StartedAt" Length="this.Period.Length" OnExpired="_ => this.expired = true" />
     </MudContainer>
+
+    @if (this.ShowTeamAlert)
+    {
+        <MudContainer>
+            @if(!this.expired)
+            {
+                <MudAlert Severity="Severity.Info">
+                    @L["Components.States.PeriodWatch.YourTurn"]
+                </MudAlert>
+            }   
+            else
+            {
+                <MudAlert Severity="Severity.Warning">
+                    @L["Components.States.PeriodWatch.Expired"]
+                </MudAlert>
+            }    
+        </MudContainer>
+    }
 </StateContainer>

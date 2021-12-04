@@ -6,6 +6,10 @@ namespace Fishbowl.Net.Client.Online.Components.States
     {
         public PeriodRunningViewModel Period { get; set; } = default!;
 
+        public bool ShowTeamAlert { get; set; } = false;
+
+        private bool expired = false;
+
         protected override void OnInitialized()
         {
             base.OnInitialized();

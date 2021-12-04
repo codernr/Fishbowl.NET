@@ -192,6 +192,12 @@
     <data name="Components.States.PeriodWatch.Playing">
         <value>Playing</value>
     </data>
+    <data name="Components.States.PeriodWatch.YourTurn">
+        <value>Your team is playing!</value>
+    </data>
+    <data name="Components.States.PeriodWatch.Expired">
+        <value>Time's up, you have only one guess!</value>
+    </data>
     <data name="Components.States.PlayerSetup.Title">
         <value>Set player #{0} name and words</value>
     </data>

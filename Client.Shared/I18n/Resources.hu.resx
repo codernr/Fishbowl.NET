@@ -192,6 +192,12 @@
     <data name="Components.States.PeriodWatch.Playing">
         <value>Aktuális játékos</value>
     </data>
+    <data name="Components.States.PeriodWatch.YourTurn">
+        <value>A te csapatod játszik!</value>
+    </data>
+    <data name="Components.States.PeriodWatch.Expired">
+        <value>Lejárt az idő, már csak egyet tippelhettek!</value>
+    </data>
     <data name="Components.States.PlayerSetup.Title">
         <value>{0}. játékos neve és szavai</value>
     </data>

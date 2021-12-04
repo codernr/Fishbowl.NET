@@ -230,7 +230,11 @@ namespace Fishbowl.Net.Client.Online.Pages
                     state.ScoreCount = period.ScoreCount;
                     state.Period = period;
                 }) :
-                this.StateManager.SetStateAsync<PeriodWatch>(state => state.Period = period);
+                this.StateManager.SetStateAsync<PeriodWatch>(state =>
+                {
+                    state.Period = period;
+                    state.ShowTeamAlert = this.ClientState.Team.Players.Any(player => player.Username == period.Player.Username);
+                });
         }
 
         public Task ReceivePeriodFinished(PeriodSummaryViewModel period) =>
