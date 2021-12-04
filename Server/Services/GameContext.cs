@@ -259,7 +259,7 @@ namespace Fishbowl.Net.Server.Services
             var period = round.CurrentPeriod;
             var client = this.groupHubContext.Client(player.Username);
 
-            await client.ReceiveRestoreState(player.Map());
+            await client.ReceiveRestoreState(new(player.Map(), this.Teams.Select(team => team.Map()).ToList()));
 
             if (period.StartedAt is null)
             {

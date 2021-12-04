@@ -156,9 +156,10 @@ namespace Fishbowl.Net.Client.Online.Pages
             return Task.CompletedTask;
         }
 
-        public Task ReceiveRestoreState(PlayerViewModel player)
+        public Task ReceiveRestoreState(RestoreViewModel restore)
         {
-            this.ClientState.Username = player.Username;
+            this.ClientState.Username = restore.Player.Username;
+            this.ClientState.Teams = restore.Teams;
             return Task.CompletedTask;
         }
 

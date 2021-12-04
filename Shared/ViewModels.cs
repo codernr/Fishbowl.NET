@@ -37,6 +37,8 @@ namespace Fishbowl.Net.Shared.ViewModels
 
     public record PlayerViewModel(string Username);
 
+    public record RestoreViewModel(PlayerViewModel Player, List<TeamViewModel> Teams);
+
     public record AddPlayerViewModel(string Username, IEnumerable<Word> Words);
 
     public record TeamViewModel(int Id, List<PlayerViewModel> Players, string? Name = null);

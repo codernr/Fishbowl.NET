@@ -26,7 +26,7 @@ namespace Fishbowl.Net.Client.Online.Services
 
         Task ReceiveWaitForOtherPlayers(PlayerViewModel player) => Task.CompletedTask;
 
-        Task ReceiveRestoreState(PlayerViewModel player) => Task.CompletedTask;
+        Task ReceiveRestoreState(RestoreViewModel restore) => Task.CompletedTask;
 
         Task ReceiveGameAborted(GameAbortViewModel abort) => Task.CompletedTask;
 
