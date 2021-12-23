@@ -1,4 +1,4 @@
-@inherits ComponentState<PeriodPlay>
+@inherits ComponentState<PeriodPlayState>
 
 <StateContainer>
     <MudContainer Class="mb-3">
@@ -6,20 +6,20 @@
             Variant="Variant.Filled"
             Color="Color.Error"
             FullWidth="true"
-            Disabled="!this.showRevoke"
-            @onclick="e => this.OnLastScoreRevoked()">
+            Disabled="!this.State.Value.ShowRevoke"
+            @onclick="this.Revoke">
             @L["Components.States.PeriodPlay.RevokeButton"]
         </MudButton>
     </MudContainer>
 
     <MudContainer Class="my-3">
-        <Timer Start="this.Period.StartedAt" Length="this.Period.Length" OnExpired="() => this.Expired = true" />
+        <Timer />
     </MudContainer>
 
     <MudContainer Class="my-3">
         <MudCard Class="mud-theme-primary">
             <MudCardContent>
-                <MudText Typo="Typo.h4">@(this.Word?.Value ?? string.Empty)</MudText>
+                <MudText Typo="Typo.h4">@(this.State.Value.Word?.Value ?? string.Empty)</MudText>
             </MudCardContent>
         </MudCard>
     </MudContainer>
@@ -30,7 +30,7 @@
             Color="Color.Success"
             Size="Size.Large"
             FullWidth="true"
-            Disabled="@(this.Word is null)"
+            Disabled="@(this.State.Value.Word is null)"
             @onclick="this.AddScore">
             @L["Components.States.PeriodPlay.GuessedButton"]
         </MudButton>
@@ -42,15 +42,15 @@
             Color="Color.Error"
             Size="Size.Large"
             FullWidth="true"
-            Disabled="!this.Expired"
+            Disabled="!this.State.Value.Expired"
             @onclick="this.FinishPeriod">
             @L["Components.States.PeriodPlay.PassButton"]
         </MudButton>
     </MudContainer>
 
     <MudContainer>
-        <MudAlert Severity="@(this.Expired ? Severity.Warning : Severity.Info)">
-            @L[$"Components.States.PeriodPlay.{(this.Expired ? "Warning" : "Info")}Alert"] 
+        <MudAlert Severity="@(this.State.Value.Expired ? Severity.Warning : Severity.Info)">
+            @L[$"Components.States.PeriodPlay.{(this.State.Value.Expired ? "Warning" : "Info")}Alert"] 
         </MudAlert>
     </MudContainer>
 </StateContainer>
