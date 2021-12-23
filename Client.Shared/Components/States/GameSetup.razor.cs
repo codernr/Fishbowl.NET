@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Fishbowl.Net.Client.Shared.Common;
+using Fishbowl.Net.Client.Shared.Store;
 using Fishbowl.Net.Shared.ViewModels;
 using MudBlazor;
 
@@ -10,10 +11,6 @@ namespace Fishbowl.Net.Client.Shared.Components.States
 {
     public partial class GameSetup
     {
-        public Func<GameSetupViewModel, Task> OnGameSetup { get; set; } = default!;
-
-        public string? Info { get; set; }
-
         private int PlayerCount
         {
             get => this.playerCount;
@@ -65,8 +62,8 @@ namespace Fishbowl.Net.Client.Shared.Components.States
             this.form?.Validate();
         }
 
-        private Task SetupGame() =>
-            this.once.Fire(() => this.OnGameSetup(
+        private void SetupGame() =>
+            this.Dispatcher.Dispatch(new SubmitGameSetupAction(
                 new(this.PlayerCount, this.wordCount, this.teamCount, this.selectedRoundTypes.ToArray())));
     }
 }

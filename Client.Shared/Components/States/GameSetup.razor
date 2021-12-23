@@ -1,11 +1,11 @@
-@inherits ComponentState<GameSetup>
+@inherits ComponentState<GameSetupState>
 
 <StateContainer>
-    @if(this.Info is not null)
+    @if(this.State.Value.Info is not null)
     {
         <MudContainer Class="mb-6">
             <MudAlert Severity="Severity.Info">
-                @this.Info
+                @this.State.Value.Info
             </MudAlert>
         </MudContainer>
     }
@@ -56,7 +56,7 @@
                 Color="Color.Primary"
                 FullWidth="true"
                 Size="Size.Large"
-                Disabled="!this.form!.IsValid"
+                Disabled="!this.form!.IsValid || this.State.Value.IsLoading"
                 @onclick="this.SetupGame">
                 @L["Components.States.GameSetup.SubmitButton"]
             </MudButton>
