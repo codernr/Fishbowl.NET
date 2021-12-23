@@ -23,13 +23,13 @@ namespace Fishbowl.Net.Client.Shared.Components
 
         private Task transition = Task.CompletedTask;
 
-        private T Instance<T>() where T : State<T> =>
+        private T Instance<T>() where T : ComponentState<T> =>
             this.Component.Instance as T ?? throw new InvalidOperationException();
 
-        public void SetParameters<T>(Action<T> setParameters) where T : State<T> =>
+        public void SetParameters<T>(Action<T> setParameters) where T : ComponentState<T> =>
             this.Instance<T>().Update(setParameters);
 
-        public Task SetStateAsync<T>(Action<T>? setParameters = null, TimeSpan delay = default) where T : State<T>
+        public Task SetStateAsync<T>(Action<T>? setParameters = null, TimeSpan delay = default) where T : ComponentState<T>
         {
             this.transition = this.transition
                 .ContinueWith(_ => this.TransitionAsync<T>(setParameters ?? (_ => {}), delay))
@@ -38,7 +38,7 @@ namespace Fishbowl.Net.Client.Shared.Components
             return this.transition;
         }
 
-        private async Task TransitionAsync<T>(Action<T> setParameters, TimeSpan delay = default) where T : State<T>
+        private async Task TransitionAsync<T>(Action<T> setParameters, TimeSpan delay = default) where T : ComponentState<T>
         {
             await this.DisableAsync();
 

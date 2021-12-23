@@ -6,7 +6,7 @@ using Microsoft.Extensions.Localization;
 
 namespace Fishbowl.Net.Client.Shared.Components
 {
-    public abstract class State<T> : ComponentBase where T : State<T>
+    public abstract class ComponentState<T> : ComponentBase where T : ComponentState<T>
     {
         [Inject]
         public IStringLocalizer<Resources> L { get; set; } = default!;

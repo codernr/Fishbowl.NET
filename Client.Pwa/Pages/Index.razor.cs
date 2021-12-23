@@ -154,7 +154,7 @@ namespace Fishbowl.Net.Client.Pwa.Pages
             this.Game.WordSetup += this.OnWordSetup;
         }
 
-        private Task Transition<T>(Action<T>? setParameters = null) where T : State<T>
+        private Task Transition<T>(Action<T>? setParameters = null) where T : ComponentState<T>
         {
             this.transition = this.transition
                 .ContinueWith(_ => this.StateManager.SetStateAsync<T>(setParameters)).Unwrap();

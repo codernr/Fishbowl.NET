@@ -1,6 +1,6 @@
 @using System.ComponentModel.DataAnnotations
 
-@inherits State<PlayerWords>
+@inherits ComponentState<PlayerWords>
 
 <StateContainer>
     <MudForm @ref="this.form" IsValidChanged="_ => this.StateHasChanged()">
