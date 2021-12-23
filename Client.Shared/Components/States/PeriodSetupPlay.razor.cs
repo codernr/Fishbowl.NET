@@ -1,17 +1,14 @@
 using System;
 using System.Threading.Tasks;
 using Fishbowl.Net.Client.Shared.Common;
+using Fishbowl.Net.Client.Shared.Store;
 using Fishbowl.Net.Shared.ViewModels;
 
 namespace Fishbowl.Net.Client.Shared.Components.States
 {
     public partial class PeriodSetupPlay
     {
-        public Func<DateTimeOffset, Task> OnStarted { get; set; } = default!;
-
-        public PeriodSetupViewModel Period { get; set; } = default!;
-
-        private Once once = new();
+        private PeriodSetupViewModel Period => this.State.Value.Period!;
 
         protected override void OnInitialized()
         {
@@ -19,7 +16,6 @@ namespace Fishbowl.Net.Client.Shared.Components.States
             this.Title = $"{this.Period.Round.Type}: {this.Period.Player.Username}";
         }
 
-        private Task Start() =>
-            this.once.Fire(() => this.OnStarted(DateTimeOffset.UtcNow));
+        private void Start() => this.Dispatcher.Dispatch(new StartPeriodAction());
     }
 }
