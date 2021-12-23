@@ -18,6 +18,9 @@ namespace Fishbowl.Net.Client.Shared.Components
         [Inject]
         public IState<T> State { get; set; } = default!;
 
+        [Inject]
+        public IDispatcher Dispatcher { get; set; } = default!;
+
         public string Title
         {
             get => this.title;
