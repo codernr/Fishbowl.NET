@@ -1,17 +1,17 @@
-@inherits ComponentState<Info>
+@inherits ComponentState<InfoState>
 
 <StateContainer>
-    @if(this.Message is not null)
+    @if(this.State.Value.Message is not null)
     {
         <MudContainer Class="mb-10">
-            <MudAlert Severity="this.Severity">
-                @this.Message
+            <MudAlert Severity="this.State.Value.Severity">
+                @this.State.Value.Message
             </MudAlert>
         </MudContainer>
 
     }
 
-    @if (this.Loading)
+    @if (this.State.Value.Loading)
     {
         <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
     }
