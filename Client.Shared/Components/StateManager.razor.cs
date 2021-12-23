@@ -1,62 +1,62 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
+using Fishbowl.Net.Client.Shared.Store;
 
 namespace Fishbowl.Net.Client.Shared.Components
 {
-    public partial class StateManager
+    public partial class StateManager : IDisposable
     {
-        public object? CurrentState => this.component?.Instance;
-        
         private static readonly TimeSpan TransitionDuration = TimeSpan.FromMilliseconds(300);
 
-        private DynamicComponent Component => this.component ?? throw new InvalidOperationException();
-
-        private DynamicComponent? component; 
-
         private Type? type;
-
-        private Dictionary<string, object> parameters = new();
 
         private bool show = false;
 
         private Task transition = Task.CompletedTask;
 
-        private T Instance<T>() where T : ComponentState<T> =>
-            this.Component.Instance as T ?? throw new InvalidOperationException();
-
-        public void SetParameters<T>(Action<T> setParameters) where T : ComponentState<T> =>
-            this.Instance<T>().Update(setParameters);
-
-        public Task SetStateAsync<T>(Action<T>? setParameters = null, TimeSpan delay = default) where T : ComponentState<T>
+        protected override void OnInitialized()
         {
-            this.transition = this.transition
-                .ContinueWith(_ => this.TransitionAsync<T>(setParameters ?? (_ => {}), delay))
-                .Unwrap();
+            base.OnInitialized();
 
-            return this.transition;
+            this.StateManagerState.StateChanged += this.StateManagerStateChanged;
         }
 
-        private async Task TransitionAsync<T>(Action<T> setParameters, TimeSpan delay = default) where T : ComponentState<T>
+        private async void StateManagerStateChanged(object? sender, StateManagerState state)
+        {
+            var newState = this.StateManagerState.Value;
+
+            if (newState.CurrentState is null || !newState.IsTransitioning)
+            {
+                return;
+            }
+            
+            this.transition = this.transition
+                .ContinueWith(_ => this.TransitionAsync(newState.CurrentState))
+                .Unwrap();
+
+            await this.transition;
+        }
+
+        private async Task TransitionAsync(Type stateType)
         {
             await this.DisableAsync();
 
-            if (this.type == typeof(T))
+            if (this.type == stateType)
             {
                 this.type = null;
                 this.StateHasChanged();
             }
 
-            this.type = typeof(T);
-            this.parameters = new() { { "SetParameters", setParameters } };
+            this.type = stateType;
 
             this.StateHasChanged();
-         
-            await this.EnableAsync(delay);
+
+            await this.EnableAsync();
+
+            this.Dispatcher.Dispatch(new StateManagerTransitionEndAction());
         }
 
-        private async Task EnableAsync(TimeSpan delay)
+        private async Task EnableAsync()
         {
             await Task.Delay(100);
 
@@ -64,7 +64,7 @@ namespace Fishbowl.Net.Client.Shared.Components
 
             this.StateHasChanged();
 
-            await Task.Delay(TransitionDuration + delay);
+            await Task.Delay(TransitionDuration);
         }
 
         private async Task DisableAsync()
@@ -80,5 +80,7 @@ namespace Fishbowl.Net.Client.Shared.Components
 
             await Task.Delay(TransitionDuration);
         }
+
+        public void Dispose() => this.StateManagerState.StateChanged -= this.StateManagerStateChanged;
     }
 }
