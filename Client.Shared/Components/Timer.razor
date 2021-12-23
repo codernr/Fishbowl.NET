@@ -1,5 +1,7 @@
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
 @implements IAsyncDisposable
 @inject IStringLocalizer<Resources> L
+@inject IState<TimerState> State;
 
 <MudCard Class="@($"timer {this.Classes}")">
     <MudCardContent>
