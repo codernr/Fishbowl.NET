@@ -1,7 +1,7 @@
 using System;
 using Fluxor;
 
-namespace Fishbowl.Net.Shared.Store
+namespace Fishbowl.Net.Client.Shared.Store
 {
     [FeatureState]
     public record StateManagerState(bool IsTransitioning = false, Type? CurrentState = null);
