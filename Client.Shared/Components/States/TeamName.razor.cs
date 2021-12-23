@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Fishbowl.Net.Client.Shared.Common;
+using Fishbowl.Net.Client.Shared.Store;
 using Fishbowl.Net.Shared.ViewModels;
 using MudBlazor;
 
@@ -8,17 +9,13 @@ namespace Fishbowl.Net.Client.Shared.Components.States
 {
     public partial class TeamName
     {
-        public Func<TeamNameViewModel, Task> OnTeamNameSet { get; set; } = default!;
-
-        public TeamViewModel Team { get; set; } = default!;
+        private TeamViewModel Team => this.State.Value.Team!;
 
         private MudForm? form;
 
-        private Once once = new();
-
         private string teamName = string.Empty;
 
-        private Task Submit() =>
-            this.once.Fire(() => this.OnTeamNameSet(new(this.Team.Id, this.teamName)));
+        private void Submit() =>
+            this.Dispatcher.Dispatch(new SubmitTeamNameAction(this.teamName));
     }
 }
