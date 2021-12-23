@@ -6,12 +6,12 @@ namespace Fishbowl.Net.Client.Shared.Store
     [FeatureState]
     public record GameFinishedState(GameSummaryViewModel? Game = null);
 
-    public record GameFinishedAction(GameSummaryViewModel Game);
+    public record SetGameFinishedAction(GameSummaryViewModel Game);
 
     public static class GameFinishedReducers
     {
         [ReducerMethod]
-        public static GameFinishedState OnGameFinished(GameFinishedState state, GameFinishedAction action) =>
+        public static GameFinishedState OnSetGameFinished(GameFinishedState state, SetGameFinishedAction action) =>
             new(action.Game);
     }
 }

@@ -6,12 +6,12 @@ namespace Fishbowl.Net.Client.Shared.Store
     [FeatureState]
     public record InfoState(Severity Severity = Severity.Info, string? Message = null, bool Loading = false);
 
-    public record SetInfoStateAction(Severity Severity = Severity.Info, string? Message = null, bool Loading = false);
+    public record SetInfoAction(Severity Severity = Severity.Info, string? Message = null, bool Loading = false);
 
     public static class InfoReducers
     {
         [ReducerMethod]
-        public static InfoState OnSetInfoState(InfoState state, SetInfoStateAction action) =>
+        public static InfoState OnSetInfo(InfoState state, SetInfoAction action) =>
             new(action.Severity, action.Message, action.Loading);
     }
 }
