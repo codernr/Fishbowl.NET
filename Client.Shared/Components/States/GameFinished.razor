@@ -1,4 +1,4 @@
-@inherits ComponentState<GameFinished>
+@inherits ComponentState<GameFinishedState>
 
 <StateContainer>
     <MudContainer>
@@ -38,7 +38,7 @@
             Color="Color.Warning"
             Size="Size.Large"
             FullWidth="true"
-            @onclick="this.ReloadRequested">
+            @onclick="this.Reload">
             @L["Components.States.GameFinished.Button"]
         </MudButton>
     </MudContainer>

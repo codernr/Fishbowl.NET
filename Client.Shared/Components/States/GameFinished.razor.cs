@@ -1,15 +1,13 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
+using Fishbowl.Net.Client.Shared.Store;
 using Fishbowl.Net.Shared.ViewModels;
 
 namespace Fishbowl.Net.Client.Shared.Components.States
 {
     public partial class GameFinished
     {
-        public Action ReloadRequested { get; set; } = default!;
-        
-        public GameSummaryViewModel Game { get; set; } = default!;
+        private GameSummaryViewModel Game => this.State.Value.Game!;
 
         private PlayerSummaryViewModel bestPlayer = default!;
 
@@ -33,5 +31,7 @@ namespace Fishbowl.Net.Client.Shared.Components.States
                 .Select(group => group.First().Word)
                 .ToArray();
         }
+
+        private void Reload() => this.Dispatcher.Dispatch(new ReloadAction());
     }
 }
