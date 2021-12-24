@@ -9,11 +9,12 @@ namespace Fishbowl.Net.Client.Shared
 {
     public static class SharedExtensions
     {
-        public static WebAssemblyHostBuilder AddInteropServices(this WebAssemblyHostBuilder builder)
+        public static WebAssemblyHostBuilder AddSharedServices(this WebAssemblyHostBuilder builder)
         {
             builder.Services
                 .AddSingleton<IStorageService, StorageService>()
-                .AddSingleton<IScreenService, ScreenService>();
+                .AddSingleton<IScreenService, ScreenService>()
+                .AddSingleton<IStateManagerService, StateManagerService>();
 
             return builder;
         }

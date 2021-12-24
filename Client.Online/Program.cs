@@ -20,7 +20,7 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder
-    .AddInteropServices()
+    .AddSharedServices()
     .Services
         .AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) })
         .AddTransient<IClientState, ClientState>()

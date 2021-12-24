@@ -13,7 +13,7 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder
-    .AddInteropServices()
+    .AddSharedServices()
     .Services
         .AddLocalization()
         .AddJsonSerializationOptions()
