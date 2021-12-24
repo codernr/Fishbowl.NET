@@ -18,13 +18,13 @@ namespace Fishbowl.Net.Client.Pwa.Store
     [FeatureState]
     public record GamePlayState
     {
-        public GameSetupViewModel? GameSetup { get; init; }
+        public GameSetupViewModel GameSetup { get; init; } = default!;
 
         public List<Player> Players { get; init; } = new();
         
         public List<Team> Teams { get; init; } = new();
 
-        public AsyncGame? Game { get; init; }
+        public AsyncGame Game { get; init; } = default!;
     }
 
     public record InitGamePlayAction();
@@ -53,7 +53,7 @@ namespace Fishbowl.Net.Client.Pwa.Store
 
         [ReducerMethod(typeof(CreateTeamsAction))]
         public static GamePlayState OnCreateTeams(GamePlayState state) =>
-            state with { Teams = state.Players.Randomize().ToList().CreateTeams(state.GameSetup!.TeamCount).ToList() };
+            state with { Teams = state.Players.Randomize().ToList().CreateTeams(state.GameSetup.TeamCount).ToList() };
 
         [ReducerMethod]
         public static GamePlayState OnSubmitTeamName(GamePlayState state, SubmitTeamNameAction action)
@@ -104,10 +104,10 @@ namespace Fishbowl.Net.Client.Pwa.Store
         [EffectMethod]
         public Task OnSubmitPlayerSetup(SubmitPlayerSetupAction action, IDispatcher dispatcher)
         {
-            if (this.state.Value.Players.Count < this.state.Value.GameSetup!.PlayerCount)
+            if (this.state.Value.Players.Count < this.state.Value.GameSetup.PlayerCount)
             {
                 dispatcher.Dispatch(new SetPlayerSetupAction(
-                    this.state.Value.GameSetup!.WordCount,
+                    this.state.Value.GameSetup.WordCount,
                     string.Format(this.localizer["Components.States.PlayerSetup.Title"], this.state.Value.Players.Count + 1)));
 
                 dispatcher.Dispatch(new StartStateManagerTransitionAction(typeof(PlayerSetup)));
