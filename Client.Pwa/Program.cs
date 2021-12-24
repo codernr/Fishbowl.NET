@@ -18,7 +18,6 @@ builder
         .AddLocalization()
         .AddJsonSerializationOptions()
         .AddSingleton<GameProperty>()
-        .AddSingleton<AppStateService>()
         .AddMudServices();
 
 var culture = new CultureInfo("hu");

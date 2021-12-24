@@ -10,11 +10,7 @@ namespace Fishbowl.Net.Client.Shared.Components.States
     {
         private PeriodSetupViewModel Period => this.State.Value.Period!;
 
-        protected override void OnInitialized()
-        {
-            base.OnInitialized();
-            this.Title = $"{this.Period.Round.Type}: {this.Period.Player.Username}";
-        }
+        protected override string Title => $"{this.Period.Round.Type}: {this.Period.Player.Username}";
 
         private void Start() => this.Dispatcher.Dispatch(new StartPeriodAction());
     }

@@ -10,11 +10,7 @@ namespace Fishbowl.Net.Client.Shared.Components.States
     {
         public PeriodRunningViewModel Period => this.State.Value.Period!;
 
-        protected override void OnInitialized()
-        {
-            base.OnInitialized();
-            this.Title = this.Period.Round.Type;
-        }
+        protected override string Title => this.Period.Round.Type;
 
         private void AddScore() =>
             this.Dispatcher.Dispatch(new AddScoreAction(this.State.Value.Word!));

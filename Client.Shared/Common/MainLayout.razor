@@ -1,8 +1,8 @@
 @using MudBlazor
-@inherits LayoutComponentBase
+@using Fluxor.Blazor.Web.Components
+@inherits FluxorLayout
 
-@inject AppStateService AppState
-@inject IStringLocalizer<Resources> L
+@inject IState<AppBarState> State
 
 <MudThemeProvider Theme="Themes.Dark" />
 <MudDialogProvider/>
@@ -10,7 +10,7 @@
 
 <MudLayout>
     <MudAppBar Elevation="1">
-        <MudText Typo="Typo.h5" Class="ml-3">@this.AppState.Title</MudText>
+        <MudText Typo="Typo.h5" Class="ml-3">@this.State.Value.Title</MudText>
     </MudAppBar>
     <MudMainContent Class="mud-height-full">
         @Body

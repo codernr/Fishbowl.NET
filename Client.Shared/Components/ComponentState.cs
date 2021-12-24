@@ -1,6 +1,7 @@
 using System;
 using Fishbowl.Net.Client.Shared.I18n;
 using Fishbowl.Net.Client.Shared.Services;
+using Fishbowl.Net.Client.Shared.Store;
 using Fluxor;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Localization;
@@ -13,31 +14,18 @@ namespace Fishbowl.Net.Client.Shared.Components
         public IStringLocalizer<Resources> L { get; set; } = default!;
 
         [Inject]
-        public AppStateService AppState { get; set; } = default!;
-
-        [Inject]
         public IState<T> State { get; set; } = default!;
 
         [Inject]
         public IDispatcher Dispatcher { get; set; } = default!;
 
-        public string Title
-        {
-            get => this.title;
-            set
-            {
-                this.title = value;
-                this.AppState.Title = value;
-            }
-        }
-
-        private string title = default!;
+        protected virtual string Title => this.L[$"Components.States.{this.GetType().Name}.Title"];
 
         protected override void OnInitialized()
         {
             base.OnInitialized();
 
-            this.Title = this.L[$"Components.States.{this.GetType().Name}.Title"];
+            this.Dispatcher.Dispatch(new SetAppBarTitleAction(this.Title));
 
             this.State.StateChanged += this.StateChanged;
         }
