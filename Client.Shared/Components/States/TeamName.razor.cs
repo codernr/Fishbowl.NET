@@ -9,6 +9,8 @@ namespace Fishbowl.Net.Client.Shared.Components.States
 {
     public partial class TeamName
     {
+        protected override string Title => this.State.Value.Title;
+        
         private TeamViewModel Team => this.State.Value.Team!;
 
         private MudForm? form;

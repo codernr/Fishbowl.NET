@@ -4,9 +4,9 @@ using Fluxor;
 namespace Fishbowl.Net.Client.Shared.Store
 {
     [FeatureState]
-    public record TeamNameState(TeamViewModel? Team);
+    public record TeamNameState(TeamViewModel? Team = null, string Title = "");
 
-    public record SetTeamNameAction(TeamViewModel Team);
+    public record SetTeamNameAction(TeamViewModel Team, string Title);
 
     public record SubmitTeamNameAction(string TeamName);
 
@@ -14,6 +14,6 @@ namespace Fishbowl.Net.Client.Shared.Store
     {
         [ReducerMethod]
         public static TeamNameState OnTeamNameSet(TeamNameState state, SetTeamNameAction action) =>
-            new(action.Team);
+            new(action.Team, action.Title);
     }
 }
