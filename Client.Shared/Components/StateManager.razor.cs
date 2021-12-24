@@ -1,10 +1,9 @@
 using System;
 using System.Threading.Tasks;
-using Fishbowl.Net.Client.Shared.Store;
 
 namespace Fishbowl.Net.Client.Shared.Components
 {
-    public partial class StateManager : IDisposable
+    public partial class StateManager
     {
         private static readonly TimeSpan TransitionDuration = TimeSpan.FromMilliseconds(300);
 
@@ -18,42 +17,33 @@ namespace Fishbowl.Net.Client.Shared.Components
         {
             base.OnInitialized();
 
-            this.StateManagerState.StateChanged += this.StateManagerStateChanged;
+            this.StateManagerService.Initialize(this);
         }
 
-        private async void StateManagerStateChanged(object? sender, StateManagerState state)
+        public Task SetState(Type nextState)
         {
-            var newState = this.StateManagerState.Value;
-
-            if (newState.CurrentState is null || !newState.IsTransitioning)
-            {
-                return;
-            }
-            
             this.transition = this.transition
-                .ContinueWith(_ => this.TransitionAsync(newState.CurrentState))
+                .ContinueWith(_ => this.TransitionAsync(nextState))
                 .Unwrap();
 
-            await this.transition;
+            return this.transition;
         }
 
-        private async Task TransitionAsync(Type stateType)
+        private async Task TransitionAsync(Type nextState)
         {
             await this.DisableAsync();
 
-            if (this.type == stateType)
+            if (this.type == nextState)
             {
                 this.type = null;
                 this.StateHasChanged();
             }
 
-            this.type = stateType;
+            this.type = nextState;
 
             this.StateHasChanged();
 
             await this.EnableAsync();
-
-            this.Dispatcher.Dispatch(new StateManagerTransitionEndAction());
         }
 
         private async Task EnableAsync()
@@ -80,7 +70,5 @@ namespace Fishbowl.Net.Client.Shared.Components
 
             await Task.Delay(TransitionDuration);
         }
-
-        public void Dispose() => this.StateManagerState.StateChanged -= this.StateManagerStateChanged;
     }
 }

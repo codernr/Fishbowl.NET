@@ -1,8 +1,7 @@
 @using Microsoft.Extensions.Logging;
 
 @inject ILogger<StateManager> Logger;
-@inject IState<StateManagerState> StateManagerState;
-@inject IDispatcher Dispatcher;
+@inject IStateManagerService StateManagerService;
 
 <MudContainer Class="@($"pa-0 d-flex mud-height-full fade-container {(this.show ? "show" : string.Empty)}")">
 @if (this.type is not null)

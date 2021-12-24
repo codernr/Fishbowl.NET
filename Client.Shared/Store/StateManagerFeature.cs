@@ -1,22 +1,27 @@
 using System;
+using System.Threading.Tasks;
+using Fishbowl.Net.Client.Shared.Services;
 using Fluxor;
 
 namespace Fishbowl.Net.Client.Shared.Store
 {
-    [FeatureState]
-    public record StateManagerState(bool IsTransitioning = false, Type? CurrentState = null);
+    public record StartStateManagerTransitionAction(Type NextState);
 
-    public record StateManagerStartTransitionAction(Type NextState);
+    public record StateManagerTransitionEndAction(Type CurrentState);
 
-    public record StateManagerTransitionEndAction();
-
-    public static class StateManagerReducers
+    public class StateManagerEffects
     {
-        [ReducerMethod]
-        public static StateManagerState OnStartTransition(StateManagerState state, StateManagerStartTransitionAction action) =>
-            new(true, action.NextState);
+        private readonly IStateManagerService stateManagerService;
 
-        [ReducerMethod(typeof(StateManagerTransitionEndAction))]
-        public static StateManagerState OnTransitionEnd(StateManagerState state) => state with { IsTransitioning = false };
+        public StateManagerEffects(IStateManagerService stateManagerService) =>
+            this.stateManagerService = stateManagerService;
+
+        [EffectMethod]
+        public async Task OnStartStateManager(StartStateManagerTransitionAction action, IDispatcher dispatcher)
+        {
+            await this.stateManagerService.SetState(action.NextState);
+
+            dispatcher.Dispatch(new StateManagerTransitionEndAction(action.NextState));
+        }
     }
 }
