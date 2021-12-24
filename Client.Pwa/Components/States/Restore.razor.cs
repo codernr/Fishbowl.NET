@@ -1,19 +1,13 @@
-using System;
-using System.Threading.Tasks;
-using Fishbowl.Net.Client.Shared.Common;
+using Fishbowl.Net.Client.Pwa.Store;
 
 namespace Fishbowl.Net.Client.Pwa.Components.States
 {
     public partial class Restore
     {
-        public Func<Task> OnRestoreRequested { get; set; } = default!;
+        private void RequestRestore() =>
+            this.Dispatcher.Dispatch(new RestoreGameAction());
 
-        public Func<Task> OnNewGameRequested { get; set; } = default!;
-
-        private Once once = new();
-
-        private Task RequestRestore() => this.once.Fire(this.OnRestoreRequested);
-
-        private Task RequestNewGame() => this.once.Fire(this.OnNewGameRequested);
+        private void RequestNewGame() =>
+            this.Dispatcher.Dispatch(new StartNewGameAction());
     }
 }
