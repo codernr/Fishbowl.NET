@@ -64,6 +64,10 @@ namespace Fishbowl.Net.Client.Pwa.Store
 
             return state with { Teams = teams };
         }
+
+        [ReducerMethod(typeof(StartGameAction))]
+        public static GamePlayState OnStartGame(GamePlayState state) =>
+            state with { Game = new(new(), state.Teams, state.GameSetup.RoundTypes) };
     }
 
     public class GamePlayEffects
@@ -73,6 +77,8 @@ namespace Fishbowl.Net.Client.Pwa.Store
         private readonly GameProperty persistedGame;
 
         private readonly IStringLocalizer<Resources> localizer;
+
+        private AsyncGame Game => this.state.Value.Game;
 
         public GamePlayEffects(
             IState<GamePlayState> state,
@@ -152,6 +158,63 @@ namespace Fishbowl.Net.Client.Pwa.Store
 
                 dispatcher.Dispatch(new StartStateManagerTransitionAction(typeof(TeamName)));
             }
+
+            return Task.CompletedTask;
+        }
+
+        [EffectMethod(typeof(StartGameAction))]
+        public Task OnStartGame(IDispatcher dispatcher)
+        {
+            this.Game.GameStarted += game => Dispatch<SetInfoAction, Info>(
+                new(Message: this.localizer["Pages.Play.GameStartedTitle"], Loading: true));
+
+            this.Game.GameFinished += game => Dispatch<SetGameFinishedAction, GameFinished>(new(this.Game.Map()));
+
+            this.Game.RoundStarted += round => Dispatch<SetInfoAction, Info>(new(
+                Title: $"{this.localizer["Pages.Play.RoundStartedTitle"]}: {round.Type}",
+                Message: this.localizer[$"Components.States.Common.RoundTypes.{round.Type}.Description"],
+                Loading: true));
+
+            this.Game.RoundFinished += round => Dispatch<SetRoundFinishedAction, RoundFinished>(new(round.MapSummary()));
+
+            this.Game.PeriodSetup += period => Dispatch<SetPeriodSetupPlayAction, PeriodSetupPlay>(
+                new(period.Map(this.Game.Game.CurrentRound)));
+
+            this.Game.PeriodStarted += period => Dispatch<SetPeriodPlayPeriodAction, PeriodPlay>(
+                new(period.MapRunning(this.Game.Game.CurrentRound)));
+
+            this.Game.PeriodFinished += period => Dispatch<SetPeriodFinishedAction, PeriodFinished>(new(period.Map()));
+
+            this.Game.WordSetup += (player, word) => dispatcher.Dispatch(
+                new SetPeriodPlayWordAction(word.Map()));
+
+            this.Game.Run();
+
+            return Task.CompletedTask;
+
+            void Dispatch<TStateAction, TTransition>(TStateAction action)
+            {
+                dispatcher.Dispatch(action);
+                dispatcher.Dispatch(new StartStateManagerTransitionAction(typeof(TTransition)));
+            }
+        }
+
+        [EffectMethod(typeof(StartPeriodAction))]
+        public Task OnStartPeriod(IDispatcher dispatcher)
+        {
+            this.state.Value.Game.StartPeriod(DateTimeOffset.UtcNow);
+            return Task.CompletedTask;
+        }
+
+        [EffectMethod]
+        public Task OnAddScore(AddScoreAction action, IDispatcher dispatcher)
+        {
+            this.Game.AddScore(new(action.Word.Map(), DateTimeOffset.UtcNow));
+
+            dispatcher.Dispatch(new SetPeriodPlayScoreCountAction(
+                this.Game.Game.CurrentRound.CurrentPeriod.Scores.Count));
+
+            this.Game.NextWord(DateTimeOffset.UtcNow);
 
             return Task.CompletedTask;
         }
