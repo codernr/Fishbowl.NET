@@ -1,6 +1,5 @@
 using System;
 using Fishbowl.Net.Client.Shared.I18n;
-using Fishbowl.Net.Client.Shared.Services;
 using Fishbowl.Net.Client.Shared.Store;
 using Fluxor;
 using Microsoft.AspNetCore.Components;
@@ -8,13 +7,10 @@ using Microsoft.Extensions.Localization;
 
 namespace Fishbowl.Net.Client.Shared.Components
 {
-    public abstract class ComponentState<T> : ComponentBase, IDisposable where T : class
+    public abstract class ComponentState : ComponentBase
     {
         [Inject]
         public IStringLocalizer<Resources> L { get; set; } = default!;
-
-        [Inject]
-        public IState<T> State { get; set; } = default!;
 
         [Inject]
         public IDispatcher Dispatcher { get; set; } = default!;
@@ -26,12 +22,26 @@ namespace Fishbowl.Net.Client.Shared.Components
             base.OnInitialized();
 
             this.Dispatcher.Dispatch(new SetAppBarTitleAction(this.Title));
+        }
+
+
+    }
+
+    public abstract class ComponentState<T> : ComponentState, IDisposable where T : class
+    {
+        [Inject]
+        public IState<T> State { get; set; } = default!;
+
+        protected override void OnInitialized()
+        {
+            base.OnInitialized();
 
             this.State.StateChanged += this.StateChanged;
         }
-
+        
         protected virtual void StateChanged(object? sender, T state) => this.InvokeAsync(this.StateHasChanged);
-
+    
         public void Dispose() => this.State.StateChanged -= this.StateChanged;
     }
+
 }
