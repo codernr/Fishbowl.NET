@@ -17,7 +17,7 @@ namespace Fishbowl.Net.Client.Shared.Store
             this.stateManagerService = stateManagerService;
 
         [EffectMethod]
-        public async Task OnStartStateManager(StartStateManagerTransitionAction action, IDispatcher dispatcher)
+        public async Task OnStartStateManagerTransition(StartStateManagerTransitionAction action, IDispatcher dispatcher)
         {
             await this.stateManagerService.SetState(action.NextState);
 
