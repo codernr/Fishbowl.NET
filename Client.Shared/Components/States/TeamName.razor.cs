@@ -18,6 +18,6 @@ namespace Fishbowl.Net.Client.Shared.Components.States
         private string teamName = string.Empty;
 
         private void Submit() =>
-            this.Dispatcher.Dispatch(new SubmitTeamNameAction(this.teamName));
+            this.Dispatcher.Dispatch(new SubmitTeamNameAction(this.Team.Id, this.teamName));
     }
 }

@@ -8,7 +8,7 @@ namespace Fishbowl.Net.Client.Shared.Store
 
     public record SetTeamNameAction(TeamViewModel Team, string Title);
 
-    public record SubmitTeamNameAction(string TeamName);
+    public record SubmitTeamNameAction(int Id, string TeamName);
 
     public static class TeamNameReducers
     {
