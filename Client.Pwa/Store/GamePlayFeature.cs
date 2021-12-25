@@ -240,7 +240,7 @@ namespace Fishbowl.Net.Client.Pwa.Store
         private void SetEventHandlers(IDispatcher dispatcher)
         {
             this.Game.GameStarted += game => Dispatch<SetInfoAction, Info>(
-                new(Message: this.localizer["Pages.Play.GameStartedTitle"], Loading: true), TimeSpan.FromSeconds(2));
+                new(Title: this.localizer["Pages.Play.GameStartedTitle"], Loading: true), TimeSpan.FromSeconds(2));
 
             this.Game.GameFinished += game => Dispatch<SetGameFinishedAction, GameFinished>(new(game.Map()));
 
