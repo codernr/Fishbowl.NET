@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using Fishbowl.Net.Client.Shared.Services;
 using Fluxor;
 using Microsoft.JSInterop;
 
