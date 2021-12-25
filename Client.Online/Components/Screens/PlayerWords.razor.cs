@@ -1,10 +1,7 @@
-using System;
-using System.Threading.Tasks;
 using Fishbowl.Net.Client.Online.Store;
-using Fishbowl.Net.Client.Shared.Common;
 using MudBlazor;
 
-namespace Fishbowl.Net.Client.Online.Components.States
+namespace Fishbowl.Net.Client.Online.Components.Screens
 {
     public partial class PlayerWords
     {

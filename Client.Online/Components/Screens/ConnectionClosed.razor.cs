@@ -1,7 +1,6 @@
-using System;
 using Fishbowl.Net.Client.Shared.Store;
 
-namespace Fishbowl.Net.Client.Online.Components.States
+namespace Fishbowl.Net.Client.Online.Components.Screens
 {
     public partial class ConnectionClosed
     {

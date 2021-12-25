@@ -1,4 +1,4 @@
-namespace Fishbowl.Net.Client.Shared.Components.States
+namespace Fishbowl.Net.Client.Shared.Components.Screens
 {
     public partial class Info
     {

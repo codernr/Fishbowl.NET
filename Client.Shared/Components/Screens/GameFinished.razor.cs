@@ -2,7 +2,7 @@ using System.Linq;
 using Fishbowl.Net.Client.Shared.Store;
 using Fishbowl.Net.Shared.ViewModels;
 
-namespace Fishbowl.Net.Client.Shared.Components.States
+namespace Fishbowl.Net.Client.Shared.Components.Screens
 {
     public partial class GameFinished
     {

@@ -1,11 +1,11 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Fishbowl.Net.Client.Online.Components.States;
+using Fishbowl.Net.Client.Online.Components.Screens;
 using Fishbowl.Net.Client.Online.Services;
 using Fishbowl.Net.Client.Online.Shared;
 using Fishbowl.Net.Client.Shared.Components;
-using Fishbowl.Net.Client.Shared.Components.States;
+using Fishbowl.Net.Client.Shared.Components.Screens;
 using Fishbowl.Net.Shared;
 using Fishbowl.Net.Shared.GameEntities;
 using Fishbowl.Net.Shared.ViewModels;

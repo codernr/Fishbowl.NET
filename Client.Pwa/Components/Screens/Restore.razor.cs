@@ -1,6 +1,6 @@
 using Fishbowl.Net.Client.Pwa.Store;
 
-namespace Fishbowl.Net.Client.Pwa.Components.States
+namespace Fishbowl.Net.Client.Pwa.Components.Screens
 {
     public partial class Restore
     {

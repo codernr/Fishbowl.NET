@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Fishbowl.Net.Shared.ViewModels;
 using MudBlazor;
 
-namespace Fishbowl.Net.Client.Online.Components.States
+namespace Fishbowl.Net.Client.Online.Components.Screens
 {
     public partial class UsernamePassword
     {

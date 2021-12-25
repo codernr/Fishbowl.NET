@@ -2,7 +2,7 @@ using Fishbowl.Net.Client.Shared.Store;
 using Fishbowl.Net.Shared.ViewModels;
 using MudBlazor;
 
-namespace Fishbowl.Net.Client.Shared.Components.States
+namespace Fishbowl.Net.Client.Shared.Components.Screens
 {
     public partial class TeamName
     {

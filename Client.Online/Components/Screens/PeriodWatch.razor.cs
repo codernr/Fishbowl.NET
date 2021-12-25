@@ -1,6 +1,6 @@
 using Fishbowl.Net.Shared.ViewModels;
 
-namespace Fishbowl.Net.Client.Online.Components.States
+namespace Fishbowl.Net.Client.Online.Components.Screens
 {
     public partial class PeriodWatch
     {
