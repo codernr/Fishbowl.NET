@@ -1,10 +1,8 @@
 ﻿@page "/"
+@using Fluxor
 
-@inject NavigationManager NavigationManager
-@inject IStringLocalizer<Resources> StringLocalizer
-@inject GameProperty PersistedGame
-@inject IScreenService ScreenService
+@inject IDispatcher Dispatcher
 
-<StateManager @ref="this.stateManager" />
+<StateManager />
 
 <FullscreenButton />
