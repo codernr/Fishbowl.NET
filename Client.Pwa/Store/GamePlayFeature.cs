@@ -252,7 +252,7 @@ namespace Fishbowl.Net.Client.Pwa.Store
             this.Game.RoundFinished += round => Dispatch<SetRoundFinishedAction, RoundFinished>(
                 new(round.MapSummary()), TimeSpan.FromSeconds(5));
 
-            this.Game.PeriodSetup += period => Dispatch<SetPeriodSetupPlayAction, PeriodSetupPlay>(
+            this.Game.PeriodSetup += period => Dispatch<SetPeriodSetupAction, PeriodSetupPlay>(
                 new(period.Map(this.Game.Game.CurrentRound)));
 
             this.Game.PeriodStarted += period => Dispatch<SetPeriodPlayPeriodAction, PeriodPlay>(

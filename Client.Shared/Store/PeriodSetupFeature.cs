@@ -4,19 +4,19 @@ using Fluxor;
 namespace Fishbowl.Net.Client.Shared.Store
 {
     [FeatureState]
-    public record PeriodSetupPlayState
+    public record PeriodSetupState
     {
         public PeriodSetupViewModel Period { get; init; } = default!;
     };
 
-    public record SetPeriodSetupPlayAction(PeriodSetupViewModel Period);
+    public record SetPeriodSetupAction(PeriodSetupViewModel Period);
 
     public record StartPeriodAction();
 
-    public static class PeriodSetupPlayReducers
+    public static class PeriodSetupReducers
     {
         [ReducerMethod]
-        public static PeriodSetupPlayState OnSetPeriodSetupPlay(PeriodSetupPlayState state, SetPeriodSetupPlayAction action) =>
+        public static PeriodSetupState OnSetPeriodSetup(PeriodSetupState state, SetPeriodSetupAction action) =>
             state with { Period = action.Period };
     }
 }
