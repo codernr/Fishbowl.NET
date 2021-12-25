@@ -12,9 +12,7 @@ namespace Fishbowl.Net.Client.Shared
         public static WebAssemblyHostBuilder AddSharedServices(this WebAssemblyHostBuilder builder)
         {
             builder.Services
-                .AddSingleton<IStorageService, StorageService>()
-                // .AddSingleton<IScreenService, ScreenService>()
-                .AddSingleton<IStateManagerService, StateManagerService>();
+                .AddSingleton<IStorageService, StorageService>();
 
             return builder;
         }

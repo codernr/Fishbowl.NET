@@ -21,7 +21,7 @@ builder
         .AddSingleton<GameProperty>()
         .AddMudServices()
         .AddFluxor(options =>
-            options.ScanAssemblies(typeof(Program).Assembly, typeof(StateManagerService).Assembly));
+            options.ScanAssemblies(typeof(Program).Assembly, typeof(SharedExtensions).Assembly));
 
 var culture = new CultureInfo("hu");
 CultureInfo.DefaultThreadCurrentCulture = culture;
