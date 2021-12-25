@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using Fishbowl.Net.Client.Shared.Store;
 using Fishbowl.Net.Shared.ViewModels;
@@ -7,7 +6,7 @@ namespace Fishbowl.Net.Client.Shared.Components.States
 {
     public partial class GameFinished
     {
-        private GameSummaryViewModel Game => this.State.Value.Game!;
+        private GameSummaryViewModel Game => this.State.Value.Game;
 
         private PlayerSummaryViewModel bestPlayer = default!;
 

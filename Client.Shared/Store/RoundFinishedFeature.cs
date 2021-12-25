@@ -4,7 +4,10 @@ using Fluxor;
 namespace Fishbowl.Net.Client.Shared.Store
 {
     [FeatureState]
-    public record RoundFinishedState(RoundSummaryViewModel? Round);
+    public record RoundFinishedState
+    {
+        public RoundSummaryViewModel Round { get; init; } = default!;
+    }
 
     public record SetRoundFinishedAction(RoundSummaryViewModel Round);
 
@@ -12,6 +15,6 @@ namespace Fishbowl.Net.Client.Shared.Store
     {
         [ReducerMethod]
         public static RoundFinishedState OnSetRoundFinished(RoundFinishedState state, SetRoundFinishedAction action) =>
-            new(action.Round);
+            new() { Round = action.Round };
     }
 }

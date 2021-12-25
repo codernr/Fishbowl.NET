@@ -4,7 +4,11 @@ using Fluxor;
 namespace Fishbowl.Net.Client.Shared.Store
 {
     [FeatureState]
-    public record GameSetupState(string? Info = null, bool IsLoading = false);
+    public record GameSetupState
+    {
+        public string? Info { get; init; } = null;
+        public bool IsLoading { get; init; } = false;
+    }
 
     public record SubmitGameSetupAction(GameSetupViewModel GameSetup);
 

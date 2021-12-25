@@ -4,7 +4,10 @@ using Fluxor;
 namespace Fishbowl.Net.Client.Shared.Store
 {
     [FeatureState]
-    public record PeriodSetupPlayState(PeriodSetupViewModel? Period = null);
+    public record PeriodSetupPlayState
+    {
+        public PeriodSetupViewModel Period { get; init; } = default!;
+    };
 
     public record SetPeriodSetupPlayAction(PeriodSetupViewModel Period);
 
@@ -14,6 +17,6 @@ namespace Fishbowl.Net.Client.Shared.Store
     {
         [ReducerMethod]
         public static PeriodSetupPlayState OnSetPeriodSetupPlay(PeriodSetupPlayState state, SetPeriodSetupPlayAction action) =>
-            new(action.Period);
+            new() { Period = action.Period };
     }
 }

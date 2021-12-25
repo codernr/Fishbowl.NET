@@ -1,6 +1,3 @@
-using System;
-using System.Threading.Tasks;
-using Fishbowl.Net.Client.Shared.Common;
 using Fishbowl.Net.Client.Shared.Store;
 using Fishbowl.Net.Shared.ViewModels;
 using MudBlazor;
@@ -11,7 +8,7 @@ namespace Fishbowl.Net.Client.Shared.Components.States
     {
         protected override string Title => this.State.Value.Title;
         
-        private TeamViewModel Team => this.State.Value.Team!;
+        private TeamViewModel Team => this.State.Value.Team;
 
         private MudForm? form;
 

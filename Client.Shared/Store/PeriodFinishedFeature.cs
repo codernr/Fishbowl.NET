@@ -4,7 +4,10 @@ using Fluxor;
 namespace Fishbowl.Net.Client.Shared.Store
 {
     [FeatureState]
-    public record PeriodFinishedState(PeriodSummaryViewModel? Period = null);
+    public record PeriodFinishedState
+    {
+        public PeriodSummaryViewModel Period { get; init; } = default!;
+    }
 
     public record SetPeriodFinishedAction(PeriodSummaryViewModel Period);
 
@@ -12,6 +15,6 @@ namespace Fishbowl.Net.Client.Shared.Store
     {
         [ReducerMethod]
         public static PeriodFinishedState OnSetPeriodFinished(PeriodFinishedState state, SetPeriodFinishedAction action) =>
-            new(action.Period);
+            new() { Period = action.Period };
     }
 }

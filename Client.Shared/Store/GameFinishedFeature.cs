@@ -4,7 +4,10 @@ using Fluxor;
 namespace Fishbowl.Net.Client.Shared.Store
 {
     [FeatureState]
-    public record GameFinishedState(GameSummaryViewModel? Game = null);
+    public record GameFinishedState
+    {
+        public GameSummaryViewModel Game { get; init; } = default!;
+    }
 
     public record SetGameFinishedAction(GameSummaryViewModel Game);
 
@@ -12,6 +15,6 @@ namespace Fishbowl.Net.Client.Shared.Store
     {
         [ReducerMethod]
         public static GameFinishedState OnSetGameFinished(GameFinishedState state, SetGameFinishedAction action) =>
-            new(action.Game);
+            new() { Game = action.Game };
     }
 }

@@ -3,7 +3,11 @@ using Fluxor;
 namespace Fishbowl.Net.Client.Pwa.Store
 {
     [FeatureState]
-    public record PlayerSetupState(int WordCount = 1, string Title = "");
+    public record PlayerSetupState
+    {
+        public int WordCount { get; init; } = 1;
+        public string Title { get; init; } = string.Empty;
+    }
 
     public record SetPlayerSetupAction(int WordCount, string Title);
 
@@ -13,6 +17,6 @@ namespace Fishbowl.Net.Client.Pwa.Store
     {
         [ReducerMethod]
         public static PlayerSetupState OnSetPlayerSetup(PlayerSetupState state, SetPlayerSetupAction action) =>
-            new(action.WordCount, action.Title);
+            new() { WordCount = action.WordCount, Title = action.Title };
     }
 }

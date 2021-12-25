@@ -3,7 +3,10 @@ using Fluxor;
 namespace Fishbowl.Net.Client.Shared.Store
 {
     [FeatureState]
-    public record AppBarState(string Title = "");
+    public record AppBarState
+    {
+        public string Title { get; init; } = string.Empty;
+    }
 
     public record SetAppBarTitleAction(string Title);
 
@@ -11,6 +14,6 @@ namespace Fishbowl.Net.Client.Shared.Store
     {
         [ReducerMethod]
         public static AppBarState OnSetAppBarTitle(AppBarState state, SetAppBarTitleAction action) =>
-            new(action.Title);
+            new() { Title = action.Title };
     }
 }

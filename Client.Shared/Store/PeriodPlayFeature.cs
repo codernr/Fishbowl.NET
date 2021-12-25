@@ -4,12 +4,14 @@ using Fluxor;
 namespace Fishbowl.Net.Client.Shared.Store
 {
     [FeatureState]
-    public record PeriodPlayState(
-        PeriodRunningViewModel? Period = null,
-        bool Expired = false,
-        int ScoreCount = 0,
-        bool ShowRevoke = false,
-        WordViewModel? Word = null);
+    public record PeriodPlayState
+    {
+        public PeriodRunningViewModel Period { get; init; } = default!;
+        public bool Expired { get; init; } = false;
+        public int ScoreCount { get; init; } = 0;
+        public bool ShowRevoke { get; init; } = false;
+        public WordViewModel? Word { get; init; } = null;
+    };
 
     public record SetPeriodPlayPeriodAction(PeriodRunningViewModel Period);
 
