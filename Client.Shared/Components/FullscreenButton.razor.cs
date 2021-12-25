@@ -1,24 +1,13 @@
 using System.Threading.Tasks;
+using Fishbowl.Net.Client.Shared.Store;
 
 namespace Fishbowl.Net.Client.Shared.Components
 {
     public partial class FullscreenButton
     {
-        private bool Open => !this.ScreenService.IsStandalone;
-
-        private bool IsInFullscreenMode =>
-            this.ScreenService.IsInFullscreenMode;
-
-        protected override void OnInitialized()
-        {
-            base.OnInitialized();
-
-            this.ScreenService.PropertyChanged += this.StateHasChanged;
-        }
-
         private async Task OnButtonClick()
         {
-            if (!this.ScreenService.RequestFullscreenEnabled)
+            if (!this.State.Value.RequestFullscreenEnabled)
             {
                 await this.DialogService.ShowMessageBox(
                     this.L["Common.Fullscreen.Title"],
@@ -26,15 +15,9 @@ namespace Fishbowl.Net.Client.Shared.Components
                 return;
             }
 
-            if (this.IsInFullscreenMode)
-            {
-                await this.ScreenService.ExitFullscreen();
-            }
-            else
-            {
-                await this.ScreenService.RequestFullscreen();
-                await this.ScreenService.RequestWakeLock();
-            }
+            this.Dispatcher.Dispatch(this.State.Value.IsInFullscreenMode ?
+                new ScreenExitFullscreenAction() :
+                new ScreenRequestFullscreenAction());
         }
     }
 }

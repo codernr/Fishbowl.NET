@@ -13,7 +13,7 @@ namespace Fishbowl.Net.Client.Shared
         {
             builder.Services
                 .AddSingleton<IStorageService, StorageService>()
-                .AddSingleton<IScreenService, ScreenService>()
+                // .AddSingleton<IScreenService, ScreenService>()
                 .AddSingleton<IStateManagerService, StateManagerService>();
 
             return builder;
@@ -34,7 +34,6 @@ namespace Fishbowl.Net.Client.Shared
 
         public static Task InitializeInteropServicesAsync(this WebAssemblyHost host) =>
             Task.WhenAll(
-                host.Services.GetRequiredService<IStorageService>().InitializeAsync(),
-                host.Services.GetRequiredService<IScreenService>().InitializeAsync());
+                host.Services.GetRequiredService<IStorageService>().InitializeAsync());
     }
 }

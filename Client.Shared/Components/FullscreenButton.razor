@@ -1,15 +1,18 @@
-@inject IScreenService ScreenService
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+
+@inject IState<ScreenState> State
+@inject IDispatcher Dispatcher
 @inject IDialogService DialogService
 @inject IStringLocalizer<Resources> L
 
 <MudPopover
-    Open="this.Open"
+    Open="!this.State.Value.IsStandalone"
     AnchorOrigin="Origin.BottomRight"
     TransformOrigin="Origin.BottomRight"
     Class="pa-5"
     Paper="false">
     <MudFab
         Color="Color.Tertiary"
-        Icon="@(this.IsInFullscreenMode ? Icons.Material.Filled.CloseFullscreen : Icons.Material.Filled.OpenInFull)"
+        Icon="@(this.State.Value.IsInFullscreenMode ? Icons.Material.Filled.CloseFullscreen : Icons.Material.Filled.OpenInFull)"
         OnClick="this.OnButtonClick" />
 </MudPopover>
