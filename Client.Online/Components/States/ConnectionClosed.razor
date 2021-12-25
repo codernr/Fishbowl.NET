@@ -1,4 +1,4 @@
-@inherits ComponentState<ConnectionClosed>
+@inherits ComponentState
 
 <StateContainer>
     <MudText>
@@ -10,7 +10,7 @@
             Color="Color.Warning"
             Size="Size.Large"
             FullWidth="true"
-            @onclick="this.ReloadRequested">
+            @onclick="this.Reload">
             @L["Components.States.ConnectionClosed.Button"]
         </MudButton>
     </MudContainer>
