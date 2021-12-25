@@ -4,13 +4,9 @@ namespace Fishbowl.Net.Client.Online.Components.States
 {
     public partial class PeriodSetupWatch
     {
-        public PeriodSetupViewModel Period { get; set; } = default!;
+        public PeriodSetupViewModel Period => this.State.Value.Period;
 
-        protected override void OnInitialized()
-        {
-            base.OnInitialized();
-            this.Title = this.Period.Round.Type;
-        }
+        protected override string Title => this.Period.Round.Type;
     }
 
 }
