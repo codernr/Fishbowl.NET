@@ -21,7 +21,7 @@ namespace Fishbowl.Net.Client.Shared.Components
         {
             base.OnInitialized();
 
-            this.Dispatcher.Dispatch(new SetAppBarTitleAction(this.Title));
+            this.Dispatcher.Dispatch(new SetScreenManagerTitleAction(this.Title));
         }
     }
 

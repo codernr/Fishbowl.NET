@@ -21,20 +21,20 @@ namespace Fishbowl.Net.Client.Shared.Components
             this.Dispatcher.Dispatch(new ScreenManagerInitializedAction(this));
         }
 
-        public Task SetState(Type nextState, object? interceptorAction = null, TimeSpan delay = default)
+        public Task SetScreen(Type screen, object? interceptorAction = null, TimeSpan delay = default)
         {
             this.transition = this.transition
-                .ContinueWith(_ => this.TransitionAsync(nextState, interceptorAction, delay))
+                .ContinueWith(_ => this.TransitionAsync(screen, interceptorAction, delay))
                 .Unwrap();
 
             return this.transition;
         }
 
-        private async Task TransitionAsync(Type nextState, object? interceptorAction, TimeSpan delay)
+        private async Task TransitionAsync(Type screen, object? interceptorAction, TimeSpan delay)
         {
             await this.DisableAsync();
 
-            if (this.type == nextState)
+            if (this.type == screen)
             {
                 this.type = null;
                 this.StateHasChanged();
@@ -45,7 +45,7 @@ namespace Fishbowl.Net.Client.Shared.Components
                 this.Dispatcher.Dispatch(interceptorAction);
             }
 
-            this.type = nextState;
+            this.type = screen;
 
             this.StateHasChanged();
 
