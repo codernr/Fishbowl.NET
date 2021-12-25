@@ -1,6 +1,7 @@
 @using System.ComponentModel.DataAnnotations
 
-@inherits ComponentState<TeamNameState>
+@inherits ComponentState
+@inject IState<TeamNameState> State
 
 <StateContainer>
     <div class="row mb-5">

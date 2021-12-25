@@ -1,4 +1,5 @@
-@inherits ComponentState<WaitingForTeamNamesState>
+@inherits ComponentState
+@inject IState<WaitingForTeamNamesState> State
 
 <StateContainer>
     @if(this.State.Value.SetupPlayer is not null)

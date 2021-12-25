@@ -1,4 +1,5 @@
-@inherits ComponentState<InfoState>
+@inherits ComponentState
+@inject IState<InfoState> State
 
 <StateContainer>
     @if(this.State.Value.Message is not null)

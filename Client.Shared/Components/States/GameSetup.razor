@@ -1,4 +1,5 @@
-@inherits ComponentState<GameSetupState>
+@inherits ComponentState
+@inject IState<GameSetupState> State
 
 <StateContainer>
     @if(this.State.Value.Info is not null)
