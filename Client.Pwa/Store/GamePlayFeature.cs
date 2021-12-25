@@ -168,7 +168,7 @@ namespace Fishbowl.Net.Client.Pwa.Store
             this.Game.GameStarted += game => Dispatch<SetInfoAction, Info>(
                 new(Message: this.localizer["Pages.Play.GameStartedTitle"], Loading: true));
 
-            this.Game.GameFinished += game => Dispatch<SetGameFinishedAction, GameFinished>(new(this.Game.Map()));
+            this.Game.GameFinished += game => Dispatch<SetGameFinishedAction, GameFinished>(new(game.Map()));
 
             this.Game.RoundStarted += round => Dispatch<SetInfoAction, Info>(new(
                 Title: $"{this.localizer["Pages.Play.RoundStartedTitle"]}: {round.Type}",
