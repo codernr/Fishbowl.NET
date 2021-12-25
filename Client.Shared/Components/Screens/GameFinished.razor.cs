@@ -6,7 +6,7 @@ namespace Fishbowl.Net.Client.Shared.Components.Screens
 {
     public partial class GameFinished
     {
-        private GameSummaryViewModel Game => this.State.Value.Game;
+        private GameSummaryViewModel Game => this.State.Value.Summary;
 
         private PlayerSummaryViewModel bestPlayer = default!;
 

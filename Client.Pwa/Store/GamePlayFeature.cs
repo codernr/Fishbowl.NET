@@ -27,8 +27,6 @@ namespace Fishbowl.Net.Client.Pwa.Store
         public AsyncGame Game { get; init; } = default!;
     }
 
-    public record InitGamePlayAction();
-
     public record StartNewGameAction();
 
     public record RestoreGameAction();
@@ -97,7 +95,7 @@ namespace Fishbowl.Net.Client.Pwa.Store
             (this.state, this.persistedGame, this.localizer) =
             (state, persistedGame, localizer);
 
-        [EffectMethod(typeof(InitGamePlayAction))]
+        [EffectMethod(typeof(StoreInitializedAction))]
         public Task OnInitGamePlay(IDispatcher dispatcher)
         {
             dispatcher.Dispatch(this.persistedGame.Value is null ?
@@ -242,7 +240,7 @@ namespace Fishbowl.Net.Client.Pwa.Store
             this.Game.GameStarted += game => Dispatch<SetInfoAction, Info>(
                 new(Title: this.localizer["Pages.Play.GameStartedTitle"], Loading: true), TimeSpan.FromSeconds(2));
 
-            this.Game.GameFinished += game => Dispatch<SetGameFinishedAction, GameFinished>(new(game.Map()));
+            this.Game.GameFinished += game => Dispatch<SetGameSummaryAction, GameFinished>(new(game.Map()));
 
             this.Game.RoundStarted += round => Dispatch<SetInfoAction, Info>(new(
                 Title: $"{this.localizer["Pages.Play.RoundStartedTitle"]}: {round.Type}",
