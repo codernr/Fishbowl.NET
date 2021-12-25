@@ -14,7 +14,7 @@ namespace Fishbowl.Net.Client.Pwa.Store
         public PersistGameEffects(GameProperty persistedGame, IState<GamePlayState> state) =>
             (this.persistedGame, this.state) = (persistedGame, state);
 
-        [EffectMethod(typeof(StartStateManagerTransitionAction))]
+        [EffectMethod(typeof(StateManagerTransitionAction))]
         public Task OnStartStateManagerTransitionAction(IDispatcher dispatcher) => this.Persist();
 
         [EffectMethod(typeof(SetPeriodPlayScoreCountAction))]

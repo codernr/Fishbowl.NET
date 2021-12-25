@@ -8,7 +8,7 @@ namespace Fishbowl.Net.Client.Shared.Services
     {
         void Initialize(StateManager component);
 
-        Task SetState(Type nextState, TimeSpan delay = default);
+        Task SetState(Type nextState, Action? interceptor = null, TimeSpan delay = default);
     }
 
     public class StateManagerService : IStateManagerService
@@ -17,6 +17,7 @@ namespace Fishbowl.Net.Client.Shared.Services
 
         public void Initialize(StateManager component) => this.component = component;
 
-        public Task SetState(Type nextState, TimeSpan delay = default) => this.component.SetState(nextState, delay);
+        public Task SetState(Type nextState, Action? interceptor = null, TimeSpan delay = default) =>
+            this.component.SetState(nextState, interceptor, delay);
     }
 }

@@ -20,16 +20,16 @@ namespace Fishbowl.Net.Client.Shared.Components
             this.StateManagerService.Initialize(this);
         }
 
-        public Task SetState(Type nextState, TimeSpan delay = default)
+        public Task SetState(Type nextState, Action? interceptor = null, TimeSpan delay = default)
         {
             this.transition = this.transition
-                .ContinueWith(_ => this.TransitionAsync(nextState, delay))
+                .ContinueWith(_ => this.TransitionAsync(nextState, interceptor, delay))
                 .Unwrap();
 
             return this.transition;
         }
 
-        private async Task TransitionAsync(Type nextState, TimeSpan delay)
+        private async Task TransitionAsync(Type nextState, Action? interceptor, TimeSpan delay)
         {
             await this.DisableAsync();
 
@@ -38,6 +38,8 @@ namespace Fishbowl.Net.Client.Shared.Components
                 this.type = null;
                 this.StateHasChanged();
             }
+
+            interceptor?.Invoke();
 
             this.type = nextState;
 

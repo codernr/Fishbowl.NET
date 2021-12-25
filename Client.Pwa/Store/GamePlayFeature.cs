@@ -102,7 +102,7 @@ namespace Fishbowl.Net.Client.Pwa.Store
         {
             dispatcher.Dispatch(this.persistedGame.Value is null ?
                 new StartNewGameAction() :
-                new StartStateManagerTransitionAction(typeof(Restore)));
+                new StateManagerTransitionAction(typeof(Restore)));
             return Task.CompletedTask;
         }
 
@@ -126,16 +126,16 @@ namespace Fishbowl.Net.Client.Pwa.Store
         [EffectMethod(typeof(StartNewGameAction))]
         public Task OnStartNewGame(IDispatcher dispatcher)
         {
-            dispatcher.Dispatch(new StartStateManagerTransitionAction(typeof(GameSetup)));
+            dispatcher.Dispatch(new StateManagerTransitionAction(typeof(GameSetup)));
             return Task.CompletedTask;
         }
 
         [EffectMethod]
         public Task OnSubmitGameSetup(SubmitGameSetupAction action, IDispatcher dispatcher)
         {
-            dispatcher.Dispatch(new SetPlayerSetupAction(0, action.GameSetup.WordCount));
-
-            dispatcher.Dispatch(new StartStateManagerTransitionAction(typeof(PlayerSetup)));
+            dispatcher.Dispatch(new StateManagerTransitionAction(
+                typeof(PlayerSetup),
+                new SetPlayerSetupAction(0, action.GameSetup.WordCount)));
 
             return Task.CompletedTask;
         }
@@ -145,10 +145,9 @@ namespace Fishbowl.Net.Client.Pwa.Store
         {
             if (this.state.Value.Players.Count < this.state.Value.GameSetup.PlayerCount)
             {
-                dispatcher.Dispatch(new SetPlayerSetupAction(
-                    this.state.Value.Players.Count, this.state.Value.GameSetup.WordCount));
-
-                dispatcher.Dispatch(new StartStateManagerTransitionAction(typeof(PlayerSetup)));
+                dispatcher.Dispatch(new StateManagerTransitionAction(
+                    typeof(PlayerSetup),
+                    new SetPlayerSetupAction(this.state.Value.Players.Count, this.state.Value.GameSetup.WordCount)));
             }
             else
             {
@@ -159,16 +158,7 @@ namespace Fishbowl.Net.Client.Pwa.Store
         }
 
         [EffectMethod(typeof(CreateTeamsAction))]
-        public Task OnCreateTeams(IDispatcher dispatcher)
-        {
-            dispatcher.Dispatch(new SetTeamNameAction(
-                this.state.Value.Teams[0].Map(),
-                string.Format(this.localizer["Components.States.TeamName.Title.Pwa"], 1)));
-
-            dispatcher.Dispatch(new StartStateManagerTransitionAction(typeof(TeamName)));
-
-            return Task.CompletedTask;
-        }
+        public Task OnCreateTeams(IDispatcher dispatcher) => OnSubmitTeamName(dispatcher);
 
         [EffectMethod(typeof(SubmitTeamNameAction))]
         public Task OnSubmitTeamName(IDispatcher dispatcher)
@@ -184,11 +174,11 @@ namespace Fishbowl.Net.Client.Pwa.Store
             }
             else
             {
-                dispatcher.Dispatch(new SetTeamNameAction(
-                    nextTeam.Map(),
-                    string.Format(this.localizer["Components.States.TeamName.Title.Pwa"], nextTeamIndex)));
-
-                dispatcher.Dispatch(new StartStateManagerTransitionAction(typeof(TeamName)));
+                dispatcher.Dispatch(new StateManagerTransitionAction(
+                    typeof(TeamName),
+                    new SetTeamNameAction(
+                        nextTeam.Map(),
+                        string.Format(this.localizer["Components.States.TeamName.Title.Pwa"], nextTeamIndex))));
             }
 
             return Task.CompletedTask;
@@ -274,11 +264,8 @@ namespace Fishbowl.Net.Client.Pwa.Store
             this.Game.WordSetup += (player, word) => dispatcher.Dispatch(
                 new SetPeriodPlayWordAction(word.Map()));
 
-            void Dispatch<TStateAction, TTransition>(TStateAction action, TimeSpan delay = default)
-            {
-                dispatcher.Dispatch(action);
-                dispatcher.Dispatch(new StartStateManagerTransitionAction(typeof(TTransition), delay));
-            }
+            void Dispatch<TStateAction, TTransition>(TStateAction action, TimeSpan delay = default) =>
+                dispatcher.Dispatch(new StateManagerTransitionAction(typeof(TTransition), action, delay));
         }
     }
 }
