@@ -1,12 +1,12 @@
 @using System.ComponentModel.DataAnnotations
 
-@inherits ComponentState<PlayerWords>
+@inherits ComponentState<PlayerWordsState>
 
 <StateContainer>
     <MudForm @ref="this.form" IsValidChanged="_ => this.StateHasChanged()">
         <MudContainer>
             <MudAlert Severity="Severity.Info">
-                @this.Message
+                @this.State.Value.Message
             </MudAlert>
         </MudContainer>
         
