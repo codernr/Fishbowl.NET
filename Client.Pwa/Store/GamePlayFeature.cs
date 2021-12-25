@@ -102,7 +102,7 @@ namespace Fishbowl.Net.Client.Pwa.Store
         {
             dispatcher.Dispatch(this.persistedGame.Value is null ?
                 new StartNewGameAction() :
-                new StateManagerTransitionAction(typeof(Restore)));
+                new ScreenManagerTransitionAction(typeof(Restore)));
             return Task.CompletedTask;
         }
 
@@ -126,14 +126,14 @@ namespace Fishbowl.Net.Client.Pwa.Store
         [EffectMethod(typeof(StartNewGameAction))]
         public Task OnStartNewGame(IDispatcher dispatcher)
         {
-            dispatcher.Dispatch(new StateManagerTransitionAction(typeof(GameSetup)));
+            dispatcher.Dispatch(new ScreenManagerTransitionAction(typeof(GameSetup)));
             return Task.CompletedTask;
         }
 
         [EffectMethod]
         public Task OnSubmitGameSetup(SubmitGameSetupAction action, IDispatcher dispatcher)
         {
-            dispatcher.Dispatch(new StateManagerTransitionAction(
+            dispatcher.Dispatch(new ScreenManagerTransitionAction(
                 typeof(PlayerSetup),
                 new SetPlayerSetupAction(0, action.GameSetup.WordCount)));
 
@@ -145,7 +145,7 @@ namespace Fishbowl.Net.Client.Pwa.Store
         {
             if (this.state.Value.Players.Count < this.state.Value.GameSetup.PlayerCount)
             {
-                dispatcher.Dispatch(new StateManagerTransitionAction(
+                dispatcher.Dispatch(new ScreenManagerTransitionAction(
                     typeof(PlayerSetup),
                     new SetPlayerSetupAction(this.state.Value.Players.Count, this.state.Value.GameSetup.WordCount)));
             }
@@ -174,7 +174,7 @@ namespace Fishbowl.Net.Client.Pwa.Store
             }
             else
             {
-                dispatcher.Dispatch(new StateManagerTransitionAction(
+                dispatcher.Dispatch(new ScreenManagerTransitionAction(
                     typeof(TeamName),
                     new SetTeamNameAction(
                         nextTeam.Map(),
@@ -265,7 +265,7 @@ namespace Fishbowl.Net.Client.Pwa.Store
                 new SetPeriodPlayWordAction(word.Map()));
 
             void Dispatch<TStateAction, TTransition>(TStateAction action, TimeSpan delay = default) =>
-                dispatcher.Dispatch(new StateManagerTransitionAction(typeof(TTransition), action, delay));
+                dispatcher.Dispatch(new ScreenManagerTransitionAction(typeof(TTransition), action, delay));
         }
     }
 }

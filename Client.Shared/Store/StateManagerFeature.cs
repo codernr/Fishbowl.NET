@@ -1,30 +1,29 @@
 using System;
 using System.Threading.Tasks;
 using Fishbowl.Net.Client.Shared.Components;
-using Fishbowl.Net.Client.Shared.Services;
 using Fluxor;
 
 namespace Fishbowl.Net.Client.Shared.Store
 {
-    public record StateManagerInitializedAction(StateManager StateManager);
+    public record ScreenManagerInitializedAction(ScreenManager ScreenManager);
 
-    public record StateManagerTransitionAction(Type NextState, object? InterceptorAction = null, TimeSpan Delay = default);
+    public record ScreenManagerTransitionAction(Type NextState, object? InterceptorAction = null, TimeSpan Delay = default);
 
-    public record StateManagerTransitionEndAction(Type CurrentState);
+    public record ScreenManagerTransitionEndAction(Type CurrentState);
 
-    public class StateManagerEffects
+    public class ScreenManagerEffects
     {
-        private StateManager stateManager = default!;
+        private ScreenManager stateManager = default!;
 
         [EffectMethod]
-        public Task OnStateManagerInitialized(StateManagerInitializedAction action, IDispatcher dispatcher)
+        public Task OnScreenManagerInitialized(ScreenManagerInitializedAction action, IDispatcher dispatcher)
         {
-            this.stateManager = action.StateManager;
+            this.stateManager = action.ScreenManager;
             return Task.CompletedTask;
         }
 
         [EffectMethod]
-        public Task OnStateManagerTransition(StateManagerTransitionAction action, IDispatcher dispatcher) =>
+        public Task OnScreenManagerTransition(ScreenManagerTransitionAction action, IDispatcher dispatcher) =>
             this.stateManager.SetState(action.NextState, action.InterceptorAction, action.Delay);
     }
 }

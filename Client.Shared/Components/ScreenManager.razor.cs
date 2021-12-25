@@ -4,7 +4,7 @@ using Fishbowl.Net.Client.Shared.Store;
 
 namespace Fishbowl.Net.Client.Shared.Components
 {
-    public partial class StateManager
+    public partial class ScreenManager
     {
         private static readonly TimeSpan TransitionDuration = TimeSpan.FromMilliseconds(300);
 
@@ -18,7 +18,7 @@ namespace Fishbowl.Net.Client.Shared.Components
         {
             base.OnInitialized();
 
-            this.Dispatcher.Dispatch(new StateManagerInitializedAction(this));
+            this.Dispatcher.Dispatch(new ScreenManagerInitializedAction(this));
         }
 
         public Task SetState(Type nextState, object? interceptorAction = null, TimeSpan delay = default)
