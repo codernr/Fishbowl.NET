@@ -3,7 +3,7 @@
 @inherits Screen
 @inject IState<PlayerSetupState> State
 
-<StateContainer>
+<ScreenContainer>
     <MudForm @ref="this.form" IsValidChanged="_ => this.StateHasChanged()">
         <MudTextField
             T="string"
@@ -46,4 +46,4 @@
             @L["Components.States.PlayerSetup.SubmitButton"]
         </MudButton>
     </MudForm>
-</StateContainer>
+</ScreenContainer>

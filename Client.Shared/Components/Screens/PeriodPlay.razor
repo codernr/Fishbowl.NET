@@ -1,7 +1,7 @@
 @inherits Screen
 @inject IState<PeriodPlayState> State
 
-<StateContainer>
+<ScreenContainer>
     <MudContainer Class="mb-3">
         <MudButton
             Variant="Variant.Filled"
@@ -54,4 +54,4 @@
             @L[$"Components.States.PeriodPlay.{(this.State.Value.Expired ? "Warning" : "Info")}Alert"] 
         </MudAlert>
     </MudContainer>
-</StateContainer>
+</ScreenContainer>

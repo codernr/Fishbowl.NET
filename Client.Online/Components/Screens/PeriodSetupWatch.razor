@@ -1,7 +1,7 @@
 @inherits Screen
 @inject IState<PeriodSetupState> State
 
-<StateContainer>
+<ScreenContainer>
     <MudText Typo="Typo.h5" Class="mb-5">
         @L["Components.States.PeriodSetupWatch.NextPlayer"]: @this.Period.Player.Username
     </MudText>
@@ -9,4 +9,4 @@
         @L["Components.States.PeriodSetupWatch.PeriodLength"]: @(string.Format("{0:m\\:ss}", this.Period.Length))
     </MudText>
     <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
-</StateContainer>
+</ScreenContainer>

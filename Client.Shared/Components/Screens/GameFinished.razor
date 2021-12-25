@@ -1,7 +1,7 @@
 @inherits Screen
 @inject IState<GameFinishedState> State
 
-<StateContainer>
+<ScreenContainer>
     <MudContainer>
         <MudAlert Severity="Severity.Success" Variant="Variant.Filled" Class="mb-1">
             @L["Components.States.GameFinished.Winner"] <strong>@this.Game.Teams[0].Name</strong>
@@ -43,4 +43,4 @@
             @L["Components.States.GameFinished.Button"]
         </MudButton>
     </MudContainer>
-</StateContainer>
+</ScreenContainer>

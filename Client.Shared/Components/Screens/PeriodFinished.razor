@@ -1,7 +1,7 @@
 @inherits Screen
 @inject IState<PeriodFinishedState> State
 
-<StateContainer>
+<ScreenContainer>
     <MudText Typo="Typo.h5" Class="mb-5">
         @this.Period.Player.Username @L["Components.States.PeriodFinished.Scores"]:
         @this.Period.Scores.Count
@@ -30,4 +30,4 @@
             </MudList>
         </MudPaper>
     }
-</StateContainer>
+</ScreenContainer>

@@ -1,7 +1,7 @@
 @inherits Screen
 @inject IState<WaitingForTeamNamesState> State
 
-<StateContainer>
+<ScreenContainer>
     @if(this.State.Value.SetupPlayer is not null)
     {
         <MudContainer Class="mb-5">
@@ -28,4 +28,4 @@
             <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
         }
     </MudContainer>
-</StateContainer>
+</ScreenContainer>

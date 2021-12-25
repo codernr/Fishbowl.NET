@@ -3,7 +3,7 @@
 @inherits Screen
 @inject IState<TeamNameState> State
 
-<StateContainer>
+<ScreenContainer>
     <div class="row mb-5">
         <div class="col">
             <TeamMembers Players="this.Team.Players" />
@@ -30,4 +30,4 @@
             @L["Components.States.TeamName.Button"]
         </MudButton>
     </MudForm>
-</StateContainer>
+</ScreenContainer>

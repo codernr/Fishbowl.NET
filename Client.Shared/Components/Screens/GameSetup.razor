@@ -1,7 +1,7 @@
 @inherits Screen
 @inject IState<GameSetupState> State
 
-<StateContainer>
+<ScreenContainer>
     @if(this.State.Value.Info is not null)
     {
         <MudContainer Class="mb-6">
@@ -63,4 +63,4 @@
             </MudButton>
         </MudForm>
     </MudContainer>
-</StateContainer>
+</ScreenContainer>

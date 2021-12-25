@@ -1,7 +1,7 @@
 @inherits Screen
 @inject IState<PeriodSetupState> State
 
-<StateContainer>
+<ScreenContainer>
     <MudContainer Class="my-6">
         <MudText Typo="Typo.h5">
             @L["Components.States.PeriodSetupPlay.PeriodLength"]: @(string.Format("{0:m\\:ss}", this.Period.Length))
@@ -24,4 +24,4 @@
             @L[$"Components.States.Common.RoundTypes.{this.Period.Round.Type}.Description"]
         </MudAlert>
     </MudContainer>
-</StateContainer>
+</ScreenContainer>

@@ -1,7 +1,7 @@
 @inherits Screen
 @inject IState<InfoState> State
 
-<StateContainer>
+<ScreenContainer>
     @if(this.State.Value.Message is not null)
     {
         <MudContainer Class="mb-10">
@@ -16,4 +16,4 @@
     {
         <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
     }
-</StateContainer>
+</ScreenContainer>

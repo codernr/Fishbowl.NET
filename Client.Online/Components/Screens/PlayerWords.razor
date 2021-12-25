@@ -3,7 +3,7 @@
 @inherits Screen
 @inject IState<PlayerWordsState> State
 
-<StateContainer>
+<ScreenContainer>
     <MudForm @ref="this.form" IsValidChanged="_ => this.StateHasChanged()">
         <MudContainer>
             <MudAlert Severity="Severity.Info">
@@ -40,4 +40,4 @@
             </MudButton>
         </MudContainer>
     </MudForm>
-</StateContainer>
+</ScreenContainer>
