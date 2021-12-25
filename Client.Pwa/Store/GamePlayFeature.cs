@@ -29,6 +29,12 @@ namespace Fishbowl.Net.Client.Pwa.Store
 
     public record InitGamePlayAction();
 
+    public record StartNewGameAction();
+
+    public record RestoreGameAction();
+
+    public record SetRestoredGameAction(Game Game);
+
     public record CreateTeamsAction();
 
     public record StartGameAction();
@@ -68,6 +74,10 @@ namespace Fishbowl.Net.Client.Pwa.Store
         [ReducerMethod(typeof(StartGameAction))]
         public static GamePlayState OnStartGame(GamePlayState state) =>
             state with { Game = new(new(), state.Teams, state.GameSetup.RoundTypes) };
+
+        [ReducerMethod]
+        public static GamePlayState OnSetRestoredGame(GamePlayState state, SetRestoredGameAction action) =>
+            state with { Game = new(action.Game) };
     }
 
     public class GamePlayEffects
@@ -90,8 +100,33 @@ namespace Fishbowl.Net.Client.Pwa.Store
         [EffectMethod(typeof(InitGamePlayAction))]
         public Task OnInitGamePlay(IDispatcher dispatcher)
         {
-            var nextState = this.persistedGame.Value is null ? typeof(GameSetup) : typeof(Restore);
-            dispatcher.Dispatch(new StartStateManagerTransitionAction(nextState));
+            dispatcher.Dispatch(this.persistedGame.Value is null ?
+                new StartNewGameAction() :
+                new StartStateManagerTransitionAction(typeof(Restore)));
+            return Task.CompletedTask;
+        }
+
+        [EffectMethod(typeof(RestoreGameAction))]
+        public Task OnRestoreGame(IDispatcher dispatcher)
+        {
+            dispatcher.Dispatch(new SetRestoredGameAction(
+                this.persistedGame.Value ?? throw new NullReferenceException("Persisted game is null.")));
+            
+            return Task.CompletedTask;
+        }
+
+        [EffectMethod(typeof(SetRestoredGameAction))]
+        public Task OnSetRestoredGameAction(IDispatcher dispatcher)
+        {
+            this.SetEventHandlers(dispatcher);
+            this.Game.Restore();
+            return Task.CompletedTask;
+        }
+
+        [EffectMethod(typeof(StartNewGameAction))]
+        public Task OnStartNewGame(IDispatcher dispatcher)
+        {
+            dispatcher.Dispatch(new StartStateManagerTransitionAction(typeof(GameSetup)));
             return Task.CompletedTask;
         }
 
@@ -165,6 +200,58 @@ namespace Fishbowl.Net.Client.Pwa.Store
         [EffectMethod(typeof(StartGameAction))]
         public Task OnStartGame(IDispatcher dispatcher)
         {
+            this.SetEventHandlers(dispatcher);
+
+            this.Game.Run();
+
+            return Task.CompletedTask;
+        }
+
+        [EffectMethod(typeof(StartPeriodAction))]
+        public Task OnStartPeriod(IDispatcher dispatcher)
+        {
+            this.state.Value.Game.StartPeriod(DateTimeOffset.UtcNow);
+            return Task.CompletedTask;
+        }
+
+        [EffectMethod]
+        public Task OnAddScore(AddScoreAction action, IDispatcher dispatcher)
+        {
+            this.Game.AddScore(new(action.Word.Map(), DateTimeOffset.UtcNow));
+
+            dispatcher.Dispatch(new SetPeriodPlayScoreCountAction(
+                this.Game.Game.CurrentRound.CurrentPeriod.Scores.Count));
+
+            this.Game.NextWord(DateTimeOffset.UtcNow);
+
+            return Task.CompletedTask;
+        }
+
+        [EffectMethod(typeof(FinishPeriodAction))]
+        public Task OnFinishPeriod(IDispatcher dispatcher)
+        {
+            this.Game.FinishPeriod(DateTimeOffset.UtcNow);
+            return Task.CompletedTask;
+        }
+
+        [EffectMethod(typeof(RevokeLastScoreAction))]
+        public Task OnRevokeLastScore(IDispatcher dispatcher)
+        {
+            var score = this.Game.Game.CurrentRound.CurrentPeriod.Scores.Last();
+            
+            this.Game.RevokeLastScore();
+
+            dispatcher.Dispatch(new SetPeriodPlayScoreCountAction(
+                this.Game.Game.CurrentRound.CurrentPeriod.Scores.Count));
+
+            dispatcher.Dispatch(
+                new SetPeriodPlayWordAction(score.Word.Map()));
+
+            return Task.CompletedTask;
+        }
+
+        private void SetEventHandlers(IDispatcher dispatcher)
+        {
             this.Game.GameStarted += game => Dispatch<SetInfoAction, Info>(
                 new(Message: this.localizer["Pages.Play.GameStartedTitle"], Loading: true));
 
@@ -188,35 +275,11 @@ namespace Fishbowl.Net.Client.Pwa.Store
             this.Game.WordSetup += (player, word) => dispatcher.Dispatch(
                 new SetPeriodPlayWordAction(word.Map()));
 
-            this.Game.Run();
-
-            return Task.CompletedTask;
-
             void Dispatch<TStateAction, TTransition>(TStateAction action)
             {
                 dispatcher.Dispatch(action);
                 dispatcher.Dispatch(new StartStateManagerTransitionAction(typeof(TTransition)));
             }
-        }
-
-        [EffectMethod(typeof(StartPeriodAction))]
-        public Task OnStartPeriod(IDispatcher dispatcher)
-        {
-            this.state.Value.Game.StartPeriod(DateTimeOffset.UtcNow);
-            return Task.CompletedTask;
-        }
-
-        [EffectMethod]
-        public Task OnAddScore(AddScoreAction action, IDispatcher dispatcher)
-        {
-            this.Game.AddScore(new(action.Word.Map(), DateTimeOffset.UtcNow));
-
-            dispatcher.Dispatch(new SetPeriodPlayScoreCountAction(
-                this.Game.Game.CurrentRound.CurrentPeriod.Scores.Count));
-
-            this.Game.NextWord(DateTimeOffset.UtcNow);
-
-            return Task.CompletedTask;
         }
     }
 }
