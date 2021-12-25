@@ -314,7 +314,7 @@ namespace Fishbowl.Net.Client.Online.Pages
         }
 
         private async Task AfterPasswordCheck<T>(
-            Action setup, Action<T>? setParameters = null) where T : ComponentState<T>
+            Action setup, Action<T>? setParameters = null) where T : Screen<T>
         {
             var passwordExists = this.ClientState.Password is null ?
                 false : (await this.Connection.GameContextExists(this.ClientState.Password)).Data;

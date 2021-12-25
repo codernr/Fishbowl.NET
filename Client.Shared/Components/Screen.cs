@@ -1,4 +1,3 @@
-using System;
 using Fishbowl.Net.Client.Shared.I18n;
 using Fishbowl.Net.Client.Shared.Store;
 using Fluxor;
@@ -8,7 +7,7 @@ using Microsoft.Extensions.Localization;
 
 namespace Fishbowl.Net.Client.Shared.Components
 {
-    public abstract class ComponentState : FluxorComponent
+    public abstract class Screen : FluxorComponent
     {
         [Inject]
         public IStringLocalizer<Resources> L { get; set; } = default!;
