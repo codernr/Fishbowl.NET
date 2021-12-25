@@ -13,17 +13,17 @@ namespace Fishbowl.Net.Client.Shared.Store
 
     public class ScreenManagerEffects
     {
-        private ScreenManager stateManager = default!;
+        private ScreenManager screenManager = default!;
 
         [EffectMethod]
         public Task OnScreenManagerInitialized(ScreenManagerInitializedAction action, IDispatcher dispatcher)
         {
-            this.stateManager = action.ScreenManager;
+            this.screenManager = action.ScreenManager;
             return Task.CompletedTask;
         }
 
         [EffectMethod]
         public Task OnScreenManagerTransition(ScreenManagerTransitionAction action, IDispatcher dispatcher) =>
-            this.stateManager.SetState(action.NextState, action.InterceptorAction, action.Delay);
+            this.screenManager.SetState(action.NextState, action.InterceptorAction, action.Delay);
     }
 }
