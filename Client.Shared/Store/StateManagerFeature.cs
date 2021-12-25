@@ -5,7 +5,7 @@ using Fluxor;
 
 namespace Fishbowl.Net.Client.Shared.Store
 {
-    public record StartStateManagerTransitionAction(Type NextState);
+    public record StartStateManagerTransitionAction(Type NextState, TimeSpan Delay = default);
 
     public record StateManagerTransitionEndAction(Type CurrentState);
 
@@ -19,7 +19,7 @@ namespace Fishbowl.Net.Client.Shared.Store
         [EffectMethod]
         public async Task OnStartStateManagerTransition(StartStateManagerTransitionAction action, IDispatcher dispatcher)
         {
-            await this.stateManagerService.SetState(action.NextState);
+            await this.stateManagerService.SetState(action.NextState, action.Delay);
 
             dispatcher.Dispatch(new StateManagerTransitionEndAction(action.NextState));
         }

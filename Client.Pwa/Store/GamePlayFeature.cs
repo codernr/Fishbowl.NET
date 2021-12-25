@@ -250,16 +250,17 @@ namespace Fishbowl.Net.Client.Pwa.Store
         private void SetEventHandlers(IDispatcher dispatcher)
         {
             this.Game.GameStarted += game => Dispatch<SetInfoAction, Info>(
-                new(Message: this.localizer["Pages.Play.GameStartedTitle"], Loading: true));
+                new(Message: this.localizer["Pages.Play.GameStartedTitle"], Loading: true), TimeSpan.FromSeconds(2));
 
             this.Game.GameFinished += game => Dispatch<SetGameFinishedAction, GameFinished>(new(game.Map()));
 
             this.Game.RoundStarted += round => Dispatch<SetInfoAction, Info>(new(
                 Title: $"{this.localizer["Pages.Play.RoundStartedTitle"]}: {round.Type}",
                 Message: this.localizer[$"Components.States.Common.RoundTypes.{round.Type}.Description"],
-                Loading: true));
+                Loading: true), TimeSpan.FromSeconds(2));
 
-            this.Game.RoundFinished += round => Dispatch<SetRoundFinishedAction, RoundFinished>(new(round.MapSummary()));
+            this.Game.RoundFinished += round => Dispatch<SetRoundFinishedAction, RoundFinished>(
+                new(round.MapSummary()), TimeSpan.FromSeconds(5));
 
             this.Game.PeriodSetup += period => Dispatch<SetPeriodSetupPlayAction, PeriodSetupPlay>(
                 new(period.Map(this.Game.Game.CurrentRound)));
@@ -267,15 +268,16 @@ namespace Fishbowl.Net.Client.Pwa.Store
             this.Game.PeriodStarted += period => Dispatch<SetPeriodPlayPeriodAction, PeriodPlay>(
                 new(period.MapRunning(this.Game.Game.CurrentRound)));
 
-            this.Game.PeriodFinished += period => Dispatch<SetPeriodFinishedAction, PeriodFinished>(new(period.Map()));
+            this.Game.PeriodFinished += period => Dispatch<SetPeriodFinishedAction, PeriodFinished>(
+                new(period.Map()), TimeSpan.FromSeconds(5));
 
             this.Game.WordSetup += (player, word) => dispatcher.Dispatch(
                 new SetPeriodPlayWordAction(word.Map()));
 
-            void Dispatch<TStateAction, TTransition>(TStateAction action)
+            void Dispatch<TStateAction, TTransition>(TStateAction action, TimeSpan delay = default)
             {
                 dispatcher.Dispatch(action);
-                dispatcher.Dispatch(new StartStateManagerTransitionAction(typeof(TTransition)));
+                dispatcher.Dispatch(new StartStateManagerTransitionAction(typeof(TTransition), delay));
             }
         }
     }
