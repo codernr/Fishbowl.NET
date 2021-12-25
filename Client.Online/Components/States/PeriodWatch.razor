@@ -1,4 +1,4 @@
-@inherits ComponentState<PeriodWatch>
+@inherits ComponentState<PeriodWatchState>
 
 <StateContainer>
     <MudContainer>
@@ -11,10 +11,10 @@
         <Timer Start="this.Period.StartedAt" Length="this.Period.Length" OnExpired="_ => this.expired = true" />
     </MudContainer>
 
-    @if (this.ShowTeamAlert)
+    @if (this.State.Value.ShowTeamAlert)
     {
         <MudContainer>
-            @if(!this.expired)
+            @if(!this.State.Value.Expired)
             {
                 <MudAlert Severity="Severity.Info">
                     @L["Components.States.PeriodWatch.YourTurn"]
