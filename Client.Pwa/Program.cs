@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Fishbowl.Net.Client.Pwa;
 using Microsoft.AspNetCore.Components.Web;
 using MudBlazor.Services;
+using Fluxor;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -18,7 +19,9 @@ builder
         .AddLocalization()
         .AddJsonSerializationOptions()
         .AddSingleton<GameProperty>()
-        .AddMudServices();
+        .AddMudServices()
+        .AddFluxor(options =>
+            options.ScanAssemblies(typeof(Program).Assembly, typeof(StateManagerService).Assembly));
 
 var culture = new CultureInfo("hu");
 CultureInfo.DefaultThreadCurrentCulture = culture;
