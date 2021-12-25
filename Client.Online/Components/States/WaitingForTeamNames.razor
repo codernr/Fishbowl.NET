@@ -1,25 +1,25 @@
-@inherits ComponentState<WaitingForTeamNames>
+@inherits ComponentState<WaitingForTeamNamesState>
 
 <StateContainer>
-    @if(this.SetupPlayer is not null)
+    @if(this.State.Value.SetupPlayer is not null)
     {
         <MudContainer Class="mb-5">
             <MudAlert Severity="Severity.Info">
-                @string.Format(L["Components.States.WaitingForTeamNames.SetupPlayer"], this.SetupPlayer.Username)
+                @string.Format(L["Components.States.WaitingForTeamNames.SetupPlayer"], this.State.Value.SetupPlayer.Username)
             </MudAlert>
         </MudContainer>
     }
 
     <MudContainer Class="mb-10">
-        <TeamMembers Players="this.Team.Players" />
+        <TeamMembers Players="this.State.Value.Team.Players" />
     </MudContainer>
     
     <MudContainer>
-        @if (this.Teams.Count > 0)
+        @if (this.State.Value.Teams.Count > 0)
         {
             <MudText>
                 <strong>@L["Components.States.WaitingForTeamNames.TeamNames"]:</strong>
-                @(string.Join(", ", this.Teams.Select(team => team.Name)))
+                @(string.Join(", ", this.State.Value.Teams.Select(team => team.Name)))
             </MudText>
         }
         else
