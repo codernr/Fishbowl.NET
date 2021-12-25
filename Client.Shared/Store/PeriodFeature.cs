@@ -3,25 +3,27 @@ using Fluxor;
 
 namespace Fishbowl.Net.Client.Shared.Store
 {
+    [FeatureState]
     public record PeriodState
     {
-        public PeriodRunningViewModel Period { get; init; } = default!;
+        public PeriodSetupViewModel Setup { get; init; } = default!;
+        public PeriodRunningViewModel Running { get; init; } = default!;
         public bool Expired { get; init; } = false;
-    }
-
-    [FeatureState]
-    public record PeriodPlayState : PeriodState
-    {
         public int ScoreCount { get; init; } = 0;
         public bool ShowRevoke { get; init; } = false;
         public WordViewModel? Word { get; init; } = null;
-    };
+        public PeriodSummaryViewModel Summary { get; init; } = default!;
+    }
 
-    public record SetPeriodPeriodAction(PeriodRunningViewModel Period);
+    public record SetPeriodSetupAction(PeriodSetupViewModel Period);
 
-    public record SetPeriodPlayScoreCountAction(int ScoreCount);
+    public record StartPeriodAction();
 
-    public record SetPeriodPlayWordAction(WordViewModel Word);
+    public record SetPeriodRunningAction(PeriodRunningViewModel Period);
+
+    public record SetPeriodScoreCountAction(int ScoreCount);
+
+    public record SetPeriodWordAction(WordViewModel Word);
 
     public record AddScoreAction(WordViewModel Word);
 
@@ -29,22 +31,32 @@ namespace Fishbowl.Net.Client.Shared.Store
 
     public record FinishPeriodAction();
 
-    public static class PeriodPlayReducers
+    public record SetPeriodSummaryAction(PeriodSummaryViewModel Summary);
+
+    public static class PeriodReducers
     {
         [ReducerMethod]
-        public static PeriodPlayState OnSetPeriod(PeriodPlayState state, SetPeriodPeriodAction action) =>
-            new() { Period = action.Period };
+        public static PeriodState OnSetPeriodSetup(PeriodState state, SetPeriodSetupAction action) =>
+            new() { Setup = action.Period };
 
         [ReducerMethod]
-        public static PeriodPlayState OnTimerExpired(PeriodPlayState state, TimerExpiredAction action) =>
+        public static PeriodState OnSetPeriod(PeriodState state, SetPeriodRunningAction action) =>
+            state with { Running = action.Period };
+
+        [ReducerMethod]
+        public static PeriodState OnTimerExpired(PeriodState state, TimerExpiredAction action) =>
             state with { Expired = true };
 
         [ReducerMethod]
-        public static PeriodPlayState OnSetScoreCount(PeriodPlayState state, SetPeriodPlayScoreCountAction action) =>
+        public static PeriodState OnSetScoreCount(PeriodState state, SetPeriodScoreCountAction action) =>
             state with { ScoreCount = action.ScoreCount, ShowRevoke = action.ScoreCount > state.ScoreCount };
 
         [ReducerMethod]
-        public static PeriodPlayState OnSetWord(PeriodPlayState state, SetPeriodPlayWordAction action) =>
+        public static PeriodState OnSetWord(PeriodState state, SetPeriodWordAction action) =>
             state with { Word = action.Word };
+
+        [ReducerMethod]
+        public static PeriodState OnSetPeriodFinished(PeriodState state, SetPeriodSummaryAction action) =>
+            new() { Summary = action.Summary };
     }
 }

@@ -1,10 +1,11 @@
 @inherits Screen
-@inject IState<PeriodWatchState> State
+@inject IState<PeriodState> PeriodState
+@inject IState<PeriodWatchState> WatchState
 
 <ScreenContainer>
     <MudContainer>
         <MudText Typo="Typo.h5">
-            @L["Components.States.PeriodWatch.Playing"]: @this.Period.Player.Username
+            @L["Components.States.PeriodWatch.Playing"]: @this.PeriodState.Running.Player.Username
         </MudText>
     </MudContainer>
 
@@ -12,10 +13,10 @@
         <Timer Start="this.Period.StartedAt" Length="this.Period.Length" OnExpired="_ => this.expired = true" />
     </MudContainer>
 
-    @if (this.State.Value.ShowTeamAlert)
+    @if (this.WatchState.Value.ShowTeamAlert)
     {
         <MudContainer>
-            @if(!this.State.Value.Expired)
+            @if(!this.PeriodState.Value.Expired)
             {
                 <MudAlert Severity="Severity.Info">
                     @L["Components.States.PeriodWatch.YourTurn"]

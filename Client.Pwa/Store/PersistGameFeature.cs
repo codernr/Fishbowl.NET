@@ -15,8 +15,8 @@ namespace Fishbowl.Net.Client.Pwa.Store
 
         private static readonly List<Type> Actions = new()
         {
-            typeof(StartGameAction), typeof(SetPeriodSetupAction), typeof(SetPeriodPeriodAction),
-            typeof(SetPeriodFinishedAction), typeof(SetPeriodPlayScoreCountAction)
+            typeof(StartGameAction), typeof(SetPeriodSetupAction), typeof(SetPeriodRunningAction),
+            typeof(SetPeriodSummaryAction), typeof(SetPeriodScoreCountAction)
         };
 
         public PersistGameEffects(GameProperty persistedGame, IState<GamePlayState> state) =>

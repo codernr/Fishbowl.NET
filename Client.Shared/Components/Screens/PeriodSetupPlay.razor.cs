@@ -5,7 +5,7 @@ namespace Fishbowl.Net.Client.Shared.Components.Screens
 {
     public partial class PeriodSetupPlay
     {
-        private PeriodSetupViewModel Period => this.State.Value.Period;
+        private PeriodSetupViewModel Period => this.State.Value.Setup;
 
         protected override string Title => $"{this.Period.Round.Type}: {this.Period.Player.Username}";
 

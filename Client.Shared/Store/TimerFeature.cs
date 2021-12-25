@@ -27,7 +27,7 @@ namespace Fishbowl.Net.Client.Shared.Store
         private bool isRunning = false;
 
         [EffectMethod]
-        public async Task OnSetPeriodPeriod(SetPeriodPeriodAction action, IDispatcher dispatcher)
+        public async Task OnSetPeriodPeriod(SetPeriodRunningAction action, IDispatcher dispatcher)
         {
             this.isRunning = true;
 
@@ -50,7 +50,7 @@ namespace Fishbowl.Net.Client.Shared.Store
             }
         }
 
-        [EffectMethod(typeof(SetPeriodFinishedAction))]
+        [EffectMethod(typeof(SetPeriodSummaryAction))]
         public Task OnFinishPeriod(IDispatcher dispatcher)
         {
             this.isRunning = false;

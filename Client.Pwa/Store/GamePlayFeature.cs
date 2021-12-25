@@ -206,7 +206,7 @@ namespace Fishbowl.Net.Client.Pwa.Store
         {
             this.Game.AddScore(new(action.Word.Map(), DateTimeOffset.UtcNow));
 
-            dispatcher.Dispatch(new SetPeriodPlayScoreCountAction(
+            dispatcher.Dispatch(new SetPeriodScoreCountAction(
                 this.Game.Game.CurrentRound.CurrentPeriod.Scores.Count));
 
             this.Game.NextWord(DateTimeOffset.UtcNow);
@@ -228,11 +228,11 @@ namespace Fishbowl.Net.Client.Pwa.Store
             
             this.Game.RevokeLastScore();
 
-            dispatcher.Dispatch(new SetPeriodPlayScoreCountAction(
+            dispatcher.Dispatch(new SetPeriodScoreCountAction(
                 this.Game.Game.CurrentRound.CurrentPeriod.Scores.Count));
 
             dispatcher.Dispatch(
-                new SetPeriodPlayWordAction(score.Word.Map()));
+                new SetPeriodWordAction(score.Word.Map()));
 
             return Task.CompletedTask;
         }
@@ -255,14 +255,14 @@ namespace Fishbowl.Net.Client.Pwa.Store
             this.Game.PeriodSetup += period => Dispatch<SetPeriodSetupAction, PeriodSetupPlay>(
                 new(period.Map(this.Game.Game.CurrentRound)));
 
-            this.Game.PeriodStarted += period => Dispatch<SetPeriodPeriodAction, PeriodPlay>(
+            this.Game.PeriodStarted += period => Dispatch<SetPeriodRunningAction, PeriodPlay>(
                 new(period.MapRunning(this.Game.Game.CurrentRound)));
 
-            this.Game.PeriodFinished += period => Dispatch<SetPeriodFinishedAction, PeriodFinished>(
+            this.Game.PeriodFinished += period => Dispatch<SetPeriodSummaryAction, PeriodFinished>(
                 new(period.Map()), TimeSpan.FromSeconds(5));
 
             this.Game.WordSetup += (player, word) => dispatcher.Dispatch(
-                new SetPeriodPlayWordAction(word.Map()));
+                new SetPeriodWordAction(word.Map()));
 
             void Dispatch<TStateAction, TTransition>(TStateAction action, TimeSpan delay = default) =>
                 dispatcher.Dispatch(new ScreenManagerTransitionAction(typeof(TTransition), action, delay));
