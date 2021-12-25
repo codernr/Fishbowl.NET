@@ -5,11 +5,11 @@ namespace Fishbowl.Net.Client.Pwa.Store
     [FeatureState]
     public record PlayerSetupState
     {
+        public int PlayerIndex = 0;
         public int WordCount { get; init; } = 1;
-        public string Title { get; init; } = string.Empty;
     }
 
-    public record SetPlayerSetupAction(int WordCount, string Title);
+    public record SetPlayerSetupAction(int PlayerIndex, int WordCount);
 
     public record SubmitPlayerSetupAction(string PlayerName, string[] Words);
 
@@ -17,6 +17,6 @@ namespace Fishbowl.Net.Client.Pwa.Store
     {
         [ReducerMethod]
         public static PlayerSetupState OnSetPlayerSetup(PlayerSetupState state, SetPlayerSetupAction action) =>
-            new() { WordCount = action.WordCount, Title = action.Title };
+            new() { PlayerIndex = action.PlayerIndex, WordCount = action.WordCount };
     }
 }

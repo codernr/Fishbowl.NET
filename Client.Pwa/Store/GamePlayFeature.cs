@@ -133,9 +133,7 @@ namespace Fishbowl.Net.Client.Pwa.Store
         [EffectMethod]
         public Task OnSubmitGameSetup(SubmitGameSetupAction action, IDispatcher dispatcher)
         {
-            dispatcher.Dispatch(new SetPlayerSetupAction(
-                action.GameSetup.WordCount,
-                string.Format(this.localizer["Components.States.PlayerSetup.Title"], 1)));
+            dispatcher.Dispatch(new SetPlayerSetupAction(0, action.GameSetup.WordCount));
 
             dispatcher.Dispatch(new StartStateManagerTransitionAction(typeof(PlayerSetup)));
 
@@ -148,8 +146,7 @@ namespace Fishbowl.Net.Client.Pwa.Store
             if (this.state.Value.Players.Count < this.state.Value.GameSetup.PlayerCount)
             {
                 dispatcher.Dispatch(new SetPlayerSetupAction(
-                    this.state.Value.GameSetup.WordCount,
-                    string.Format(this.localizer["Components.States.PlayerSetup.Title"], this.state.Value.Players.Count + 1)));
+                    this.state.Value.Players.Count, this.state.Value.GameSetup.WordCount));
 
                 dispatcher.Dispatch(new StartStateManagerTransitionAction(typeof(PlayerSetup)));
             }

@@ -5,6 +5,8 @@ namespace Fishbowl.Net.Client.Pwa.Components.States
 {
     public partial class PlayerSetup
     {
+        protected override string Title => string.Format(base.Title, this.State.Value.PlayerIndex + 1);
+        
         private MudForm? form;
 
         private string playerName = string.Empty;
