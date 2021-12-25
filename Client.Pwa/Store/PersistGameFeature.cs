@@ -15,7 +15,7 @@ namespace Fishbowl.Net.Client.Pwa.Store
 
         private static readonly List<Type> Actions = new()
         {
-            typeof(StartGameAction), typeof(SetPeriodSetupAction), typeof(SetPeriodPlayPeriodAction),
+            typeof(StartGameAction), typeof(SetPeriodSetupAction), typeof(SetPeriodPeriodAction),
             typeof(SetPeriodFinishedAction), typeof(SetPeriodPlayScoreCountAction)
         };
 

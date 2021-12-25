@@ -255,7 +255,7 @@ namespace Fishbowl.Net.Client.Pwa.Store
             this.Game.PeriodSetup += period => Dispatch<SetPeriodSetupAction, PeriodSetupPlay>(
                 new(period.Map(this.Game.Game.CurrentRound)));
 
-            this.Game.PeriodStarted += period => Dispatch<SetPeriodPlayPeriodAction, PeriodPlay>(
+            this.Game.PeriodStarted += period => Dispatch<SetPeriodPeriodAction, PeriodPlay>(
                 new(period.MapRunning(this.Game.Game.CurrentRound)));
 
             this.Game.PeriodFinished += period => Dispatch<SetPeriodFinishedAction, PeriodFinished>(

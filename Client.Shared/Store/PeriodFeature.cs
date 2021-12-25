@@ -3,17 +3,21 @@ using Fluxor;
 
 namespace Fishbowl.Net.Client.Shared.Store
 {
-    [FeatureState]
-    public record PeriodPlayState
+    public record PeriodState
     {
         public PeriodRunningViewModel Period { get; init; } = default!;
         public bool Expired { get; init; } = false;
+    }
+
+    [FeatureState]
+    public record PeriodPlayState : PeriodState
+    {
         public int ScoreCount { get; init; } = 0;
         public bool ShowRevoke { get; init; } = false;
         public WordViewModel? Word { get; init; } = null;
     };
 
-    public record SetPeriodPlayPeriodAction(PeriodRunningViewModel Period);
+    public record SetPeriodPeriodAction(PeriodRunningViewModel Period);
 
     public record SetPeriodPlayScoreCountAction(int ScoreCount);
 
@@ -28,7 +32,7 @@ namespace Fishbowl.Net.Client.Shared.Store
     public static class PeriodPlayReducers
     {
         [ReducerMethod]
-        public static PeriodPlayState OnSetPeriod(PeriodPlayState state, SetPeriodPlayPeriodAction action) =>
+        public static PeriodPlayState OnSetPeriod(PeriodPlayState state, SetPeriodPeriodAction action) =>
             new() { Period = action.Period };
 
         [ReducerMethod]
