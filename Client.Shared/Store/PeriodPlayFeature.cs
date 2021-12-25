@@ -15,8 +15,6 @@ namespace Fishbowl.Net.Client.Shared.Store
 
     public record SetPeriodPlayPeriodAction(PeriodRunningViewModel Period);
 
-    public record SetPeriodPlayExpiredAction(bool Expired);
-
     public record SetPeriodPlayScoreCountAction(int ScoreCount);
 
     public record SetPeriodPlayWordAction(WordViewModel Word);
@@ -31,11 +29,11 @@ namespace Fishbowl.Net.Client.Shared.Store
     {
         [ReducerMethod]
         public static PeriodPlayState OnSetPeriod(PeriodPlayState state, SetPeriodPlayPeriodAction action) =>
-            state with { Period = action.Period };
+            new() { Period = action.Period };
 
         [ReducerMethod]
-        public static PeriodPlayState OnSetExpired(PeriodPlayState state, SetPeriodPlayExpiredAction action) =>
-            state with { Expired = action.Expired };
+        public static PeriodPlayState OnTimerExpired(PeriodPlayState state, TimerExpiredAction action) =>
+            state with { Expired = true };
 
         [ReducerMethod]
         public static PeriodPlayState OnSetScoreCount(PeriodPlayState state, SetPeriodPlayScoreCountAction action) =>
