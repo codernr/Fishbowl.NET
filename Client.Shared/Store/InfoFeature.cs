@@ -17,7 +17,7 @@ namespace Fishbowl.Net.Client.Shared.Store
     public static class InfoReducers
     {
         [ReducerMethod]
-        public static InfoState OnSetInfo(InfoState state, SetInfoAction action) => new()
+        public static InfoState OnSetInfo(InfoState state, SetInfoAction action) => state with
         {
             Severity = action.Severity,
             Title = action.Title,

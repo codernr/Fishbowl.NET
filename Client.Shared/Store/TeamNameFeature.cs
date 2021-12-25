@@ -18,6 +18,6 @@ namespace Fishbowl.Net.Client.Shared.Store
     {
         [ReducerMethod]
         public static TeamNameState OnTeamNameSet(TeamNameState state, SetTeamNameAction action) =>
-            new() { Team = action.Team, Title = action.Title };
+            state with { Team = action.Team, Title = action.Title };
     }
 }

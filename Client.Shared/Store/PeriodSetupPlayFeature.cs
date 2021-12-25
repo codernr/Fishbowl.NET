@@ -17,6 +17,6 @@ namespace Fishbowl.Net.Client.Shared.Store
     {
         [ReducerMethod]
         public static PeriodSetupPlayState OnSetPeriodSetupPlay(PeriodSetupPlayState state, SetPeriodSetupPlayAction action) =>
-            new() { Period = action.Period };
+            state with { Period = action.Period };
     }
 }

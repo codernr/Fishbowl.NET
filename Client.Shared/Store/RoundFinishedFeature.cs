@@ -15,6 +15,6 @@ namespace Fishbowl.Net.Client.Shared.Store
     {
         [ReducerMethod]
         public static RoundFinishedState OnSetRoundFinished(RoundFinishedState state, SetRoundFinishedAction action) =>
-            new() { Round = action.Round };
+            state with { Round = action.Round };
     }
 }

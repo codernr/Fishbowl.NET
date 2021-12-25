@@ -14,6 +14,6 @@ namespace Fishbowl.Net.Client.Shared.Store
     {
         [ReducerMethod]
         public static AppBarState OnSetAppBarTitle(AppBarState state, SetAppBarTitleAction action) =>
-            new() { Title = action.Title };
+            state with { Title = action.Title };
     }
 }

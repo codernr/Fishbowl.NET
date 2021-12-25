@@ -15,6 +15,6 @@ namespace Fishbowl.Net.Client.Shared.Store
     {
         [ReducerMethod]
         public static GameFinishedState OnSetGameFinished(GameFinishedState state, SetGameFinishedAction action) =>
-            new() { Game = action.Game };
+            state with { Game = action.Game };
     }
 }
