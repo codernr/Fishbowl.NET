@@ -10,7 +10,7 @@
             Color="Color.Warning"
             Size="Size.Large"
             FullWidth="true"
-            @onclick="this.Reload">
+            @onclick="_ => this.Dispatcher.Dispatch(new ReloadAction())">
             @L["Components.States.ConnectionClosed.Button"]
         </MudButton>
     </MudContainer>

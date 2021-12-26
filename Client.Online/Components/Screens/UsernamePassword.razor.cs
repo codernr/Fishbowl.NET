@@ -8,14 +8,15 @@ namespace Fishbowl.Net.Client.Online.Components.Screens
 {
     public partial class UsernamePassword
     {
-        public Func<JoinGameContextAction, Task> OnJoinGame { get; set; } = default!;
-
-        public Func<SetupCreateGameContextAction, Task> OnCreateGame { get; set; } = default!;
-
-        public string Username { get; set; } = string.Empty;
+        private string username { get; set; } = string.Empty;
 
         private string password = string.Empty;
 
         private MudForm? form;
+
+        private void JoinGame() => this.Dispatcher.Dispatch(new JoinGameContextAction(this.username, this.password));
+
+        private void CreateGame() => this.Dispatcher.Dispatch(
+            new SetupCreateGameContextAction(this.username, this.password));
     }
 }
