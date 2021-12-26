@@ -33,23 +33,11 @@ namespace Fishbowl.Net.Shared.ViewModels
             this.data = data;
     }
 
-    public record ReceivePlayerCountAction(int TotalCount, int ConnectedCount, int SetupCount);
-
     public record PlayerViewModel(string Username);
-
-    public record ReceiveRestoreStateAction(PlayerViewModel Player, List<TeamViewModel> Teams);
-
-    public record AddPlayerAction(string Username, IEnumerable<Word> Words);
 
     public record TeamViewModel(int Id, List<PlayerViewModel> Players, string? Name = null);
 
     public record TeamSetupViewModel(List<TeamViewModel> Teams);
-
-    public record ReceiveWaitForTeamSetupAction(PlayerViewModel? SetupPlayer, List<TeamViewModel> Teams);
-
-    public record ReceiveTeamNameAction(int Id, string Name);
-
-    public record SubmitTeamNameAction(int Id, string Name);
 
     public record RoundViewModel(string Type);
 
@@ -77,18 +65,10 @@ namespace Fishbowl.Net.Shared.ViewModels
 
     public record ScoreViewModel(WordViewModel Word, DateTimeOffset Timestamp);
 
-    public record AddScoreAction(WordViewModel Word);
-
     public record ScoreSummaryViewModel(WordViewModel Word, TimeSpan GuessedTime);
-
-    public record ReceiveGameAbortAction(string MessageKey);
 
     public record GameSetupViewModel(int PlayerCount, int WordCount, int TeamCount, string[] RoundTypes);
     
-    public record JoinGameContextAction(string Password, string Username);
-
-    public record CreateGameContextAction(JoinGameContextAction GameContextJoin, GameSetupViewModel GameSetup);
-
     public static class ViewModelExtensions
     {
         public static PlayerViewModel Map(this Player player) => new(player.Username);
@@ -148,8 +128,5 @@ namespace Fishbowl.Net.Shared.ViewModels
             .OrderByDescending(team => team.TotalScoreCount)
             .ThenBy(team => team.TotalTime)
             .ToList());
-
-        public static Player Map(this AddPlayerAction player) =>
-            new(player.Username, player.Words);
     }
 }

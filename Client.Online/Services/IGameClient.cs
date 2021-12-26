@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Fishbowl.Net.Shared.Actions;
 using Fishbowl.Net.Shared.ViewModels;
 
 namespace Fishbowl.Net.Client.Online.Services

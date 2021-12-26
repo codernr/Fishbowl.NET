@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Fishbowl.Net.Shared;
+using Fishbowl.Net.Shared.Actions;
 using Fishbowl.Net.Shared.GameEntities;
 using Fishbowl.Net.Shared.ViewModels;
 using Fishbowl.Net.Shared.Exceptions;
