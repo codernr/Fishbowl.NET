@@ -20,6 +20,6 @@ namespace Fishbowl.Net.Client.Online.Components.Screens
         }
 
         private void Submit() => this.Dispatcher.Dispatch(new AddPlayerAction(
-            this.GamePlayState.Value.Username!, this.words.Select(word => new Word(Guid.NewGuid(), word))));
+            this.State.Value.Username!, this.words.Select(word => new Word(Guid.NewGuid(), word))));
     }
 }

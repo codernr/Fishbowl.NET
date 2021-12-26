@@ -34,9 +34,17 @@ namespace Fishbowl.Net.Client.Online.Store
             team.Players.Any(player => player.Username == this.Username));
 
         public PlayerViewModel? TeamSetupPlayer { get; init; }
+
+        public string Message { get; init; } = string.Empty;
+
+        public int WordCount { get; init; } = 2;
     }
 
     public record SetupCreateGameContextAction(string Username, string Password);
+
+    public record SetPlayerWordsAction(string Message, int WordCount);
+
+    public record SetPlayerWordsMessageAction(string Message);
 
     public static class GamePlayReducers
     {
@@ -51,6 +59,14 @@ namespace Fishbowl.Net.Client.Online.Store
         [ReducerMethod]
         public static GamePlayState OnJoinGameContext(GamePlayState state, JoinGameContextAction action) =>
             state with { Username = action.Username, Password = action.Password };
+
+        [ReducerMethod]
+        public static GamePlayState OnSetPlayerWords(GamePlayState state, SetPlayerWordsAction action) =>
+            state with { Message = action.Message, WordCount = action.WordCount };
+
+        [ReducerMethod]
+        public static GamePlayState OnSetPlayerWordsMessage(GamePlayState state, SetPlayerWordsMessageAction action) =>
+            state with { Message = action.Message };
 
         [ReducerMethod]
         public static GamePlayState OnSetupCreateGameContext(GamePlayState state, SetupCreateGameContextAction action) =>
