@@ -16,11 +16,7 @@ namespace Fishbowl.Net.Client.Shared.Store
         public PeriodSummaryViewModel Summary { get; init; } = default!;
     }
 
-    public record SetPeriodSetupAction(PeriodSetupViewModel Period);
-
     public record StartPeriodAction();
-
-    public record SetPeriodRunningAction(PeriodRunningViewModel Period);
 
     public record SetPeriodScoreCountAction(int ScoreCount);
 
@@ -33,12 +29,12 @@ namespace Fishbowl.Net.Client.Shared.Store
     public static class PeriodReducers
     {
         [ReducerMethod]
-        public static PeriodState OnSetPeriodSetup(PeriodState state, SetPeriodSetupAction action) =>
-            new() { Setup = action.Period };
+        public static PeriodState OnReceivePeriodSetup(PeriodState state, ReceivePeriodSetupAction action) =>
+            new() { Setup = action with { } as PeriodSetupViewModel };
 
         [ReducerMethod]
-        public static PeriodState OnSetPeriod(PeriodState state, SetPeriodRunningAction action) =>
-            state with { Running = action.Period };
+        public static PeriodState OnReceivePeriodStarted(PeriodState state, ReceivePeriodStartedAction action) =>
+            state with { Running = action with { } as PeriodRunningViewModel };
 
         [ReducerMethod]
         public static PeriodState OnTimerExpired(PeriodState state, TimerExpiredAction action) =>
@@ -53,7 +49,7 @@ namespace Fishbowl.Net.Client.Shared.Store
             state with { Word = action.Word };
 
         [ReducerMethod]
-        public static PeriodState OnSetPeriodFinished(PeriodState state, ReceivePeriodFinishedAction action) =>
+        public static PeriodState OnReceivePeriodFinished(PeriodState state, ReceivePeriodFinishedAction action) =>
             new() { Summary = action with { } as PeriodSummaryViewModel };
     }
 }

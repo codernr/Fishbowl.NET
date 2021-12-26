@@ -28,11 +28,11 @@ namespace Fishbowl.Net.Client.Shared.Store
         private bool isRunning = false;
 
         [EffectMethod]
-        public async Task OnSetPeriodPeriod(SetPeriodRunningAction action, IDispatcher dispatcher)
+        public async Task OnSetPeriodPeriod(ReceivePeriodStartedAction action, IDispatcher dispatcher)
         {
             this.isRunning = true;
 
-            var remaining = GetRemaining(action.Period);
+            var remaining = GetRemaining(action);
             dispatcher.Dispatch(new SetTimerAction(remaining));
 
             TimeSpan previous;
@@ -41,7 +41,7 @@ namespace Fishbowl.Net.Client.Shared.Store
             {
                 previous = remaining;
                 await Task.Delay(500);
-                remaining = GetRemaining(action.Period);
+                remaining = GetRemaining(action);
                 dispatcher.Dispatch(new SetTimerAction(remaining));
 
                 if (remaining < TimeSpan.Zero && previous > TimeSpan.Zero)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Fishbowl.Net.Client.Pwa.Common;
 using Fishbowl.Net.Client.Shared.Store;
+using Fishbowl.Net.Shared.Actions;
 using Fluxor;
 
 namespace Fishbowl.Net.Client.Pwa.Store
@@ -15,8 +16,8 @@ namespace Fishbowl.Net.Client.Pwa.Store
 
         private static readonly List<Type> Actions = new()
         {
-            typeof(StartGameAction), typeof(SetPeriodSetupAction), typeof(SetPeriodRunningAction),
-            typeof(SetPeriodSummaryAction), typeof(SetPeriodScoreCountAction)
+            typeof(StartGameAction), typeof(ReceivePeriodSetupAction), typeof(ReceivePeriodStartedAction),
+            typeof(ReceivePeriodFinishedAction), typeof(SetPeriodScoreCountAction)
         };
 
         public PersistGameEffects(GameProperty persistedGame, IState<GamePlayState> state) =>
