@@ -11,7 +11,7 @@ namespace Fishbowl.Net.Client.Online.Components.Screens
     {
         private MudForm? form;
 
-        private string[] words = default!;
+        private string[] words = new string[0];
 
         protected override void OnInitialized()
         {
