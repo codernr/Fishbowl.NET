@@ -8,6 +8,7 @@ using Fishbowl.Net.Client.Shared.Components.Screens;
 using Fishbowl.Net.Client.Shared.I18n;
 using Fishbowl.Net.Client.Shared.Store;
 using Fishbowl.Net.Shared;
+using Fishbowl.Net.Shared.Actions;
 using Fishbowl.Net.Shared.GameEntities;
 using Fishbowl.Net.Shared.ViewModels;
 using Fluxor;
@@ -64,7 +65,7 @@ namespace Fishbowl.Net.Client.Pwa.Store
         {
             var teams = state.Teams;
 
-            teams[action.Id].Name = action.TeamName;
+            teams[action.Id].Name = action.Name;
 
             return state with { Teams = teams };
         }
@@ -240,27 +241,27 @@ namespace Fishbowl.Net.Client.Pwa.Store
             this.Game.GameStarted += game => Dispatch<SetInfoAction, Info>(
                 new(Title: this.localizer["Pages.Play.GameStartedTitle"], Loading: true), TimeSpan.FromSeconds(2));
 
-            this.Game.GameFinished += game => Dispatch<SetGameSummaryAction, GameFinished>(new(game.Map()));
+            this.Game.GameFinished += game => Dispatch<ReceiveGameFinishedAction, GameFinished>(game.Map());
 
             this.Game.RoundStarted += round => Dispatch<SetInfoAction, Info>(new(
                 Title: $"{this.localizer["Pages.Play.RoundStartedTitle"]}: {round.Type}",
                 Message: this.localizer[$"Components.States.Common.RoundTypes.{round.Type}.Description"],
                 Loading: true), TimeSpan.FromSeconds(2));
 
-            this.Game.RoundFinished += round => Dispatch<SetRoundFinishedAction, RoundFinished>(
-                new(round.MapSummary()), TimeSpan.FromSeconds(5));
+            this.Game.RoundFinished += round => Dispatch<ReceiveRoundFinishedAction, RoundFinished>(
+                round.MapSummary(), TimeSpan.FromSeconds(5));
 
-            this.Game.PeriodSetup += period => Dispatch<SetPeriodSetupAction, PeriodSetupPlay>(
-                new(period.Map(this.Game.Game.CurrentRound)));
+            this.Game.PeriodSetup += period => Dispatch<ReceivePeriodSetupAction, PeriodSetupPlay>(
+                period.Map(this.Game.Game.CurrentRound));
 
-            this.Game.PeriodStarted += period => Dispatch<SetPeriodRunningAction, PeriodPlay>(
-                new(period.MapRunning(this.Game.Game.CurrentRound)));
+            this.Game.PeriodStarted += period => Dispatch<ReceivePeriodStartedAction, PeriodPlay>(
+                period.MapRunning(this.Game.Game.CurrentRound));
 
-            this.Game.PeriodFinished += period => Dispatch<SetPeriodSummaryAction, PeriodFinished>(
-                new(period.Map()), TimeSpan.FromSeconds(5));
+            this.Game.PeriodFinished += period => Dispatch<ReceivePeriodFinishedAction, PeriodFinished>(
+                period.Map(), TimeSpan.FromSeconds(5));
 
             this.Game.WordSetup += (player, word) => dispatcher.Dispatch(
-                new SetPeriodWordAction(word.Map()));
+                word.Map());
 
             void Dispatch<TStateAction, TTransition>(TStateAction action, TimeSpan delay = default) =>
                 dispatcher.Dispatch(new ScreenManagerTransitionAction(typeof(TTransition), action, delay));

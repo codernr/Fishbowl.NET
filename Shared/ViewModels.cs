@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
+using Fishbowl.Net.Shared.Actions;
 using Fishbowl.Net.Shared.GameEntities;
 
 namespace Fishbowl.Net.Shared.ViewModels
@@ -78,29 +79,12 @@ namespace Fishbowl.Net.Shared.ViewModels
 
         public static RoundViewModel Map(this Round round) => new(round.Type);
 
-        public static PeriodSetupViewModel Map(this Period period, Round round) =>
-            new(new(round.Type), new(period.Player.Username), period.Length.TotalSeconds);
-
-        public static PeriodRunningViewModel MapRunning(this Period period, Round round) =>
-            new(new(round.Type), new(period.Player.Username), period.Length.TotalSeconds,
-            period.StartedAt ?? throw new InvalidOperationException(), period.Scores.Count);
-
-        public static PeriodSummaryViewModel Map(this Period period) =>
-            new(period.Player.Map(), period.Scores.Select(score => score.Map()).ToList());
-
-        public static WordViewModel Map(this Word word) => new(word.Id, word.Value);
-
         public static Word Map(this WordViewModel word) => new(word.Id, word.Value);
 
-        public static ScoreViewModel Map(this Score score) => new(score.Word.Map(), score.Timestamp);
-
         public static ScoreSummaryViewModel Map(this Score score, DateTimeOffset previous) =>
-            new(score.Word.Map(), score.Timestamp - previous);
+            new(score.Word.Map() as WordViewModel, score.Timestamp - previous);
 
         public static Score Map(this ScoreViewModel score) => new(score.Word.Map(), score.Timestamp);
-
-        public static RoundSummaryViewModel MapSummary(this Round round) =>
-            new(round.Type, round.Periods.Select(period => period.Map()).ToList());
 
         public static PlayerSummaryViewModel Map(this Player player, Game game) =>
             new(player.Username, game.Rounds
@@ -119,14 +103,5 @@ namespace Fishbowl.Net.Shared.ViewModels
                 players.Sum(player => player.Scores.Count()),
                 new TimeSpan(players.Sum(player => player.Scores.Sum(score => score.GuessedTime.Ticks))));
         }
-
-        public static TeamSetupViewModel Map(this IEnumerable<Team> teams) =>
-            new(teams.Select(team => team.Map()).ToList());
-
-        public static GameSummaryViewModel Map(this Game game) => new(game.Teams
-            .Select(team => team.Map(game))
-            .OrderByDescending(team => team.TotalScoreCount)
-            .ThenBy(team => team.TotalTime)
-            .ToList());
     }
 }

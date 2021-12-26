@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Fishbowl.Net.Client.Online.Services;
 using Fishbowl.Net.Client.Shared.Store;
 using Fishbowl.Net.Shared;
+using Fishbowl.Net.Shared.Actions;
 using Fishbowl.Net.Shared.ViewModels;
 using Fluxor;
 using Microsoft.AspNetCore.Components;
@@ -18,24 +19,9 @@ namespace Fishbowl.Net.Client.Online.Store
     }
 
     public record SetConnectionStateAction(HubConnectionState State);
-    public record ReceiveSetupPlayerAction(GameSetupViewModel Setup);
-    public record ReceiveWaitForOtherPlayersAction(PlayerViewModel Player);
-    public record ReceiveSetTeamNameAction(TeamSetupViewModel TeamSetup);
-    public record ReceiveGameStartedAction();
-    public record ReceiveGameFinishedAction(GameSummaryViewModel Summary);
-    public record ReceiveRoundStartedAction(RoundViewModel Round);
-    public record ReceiveRoundFinishedAction(RoundSummaryViewModel Summary);
-    public record ReceivePeriodSetupAction(PeriodSetupViewModel Setup);
-    public record ReceivePeriodStartedAction(PeriodRunningViewModel Running);
-    public record ReceivePeriodFinishedAction(PeriodSummaryViewModel Summary);
-    public record ReceiveWordSetupAction(WordViewModel Word);
-    public record ReceiveScoreAddedAction(ScoreViewModel Score);
-    public record ReceiveLastScoreRevokedAction(ScoreViewModel Score);
-
     public record GameContextExistsAction(string Password);
     public record GameContextExistsResponseAction(bool Exists);
     public record CreateGameContextSuccessAction();
-
     public record StatusErrorAction(StatusCode Status);
 
     public class ConnectionEffects : IAsyncDisposable
@@ -82,24 +68,24 @@ namespace Fishbowl.Net.Client.Online.Store
         private void SetHandlers()
         {
             this
-                .On<GameSetupViewModel>(nameof(IGameClient.ReceiveSetupPlayer), p => new ReceiveSetupPlayerAction(p))
+                .On<ReceiveGameSetupAction>(nameof(IGameClient.ReceiveGameSetup))
                 .On<ReceivePlayerCountAction>(nameof(IGameClient.ReceivePlayerCount))
-                .On<PlayerViewModel>(nameof(IGameClient.ReceiveWaitForOtherPlayers), p => new ReceiveWaitForOtherPlayersAction(p))
-                .On<TeamSetupViewModel>(nameof(IGameClient.ReceiveSetTeamName), p => new ReceiveSetTeamNameAction(p))
+                .On<ReceiveWaitForOtherPlayersAction>(nameof(IGameClient.ReceiveWaitForOtherPlayers))
+                .On<ReceiveSetTeamNameAction>(nameof(IGameClient.ReceiveSetTeamName))
                 .On<ReceiveWaitForTeamSetupAction>(nameof(IGameClient.ReceiveWaitForTeamSetup))
                 .On<ReceiveTeamNameAction>(nameof(IGameClient.ReceiveTeamName))
                 .On<ReceiveRestoreStateAction>(nameof(IGameClient.ReceiveRestoreState))
                 .On<ReceiveGameAbortAction>(nameof(IGameClient.ReceiveGameAborted))
-                .On(nameof(IGameClient.ReceiveGameStarted), () => new ReceiveGameStartedAction())
-                .On<GameSummaryViewModel>(nameof(IGameClient.ReceiveGameFinished), p => new ReceiveGameFinishedAction(p))
-                .On<RoundViewModel>(nameof(IGameClient.ReceiveRoundStarted), p => new ReceiveRoundStartedAction(p))
-                .On<RoundSummaryViewModel>(nameof(IGameClient.ReceiveRoundFinished), p => new ReceiveRoundFinishedAction(p))
-                .On<PeriodSetupViewModel>(nameof(IGameClient.ReceivePeriodSetup), p => new ReceivePeriodSetupAction(p))
-                .On<PeriodRunningViewModel>(nameof(IGameClient.ReceivePeriodStarted), p => new ReceivePeriodStartedAction(p))
-                .On<PeriodSummaryViewModel>(nameof(IGameClient.ReceivePeriodFinished), p => new ReceivePeriodFinishedAction(p))
-                .On<WordViewModel>(nameof(IGameClient.ReceiveWordSetup), p => new ReceiveWordSetupAction(p))
-                .On<ScoreViewModel>(nameof(IGameClient.ReceiveScoreAdded), p => new ReceiveScoreAddedAction(p))
-                .On<ScoreViewModel>(nameof(IGameClient.ReceiveLastScoreRevoked), p => new ReceiveLastScoreRevokedAction(p));
+                .On<ReceiveGameStartedAction>(nameof(IGameClient.ReceiveGameStarted))
+                .On<ReceiveGameFinishedAction>(nameof(IGameClient.ReceiveGameFinished))
+                .On<ReceiveRoundStartedAction>(nameof(IGameClient.ReceiveRoundStarted))
+                .On<ReceiveRoundFinishedAction>(nameof(IGameClient.ReceiveRoundFinished))
+                .On<ReceivePeriodSetupAction>(nameof(IGameClient.ReceivePeriodSetup))
+                .On<ReceivePeriodStartedAction>(nameof(IGameClient.ReceivePeriodStarted))
+                .On<ReceivePeriodFinishedAction>(nameof(IGameClient.ReceivePeriodFinished))
+                .On<ReceiveWordSetupAction>(nameof(IGameClient.ReceiveWordSetup))
+                .On<ReceiveScoreAddedAction>(nameof(IGameClient.ReceiveScoreAdded))
+                .On<ReceiveLastScoreRevokedAction>(nameof(IGameClient.ReceiveLastScoreRevoked));
         }
 
         private async Task StartAsync()
@@ -159,26 +145,6 @@ namespace Fishbowl.Net.Client.Online.Store
         [EffectMethod(typeof(FinishPeriodAction))]
         public Task OnFinishPeriod(IDispatcher dispatcher) =>
             this.SendAsync("FinishPeriod");
-
-        private ConnectionEffects On(string methodName, Func<object> factory)
-        {
-            this.connection.On(methodName, Dispatch(factory));
-            this.connection.On(methodName, () => this.logger.LogInformation("{MethodName}", methodName));
-            return this;
-
-            Func<Task> Dispatch(Func<object> factory) => () =>
-            {
-                this.dispatcher.Dispatch(factory());
-                return Task.CompletedTask;
-            };
-        }
-
-        private ConnectionEffects On<T>(string methodName, Func<T, object> factory)
-        {
-            this.connection.On<T>(methodName, (T param) => this.dispatcher.Dispatch(factory(param)));
-            this.connection.On<T>(methodName, data => this.logger.LogInformation("{MethodName}: {Data}", methodName, data));
-            return this;
-        }
 
         private ConnectionEffects On<T>(string methodName)
         {

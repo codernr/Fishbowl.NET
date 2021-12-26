@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Fishbowl.Net.Client.Online.Services;
 using Fishbowl.Net.Server.Services;
 using Fishbowl.Net.Shared;
+using Fishbowl.Net.Shared.Actions;
 using Fishbowl.Net.Shared.GameEntities;
 using Fishbowl.Net.Shared.ViewModels;
 using Microsoft.AspNetCore.SignalR;

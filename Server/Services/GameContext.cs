@@ -84,8 +84,8 @@ namespace Fishbowl.Net.Server.Services
             var existingPlayer = this.players.SingleOrDefault(player => player.Username == username);
 
             var clientTask =
-                existingPlayer is null  ? this.groupHubContext.Client(username).ReceiveSetupPlayer(this.gameSetup) :
-                (this.teams is null     ? this.groupHubContext.Client(username).ReceiveWaitForOtherPlayers(existingPlayer.Map()) :
+                existingPlayer is null  ? this.groupHubContext.Client(username).ReceiveGameSetup(this.gameSetup.Map()) :
+                (this.teams is null     ? this.groupHubContext.Client(username).ReceiveWaitForOtherPlayers(new(existingPlayer.Username)) :
                 (this.game is null      ? this.RestoreTeamSetup(existingPlayer, this.teams) :
                 this.RestoreGame(existingPlayer, this.game)));
 
@@ -117,7 +117,7 @@ namespace Fishbowl.Net.Server.Services
 
             if (this.players.Count != this.gameSetup.PlayerCount)
             {
-                await this.groupHubContext.Client(player.Username).ReceiveWaitForOtherPlayers(entity.Map());
+                await this.groupHubContext.Client(player.Username).ReceiveWaitForOtherPlayers(new(player.Username));
                 return;
             }
 
@@ -146,7 +146,7 @@ namespace Fishbowl.Net.Server.Services
         {
             this.teams = players.Randomize().ToList().CreateTeams(teamCount).ToList();
 
-            TeamSetupViewModel data = this.Teams.Map();
+            ReceiveSetTeamNameAction data = this.Teams.Map();
             List<Task> tasks = new();
 
             foreach(var team in this.Teams)
@@ -197,7 +197,7 @@ namespace Fishbowl.Net.Server.Services
         }
 
         private async void GameStarted(Game game) =>
-            await this.groupHubContext.Group().ReceiveGameStarted();
+            await this.groupHubContext.Group().ReceiveGameStarted(new());
 
         private async void OnGameFinished(Game game)
         {
@@ -206,7 +206,7 @@ namespace Fishbowl.Net.Server.Services
         }
 
         private async void RoundStarted(Round round) =>
-            await this.groupHubContext.Group().ReceiveRoundStarted(round.Map());
+            await this.groupHubContext.Group().ReceiveRoundStarted(new(round.Type));
 
         private async void RoundFinished(Round round) =>
             await this.groupHubContext.Group().ReceiveRoundFinished(round.MapSummary());
@@ -245,11 +245,11 @@ namespace Fishbowl.Net.Server.Services
 
             var client = this.groupHubContext.Client(player.Username);
 
-            var teamViewModels = this.Teams.Map();
+            var teamAction = this.Teams.Map();
 
             return (playerTeam.Players[0].Username == player.Username && playerTeam.Name is null) ?
-                client.ReceiveSetTeamName(teamViewModels) :
-                client.ReceiveWaitForTeamSetup(new(playerTeam.Players[0].Map(), teamViewModels.Teams));
+                client.ReceiveSetTeamName(teamAction) :
+                client.ReceiveWaitForTeamSetup(new(playerTeam.Players[0].Map(), teamAction.Teams));
         }
 
         private async Task RestoreGame(Player player, AsyncGame game)

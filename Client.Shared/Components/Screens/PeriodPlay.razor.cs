@@ -1,4 +1,5 @@
 using Fishbowl.Net.Client.Shared.Store;
+using Fishbowl.Net.Shared.Actions;
 using Fishbowl.Net.Shared.ViewModels;
 
 namespace Fishbowl.Net.Client.Shared.Components.Screens

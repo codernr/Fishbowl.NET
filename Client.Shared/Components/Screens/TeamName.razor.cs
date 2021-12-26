@@ -1,4 +1,4 @@
-using Fishbowl.Net.Client.Shared.Store;
+using Fishbowl.Net.Shared.Actions;
 using Fishbowl.Net.Shared.ViewModels;
 using MudBlazor;
 
