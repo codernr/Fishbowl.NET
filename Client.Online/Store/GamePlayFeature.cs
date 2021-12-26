@@ -90,6 +90,8 @@ namespace Fishbowl.Net.Client.Online.Store
 
         private readonly IStringLocalizer<Resources> localizer;
 
+        private readonly ISnackbar snackbar;
+
         private string PlayerCountMessage => string.Format(
             this.localizer["Components.States.Common.PlayerCount"],
             this.state.Value.Setup.PlayerCount,
@@ -98,8 +100,9 @@ namespace Fishbowl.Net.Client.Online.Store
 
         public GamePlayEffects(
             IState<GamePlayState> state,
-            IStringLocalizer<Resources> localizer) =>
-            (this.state, this.localizer) = (state, localizer);
+            IStringLocalizer<Resources> localizer,
+            ISnackbar snackbar) =>
+            (this.state, this.localizer, this.snackbar) = (state, localizer, snackbar);
 
         [EffectMethod(typeof(ConnectionStartedAction))]
         public Task OnConnectionStarted(IDispatcher dispatcher)
@@ -117,16 +120,19 @@ namespace Fishbowl.Net.Client.Online.Store
         }
 
         [EffectMethod]
-        public Task OnJoinGameContextError(JoinGameContextErrorAction action, IDispatcher dispatcher) =>
-            dispatcher.DispatchTransition<UsernamePassword>();
+        public Task OnStatusError(StatusErrorAction action, IDispatcher dispatcher)
+        {
+            this.snackbar.Add(this.localizer[$"Pages.Play.StatusCode.{action.Status}"]);
+            return dispatcher.DispatchTransition<UsernamePassword>();
+        }
 
         [EffectMethod]
         public Task OnReceiveGameSetup(ReceiveGameSetupAction action, IDispatcher dispatcher) =>
             dispatcher.DispatchTransition<PlayerWords, SetPlayerWordsAction>(
                 new(this.PlayerCountMessage, action.WordCount));
 
-        [EffectMethod]
-        public Task OnReceivePlayerCount(ReceivePlayerCountAction action, IDispatcher dispatcher)
+        [EffectMethod(typeof(ReceivePlayerCountAction))]
+        public Task OnReceivePlayerCount(IDispatcher dispatcher)
         {
             dispatcher.Dispatch(new SetInfoMessageAction(this.PlayerCountMessage));
             dispatcher.Dispatch(new SetPlayerWordsMessageAction(this.PlayerCountMessage));
@@ -144,12 +150,12 @@ namespace Fishbowl.Net.Client.Online.Store
                 Title: this.localizer["Pages.Play.GameStartedTitle"],
                 Loading: true));
 
-        [EffectMethod]
-        public Task OnReceiveGameFinished(ReceiveGameFinishedAction action, IDispatcher dispatcher) =>
+        [EffectMethod(typeof(ReceiveGameFinishedAction))]
+        public Task OnReceiveGameFinished(IDispatcher dispatcher) =>
             dispatcher.DispatchTransition<GameFinished>();
 
-        [EffectMethod]
-        public Task OnReceiveRoundFinished(ReceiveRoundFinishedAction action, IDispatcher dispatcher) =>
+        [EffectMethod(typeof(ReceiveRoundFinishedAction))]
+        public Task OnReceiveRoundFinished(IDispatcher dispatcher) =>
             dispatcher.DispatchTransition<RoundFinished>();
 
         [EffectMethod]
@@ -157,5 +163,55 @@ namespace Fishbowl.Net.Client.Online.Store
             action.Player.Username == this.state.Value.Username ?
             dispatcher.DispatchTransition<PeriodSetupPlay>() :
             dispatcher.DispatchTransition<PeriodSetupWatch>();
+
+        [EffectMethod(typeof(ReceivePeriodFinishedAction))]
+        public Task OnReceivePeriodFinished(IDispatcher dispatcher) =>
+            dispatcher.DispatchTransition<PeriodFinished>(TimeSpan.FromSeconds(5));
+
+        [EffectMethod(typeof(ReceiveScoreAddedAction))]
+        public Task OnReceiveScoreAdded(IDispatcher dispatcher)
+        {
+            this.snackbar.Add($"{this.localizer["Pages.Play.Scored"]}", Severity.Success);
+            return Task.CompletedTask;
+        }
+
+        [EffectMethod(typeof(ReceiveLastScoreRevokedAction))]
+        public Task OnReceiveLastScoreRevoked(IDispatcher dispatcher)
+        {
+            this.snackbar.Add($"{this.localizer["Pages.Play.Scored"]}", Severity.Success);
+            return Task.CompletedTask;
+        }
+
+        [EffectMethod(typeof(SetupCreateGameContextAction))]
+        public Task OnSetupCreateGameContext(IDispatcher dispatcher) =>
+            dispatcher.DispatchTransition<GameSetup, SetGameInfoAction>(
+                new(this.localizer["Components.States.GameSetup.Info"]));
+
+        [EffectMethod]
+        public Task OnSubmitGameSetup(SubmitGameSetupAction action, IDispatcher dispatcher)
+        {
+            dispatcher.Dispatch(new CreateGameContextAction(
+                new(this.state.Value.Password!, this.state.Value.Username!), action.GameSetup));
+
+            return Task.CompletedTask;
+        }
+
+        [EffectMethod(typeof(CreateGameContextSuccessAction))]
+        public Task OnCreateGameContextSuccess(IDispatcher dispatcher)
+        {
+            this.snackbar.Add(this.localizer["Common.GameCreated"], Severity.Success);
+            return Task.CompletedTask;
+        }
+
+        [EffectMethod]
+        public async Task OnReceiveGameAbort(ReceiveGameAbortAction action, IDispatcher dispatcher)
+        {
+            await dispatcher.DispatchTransition<Info, SetInfoAction>(new(
+                Severity.Error,
+                this.localizer["Pages.Play.ErrorTitle"],
+                this.localizer[action.MessageKey]));
+
+            dispatcher.Dispatch(new ReloadAction());
+        }
     }
 }

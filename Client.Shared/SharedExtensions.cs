@@ -38,9 +38,9 @@ namespace Fishbowl.Net.Client.Shared
             Task.WhenAll(
                 host.Services.GetRequiredService<IStorageService>().InitializeAsync());
 
-        public static Task DispatchTransition<TScreen>(this IDispatcher dispatcher) where TScreen : Screen
+        public static Task DispatchTransition<TScreen>(this IDispatcher dispatcher, TimeSpan delay = default) where TScreen : Screen
         {
-            dispatcher.Dispatch(new ScreenManagerTransitionAction(typeof(TScreen)));
+            dispatcher.Dispatch(new ScreenManagerTransitionAction(typeof(TScreen), Delay: delay));
             return Task.CompletedTask;
         }
 

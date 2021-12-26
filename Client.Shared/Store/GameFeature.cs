@@ -14,6 +14,8 @@ namespace Fishbowl.Net.Client.Shared.Store
 
     public record SubmitGameSetupAction(GameSetupViewModel GameSetup);
 
+    public record SetGameInfoAction(string Info);
+
     public static class GameSetupReducers
     {
         [ReducerMethod(typeof(SubmitGameSetupAction))]
@@ -22,5 +24,9 @@ namespace Fishbowl.Net.Client.Shared.Store
         [ReducerMethod]
         public static GameState OnReceiveGameFinished(GameState state, ReceiveGameFinishedAction action) =>
             state with { Summary = action as GameSummaryViewModel };
+
+        [ReducerMethod]
+        public static GameState OnSetGameInfo(GameState state, SetGameInfoAction action) =>
+            state with { Info = action.Info };
     }
 }

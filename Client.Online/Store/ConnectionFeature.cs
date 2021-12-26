@@ -20,9 +20,6 @@ namespace Fishbowl.Net.Client.Online.Store
 
     public record SetConnectionStateAction(HubConnectionState State);
     public record ConnectionStartedAction();
-    public record JoinGameContextErrorAction(StatusCode Status);
-    public record GameContextExistsAction(string Password);
-    public record GameContextExistsResponseAction(bool Exists);
     public record CreateGameContextSuccessAction();
     public record StatusErrorAction(StatusCode Status);
 
@@ -105,7 +102,7 @@ namespace Fishbowl.Net.Client.Online.Store
 
             if (response.Status == StatusCode.Ok) return;
 
-            dispatcher.Dispatch(new JoinGameContextErrorAction(response.Status));
+            dispatcher.Dispatch(new StatusErrorAction(response.Status));
         }
 
         [EffectMethod]
