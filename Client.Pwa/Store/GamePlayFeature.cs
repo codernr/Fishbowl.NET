@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Fishbowl.Net.Client.Pwa.Common;
 using Fishbowl.Net.Client.Pwa.Components.Screens;
+using Fishbowl.Net.Client.Shared;
 using Fishbowl.Net.Client.Shared.Components.Screens;
 using Fishbowl.Net.Client.Shared.I18n;
 using Fishbowl.Net.Client.Shared.Store;
@@ -97,22 +98,15 @@ namespace Fishbowl.Net.Client.Pwa.Store
             (state, persistedGame, localizer);
 
         [EffectMethod(typeof(StoreInitializedAction))]
-        public Task OnInitGamePlay(IDispatcher dispatcher)
-        {
-            dispatcher.Dispatch(this.persistedGame.Value is null ?
-                new StartNewGameAction() :
-                new ScreenManagerTransitionAction(typeof(Restore)));
-            return Task.CompletedTask;
-        }
+        public Task OnInitGamePlay(IDispatcher dispatcher) =>
+            this.persistedGame.Value is null ?
+            dispatcher.Dispatch<StartNewGameAction>() :
+            dispatcher.DispatchTransition<Restore>();
 
         [EffectMethod(typeof(RestoreGameAction))]
-        public Task OnRestoreGame(IDispatcher dispatcher)
-        {
-            dispatcher.Dispatch(new SetRestoredGameAction(
+        public Task OnRestoreGame(IDispatcher dispatcher) =>
+            dispatcher.Dispatch<SetRestoredGameAction>(new(
                 this.persistedGame.Value ?? throw new NullReferenceException("Persisted game is null.")));
-            
-            return Task.CompletedTask;
-        }
 
         [EffectMethod(typeof(SetRestoredGameAction))]
         public Task OnSetRestoredGameAction(IDispatcher dispatcher)
@@ -123,38 +117,20 @@ namespace Fishbowl.Net.Client.Pwa.Store
         }
 
         [EffectMethod(typeof(StartNewGameAction))]
-        public Task OnStartNewGame(IDispatcher dispatcher)
-        {
-            dispatcher.Dispatch(new ScreenManagerTransitionAction(typeof(GameSetup)));
-            return Task.CompletedTask;
-        }
+        public Task OnStartNewGame(IDispatcher dispatcher) =>
+            dispatcher.DispatchTransition<GameSetup>();
 
         [EffectMethod]
-        public Task OnSubmitGameSetup(SubmitGameSetupAction action, IDispatcher dispatcher)
-        {
-            dispatcher.Dispatch(new ScreenManagerTransitionAction(
-                typeof(PlayerSetup),
-                new SetPlayerSetupAction(0, action.GameSetup.WordCount)));
-
-            return Task.CompletedTask;
-        }
+        public Task OnSubmitGameSetup(SubmitGameSetupAction action, IDispatcher dispatcher) =>
+            dispatcher.DispatchTransition<PlayerSetup, SetPlayerSetupAction>(
+                new(0, action.GameSetup.WordCount));
 
         [EffectMethod]
-        public Task OnSubmitPlayerSetup(SubmitPlayerSetupAction action, IDispatcher dispatcher)
-        {
-            if (this.state.Value.Players.Count < this.state.Value.GameSetup.PlayerCount)
-            {
-                dispatcher.Dispatch(new ScreenManagerTransitionAction(
-                    typeof(PlayerSetup),
-                    new SetPlayerSetupAction(this.state.Value.Players.Count, this.state.Value.GameSetup.WordCount)));
-            }
-            else
-            {
-                dispatcher.Dispatch(new CreateTeamsAction());
-            }
-
-            return Task.CompletedTask;
-        }
+        public Task OnSubmitPlayerSetup(SubmitPlayerSetupAction action, IDispatcher dispatcher) =>
+            this.state.Value.Players.Count < this.state.Value.GameSetup.PlayerCount ?
+                dispatcher.DispatchTransition<PlayerSetup, SetPlayerSetupAction>(
+                    new(this.state.Value.Players.Count, this.state.Value.GameSetup.WordCount)) :
+                dispatcher.Dispatch<CreateTeamsAction>();
 
         [EffectMethod(typeof(CreateTeamsAction))]
         public Task OnCreateTeams(IDispatcher dispatcher) => OnSubmitTeamName(dispatcher);
@@ -167,20 +143,10 @@ namespace Fishbowl.Net.Client.Pwa.Store
             var nextTeam = teams.FirstOrDefault(team => team.Name is null);
             var nextTeamIndex = teams.Where(team => team.Name is not null).Count() + 1;
 
-            if (nextTeam is null)
-            {
-                dispatcher.Dispatch(new StartGameAction());
-            }
-            else
-            {
-                dispatcher.Dispatch(new ScreenManagerTransitionAction(
-                    typeof(TeamName),
-                    new SetTeamNameAction(
-                        nextTeam.Map(),
-                        string.Format(this.localizer["Components.States.TeamName.Title.Pwa"], nextTeamIndex))));
-            }
-
-            return Task.CompletedTask;
+            return nextTeam is null ?
+                dispatcher.Dispatch<StartGameAction>() :
+                dispatcher.DispatchTransition<TeamName, SetTeamNameAction>(new(
+                    nextTeam.Map(), string.Format(this.localizer["Components.States.TeamName.Title.Pwa"], nextTeamIndex)));
         }
 
         [EffectMethod(typeof(StartGameAction))]

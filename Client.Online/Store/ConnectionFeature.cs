@@ -110,16 +110,12 @@ namespace Fishbowl.Net.Client.Online.Store
         }
 
         [EffectMethod]
-        public async Task OnAddPlayer(AddPlayerAction action, IDispatcher dispatcher)
-        {
-            await this.connection.InvokeAsync<StatusResponse>("AddPlayer", action);
-        }
+        public Task OnAddPlayer(AddPlayerAction action, IDispatcher dispatcher) =>
+            this.connection.InvokeAsync<StatusResponse>("AddPlayer", action);
 
         [EffectMethod]
-        public async Task OnSubmitTeamName(SubmitTeamNameAction action, IDispatcher dispatcher)
-        {
-            await this.connection.InvokeAsync<StatusResponse>("SubmitTeamName", action);
-        }
+        public Task OnSubmitTeamName(SubmitTeamNameAction action, IDispatcher dispatcher) =>
+            this.connection.InvokeAsync<StatusResponse>("SubmitTeamName", action);
 
         [EffectMethod]
         public async Task OnAddScore(AddScoreAction action, IDispatcher dispatcher)
