@@ -25,8 +25,6 @@ namespace Fishbowl.Net.Server.Hubs
         public Task<StatusResponse> CreateGameContext(CreateGameContextAction request) =>
             this.service.CreateGameContext(this.Context.ConnectionId, request);
 
-        public StatusResponse<bool> GameContextExists(string password) => this.service.GameContextExists(password);
-
         public Task<StatusResponse> JoinGameContext(JoinGameContextAction request) =>
             this.service.JoinGameContext(this.Context.ConnectionId, request);
 
@@ -71,15 +69,6 @@ namespace Fishbowl.Net.Server.Hubs
             await action(context);
 
             return new(StatusCode.Ok);
-        }
-
-        private StatusResponse<T> CallContext<T>(Func<GameContext, T> action) where T : notnull
-        {
-            var context = this.service.GetContext(this.Context.ConnectionId);
-
-            if (context is null) return new(StatusCode.ConcurrencyError);
-
-            return new(StatusCode.Ok, action(context));
         }
     }
 }

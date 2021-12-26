@@ -24,12 +24,6 @@ namespace Fishbowl.Net.Server.Services
             ILogger<GameService> logger) =>
             (this.gameContextFactory, this.logger) = (gameContextFactory, logger);
 
-        public StatusResponse<bool> GameContextExists(string password)
-        {
-            this.Log(nameof(this.GameContextExists), password);
-            return new(StatusCode.Ok, this.contexts.ContainsKey(password));
-        }
-
         public async Task<StatusResponse> CreateGameContext(string connectionId, CreateGameContextAction request)
         {
             this.Log(nameof(this.CreateGameContext), connectionId, request);

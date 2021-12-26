@@ -16,24 +16,6 @@ namespace Fishbowl.Net.Shared.ViewModels
         public StatusCode Status { get; init; } = StatusCode.Ok;
     }
 
-    public record StatusResponse<T> : StatusResponse where T : notnull
-    {
-        public T Data
-        {
-            get => this.data ?? throw new InvalidOperationException();
-            init => this.data = value;
-        }
-
-        private readonly T? data;
-
-        public StatusResponse() : base() {}
-
-        public StatusResponse(StatusCode status) : base(status) {}
-
-        public StatusResponse(StatusCode status, T data) : base(status) =>
-            this.data = data;
-    }
-
     public record PlayerViewModel(string Username);
 
     public record TeamViewModel(int Id, List<PlayerViewModel> Players, string? Name = null);
