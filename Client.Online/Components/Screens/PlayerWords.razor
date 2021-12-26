@@ -7,7 +7,11 @@
     <MudForm @ref="this.form" IsValidChanged="_ => this.StateHasChanged()">
         <MudContainer>
             <MudAlert Severity="Severity.Info">
-                @this.State.Value.Message
+                @(string.Format(
+                    this.L["Components.States.Common.PlayerCount"],
+                    this.State.Value.TotalPlayerCount,
+                    this.State.Value.ConnectedPlayerCount,
+                    this.State.Value.ReadyPlayerCount))
             </MudAlert>
         </MudContainer>
         

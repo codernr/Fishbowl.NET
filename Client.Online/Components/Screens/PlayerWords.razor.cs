@@ -16,7 +16,7 @@ namespace Fishbowl.Net.Client.Online.Components.Screens
         protected override void OnInitialized()
         {
             base.OnInitialized();
-            this.words = new string[this.State.Value.WordCount];
+            this.words = new string[this.State.Value.Setup.WordCount];
         }
 
         private void Submit() => this.Dispatcher.Dispatch(new AddPlayerAction(

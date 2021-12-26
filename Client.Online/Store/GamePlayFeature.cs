@@ -28,23 +28,17 @@ namespace Fishbowl.Net.Client.Online.Store
 
         public int ConnectedPlayerCount { get; init; }
 
-        public List<TeamViewModel> Teams { get; init; } = default!;
+        public int TotalPlayerCount { get; init; }
+
+        public List<TeamViewModel> Teams { get; init; } = new();
 
         public TeamViewModel Team => this.Teams.First(team =>
             team.Players.Any(player => player.Username == this.Username));
 
         public PlayerViewModel? TeamSetupPlayer { get; init; }
-
-        public string Message { get; init; } = string.Empty;
-
-        public int WordCount { get; init; } = 2;
     }
 
     public record SetupCreateGameContextAction(string Username, string Password);
-
-    public record SetPlayerWordsAction(string Message, int WordCount);
-
-    public record SetPlayerWordsMessageAction(string Message);
 
     public static class GamePlayReducers
     {
@@ -61,14 +55,6 @@ namespace Fishbowl.Net.Client.Online.Store
             state with { Username = action.Username, Password = action.Password };
 
         [ReducerMethod]
-        public static GamePlayState OnSetPlayerWords(GamePlayState state, SetPlayerWordsAction action) =>
-            state with { Message = action.Message, WordCount = action.WordCount };
-
-        [ReducerMethod]
-        public static GamePlayState OnSetPlayerWordsMessage(GamePlayState state, SetPlayerWordsMessageAction action) =>
-            state with { Message = action.Message };
-
-        [ReducerMethod]
         public static GamePlayState OnSetupCreateGameContext(GamePlayState state, SetupCreateGameContextAction action) =>
             state with { Username = action.Username, Password = action.Password };
 
@@ -77,12 +63,13 @@ namespace Fishbowl.Net.Client.Online.Store
             state with { Setup = action with { } as GameSetupViewModel };
 
         [ReducerMethod]
-        public static GamePlayState OnSubmitGameSetup(GamePlayState state, SubmitGameSetupAction action) =>
-            state with { Setup = action.GameSetup };
-
-        [ReducerMethod]
         public static GamePlayState OnReceivePlayerCount(GamePlayState state, ReceivePlayerCountAction action) =>
-            state with { ReadyPlayerCount = action.SetupCount, ConnectedPlayerCount = action.ConnectedCount };
+            state with
+            { 
+                ReadyPlayerCount = action.SetupCount,
+                ConnectedPlayerCount = action.ConnectedCount,
+                TotalPlayerCount = action.TotalCount
+            };
 
         [ReducerMethod]
         public static GamePlayState OnReceiveSetTeamName(GamePlayState state, ReceiveSetTeamNameAction action) =>
@@ -110,7 +97,7 @@ namespace Fishbowl.Net.Client.Online.Store
 
         private string PlayerCountMessage => string.Format(
             this.localizer["Components.States.Common.PlayerCount"],
-            this.state.Value.Setup.PlayerCount,
+            this.state.Value.TotalPlayerCount,
             this.state.Value.ConnectedPlayerCount,
             this.state.Value.ReadyPlayerCount);
 
@@ -162,13 +149,7 @@ namespace Fishbowl.Net.Client.Online.Store
 
         [EffectMethod]
         public Task OnReceiveGameSetup(ReceiveGameSetupAction action, IDispatcher dispatcher) =>
-            dispatcher.DispatchTransition<PlayerWords, SetPlayerWordsAction>(
-                new(this.PlayerCountMessage, action.WordCount));
-
-        [EffectMethod(typeof(ReceivePlayerCountAction))]
-        public Task OnReceivePlayerCount(IDispatcher dispatcher) => Task.WhenAll(
-            dispatcher.Dispatch<SetInfoMessageAction>(new(this.PlayerCountMessage)),
-            dispatcher.Dispatch<SetPlayerWordsMessageAction>(new(this.PlayerCountMessage)));
+            dispatcher.DispatchTransition<PlayerWords>();
 
         [EffectMethod(typeof(ReceiveWaitForOtherPlayersAction))]
         public Task OnReceiveWaitForOtherPlayers(IDispatcher dispatcher) =>
