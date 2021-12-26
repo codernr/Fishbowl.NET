@@ -17,21 +17,18 @@ builder.Logging.AddConfiguration(builder.Configuration.GetSection("Logging"));
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-builder
-    .AddSharedServices()
-    .Services
-        .AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) })
-        .AddLocalization()
-        .AddMudServices(config =>
-        {
-            config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomCenter;
-            config.SnackbarConfiguration.ShowCloseIcon = false;
-            config.SnackbarConfiguration.VisibleStateDuration = 3000;
-            config.SnackbarConfiguration.ShowTransitionDuration = 300;
-            config.SnackbarConfiguration.HideTransitionDuration = 300;
-        })
-        .AddFluxor(options =>
-            options.ScanAssemblies(typeof(Program).Assembly, typeof(SharedExtensions).Assembly));
+builder.Services
+    .AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) })
+    .AddLocalization()
+    .AddMudServices(config =>
+    {
+        config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomCenter;
+        config.SnackbarConfiguration.ShowCloseIcon = false;
+        config.SnackbarConfiguration.VisibleStateDuration = 3000;
+        config.SnackbarConfiguration.ShowTransitionDuration = 300;
+        config.SnackbarConfiguration.HideTransitionDuration = 300;
+    })
+    .AddSharedServices(typeof(Program).Assembly);
 
 var culture = new CultureInfo("hu");
 CultureInfo.DefaultThreadCurrentCulture = culture;

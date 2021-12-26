@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Fishbowl.Net.Client.Shared.Components;
@@ -13,13 +14,12 @@ namespace Fishbowl.Net.Client.Shared
 {
     public static class SharedExtensions
     {
-        public static WebAssemblyHostBuilder AddSharedServices(this WebAssemblyHostBuilder builder)
-        {
-            builder.Services
-                .AddSingleton<IStorageService, StorageService>();
-
-            return builder;
-        }
+        public static IServiceCollection AddSharedServices(this IServiceCollection services, Assembly projectAssembly) =>
+            services
+                .AddSingleton<IStorageService, StorageService>()
+                .AddFluxor(options =>
+                    options.ScanAssemblies(typeof(SharedExtensions).Assembly, projectAssembly)
+                    .AddMiddleware<LoggingMiddleware>());
 
         public static IServiceCollection AddJsonSerializationOptions(this IServiceCollection services) =>
             services.AddSingleton<JsonSerializerOptions>(services =>

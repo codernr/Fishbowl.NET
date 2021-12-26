@@ -11,15 +11,12 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-builder
-    .AddSharedServices()
-    .Services
-        .AddLocalization()
-        .AddJsonSerializationOptions()
-        .AddSingleton<GameProperty>()
-        .AddMudServices()
-        .AddFluxor(options =>
-            options.ScanAssemblies(typeof(Program).Assembly, typeof(SharedExtensions).Assembly));
+builder.Services
+    .AddLocalization()
+    .AddJsonSerializationOptions()
+    .AddSingleton<GameProperty>()
+    .AddMudServices()
+    .AddSharedServices(typeof(Program).Assembly);
 
 var culture = new CultureInfo("hu");
 CultureInfo.DefaultThreadCurrentCulture = culture;
