@@ -1,3 +1,4 @@
+using Fishbowl.Net.Shared.Actions;
 using Fishbowl.Net.Shared.ViewModels;
 using Fluxor;
 
@@ -29,8 +30,6 @@ namespace Fishbowl.Net.Client.Shared.Store
 
     public record FinishPeriodAction();
 
-    public record SetPeriodSummaryAction(PeriodSummaryViewModel Summary);
-
     public static class PeriodReducers
     {
         [ReducerMethod]
@@ -54,7 +53,7 @@ namespace Fishbowl.Net.Client.Shared.Store
             state with { Word = action.Word };
 
         [ReducerMethod]
-        public static PeriodState OnSetPeriodFinished(PeriodState state, SetPeriodSummaryAction action) =>
-            new() { Summary = action.Summary };
+        public static PeriodState OnSetPeriodFinished(PeriodState state, ReceivePeriodFinishedAction action) =>
+            new() { Summary = action with { } as PeriodSummaryViewModel };
     }
 }

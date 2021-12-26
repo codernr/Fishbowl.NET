@@ -16,7 +16,7 @@ namespace Fishbowl.Net.Client.Shared.Store
     public static class RoundFinishedReducers
     {
         [ReducerMethod]
-        public static RoundFinishedState OnSetRoundFinished(RoundFinishedState state, ReceiveRoundFinishedAction action) =>
+        public static RoundFinishedState OnReceiveRoundFinished(RoundFinishedState state, ReceiveRoundFinishedAction action) =>
             state with { Type = action.Type, Periods = action.Periods };
     }
 }

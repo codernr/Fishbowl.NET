@@ -3,11 +3,11 @@
 
 <ScreenContainer>
     <MudText Typo="Typo.h5" Class="mb-5">
-        @this.Period.Player.Username @L["Components.States.PeriodFinished.Scores"]:
-        @this.Period.Scores.Count
+        @this.State.Value.Summary.Player.Username @L["Components.States.PeriodFinished.Scores"]:
+        @this.State.Value.Summary.Scores.Count
     </MudText>
 
-    @if(this.Period.Scores.Count > 0)
+    @if(this.State.Value.Summary.Scores.Count > 0)
     {
         <MudText Typo="Typo.h5" Class="mb-2">
             @L["Components.States.PeriodFinished.GuessedWords"]
@@ -15,14 +15,14 @@
 
         <MudPaper Class="mx-auto">
             <MudList>
-                @for (int i = 0; i < this.Period.Scores.Count; i++)
+                @for (int i = 0; i < this.State.Value.Summary.Scores.Count; i++)
                 {
                     var index = i;
                     <MudListItem>
-                        <MudText Align="Align.Center">@this.Period.Scores[index].Word.Value</MudText>
+                        <MudText Align="Align.Center">@this.State.Value.Summary.Scores[index].Word.Value</MudText>
                     </MudListItem>
 
-                    @if (index < this.Period.Scores.Count - 1)
+                    @if (index < this.State.Value.Summary.Scores.Count - 1)
                     {
                         <MudDivider />
                     }

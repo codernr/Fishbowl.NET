@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Fishbowl.Net.Shared.Actions;
 using Fishbowl.Net.Shared.ViewModels;
 using Fluxor;
 
@@ -50,7 +51,7 @@ namespace Fishbowl.Net.Client.Shared.Store
             }
         }
 
-        [EffectMethod(typeof(SetPeriodSummaryAction))]
+        [EffectMethod(typeof(ReceivePeriodFinishedAction))]
         public Task OnFinishPeriod(IDispatcher dispatcher)
         {
             this.isRunning = false;
