@@ -9,6 +9,6 @@ namespace Fishbowl.Net.Client.Shared.Components.Screens
 
         protected override string Title => $"{this.Period.Round.Type}: {this.Period.Player.Username}";
 
-        private void Start() => this.Dispatcher.Dispatch(new StartPeriodAction());
+        private void Start() => this.DispatchOnce<StartPeriodAction>(new());
     }
 }

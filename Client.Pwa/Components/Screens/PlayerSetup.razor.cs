@@ -19,7 +19,6 @@ namespace Fishbowl.Net.Client.Pwa.Components.Screens
             this.words = new string[this.State.Value.WordCount];
         }
 
-        private void Submit() =>
-            this.Dispatcher.Dispatch(new SubmitPlayerSetupAction(this.playerName, this.words));
+        private void Submit() => this.DispatchOnce<SubmitPlayerSetupAction>(new(this.playerName, this.words));
     }
 }

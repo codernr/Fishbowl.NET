@@ -15,7 +15,6 @@ namespace Fishbowl.Net.Client.Shared.Components.Screens
 
         private void Revoke() => this.Dispatcher.Dispatch(new RevokeLastScoreAction());
 
-        private void FinishPeriod() =>
-            this.Dispatcher.Dispatch(new FinishPeriodAction());
+        private void FinishPeriod() => this.DispatchOnce<FinishPeriodAction>(new());
     }
 }

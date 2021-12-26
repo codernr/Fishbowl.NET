@@ -1,3 +1,4 @@
+using System;
 using Fishbowl.Net.Shared.Actions;
 using Fishbowl.Net.Shared.ViewModels;
 using MudBlazor;
@@ -14,7 +15,6 @@ namespace Fishbowl.Net.Client.Shared.Components.Screens
 
         private string teamName = string.Empty;
 
-        private void Submit() =>
-            this.Dispatcher.Dispatch(new SubmitTeamNameAction(this.Team.Id, this.teamName));
+        private void Submit() => this.DispatchOnce<SubmitTeamNameAction>(new(this.Team.Id, this.teamName));
     }
 }

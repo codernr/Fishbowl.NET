@@ -57,8 +57,7 @@ namespace Fishbowl.Net.Client.Shared.Components.Screens
             this.form?.Validate();
         }
 
-        private void SetupGame() =>
-            this.Dispatcher.Dispatch(new SubmitGameSetupAction(
-                new(this.PlayerCount, this.wordCount, this.teamCount, this.selectedRoundTypes.ToArray())));
+        private void SetupGame() => this.DispatchOnce<SubmitGameSetupAction>(new(
+            new(this.PlayerCount, this.wordCount, this.teamCount, this.selectedRoundTypes.ToArray())));
     }
 }
