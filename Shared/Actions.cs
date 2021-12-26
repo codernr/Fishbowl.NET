@@ -18,7 +18,8 @@ namespace Fishbowl.Net.Shared.Actions
 
     public record ReceiveTeamNameAction(int Id, string Name);
 
-    public record ReceiveGameSetupAction(int PlayerCount, int WordCount, int TeamCount, string[] RoundTypes);
+    public record ReceiveGameSetupAction(int PlayerCount, int WordCount, int TeamCount, string[] RoundTypes) :
+        GameSetupViewModel(PlayerCount, WordCount, TeamCount, RoundTypes);
     
     public record ReceiveSetTeamNameAction(List<TeamViewModel> Teams);
     

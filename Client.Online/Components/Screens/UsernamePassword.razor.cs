@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
-using Fishbowl.Net.Shared.ViewModels;
+using Fishbowl.Net.Client.Online.Store;
+using Fishbowl.Net.Shared.Actions;
 using MudBlazor;
 
 namespace Fishbowl.Net.Client.Online.Components.Screens
@@ -9,7 +10,7 @@ namespace Fishbowl.Net.Client.Online.Components.Screens
     {
         public Func<JoinGameContextAction, Task> OnJoinGame { get; set; } = default!;
 
-        public Func<JoinGameContextAction, Task> OnCreateGame { get; set; } = default!;
+        public Func<SetupCreateGameContextAction, Task> OnCreateGame { get; set; } = default!;
 
         public string Username { get; set; } = string.Empty;
 
