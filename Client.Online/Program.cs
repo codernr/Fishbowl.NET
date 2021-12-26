@@ -5,10 +5,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Fishbowl.Net.Client.Shared;
 using System.Globalization;
 using Microsoft.Extensions.Logging;
-using Fishbowl.Net.Client.Online.Services;
 using Microsoft.AspNetCore.Components.Web;
 using MudBlazor.Services;
 using MudBlazor;
+using Fluxor;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
@@ -29,7 +29,9 @@ builder
             config.SnackbarConfiguration.VisibleStateDuration = 3000;
             config.SnackbarConfiguration.ShowTransitionDuration = 300;
             config.SnackbarConfiguration.HideTransitionDuration = 300;
-        });
+        })
+        .AddFluxor(options =>
+            options.ScanAssemblies(typeof(Program).Assembly, typeof(SharedExtensions).Assembly));
 
 var culture = new CultureInfo("hu");
 CultureInfo.DefaultThreadCurrentCulture = culture;
