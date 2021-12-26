@@ -11,6 +11,8 @@ namespace Fishbowl.Net.Client.Online.Store
 
     public record SetPlayerWordsAction(string Message, int WordCount);
 
+    public record SetPlayerWordsMessageAction(string Message);
+
     public record SubmitPlayerWordsAction(string[] Words);
 
     public static class PlayerWordsReducers
@@ -18,5 +20,9 @@ namespace Fishbowl.Net.Client.Online.Store
         [ReducerMethod]
         public static PlayerWordsState OnSetPlayerWords(PlayerWordsState state, SetPlayerWordsAction action) =>
             state with { Message = action.Message, WordCount = action.WordCount };
+
+        [ReducerMethod]
+        public static PlayerWordsState OnSetPlayerWordsMessage(PlayerWordsState state, SetPlayerWordsMessageAction action) =>
+            state with { Message = action.Message };
     }
 }

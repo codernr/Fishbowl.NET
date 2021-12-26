@@ -1,16 +1,20 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Fishbowl.Net.Client.Online.Components.Screens;
+using Fishbowl.Net.Client.Shared.I18n;
 using Fishbowl.Net.Client.Shared.Store;
 using Fishbowl.Net.Shared.Actions;
 using Fishbowl.Net.Shared.ViewModels;
 using Fluxor;
+using Microsoft.Extensions.Localization;
 
 namespace Fishbowl.Net.Client.Online.Store
 {
     [FeatureState]
     public record GamePlayState
     {
-        public string Username { get; init; } = string.Empty;
+        public string? Username { get; init; }
 
         public string? Password { get; init; }
 
@@ -89,6 +93,59 @@ namespace Fishbowl.Net.Client.Online.Store
 
     public class GamePlayEffects
     {
-        
+        private readonly IState<GamePlayState> state;
+
+        private readonly IStringLocalizer<Resources> localizer;
+
+        private string PlayerCountMessage => string.Format(
+            this.localizer["Components.States.Common.PlayerCount"],
+            this.state.Value.Setup.PlayerCount,
+            this.state.Value.ConnectedPlayerCount,
+            this.state.Value.ReadyPlayerCount);
+
+        public GamePlayEffects(
+            IState<GamePlayState> state,
+            IStringLocalizer<Resources> localizer) =>
+            (this.state, this.localizer) = (state, localizer);
+
+        [EffectMethod(typeof(ConnectionStartedAction))]
+        public Task OnConnectionStarted(IDispatcher dispatcher)
+        {
+            var username = this.state.Value.Username;
+            var password = this.state.Value.Password;
+
+            if (username is not null && password is not null)
+            {
+                dispatcher.Dispatch(new JoinGameContextAction(password, username));
+                return Task.CompletedTask;
+            }
+
+            dispatcher.Dispatch(new ScreenManagerTransitionAction(typeof(UsernamePassword)));
+            return Task.CompletedTask;
+        }
+
+        [EffectMethod]
+        public Task OnJoinGameContextError(JoinGameContextErrorAction action, IDispatcher dispatcher)
+        {
+            dispatcher.Dispatch(new ScreenManagerTransitionAction(typeof(UsernamePassword)));
+            return Task.CompletedTask;
+        }
+
+        [EffectMethod]
+        public Task OnReceiveGameSetup(ReceiveGameSetupAction action, IDispatcher dispatcher)
+        {
+            dispatcher.Dispatch(new ScreenManagerTransitionAction(
+                typeof(PlayerWords), new SetPlayerWordsAction(this.PlayerCountMessage, action.WordCount)));
+
+            return Task.CompletedTask;
+        }
+
+        [EffectMethod]
+        public Task OnReceivePlayerCount(ReceivePlayerCountAction action, IDispatcher dispatcher)
+        {
+            dispatcher.Dispatch(new SetInfoMessageAction(this.PlayerCountMessage));
+            dispatcher.Dispatch(new SetPlayerWordsMessageAction(this.PlayerCountMessage));
+            return Task.CompletedTask;
+        }
     }
 }

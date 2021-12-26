@@ -19,6 +19,8 @@ namespace Fishbowl.Net.Client.Online.Store
     }
 
     public record SetConnectionStateAction(HubConnectionState State);
+    public record ConnectionStartedAction();
+    public record JoinGameContextErrorAction(StatusCode Status);
     public record GameContextExistsAction(string Password);
     public record GameContextExistsResponseAction(bool Exists);
     public record CreateGameContextSuccessAction();
@@ -93,6 +95,7 @@ namespace Fishbowl.Net.Client.Online.Store
             await this.connection.StartAsync();
 
             this.dispatcher.Dispatch(new SetConnectionStateAction(this.connection.State));
+            this.dispatcher.Dispatch(new ConnectionStartedAction());
         }
 
         [EffectMethod]
@@ -102,7 +105,7 @@ namespace Fishbowl.Net.Client.Online.Store
 
             if (response.Status == StatusCode.Ok) return;
 
-            dispatcher.Dispatch(new StatusErrorAction(response.Status));
+            dispatcher.Dispatch(new JoinGameContextErrorAction(response.Status));
         }
 
         [EffectMethod]

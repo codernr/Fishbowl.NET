@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Fishbowl.Net.Shared.Actions;
 using Fluxor;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
@@ -17,6 +18,8 @@ namespace Fishbowl.Net.Client.Shared.Store
     public record ReloadAction();
 
     public record SetInfoAction(Severity Severity = Severity.Info, string? Title = null, string? Message = null, bool Loading = false);
+
+    public record SetInfoMessageAction(string Message);
     
     public static class CommonReducers
     {
@@ -28,6 +31,10 @@ namespace Fishbowl.Net.Client.Shared.Store
             Message = action.Message,
             Loading = action.Loading
         };
+
+        [ReducerMethod]
+        public static InfoState OnSetInfoMessage(InfoState state, SetInfoMessageAction action) =>
+            state with { Message = action.Message };
     }
     
     public class CommonEffects
