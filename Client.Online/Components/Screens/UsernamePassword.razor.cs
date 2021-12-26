@@ -14,7 +14,7 @@ namespace Fishbowl.Net.Client.Online.Components.Screens
 
         private MudForm? form;
 
-        private void JoinGame() => this.Dispatcher.Dispatch(new JoinGameContextAction(this.username, this.password));
+        private void JoinGame() => this.Dispatcher.Dispatch(new JoinGameContextAction(this.password, this.username));
 
         private void CreateGame() => this.Dispatcher.Dispatch(
             new SetupCreateGameContextAction(this.username, this.password));
