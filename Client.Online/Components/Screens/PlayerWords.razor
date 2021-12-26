@@ -2,6 +2,7 @@
 
 @inherits Screen
 @inject IState<PlayerWordsState> State
+@inject IState<GamePlayState> GamePlayState
 
 <ScreenContainer>
     <MudForm @ref="this.form" IsValidChanged="_ => this.StateHasChanged()">

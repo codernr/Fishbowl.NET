@@ -13,8 +13,6 @@ namespace Fishbowl.Net.Client.Online.Store
 
     public record SetPlayerWordsMessageAction(string Message);
 
-    public record SubmitPlayerWordsAction(string[] Words);
-
     public static class PlayerWordsReducers
     {
         [ReducerMethod]
