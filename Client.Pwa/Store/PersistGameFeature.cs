@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Fishbowl.Net.Client.Pwa.Common;
-using Fishbowl.Net.Client.Shared.Store;
 using Fishbowl.Net.Shared.Actions;
 using Fluxor;
 
@@ -29,6 +28,7 @@ namespace Fishbowl.Net.Client.Pwa.Store
             return Task.CompletedTask;
         }
 
-        public bool ShouldReactToAction(object action){System.Console.WriteLine(action.GetType().ToString() + Actions.Contains(action.GetType())); return Actions.Contains(action.GetType()); }
+        public bool ShouldReactToAction(object action) =>
+            Actions.Contains(action.GetType());
     }
 }
