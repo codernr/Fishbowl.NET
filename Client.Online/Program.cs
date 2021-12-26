@@ -21,7 +21,6 @@ builder
     .AddSharedServices()
     .Services
         .AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) })
-        .AddTransient<IClientState, ClientState>()
         .AddLocalization()
         .AddMudServices(config =>
         {

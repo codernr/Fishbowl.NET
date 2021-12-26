@@ -33,8 +33,6 @@ namespace Fishbowl.Net.Client.Shared.Components.Screens
 
         private MudForm? form;
 
-        private Once once = new();
-
         private int playerCount = 4;
 
         private int teamCount = 2;
