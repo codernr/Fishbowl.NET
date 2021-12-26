@@ -150,12 +150,9 @@ namespace Fishbowl.Net.Client.Online.Store
                 new(this.PlayerCountMessage, action.WordCount));
 
         [EffectMethod(typeof(ReceivePlayerCountAction))]
-        public Task OnReceivePlayerCount(IDispatcher dispatcher)
-        {
-            dispatcher.Dispatch(new SetInfoMessageAction(this.PlayerCountMessage));
-            dispatcher.Dispatch(new SetPlayerWordsMessageAction(this.PlayerCountMessage));
-            return Task.CompletedTask;
-        }
+        public Task OnReceivePlayerCount(IDispatcher dispatcher) => Task.WhenAll(
+            dispatcher.Dispatch<SetInfoMessageAction>(new(this.PlayerCountMessage)),
+            dispatcher.Dispatch<SetPlayerWordsMessageAction>(new(this.PlayerCountMessage)));
 
         [EffectMethod(typeof(ReceiveWaitForOtherPlayersAction))]
         public Task OnReceiveWaitForOtherPlayers(IDispatcher dispatcher) =>
@@ -206,13 +203,9 @@ namespace Fishbowl.Net.Client.Online.Store
                 new(this.localizer["Components.States.GameSetup.Info"]));
 
         [EffectMethod]
-        public Task OnSubmitGameSetup(SubmitGameSetupAction action, IDispatcher dispatcher)
-        {
-            dispatcher.Dispatch(new CreateGameContextAction(
+        public Task OnSubmitGameSetup(SubmitGameSetupAction action, IDispatcher dispatcher) =>
+            dispatcher.Dispatch<CreateGameContextAction>(new(
                 new(this.state.Value.Password!, this.state.Value.Username!), action.GameSetup));
-
-            return Task.CompletedTask;
-        }
 
         [EffectMethod(typeof(CreateGameContextSuccessAction))]
         public Task OnCreateGameContextSuccess(IDispatcher dispatcher)
@@ -222,14 +215,11 @@ namespace Fishbowl.Net.Client.Online.Store
         }
 
         [EffectMethod]
-        public async Task OnReceiveGameAbort(ReceiveGameAbortAction action, IDispatcher dispatcher)
-        {
-            await dispatcher.DispatchTransition<Info, SetInfoAction>(new(
+        public Task OnReceiveGameAbort(ReceiveGameAbortAction action, IDispatcher dispatcher) => Task.WhenAll(
+            dispatcher.DispatchTransition<Info, SetInfoAction>(new(
                 Severity.Error,
                 this.localizer["Pages.Play.ErrorTitle"],
-                this.localizer[action.MessageKey]));
-
-            dispatcher.Dispatch(new ReloadAction());
-        }
+                this.localizer[action.MessageKey])),
+            dispatcher.Dispatch<ReloadAction>());
     }
 }
