@@ -1,7 +1,11 @@
+using System;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Fishbowl.Net.Client.Shared.Components;
 using Fishbowl.Net.Client.Shared.Services;
+using Fishbowl.Net.Client.Shared.Store;
 using Fishbowl.Net.Shared.Serialization;
+using Fluxor;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -33,5 +37,19 @@ namespace Fishbowl.Net.Client.Shared
         public static Task InitializeInteropServicesAsync(this WebAssemblyHost host) =>
             Task.WhenAll(
                 host.Services.GetRequiredService<IStorageService>().InitializeAsync());
+
+        public static Task DispatchTransition<TScreen>(this IDispatcher dispatcher) where TScreen : Screen
+        {
+            dispatcher.Dispatch(new ScreenManagerTransitionAction(typeof(TScreen)));
+            return Task.CompletedTask;
+        }
+
+        public static Task DispatchTransition<TScreen, TAction>(
+            this IDispatcher dispatcher, TAction action, TimeSpan delay = default)
+            where TScreen : Screen
+            {
+                dispatcher.Dispatch(new ScreenManagerTransitionAction(typeof(TScreen), action, delay));
+                return Task.CompletedTask;
+            }
     }
 }

@@ -1,13 +1,17 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Fishbowl.Net.Client.Online.Components.Screens;
+using Fishbowl.Net.Client.Shared;
+using Fishbowl.Net.Client.Shared.Components.Screens;
 using Fishbowl.Net.Client.Shared.I18n;
 using Fishbowl.Net.Client.Shared.Store;
 using Fishbowl.Net.Shared.Actions;
 using Fishbowl.Net.Shared.ViewModels;
 using Fluxor;
 using Microsoft.Extensions.Localization;
+using MudBlazor;
 
 namespace Fishbowl.Net.Client.Online.Store
 {
@@ -28,6 +32,8 @@ namespace Fishbowl.Net.Client.Online.Store
 
         public TeamViewModel Team => this.Teams.First(team =>
             team.Players.Any(player => player.Username == this.Username));
+
+        public PlayerViewModel? TeamSetupPlayer { get; init; }
 
         public List<ScoreViewModel> PeriodScores { get; init; } = default!;
     }
@@ -69,8 +75,15 @@ namespace Fishbowl.Net.Client.Online.Store
             state with { Teams = action.Teams };
 
         [ReducerMethod]
+        public static GamePlayState OnReceiveTeamName(GamePlayState state, ReceiveTeamNameAction action)
+        {
+            state.Teams[action.Id] = state.Teams[action.Id] with { Name = action.Name };
+            return state with { Teams = new(state.Teams) };
+        }
+
+        [ReducerMethod]
         public static GamePlayState OnReceiveWaitForTeamSetup(GamePlayState state, ReceiveWaitForTeamSetupAction action) =>
-            state with { Teams = action.Teams };
+            state with { TeamSetupPlayer = action.SetupPlayer, Teams = action.Teams };
 
         [ReducerMethod]
         public static GamePlayState OnReceivePeriodStarted(GamePlayState state, ReceivePeriodStartedAction action) =>
@@ -120,25 +133,17 @@ namespace Fishbowl.Net.Client.Online.Store
                 return Task.CompletedTask;
             }
 
-            dispatcher.Dispatch(new ScreenManagerTransitionAction(typeof(UsernamePassword)));
-            return Task.CompletedTask;
+            return dispatcher.DispatchTransition<UsernamePassword>();
         }
 
         [EffectMethod]
-        public Task OnJoinGameContextError(JoinGameContextErrorAction action, IDispatcher dispatcher)
-        {
-            dispatcher.Dispatch(new ScreenManagerTransitionAction(typeof(UsernamePassword)));
-            return Task.CompletedTask;
-        }
+        public Task OnJoinGameContextError(JoinGameContextErrorAction action, IDispatcher dispatcher) =>
+            dispatcher.DispatchTransition<UsernamePassword>();
 
         [EffectMethod]
-        public Task OnReceiveGameSetup(ReceiveGameSetupAction action, IDispatcher dispatcher)
-        {
-            dispatcher.Dispatch(new ScreenManagerTransitionAction(
-                typeof(PlayerWords), new SetPlayerWordsAction(this.PlayerCountMessage, action.WordCount)));
-
-            return Task.CompletedTask;
-        }
+        public Task OnReceiveGameSetup(ReceiveGameSetupAction action, IDispatcher dispatcher) =>
+            dispatcher.DispatchTransition<PlayerWords, SetPlayerWordsAction>(
+                new(this.PlayerCountMessage, action.WordCount));
 
         [EffectMethod]
         public Task OnReceivePlayerCount(ReceivePlayerCountAction action, IDispatcher dispatcher)
@@ -147,5 +152,24 @@ namespace Fishbowl.Net.Client.Online.Store
             dispatcher.Dispatch(new SetPlayerWordsMessageAction(this.PlayerCountMessage));
             return Task.CompletedTask;
         }
+
+        [EffectMethod(typeof(ReceiveWaitForOtherPlayersAction))]
+        public Task OnReceiveWaitForOtherPlayers(IDispatcher dispatcher) =>
+            dispatcher.DispatchTransition<Info, SetInfoAction>(new(
+                Severity.Info, this.localizer["Components.States.WaitingForPlayers.Title"], this.PlayerCountMessage, true));
+
+        [EffectMethod(typeof(ReceiveGameStartedAction))]
+        public Task OnReceiveGameStarted(IDispatcher dispatcher) =>
+            dispatcher.DispatchTransition<Info, SetInfoAction>(new(
+                Title: this.localizer["Pages.Play.GameStartedTitle"],
+                Loading: true));
+
+        [EffectMethod]
+        public Task OnReceiveGameFinished(ReceiveGameFinishedAction action, IDispatcher dispatcher) =>
+            dispatcher.DispatchTransition<GameFinished>();
+
+        [EffectMethod]
+        public Task OnReceiveRoundFinished(ReceiveRoundFinishedAction action, IDispatcher dispatcher) =>
+            dispatcher.DispatchTransition<RoundFinished>();
     }
 }

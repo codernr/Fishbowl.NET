@@ -1,12 +1,12 @@
 @inherits Screen
-@inject IState<WaitingForTeamNamesState> State
+@inject IState<GamePlayState> State
 
 <ScreenContainer>
-    @if(this.State.Value.SetupPlayer is not null)
+    @if(this.State.Value.TeamSetupPlayer is not null)
     {
         <MudContainer Class="mb-5">
             <MudAlert Severity="Severity.Info">
-                @string.Format(L["Components.States.WaitingForTeamNames.SetupPlayer"], this.State.Value.SetupPlayer.Username)
+                @string.Format(L["Components.States.WaitingForTeamNames.SetupPlayer"], this.State.Value.TeamSetupPlayer.Username)
             </MudAlert>
         </MudContainer>
     }
@@ -16,11 +16,12 @@
     </MudContainer>
     
     <MudContainer>
-        @if (this.State.Value.Teams.Count > 0)
+        @if (this.State.Value.Teams.Where(team => team.Name is not null).Select(team => team.Name).ToList()
+            is var teams && teams.Count > 0)
         {
             <MudText>
                 <strong>@L["Components.States.WaitingForTeamNames.TeamNames"]:</strong>
-                @(string.Join(", ", this.State.Value.Teams.Select(team => team.Name)))
+                @(string.Join(", ", teams))
             </MudText>
         }
         else

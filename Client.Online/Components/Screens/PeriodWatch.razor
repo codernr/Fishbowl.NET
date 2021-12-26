@@ -1,6 +1,6 @@
 @inherits Screen
 @inject IState<PeriodState> PeriodState
-@inject IState<PeriodWatchState> WatchState
+@inject IState<GamePlayState> GamePlayState
 
 <ScreenContainer>
     <MudContainer>
@@ -13,7 +13,7 @@
         <Timer Start="this.Period.StartedAt" Length="this.Period.Length" OnExpired="_ => this.expired = true" />
     </MudContainer>
 
-    @if (this.WatchState.Value.ShowTeamAlert)
+    @if (this.GamePlayState.Value.Team.Players.Any(p => p.Username == this.PeriodState.Value.Running.Player.Username))
     {
         <MudContainer>
             @if(!this.PeriodState.Value.Expired)
