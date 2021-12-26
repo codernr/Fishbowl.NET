@@ -120,6 +120,24 @@ namespace Fishbowl.Net.Client.Online.Store
         }
 
         [EffectMethod]
+        public Task OnConnectionReconnecting(ConnectionReconnectingAction action, IDispatcher dispatcher) =>
+            dispatcher.DispatchTransition<Info, SetInfoAction>(new(
+                Severity.Error,
+                this.localizer["Pages.Play.ErrorTitle"],
+                this.localizer["Pages.Play.Reconnecting"],
+                true));
+
+        [EffectMethod]
+        public Task OnConnectionReconnected(ConnectionReconnectedAction action, IDispatcher dispatcher) =>
+            this.state.Value.Username is not null && this.state.Value.Password is not null ?
+            dispatcher.Dispatch<JoinGameContextAction>(new(this.state.Value.Password, this.state.Value.Username)) :
+            dispatcher.DispatchTransition<UsernamePassword>();
+
+        [EffectMethod]
+        public Task OnConnectionClosed(ConnectionClosedAction action, IDispatcher dispatcher) =>
+            dispatcher.DispatchTransition<ConnectionClosed>();
+
+        [EffectMethod]
         public Task OnStatusError(StatusErrorAction action, IDispatcher dispatcher)
         {
             this.snackbar.Add(this.localizer[$"Pages.Play.StatusCode.{action.Status}"]);

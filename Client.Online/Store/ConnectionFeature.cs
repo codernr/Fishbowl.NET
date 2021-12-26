@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Fishbowl.Net.Client.Online.Services;
+using Fishbowl.Net.Client.Shared;
 using Fishbowl.Net.Client.Shared.Store;
 using Fishbowl.Net.Shared;
 using Fishbowl.Net.Shared.Actions;
@@ -12,14 +13,10 @@ using Microsoft.Extensions.Logging;
 
 namespace Fishbowl.Net.Client.Online.Store
 {
-    [FeatureState]
-    public record ConnetionState
-    {
-        public HubConnectionState State { get; init; }
-    }
-
-    public record SetConnectionStateAction(HubConnectionState State);
     public record ConnectionStartedAction();
+    public record ConnectionReconnectingAction();
+    public record ConnectionReconnectedAction();
+    public record ConnectionClosedAction();
     public record CreateGameContextSuccessAction();
     public record StatusErrorAction(StatusCode Status);
 
@@ -49,19 +46,13 @@ namespace Fishbowl.Net.Client.Online.Store
                 .WithAutomaticReconnect()
                 .Build();
 
-            this.connection.Reconnecting += Dispatch;
-            this.connection.Reconnected += Dispatch;
-            this.connection.Closed += Dispatch;
+            this.connection.Reconnecting += _ => dispatcher.Dispatch<ConnectionReconnectingAction>();
+            this.connection.Reconnected += _ => dispatcher.Dispatch<ConnectionReconnectedAction>();
+            this.connection.Closed += _ => dispatcher.Dispatch<ConnectionClosedAction>();
 
             this.SetHandlers();
 
             return this.StartAsync();
-
-            Task Dispatch(object? _)
-            {
-                this.dispatcher.Dispatch(new SetConnectionStateAction(this.connection.State));
-                return Task.CompletedTask;
-            }
         }
 
         private void SetHandlers()
@@ -91,7 +82,6 @@ namespace Fishbowl.Net.Client.Online.Store
         {
             await this.connection.StartAsync();
 
-            this.dispatcher.Dispatch(new SetConnectionStateAction(this.connection.State));
             this.dispatcher.Dispatch(new ConnectionStartedAction());
         }
 
