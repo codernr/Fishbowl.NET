@@ -7,10 +7,8 @@ using System.Globalization;
 using Microsoft.Extensions.Logging;
 using Fishbowl.Net.Client.Online.Services;
 using Microsoft.AspNetCore.Components.Web;
-using Fishbowl.Net.Client.Online;
 using MudBlazor.Services;
 using MudBlazor;
-using Fishbowl.Net.Client.Shared.Services;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 

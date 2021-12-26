@@ -1,10 +1,8 @@
 using System.Globalization;
 using Fishbowl.Net.Client.Pwa.Common;
 using Fishbowl.Net.Client.Shared;
-using Fishbowl.Net.Client.Shared.Services;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
-using Fishbowl.Net.Client.Pwa;
 using Microsoft.AspNetCore.Components.Web;
 using MudBlazor.Services;
 using Fluxor;
