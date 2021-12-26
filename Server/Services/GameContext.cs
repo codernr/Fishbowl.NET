@@ -99,6 +99,11 @@ namespace Fishbowl.Net.Server.Services
 
         public async Task AddPlayer(AddPlayerAction player)
         {
+            if (this.players.Count == this.gameSetup.PlayerCount)
+            {
+                return;
+            }
+            
             this.Log(nameof(this.AddPlayer), player);
 
             if (!this.groupHubContext.ContainsKey(player.Username))
@@ -126,6 +131,11 @@ namespace Fishbowl.Net.Server.Services
 
         public async Task SubmitTeamName(SubmitTeamNameAction teamName)
         {
+            if (this.Teams[teamName.Id].Name is not null)
+            {
+                return;
+            }
+
             this.Log(nameof(this.SubmitTeamName), teamName);
 
             this.Teams[teamName.Id].Name = teamName.Name;
