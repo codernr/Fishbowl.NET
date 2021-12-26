@@ -25,8 +25,6 @@ namespace Fishbowl.Net.Client.Shared.Store
 
     public record SetPeriodWordAction(WordViewModel Word);
 
-    public record AddScoreAction(WordViewModel Word);
-
     public record RevokeLastScoreAction();
 
     public record FinishPeriodAction();

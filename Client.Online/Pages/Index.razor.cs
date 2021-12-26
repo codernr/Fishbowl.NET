@@ -133,7 +133,7 @@ namespace Fishbowl.Net.Client.Online.Pages
             });
         }
 
-        public Task ReceiveWaitForTeamSetup(TeamSetupWatchViewModel teamSetup)
+        public Task ReceiveWaitForTeamSetup(ReceiveWaitForTeamSetupAction teamSetup)
         {
             this.ClientState.Teams = teamSetup.Teams;
 
@@ -145,7 +145,7 @@ namespace Fishbowl.Net.Client.Online.Pages
             }, TimeSpan.FromSeconds(2));
         }
 
-        public Task ReceiveTeamName(TeamNameViewModel teamName)
+        public Task ReceiveTeamName(ReceiveTeamNameAction teamName)
         {
             this.ClientState.Teams[teamName.Id] = this.ClientState.Teams[teamName.Id] with { Name = teamName.Name };
 
@@ -156,14 +156,14 @@ namespace Fishbowl.Net.Client.Online.Pages
             return Task.CompletedTask;
         }
 
-        public Task ReceiveRestoreState(RestoreViewModel restore)
+        public Task ReceiveRestoreState(ReceiveRestoreStateAction restore)
         {
             this.ClientState.Username = restore.Player.Username;
             this.ClientState.Teams = restore.Teams;
             return Task.CompletedTask;
         }
 
-        public async Task ReceiveGameAborted(GameAbortViewModel abort)
+        public async Task ReceiveGameAborted(ReceiveGameAbortAction abort)
         {
             await this.StateManager.SetStateAsync<Info>(state => 
             {
@@ -275,7 +275,7 @@ namespace Fishbowl.Net.Client.Online.Pages
 
         public ValueTask DisposeAsync() => this.Connection.DisposeAsync();
 
-        private async Task CreateGame(GameContextJoinViewModel input)
+        private async Task CreateGame(JoinGameContextAction input)
         {
             this.ClientState.Username = input.Username;
             this.ClientState.Password = input.Password;
@@ -334,7 +334,7 @@ namespace Fishbowl.Net.Client.Online.Pages
             await this.StateManager.SetStateAsync<T>(setParameters);
         }
 
-        private async Task JoinGame(GameContextJoinViewModel input)
+        private async Task JoinGame(JoinGameContextAction input)
         {
             this.ClientState.Username = input.Username;
             this.ClientState.Password = input.Password;
@@ -360,7 +360,7 @@ namespace Fishbowl.Net.Client.Online.Pages
                 this.ClientState.Username,
                 words.Select(word => new Word(Guid.NewGuid(), word))));
 
-        private Task SetTeamName(TeamNameViewModel teamName) =>
+        private Task SetTeamName(ReceiveTeamNameAction teamName) =>
             this.Connection.SetTeamName(teamName);
 
         private void Reload() => this.NavigationManager.NavigateTo(this.NavigationManager.Uri, true);

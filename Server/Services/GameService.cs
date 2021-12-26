@@ -29,7 +29,7 @@ namespace Fishbowl.Net.Server.Services
             return new(StatusCode.Ok, this.contexts.ContainsKey(password));
         }
 
-        public async Task<StatusResponse> CreateGameContext(string connectionId, GameContextSetupViewModel request)
+        public async Task<StatusResponse> CreateGameContext(string connectionId, CreateGameContextAction request)
         {
             this.Log(nameof(this.CreateGameContext), connectionId, request);
 
@@ -61,7 +61,7 @@ namespace Fishbowl.Net.Server.Services
             return new(StatusCode.ConcurrencyError);
         }
 
-        public async Task<StatusResponse> JoinGameContext(string connectionId, GameContextJoinViewModel request)
+        public async Task<StatusResponse> JoinGameContext(string connectionId, JoinGameContextAction request)
         {
             this.Log(nameof(this.JoinGameContext), connectionId, request);
             

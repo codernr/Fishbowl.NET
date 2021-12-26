@@ -21,37 +21,34 @@ namespace Fishbowl.Net.Server.Hubs
             await base.OnDisconnectedAsync(exception);
         }
 
-        public Task<StatusResponse> CreateGameContext(GameContextSetupViewModel request) =>
+        public Task<StatusResponse> CreateGameContext(CreateGameContextAction request) =>
             this.service.CreateGameContext(this.Context.ConnectionId, request);
 
         public StatusResponse<bool> GameContextExists(string password) => this.service.GameContextExists(password);
 
-        public Task<StatusResponse> JoinGameContext(GameContextJoinViewModel request) =>
+        public Task<StatusResponse> JoinGameContext(JoinGameContextAction request) =>
             this.service.JoinGameContext(this.Context.ConnectionId, request);
 
-        public StatusResponse<int> GetWordCount() =>
-            this.CallContext(context => context.WordCount);
-
-        public Task<StatusResponse> AddPlayer(AddPlayerViewModel player) =>
+        public Task<StatusResponse> AddPlayer(AddPlayerAction player) =>
             this.CallContext(context => context.AddPlayer(player));
 
-        public Task<StatusResponse> SetTeamName(TeamNameViewModel teamName) =>
-            this.CallContext(context => context.SetTeamName(teamName));
+        public Task<StatusResponse> SubmitTeamName(SubmitTeamNameAction teamName) =>
+            this.CallContext(context => context.SubmitTeamName(teamName));
 
-        public StatusResponse StartPeriod(DateTimeOffset timestamp) =>
-            this.CallContext(context => context.Game.StartPeriod(timestamp));
+        public StatusResponse StartPeriod() =>
+            this.CallContext(context => context.Game.StartPeriod(DateTimeOffset.UtcNow));
 
-        public StatusResponse NextWord(DateTimeOffset timestamp) =>
-            this.CallContext(context => context.Game.NextWord(timestamp));
+        public StatusResponse NextWord() =>
+            this.CallContext(context => context.Game.NextWord(DateTimeOffset.UtcNow));
 
-        public StatusResponse AddScore(ScoreViewModel score) =>
-            this.CallContext(context => context.Game.AddScore(score.Map()));
+        public StatusResponse AddScore(AddScoreAction score) =>
+            this.CallContext(context => context.Game.AddScore(new Score(score.Word.Map(), DateTimeOffset.UtcNow)));
 
         public StatusResponse RevokeLastScore() =>
             this.CallContext(context => context.Game.RevokeLastScore());
 
-        public StatusResponse FinishPeriod(DateTimeOffset timestamp) =>
-            this.CallContext(context => context.Game.FinishPeriod(timestamp));
+        public StatusResponse FinishPeriod() =>
+            this.CallContext(context => context.Game.FinishPeriod(DateTimeOffset.UtcNow));
 
         private StatusResponse CallContext(Action<GameContext> action)
         {

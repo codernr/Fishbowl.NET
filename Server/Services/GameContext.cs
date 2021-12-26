@@ -78,7 +78,7 @@ namespace Fishbowl.Net.Server.Services
 
             await this.groupHubContext.RegisterConnection(username, connectionId);
             await this.groupHubContext.Group().ReceivePlayerCount(
-                new PlayerCountViewModel(this.gameSetup.PlayerCount, this.groupHubContext.Count, this.players.Count));
+                new(this.gameSetup.PlayerCount, this.groupHubContext.Count, this.players.Count));
 
             var existingPlayer = this.players.SingleOrDefault(player => player.Username == username);
 
@@ -96,7 +96,7 @@ namespace Fishbowl.Net.Server.Services
 
         public Task RemoveConnection(string connectionId) => this.groupHubContext.RemoveConnection(connectionId);
 
-        public async Task AddPlayer(AddPlayerViewModel player)
+        public async Task AddPlayer(AddPlayerAction player)
         {
             this.Log(nameof(this.AddPlayer), player);
 
@@ -112,7 +112,7 @@ namespace Fishbowl.Net.Server.Services
             this.players.Add(entity);
 
             await this.groupHubContext.Group().ReceivePlayerCount(
-                new PlayerCountViewModel(this.gameSetup.PlayerCount, this.groupHubContext.Count, this.players.Count));
+                new(this.gameSetup.PlayerCount, this.groupHubContext.Count, this.players.Count));
 
             if (this.players.Count != this.gameSetup.PlayerCount)
             {
@@ -123,9 +123,9 @@ namespace Fishbowl.Net.Server.Services
             await this.CreateTeams(this.players, this.gameSetup.TeamCount);
         }
 
-        public async Task SetTeamName(TeamNameViewModel teamName)
+        public async Task SubmitTeamName(SubmitTeamNameAction teamName)
         {
-            this.Log(nameof(this.SetTeamName), teamName);
+            this.Log(nameof(this.SubmitTeamName), teamName);
 
             this.Teams[teamName.Id].Name = teamName.Name;
 
@@ -133,7 +133,7 @@ namespace Fishbowl.Net.Server.Services
                 .Client(this.Teams[teamName.Id].Players[0].Username)
                 .ReceiveWaitForTeamSetup(new(null, new(this.Teams.Select(team => team.Map()).ToList())));
 
-            await this.groupHubContext.Group().ReceiveTeamName(teamName);
+            await this.groupHubContext.Group().ReceiveTeamName(new(teamName.Id, teamName.Name));
 
             if (!this.Teams.Any(team => team.Name is null))
             {
@@ -232,7 +232,7 @@ namespace Fishbowl.Net.Server.Services
 
         private async Task Abort(string messageKey)
         {
-            await this.groupHubContext.Group().ReceiveGameAborted(new GameAbortViewModel(messageKey));
+            await this.groupHubContext.Group().ReceiveGameAborted(new ReceiveGameAbortAction(messageKey));
             this.GameFinished?.Invoke(this);
         }
 

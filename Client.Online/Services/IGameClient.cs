@@ -18,17 +18,17 @@ namespace Fishbowl.Net.Client.Online.Services
 
         Task ReceiveSetTeamName(TeamSetupViewModel teamSetup) => Task.CompletedTask;
 
-        Task ReceiveWaitForTeamSetup(TeamSetupWatchViewModel teamSetup) => Task.CompletedTask;
+        Task ReceiveWaitForTeamSetup(ReceiveWaitForTeamSetupAction teamSetup) => Task.CompletedTask;
 
-        Task ReceiveTeamName(TeamNameViewModel teamName) => Task.CompletedTask;
+        Task ReceiveTeamName(ReceiveTeamNameAction teamName) => Task.CompletedTask;
 
-        Task ReceivePlayerCount(PlayerCountViewModel playerCount) => Task.CompletedTask;
+        Task ReceivePlayerCount(ReceivePlayerCountAction playerCount) => Task.CompletedTask;
 
         Task ReceiveWaitForOtherPlayers(PlayerViewModel player) => Task.CompletedTask;
 
-        Task ReceiveRestoreState(RestoreViewModel restore) => Task.CompletedTask;
+        Task ReceiveRestoreState(ReceiveRestoreStateAction restore) => Task.CompletedTask;
 
-        Task ReceiveGameAborted(GameAbortViewModel abort) => Task.CompletedTask;
+        Task ReceiveGameAborted(ReceiveGameAbortAction abort) => Task.CompletedTask;
 
         Task ReceiveGameStarted() => Task.CompletedTask;
 

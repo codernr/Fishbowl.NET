@@ -19,13 +19,8 @@ namespace Fishbowl.Net.Client.Online.Store
 
     public record SetConnectionStateAction(HubConnectionState State);
     public record ReceiveSetupPlayerAction(GameSetupViewModel Setup);
-    public record ReceivePlayerCountAction(PlayerCountViewModel PlayerCount);
     public record ReceiveWaitForOtherPlayersAction(PlayerViewModel Player);
     public record ReceiveSetTeamNameAction(TeamSetupViewModel TeamSetup);
-    public record ReceiveWaitForTeamSetupAction(TeamSetupWatchViewModel TeamSetup);
-    public record ReceiveTeamNameAction(TeamNameViewModel TeamName);
-    public record ReceiveRestoreStateAction(RestoreViewModel Restore);
-    public record ReceiveGameAbortedAction(GameAbortViewModel Abort);
     public record ReceiveGameStartedAction();
     public record ReceiveGameFinishedAction(GameSummaryViewModel Summary);
     public record ReceiveRoundStartedAction(RoundViewModel Round);
@@ -39,15 +34,11 @@ namespace Fishbowl.Net.Client.Online.Store
 
     public record GameContextExistsAction(string Password);
     public record GameContextExistsResponseAction(bool Exists);
-    public record JoinGameContextAction(GameContextJoinViewModel GameContextJoin);
-    public record CreateGameContextAction(GameContextSetupViewModel GameContextSetup);
     public record CreateGameContextSuccessAction();
-    public record AddPlayerAction(AddPlayerViewModel Player);
-    public record SetTeamNameAction(TeamNameViewModel TeamName);
 
     public record StatusErrorAction(StatusCode Status);
 
-    public class ConnectionEffects : IGameClient, IAsyncDisposable
+    public class ConnectionEffects : IAsyncDisposable
     {
         private readonly NavigationManager navigationManager;
 
@@ -92,13 +83,13 @@ namespace Fishbowl.Net.Client.Online.Store
         {
             this
                 .On<GameSetupViewModel>(nameof(IGameClient.ReceiveSetupPlayer), p => new ReceiveSetupPlayerAction(p))
-                .On<PlayerCountViewModel>(nameof(IGameClient.ReceivePlayerCount), p => new ReceivePlayerCountAction(p))
+                .On<ReceivePlayerCountAction>(nameof(IGameClient.ReceivePlayerCount))
                 .On<PlayerViewModel>(nameof(IGameClient.ReceiveWaitForOtherPlayers), p => new ReceiveWaitForOtherPlayersAction(p))
                 .On<TeamSetupViewModel>(nameof(IGameClient.ReceiveSetTeamName), p => new ReceiveSetTeamNameAction(p))
-                .On<TeamSetupWatchViewModel>(nameof(IGameClient.ReceiveWaitForTeamSetup), p => new ReceiveWaitForTeamSetupAction(p))
-                .On<TeamNameViewModel>(nameof(IGameClient.ReceiveTeamName), p => new ReceiveTeamNameAction(p))
-                .On<RestoreViewModel>(nameof(IGameClient.ReceiveRestoreState), p => new ReceiveRestoreStateAction(p))
-                .On<GameAbortViewModel>(nameof(IGameClient.ReceiveGameAborted), p => new ReceiveGameAbortedAction(p))
+                .On<ReceiveWaitForTeamSetupAction>(nameof(IGameClient.ReceiveWaitForTeamSetup))
+                .On<ReceiveTeamNameAction>(nameof(IGameClient.ReceiveTeamName))
+                .On<ReceiveRestoreStateAction>(nameof(IGameClient.ReceiveRestoreState))
+                .On<ReceiveGameAbortAction>(nameof(IGameClient.ReceiveGameAborted))
                 .On(nameof(IGameClient.ReceiveGameStarted), () => new ReceiveGameStartedAction())
                 .On<GameSummaryViewModel>(nameof(IGameClient.ReceiveGameFinished), p => new ReceiveGameFinishedAction(p))
                 .On<RoundViewModel>(nameof(IGameClient.ReceiveRoundStarted), p => new ReceiveRoundStartedAction(p))
@@ -121,7 +112,7 @@ namespace Fishbowl.Net.Client.Online.Store
         [EffectMethod]
         public async Task OnJoinGameContext(JoinGameContextAction action, IDispatcher dispatcher)
         {
-            var response = await this.connection.InvokeAsync<StatusResponse>("JoinGameContext", action.GameContextJoin);
+            var response = await this.connection.InvokeAsync<StatusResponse>("JoinGameContext", action);
 
             if (response.Status == StatusCode.Ok) return;
 
@@ -131,7 +122,7 @@ namespace Fishbowl.Net.Client.Online.Store
         [EffectMethod]
         public async Task OnCreateGameContext(CreateGameContextAction action, IDispatcher dispatcher)
         {
-            var response = await this.connection.InvokeAsync<StatusResponse>("CreateGameContext", action.GameContextSetup);
+            var response = await this.connection.InvokeAsync<StatusResponse>("CreateGameContext", action);
 
             if (response.Status == StatusCode.Ok)
             {
@@ -145,13 +136,13 @@ namespace Fishbowl.Net.Client.Online.Store
         [EffectMethod]
         public async Task OnAddPlayer(AddPlayerAction action, IDispatcher dispatcher)
         {
-            await this.connection.InvokeAsync<StatusResponse>("AddPlayer", action.Player);
+            await this.connection.InvokeAsync<StatusResponse>("AddPlayer", action);
         }
 
         [EffectMethod]
-        public async Task OnSetTeamName(SetTeamNameAction action, IDispatcher dispatcher)
+        public async Task OnSubmitTeamName(SubmitTeamNameAction action, IDispatcher dispatcher)
         {
-            await this.connection.InvokeAsync<StatusResponse>("SetTeamName", action.TeamName);
+            await this.connection.InvokeAsync<StatusResponse>("SubmitTeamName", action);
         }
 
         [EffectMethod]
@@ -184,15 +175,16 @@ namespace Fishbowl.Net.Client.Online.Store
 
         private ConnectionEffects On<T>(string methodName, Func<T, object> factory)
         {
-            this.connection.On<T>(methodName, Dispatch(factory));
+            this.connection.On<T>(methodName, (T param) => this.dispatcher.Dispatch(factory(param)));
             this.connection.On<T>(methodName, data => this.logger.LogInformation("{MethodName}: {Data}", methodName, data));
             return this;
+        }
 
-            Func<T, Task> Dispatch(Func<T, object> factory) => (T param) =>
-            {
-                this.dispatcher.Dispatch(factory(param));
-                return Task.CompletedTask;
-            };
+        private ConnectionEffects On<T>(string methodName)
+        {
+            this.connection.On<T>(methodName, (T param) => this.dispatcher.Dispatch(param));
+            this.connection.On<T>(methodName, data => this.logger.LogInformation("{MethodName}: {Data}", methodName, data));
+            return this;
         }
 
         private Task SendAsync(string methodName, object? arg = null)

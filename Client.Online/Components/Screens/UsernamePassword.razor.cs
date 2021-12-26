@@ -7,9 +7,9 @@ namespace Fishbowl.Net.Client.Online.Components.Screens
 {
     public partial class UsernamePassword
     {
-        public Func<GameContextJoinViewModel, Task> OnJoinGame { get; set; } = default!;
+        public Func<JoinGameContextAction, Task> OnJoinGame { get; set; } = default!;
 
-        public Func<GameContextJoinViewModel, Task> OnCreateGame { get; set; } = default!;
+        public Func<JoinGameContextAction, Task> OnCreateGame { get; set; } = default!;
 
         public string Username { get; set; } = string.Empty;
 
