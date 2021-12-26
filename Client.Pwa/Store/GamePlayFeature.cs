@@ -205,9 +205,6 @@ namespace Fishbowl.Net.Client.Pwa.Store
         {
             this.Game.AddScore(new(action.Word.Map(), DateTimeOffset.UtcNow));
 
-            dispatcher.Dispatch(new SetPeriodScoreCountAction(
-                this.Game.Game.CurrentRound.CurrentPeriod.Scores.Count));
-
             this.Game.NextWord(DateTimeOffset.UtcNow);
 
             return Task.CompletedTask;
@@ -226,12 +223,6 @@ namespace Fishbowl.Net.Client.Pwa.Store
             var score = this.Game.Game.CurrentRound.CurrentPeriod.Scores.Last();
             
             this.Game.RevokeLastScore();
-
-            dispatcher.Dispatch(new SetPeriodScoreCountAction(
-                this.Game.Game.CurrentRound.CurrentPeriod.Scores.Count));
-
-            dispatcher.Dispatch(
-                new SetPeriodWordAction(score.Word.Map()));
 
             return Task.CompletedTask;
         }

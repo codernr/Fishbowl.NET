@@ -34,8 +34,6 @@ namespace Fishbowl.Net.Client.Online.Store
             team.Players.Any(player => player.Username == this.Username));
 
         public PlayerViewModel? TeamSetupPlayer { get; init; }
-
-        public List<ScoreViewModel> PeriodScores { get; init; } = default!;
     }
 
     public record SetupCreateGameContextAction(string Username, string Password);
@@ -84,24 +82,6 @@ namespace Fishbowl.Net.Client.Online.Store
         [ReducerMethod]
         public static GamePlayState OnReceiveWaitForTeamSetup(GamePlayState state, ReceiveWaitForTeamSetupAction action) =>
             state with { TeamSetupPlayer = action.SetupPlayer, Teams = action.Teams };
-
-        [ReducerMethod]
-        public static GamePlayState OnReceivePeriodStarted(GamePlayState state, ReceivePeriodStartedAction action) =>
-            state with { PeriodScores = new() };
-
-        [ReducerMethod]
-        public static GamePlayState OnReceiveScoreAdded(GamePlayState state, ReceiveScoreAddedAction action)
-        {
-            state.PeriodScores.Add(action with { } as ScoreViewModel);
-            return state with { PeriodScores = new(state.PeriodScores) };
-        }
-
-        [ReducerMethod]
-        public static GamePlayState OnReceiveLastScoreRevoked(GamePlayState state, ReceiveLastScoreRevokedAction action)
-        {
-            state.PeriodScores.Remove(action as ScoreViewModel);
-            return state with { PeriodScores = new(state.PeriodScores) };
-        }
     }
 
     public class GamePlayEffects
@@ -171,5 +151,11 @@ namespace Fishbowl.Net.Client.Online.Store
         [EffectMethod]
         public Task OnReceiveRoundFinished(ReceiveRoundFinishedAction action, IDispatcher dispatcher) =>
             dispatcher.DispatchTransition<RoundFinished>();
+
+        [EffectMethod]
+        public Task OnReceivePeriodSetup(ReceivePeriodSetupAction action, IDispatcher dispatcher) =>
+            action.Player.Username == this.state.Value.Username ?
+            dispatcher.DispatchTransition<PeriodSetupPlay>() :
+            dispatcher.DispatchTransition<PeriodSetupWatch>();
     }
 }
