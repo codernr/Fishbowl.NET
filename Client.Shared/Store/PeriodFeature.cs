@@ -30,7 +30,7 @@ namespace Fishbowl.Net.Client.Shared.Store
         public static PeriodState OnReceivePeriodSetup(PeriodState state, ReceivePeriodSetupAction action) =>
             state with
             { 
-                Setup = action with { } as PeriodSetupViewModel,
+                Setup = action.Setup,
                 ShowRevoke = false,
                 Expired = false,
                 Word = null
@@ -38,7 +38,7 @@ namespace Fishbowl.Net.Client.Shared.Store
 
         [ReducerMethod]
         public static PeriodState OnReceivePeriodStarted(PeriodState state, ReceivePeriodStartedAction action) =>
-            state with { Running = action with { } as PeriodRunningViewModel, Scores = new() };
+            state with { Running = action.Period, Scores = new() };
 
         [ReducerMethod]
         public static PeriodState OnTimerExpired(PeriodState state, TimerExpiredAction action) =>
@@ -47,7 +47,7 @@ namespace Fishbowl.Net.Client.Shared.Store
         [ReducerMethod]
         public static PeriodState OnReceiveScoreAdded(PeriodState state, ReceiveScoreAddedAction action)
         {
-            state.Scores.Add(action with { } as ScoreViewModel);
+            state.Scores.Add(action.Score);
             return state with { Scores = new(state.Scores), ShowRevoke = true };
         }
 
@@ -55,17 +55,17 @@ namespace Fishbowl.Net.Client.Shared.Store
         public static PeriodState OnReceiveLastScoreRevoked(PeriodState state, ReceiveLastScoreRevokedAction action) =>
             state with
             {
-                Scores = state.Scores.Where(score => score.Word.Id != action.Word.Id ).ToList(),
+                Scores = state.Scores.Where(score => score.Word.Id != action.Score.Word.Id ).ToList(),
                 ShowRevoke = false,
-                Word = action.Word
+                Word = action.Score.Word
             };
 
         [ReducerMethod]
         public static PeriodState OnReceiveWordSetup(PeriodState state, ReceiveWordSetupAction action) =>
-            state with { Word = action with { } as WordViewModel };
+            state with { Word = action.Word };
 
         [ReducerMethod]
         public static PeriodState OnReceivePeriodFinished(PeriodState state, ReceivePeriodFinishedAction action) =>
-            state with { Summary = action with { } as PeriodSummaryViewModel };
+            state with { Summary = action.Summary };
     }
 }

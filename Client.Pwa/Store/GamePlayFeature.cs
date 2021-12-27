@@ -198,7 +198,7 @@ namespace Fishbowl.Net.Client.Pwa.Store
             this.Game.GameStarted += game => Dispatch<SetInfoAction, Info>(
                 new(Title: this.localizer["Pages.Play.GameStartedTitle"], Loading: true), TimeSpan.FromSeconds(2));
 
-            this.Game.GameFinished += game => Dispatch<ReceiveGameFinishedAction, GameFinished>(game.Map());
+            this.Game.GameFinished += game => Dispatch<ReceiveGameFinishedAction, GameFinished>(new(game.Map()));
 
             this.Game.RoundStarted += round => Dispatch<SetInfoAction, Info>(new(
                 Title: $"{this.localizer["Pages.Play.RoundStartedTitle"]}: {round.Type}",
@@ -209,13 +209,13 @@ namespace Fishbowl.Net.Client.Pwa.Store
                 round.MapSummary(), TimeSpan.FromSeconds(5));
 
             this.Game.PeriodSetup += period => Dispatch<ReceivePeriodSetupAction, PeriodSetupPlay>(
-                period.Map(this.Game.Game.CurrentRound));
+                new(period.Map(this.Game.Game.CurrentRound)));
 
             this.Game.PeriodStarted += period => Dispatch<ReceivePeriodStartedAction, PeriodPlay>(
-                period.MapRunning(this.Game.Game.CurrentRound));
+                new(period.MapRunning(this.Game.Game.CurrentRound)));
 
             this.Game.PeriodFinished += period => Dispatch<ReceivePeriodFinishedAction, PeriodFinished>(
-                period.Map(), TimeSpan.FromSeconds(5));
+                new(period.Map()), TimeSpan.FromSeconds(5));
 
             this.Game.WordSetup += (player, word) => dispatcher.Dispatch(
                 word.Map());

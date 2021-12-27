@@ -32,7 +32,7 @@ namespace Fishbowl.Net.Client.Shared.Store
         {
             this.isRunning = true;
 
-            var remaining = GetRemaining(action);
+            var remaining = GetRemaining(action.Period);
             dispatcher.Dispatch(new SetTimerAction(remaining));
 
             TimeSpan previous;
@@ -41,7 +41,7 @@ namespace Fishbowl.Net.Client.Shared.Store
             {
                 previous = remaining;
                 await Task.Delay(500);
-                remaining = GetRemaining(action);
+                remaining = GetRemaining(action.Period);
                 dispatcher.Dispatch(new SetTimerAction(remaining));
 
                 if (remaining < TimeSpan.Zero && previous > TimeSpan.Zero)

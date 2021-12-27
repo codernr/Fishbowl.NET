@@ -63,10 +63,14 @@ namespace Fishbowl.Net.Shared.ViewModels
 
         public static Word Map(this WordViewModel word) => new(word.Id, word.Value);
 
+        public static WordViewModel Map(this Word word) => new(word.Id, word.Value);
+
         public static ScoreSummaryViewModel Map(this Score score, DateTimeOffset previous) =>
-            new(score.Word.Map() as WordViewModel, score.Timestamp - previous);
+            new(new(score.Word.Id, score.Word.Value), score.Timestamp - previous);
 
         public static Score Map(this ScoreViewModel score) => new(score.Word.Map(), score.Timestamp);
+
+        public static ScoreViewModel Map(this Score score) => new(score.Word.Map(), score.Timestamp);
 
         public static PlayerSummaryViewModel Map(this Player player, Game game) =>
             new(player.Username, game.Rounds
@@ -85,5 +89,22 @@ namespace Fishbowl.Net.Shared.ViewModels
                 players.Sum(player => player.Scores.Count()),
                 new TimeSpan(players.Sum(player => player.Scores.Sum(score => score.GuessedTime.Ticks))));
         }
+
+        public static PeriodSetupViewModel Map(this Period period, Round round) =>
+            new(new(round.Type), new(period.Player.Username), period.Length.TotalSeconds);
+
+        public static PeriodRunningViewModel MapRunning(this Period period, Round round) =>
+            new(new(round.Type), new(period.Player.Username), period.Length.TotalSeconds,
+            period.StartedAt ?? throw new InvalidOperationException(), period.Scores.Count);
+
+        public static PeriodSummaryViewModel Map(this Period period) =>
+            new(period.Player.Map(), period.Scores.Select(score =>
+                new ScoreViewModel(new(score.Word.Id, score.Word.Value), score.Timestamp)).ToList());
+
+        public static GameSummaryViewModel Map(this Game game) => new(game.Teams
+            .Select(team => team.Map(game))
+            .OrderByDescending(team => team.TotalScoreCount)
+            .ThenBy(team => team.TotalTime)
+            .ToList());
     }
 }

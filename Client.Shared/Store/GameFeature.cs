@@ -23,7 +23,7 @@ namespace Fishbowl.Net.Client.Shared.Store
 
         [ReducerMethod]
         public static GameState OnReceiveGameFinished(GameState state, ReceiveGameFinishedAction action) =>
-            state with { Summary = action as GameSummaryViewModel };
+            state with { Summary = action.Summary };
 
         [ReducerMethod]
         public static GameState OnSetGameInfo(GameState state, SetGameInfoAction action) =>

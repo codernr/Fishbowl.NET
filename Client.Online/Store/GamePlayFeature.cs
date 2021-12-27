@@ -60,7 +60,7 @@ namespace Fishbowl.Net.Client.Online.Store
 
         [ReducerMethod]
         public static GamePlayState OnReceiveGameSetup(GamePlayState state, ReceiveGameSetupAction action) =>
-            state with { Setup = action with { } as GameSetupViewModel };
+            state with { Setup = action.Setup };
 
         [ReducerMethod]
         public static GamePlayState OnReceivePlayerCount(GamePlayState state, ReceivePlayerCountAction action) =>
@@ -189,13 +189,13 @@ namespace Fishbowl.Net.Client.Online.Store
 
         [EffectMethod]
         public Task OnReceivePeriodSetup(ReceivePeriodSetupAction action, IDispatcher dispatcher) =>
-            action.Player.Username == this.state.Value.Username ?
+            action.Setup.Player.Username == this.state.Value.Username ?
             dispatcher.DispatchTransition<PeriodSetupPlay>() :
             dispatcher.DispatchTransition<PeriodSetupWatch>();
 
         [EffectMethod]
         public Task OnReceivePeriodStarted(ReceivePeriodStartedAction action, IDispatcher dispatcher) =>
-            action.Player.Username == this.state.Value.Username ?
+            action.Period.Player.Username == this.state.Value.Username ?
             dispatcher.DispatchTransition<PeriodPlay>() :
             dispatcher.DispatchTransition<PeriodWatch>();
 

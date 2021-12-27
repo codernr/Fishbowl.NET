@@ -84,7 +84,7 @@ namespace Fishbowl.Net.Server.Services
             var existingPlayer = this.players.SingleOrDefault(player => player.Username == username);
 
             var clientTask =
-                existingPlayer is null  ? this.groupHubContext.Client(username).ReceiveGameSetup(this.gameSetup.Map()) :
+                existingPlayer is null  ? this.groupHubContext.Client(username).ReceiveGameSetup(new(this.gameSetup)) :
                 (this.teams is null     ? this.groupHubContext.Client(username).ReceiveWaitForOtherPlayers(new(existingPlayer.Username)) :
                 (this.game is null      ? this.RestoreTeamSetup(existingPlayer, this.teams) :
                 this.RestoreGame(existingPlayer, this.game)));
@@ -211,7 +211,7 @@ namespace Fishbowl.Net.Server.Services
 
         private async void OnGameFinished(Game game)
         {
-            await this.groupHubContext.Group().ReceiveGameFinished(game.Map());
+            await this.groupHubContext.Group().ReceiveGameFinished(new(game.Map()));
             this.GameFinished?.Invoke(this);
         }
 
@@ -223,23 +223,23 @@ namespace Fishbowl.Net.Server.Services
 
         private async void PeriodSetup(Period period) =>
             await this.groupHubContext.Group().ReceivePeriodSetup(
-                period.Map(this.Game.Game.CurrentRound));
+                new(period.Map(this.Game.Game.CurrentRound)));
 
         private async void PeriodStarted(Period period) =>
             await this.groupHubContext.Group().ReceivePeriodStarted(
-                period.MapRunning(this.Game.Game.CurrentRound));
+                new(period.MapRunning(this.Game.Game.CurrentRound)));
 
         private async void PeriodFinished(Period period) =>
-            await this.groupHubContext.Group().ReceivePeriodFinished(period.Map());
+            await this.groupHubContext.Group().ReceivePeriodFinished(new(period.Map()));
 
         private async void ScoreAdded(Score score) =>
-            await this.groupHubContext.Group().ReceiveScoreAdded(score.Map());
+            await this.groupHubContext.Group().ReceiveScoreAdded(new(score.Map()));
 
         private async void LastScoreRevoked(Score score) =>
-            await this.groupHubContext.Group().ReceiveLastScoreRevoked(score.Map());
+            await this.groupHubContext.Group().ReceiveLastScoreRevoked(new(score.Map()));
 
         private async void WordSetup(Player player, Word word) =>
-            await this.groupHubContext.Client(player.Username).ReceiveWordSetup(word.Map());
+            await this.groupHubContext.Client(player.Username).ReceiveWordSetup(new(word.Map()));
 
         private async Task Abort(string messageKey)
         {
@@ -274,15 +274,15 @@ namespace Fishbowl.Net.Server.Services
 
             if (period.StartedAt is null)
             {
-                await client.ReceivePeriodSetup(period.Map(round));
+                await client.ReceivePeriodSetup(new(period.Map(round)));
                 return;
             }
 
-            await client.ReceivePeriodStarted(period.MapRunning(round));
+            await client.ReceivePeriodStarted(new(period.MapRunning(round)));
 
             if (player.Username == period.Player.Username)
             {
-                await client.ReceiveWordSetup(game.Game.CurrentWord.Map());
+                await client.ReceiveWordSetup(new(game.Game.CurrentWord.Map()));
             }
         }
 
