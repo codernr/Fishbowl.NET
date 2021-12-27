@@ -185,7 +185,7 @@ namespace Fishbowl.Net.Client.Online.Store
 
         [EffectMethod(typeof(ReceiveRoundFinishedAction))]
         public Task OnReceiveRoundFinished(IDispatcher dispatcher) =>
-            dispatcher.DispatchTransition<RoundFinished>();
+            dispatcher.DispatchTransition<RoundFinished>(TimeSpan.FromSeconds(5));
 
         [EffectMethod]
         public Task OnReceivePeriodSetup(ReceivePeriodSetupAction action, IDispatcher dispatcher) =>
@@ -213,7 +213,7 @@ namespace Fishbowl.Net.Client.Online.Store
         [EffectMethod(typeof(ReceiveLastScoreRevokedAction))]
         public Task OnReceiveLastScoreRevoked(IDispatcher dispatcher)
         {
-            this.snackbar.Add($"{this.localizer["Pages.Play.Scored"]}", Severity.Success);
+            this.snackbar.Add($"{this.localizer["Pages.Play.ScoreRevoked"]}", Severity.Warning);
             return Task.CompletedTask;
         }
 

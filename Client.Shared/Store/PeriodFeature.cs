@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Fishbowl.Net.Shared.Actions;
 using Fishbowl.Net.Shared.ViewModels;
 using Fluxor;
@@ -11,7 +12,6 @@ namespace Fishbowl.Net.Client.Shared.Store
         public PeriodSetupViewModel Setup { get; init; } = default!;
         public PeriodRunningViewModel Running { get; init; } = default!;
         public bool Expired { get; init; } = false;
-        public int ScoreCount { get; init; } = 0;
         public bool ShowRevoke { get; init; } = false;
         public WordViewModel? Word { get; init; } = null;
         public PeriodSummaryViewModel Summary { get; init; } = default!;
@@ -28,7 +28,13 @@ namespace Fishbowl.Net.Client.Shared.Store
     {
         [ReducerMethod]
         public static PeriodState OnReceivePeriodSetup(PeriodState state, ReceivePeriodSetupAction action) =>
-            new() { Setup = action with { } as PeriodSetupViewModel };
+            state with
+            { 
+                Setup = action with { } as PeriodSetupViewModel,
+                ShowRevoke = false,
+                Expired = false,
+                Word = null
+            };
 
         [ReducerMethod]
         public static PeriodState OnReceivePeriodStarted(PeriodState state, ReceivePeriodStartedAction action) =>
@@ -42,15 +48,17 @@ namespace Fishbowl.Net.Client.Shared.Store
         public static PeriodState OnReceiveScoreAdded(PeriodState state, ReceiveScoreAddedAction action)
         {
             state.Scores.Add(action with { } as ScoreViewModel);
-            return state with { Scores = new(state.Scores) };
+            return state with { Scores = new(state.Scores), ShowRevoke = true };
         }
 
         [ReducerMethod]
-        public static PeriodState OnReceiveLastScoreRevoked(PeriodState state, ReceiveLastScoreRevokedAction action)
-        {
-            state.Scores.Remove(action as ScoreViewModel);
-            return state with { Scores = new(state.Scores) };
-        }
+        public static PeriodState OnReceiveLastScoreRevoked(PeriodState state, ReceiveLastScoreRevokedAction action) =>
+            state with
+            {
+                Scores = state.Scores.Where(score => score.Word.Id != action.Word.Id ).ToList(),
+                ShowRevoke = false,
+                Word = action.Word
+            };
 
         [ReducerMethod]
         public static PeriodState OnReceiveWordSetup(PeriodState state, ReceiveWordSetupAction action) =>
@@ -58,6 +66,6 @@ namespace Fishbowl.Net.Client.Shared.Store
 
         [ReducerMethod]
         public static PeriodState OnReceivePeriodFinished(PeriodState state, ReceivePeriodFinishedAction action) =>
-            new() { Summary = action with { } as PeriodSummaryViewModel };
+            state with { Summary = action with { } as PeriodSummaryViewModel };
     }
 }
