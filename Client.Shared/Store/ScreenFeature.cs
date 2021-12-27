@@ -10,7 +10,7 @@ namespace Fishbowl.Net.Client.Shared.Store
     {
         public bool RequestFullscreenEnabled { get; init; }
         public bool IsInFullscreenMode { get; init; }
-        public bool IsStandalone { get; init; }
+        public bool IsStandalone { get; init; } = true;
     }
 
     public record SetScreenRequestFullscreenEnabledAction(bool RequestFullScreenEnabled);
