@@ -123,7 +123,7 @@ namespace Fishbowl.Net.Client.Online.Store
         [EffectMethod]
         public async Task OnAddScore(AddScoreAction action, IDispatcher dispatcher)
         {
-            await this.SendAsync("AddScore", action.Word);
+            await this.SendAsync("AddScore", action);
             await this.SendAsync("NextWord");
         }
 
