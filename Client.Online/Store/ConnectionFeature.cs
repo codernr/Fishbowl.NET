@@ -75,7 +75,9 @@ namespace Fishbowl.Net.Client.Online.Store
                 .On<ReceivePeriodFinishedAction>(nameof(IGameClient.ReceivePeriodFinished))
                 .On<ReceiveWordSetupAction>(nameof(IGameClient.ReceiveWordSetup))
                 .On<ReceiveScoreAddedAction>(nameof(IGameClient.ReceiveScoreAdded))
-                .On<ReceiveLastScoreRevokedAction>(nameof(IGameClient.ReceiveLastScoreRevoked));
+                .On<ReceiveLastScoreRevokedAction>(nameof(IGameClient.ReceiveLastScoreRevoked))
+                .On<ReceiveTimerUpdateAction>(nameof(IGameClient.ReceiveTimerUpdate))
+                .On<ReceiveTimerExpiredAction>(nameof(IGameClient.ReceiveTimerExpired));
         }
 
         private async Task StartAsync()

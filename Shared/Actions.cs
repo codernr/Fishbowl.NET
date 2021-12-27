@@ -41,6 +41,10 @@ namespace Fishbowl.Net.Shared.Actions
     public record ReceiveScoreAddedAction(ScoreViewModel Score);
 
     public record ReceiveLastScoreRevokedAction(ScoreViewModel Score);
+
+    public record ReceiveTimerUpdateAction(TimeSpan Remaining);
+
+    public record ReceiveTimerExpiredAction();
     
     public record JoinGameContextAction(string Password, string Username);
 

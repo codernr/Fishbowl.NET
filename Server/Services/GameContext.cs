@@ -204,6 +204,8 @@ namespace Fishbowl.Net.Server.Services
             this.Game.ScoreAdded += this.ScoreAdded;
             this.Game.LastScoreRevoked += this.LastScoreRevoked;
             this.Game.WordSetup += this.WordSetup;
+            this.Game.TimerUpdate += this.TimerUpdate;
+            this.Game.TimerExpired += this.TimerExpired;
         }
 
         private async void GameStarted(Game game) =>
@@ -240,6 +242,12 @@ namespace Fishbowl.Net.Server.Services
 
         private async void WordSetup(Player player, Word word) =>
             await this.groupHubContext.Client(player.Username).ReceiveWordSetup(new(word.Map()));
+
+        private async void TimerUpdate(TimeSpan remaining) =>
+            await this.groupHubContext.Group().ReceiveTimerUpdate(new(remaining));
+
+        private async void TimerExpired() =>
+            await this.groupHubContext.Group().ReceiveTimerExpired(new());
 
         private async Task Abort(string messageKey)
         {

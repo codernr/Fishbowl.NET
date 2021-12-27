@@ -50,5 +50,9 @@ namespace Fishbowl.Net.Client.Online.Services
         Task ReceiveScoreAdded(ReceiveScoreAddedAction action) => Task.CompletedTask;
 
         Task ReceiveLastScoreRevoked(ReceiveLastScoreRevokedAction action) => Task.CompletedTask;
+
+        Task ReceiveTimerUpdate(ReceiveTimerUpdateAction action) => Task.CompletedTask;
+
+        Task ReceiveTimerExpired(ReceiveTimerExpiredAction action) => Task.CompletedTask;
     }
 }

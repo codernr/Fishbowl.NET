@@ -41,7 +41,7 @@ namespace Fishbowl.Net.Client.Shared.Store
             state with { Running = action.Period, Scores = new() };
 
         [ReducerMethod]
-        public static PeriodState OnTimerExpired(PeriodState state, TimerExpiredAction action) =>
+        public static PeriodState OnReceiveTimerExpired(PeriodState state, ReceiveTimerExpiredAction action) =>
             state with { Expired = true };
 
         [ReducerMethod]
