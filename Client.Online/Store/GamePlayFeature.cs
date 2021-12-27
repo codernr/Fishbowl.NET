@@ -156,15 +156,32 @@ namespace Fishbowl.Net.Client.Online.Store
             dispatcher.DispatchTransition<Info, SetInfoAction>(new(
                 Severity.Info, this.localizer["Components.States.WaitingForPlayers.Title"], this.PlayerCountMessage, true));
 
+        [EffectMethod]
+        public Task OnReceiveSetTeamName(ReceiveSetTeamNameAction action, IDispatcher dispatcher) =>
+            dispatcher.DispatchTransition<TeamName, SetTeamNameAction>(
+                new(this.state.Value.Team, this.localizer["Components.States.TeamName.Title.Online"]));
+
+        [EffectMethod]
+        public Task OnReceiveWaitForTeamSetup(ReceiveWaitForTeamSetupAction action, IDispatcher dispatcher) =>
+            dispatcher.DispatchTransition<WaitingForTeamNames>();
+
         [EffectMethod(typeof(ReceiveGameStartedAction))]
         public Task OnReceiveGameStarted(IDispatcher dispatcher) =>
             dispatcher.DispatchTransition<Info, SetInfoAction>(new(
                 Title: this.localizer["Pages.Play.GameStartedTitle"],
-                Loading: true));
+                Loading: true), TimeSpan.FromSeconds(2));
 
         [EffectMethod(typeof(ReceiveGameFinishedAction))]
         public Task OnReceiveGameFinished(IDispatcher dispatcher) =>
             dispatcher.DispatchTransition<GameFinished>();
+
+        [EffectMethod]
+        public Task OnReceiveRoundStarted(ReceiveRoundStartedAction action, IDispatcher dispatcher) =>
+            dispatcher.DispatchTransition<Info, SetInfoAction>(new(
+                Severity.Info,
+                $"{this.localizer["Pages.Play.RoundStartedTitle"]}: {action.Type}",
+                this.localizer[$"Components.States.Common.RoundTypes.{action.Type}.Description"],
+                true), TimeSpan.FromSeconds(2));
 
         [EffectMethod(typeof(ReceiveRoundFinishedAction))]
         public Task OnReceiveRoundFinished(IDispatcher dispatcher) =>
@@ -175,6 +192,12 @@ namespace Fishbowl.Net.Client.Online.Store
             action.Player.Username == this.state.Value.Username ?
             dispatcher.DispatchTransition<PeriodSetupPlay>() :
             dispatcher.DispatchTransition<PeriodSetupWatch>();
+
+        [EffectMethod]
+        public Task OnReceivePeriodStarted(ReceivePeriodStartedAction action, IDispatcher dispatcher) =>
+            action.Player.Username == this.state.Value.Username ?
+            dispatcher.DispatchTransition<PeriodPlay>() :
+            dispatcher.DispatchTransition<PeriodWatch>();
 
         [EffectMethod(typeof(ReceivePeriodFinishedAction))]
         public Task OnReceivePeriodFinished(IDispatcher dispatcher) =>

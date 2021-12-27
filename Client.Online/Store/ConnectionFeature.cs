@@ -117,6 +117,9 @@ namespace Fishbowl.Net.Client.Online.Store
         public Task OnSubmitTeamName(SubmitTeamNameAction action, IDispatcher dispatcher) =>
             this.connection.InvokeAsync<StatusResponse>("SubmitTeamName", action);
 
+        [EffectMethod(typeof(StartPeriodAction))]
+        public Task OnStartPeriod(IDispatcher dispatcher) => this.SendAsync("StartPeriod");
+
         [EffectMethod]
         public async Task OnAddScore(AddScoreAction action, IDispatcher dispatcher)
         {

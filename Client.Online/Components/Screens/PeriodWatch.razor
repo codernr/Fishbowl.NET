@@ -10,7 +10,7 @@
     </MudContainer>
 
     <MudContainer Class="my-10">
-        <Timer Start="this.Period.StartedAt" Length="this.Period.Length" OnExpired="_ => this.expired = true" />
+        <Timer />
     </MudContainer>
 
     @if (this.GamePlayState.Value.Team.Players.Any(p => p.Username == this.PeriodState.Value.Running.Player.Username))
