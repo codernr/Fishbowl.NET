@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Fishbowl.Net.Shared.Actions;
@@ -11,7 +12,7 @@ namespace Fishbowl.Net.Client.Shared.Store
     {
         public PeriodSetupViewModel Setup { get; init; } = default!;
         public PeriodRunningViewModel Running { get; init; } = default!;
-        public bool Expired { get; init; } = false;
+        public TimeSpan Remaining { get; init; } = default;
         public bool ShowRevoke { get; init; } = false;
         public WordViewModel? Word { get; init; } = null;
         public PeriodSummaryViewModel Summary { get; init; } = default!;
@@ -32,8 +33,8 @@ namespace Fishbowl.Net.Client.Shared.Store
             { 
                 Setup = action.Setup,
                 ShowRevoke = false,
-                Expired = false,
-                Word = null
+                Word = null,
+                Remaining = action.Setup.Length
             };
 
         [ReducerMethod]
@@ -41,8 +42,8 @@ namespace Fishbowl.Net.Client.Shared.Store
             state with { Running = action.Period, Scores = new() };
 
         [ReducerMethod]
-        public static PeriodState OnReceiveTimerExpired(PeriodState state, ReceiveTimerExpiredAction action) =>
-            state with { Expired = true };
+        public static PeriodState ReceiveTimerUpdate(PeriodState state, ReceiveTimerUpdateAction action) =>
+            state with { Remaining = action.Remaining };
 
         [ReducerMethod]
         public static PeriodState OnReceiveScoreAdded(PeriodState state, ReceiveScoreAddedAction action)

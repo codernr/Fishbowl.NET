@@ -1,7 +1,6 @@
 using System;
 using System.Threading.Tasks;
 using Fishbowl.Net.Shared.Actions;
-using Fishbowl.Net.Shared.ViewModels;
 
 namespace Fishbowl.Net.Client.Online.Services
 {
@@ -52,7 +51,5 @@ namespace Fishbowl.Net.Client.Online.Services
         Task ReceiveLastScoreRevoked(ReceiveLastScoreRevokedAction action) => Task.CompletedTask;
 
         Task ReceiveTimerUpdate(ReceiveTimerUpdateAction action) => Task.CompletedTask;
-
-        Task ReceiveTimerExpired(ReceiveTimerExpiredAction action) => Task.CompletedTask;
     }
 }

@@ -230,8 +230,6 @@ namespace Fishbowl.Net.Client.Pwa.Store
             this.Game.LastScoreRevoked += score => dispatcher.Dispatch<ReceiveLastScoreRevokedAction>(new(score.Map()));
 
             this.Game.TimerUpdate += remainig => dispatcher.Dispatch<ReceiveTimerUpdateAction>(new(remainig));
-
-            this.Game.TimerExpired += () => dispatcher.Dispatch<ReceiveTimerExpiredAction>();
         }
     }
 }

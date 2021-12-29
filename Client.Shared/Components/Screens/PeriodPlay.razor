@@ -14,7 +14,7 @@
     </MudContainer>
 
     <MudContainer Class="my-3">
-        <Timer />
+        <Timer Remaining="this.State.Value.Remaining" />
     </MudContainer>
 
     <MudContainer Class="my-3">
@@ -43,15 +43,15 @@
             Color="Color.Error"
             Size="Size.Large"
             FullWidth="true"
-            Disabled="!this.State.Value.Expired"
+            Disabled="!this.Expired"
             @onclick="this.FinishPeriod">
             @L["Components.States.PeriodPlay.PassButton"]
         </MudButton>
     </MudContainer>
 
     <MudContainer>
-        <MudAlert Severity="@(this.State.Value.Expired ? Severity.Warning : Severity.Info)">
-            @L[$"Components.States.PeriodPlay.{(this.State.Value.Expired ? "Warning" : "Info")}Alert"] 
+        <MudAlert Severity="@(this.Expired ? Severity.Warning : Severity.Info)">
+            @L[$"Components.States.PeriodPlay.{(this.Expired ? "Warning" : "Info")}Alert"] 
         </MudAlert>
     </MudContainer>
 </ScreenContainer>

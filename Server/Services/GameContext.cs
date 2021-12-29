@@ -205,7 +205,6 @@ namespace Fishbowl.Net.Server.Services
             this.Game.LastScoreRevoked += this.LastScoreRevoked;
             this.Game.WordSetup += this.WordSetup;
             this.Game.TimerUpdate += this.TimerUpdate;
-            this.Game.TimerExpired += this.TimerExpired;
         }
 
         private async void GameStarted(Game game) =>
@@ -245,9 +244,6 @@ namespace Fishbowl.Net.Server.Services
 
         private async void TimerUpdate(TimeSpan remaining) =>
             await this.groupHubContext.Group().ReceiveTimerUpdate(new(remaining));
-
-        private async void TimerExpired() =>
-            await this.groupHubContext.Group().ReceiveTimerExpired(new());
 
         private async Task Abort(string messageKey)
         {

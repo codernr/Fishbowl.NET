@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Timers;
 
 namespace Fishbowl.Net.Shared.GameEntities
 {
@@ -30,7 +28,7 @@ namespace Fishbowl.Net.Shared.GameEntities
 
         public event Action<TimeSpan>? TimerUpdate;
 
-        public event Action? TimerExpired;
+        private PeriodTimer? timer;
 
         private TaskCompletionSource<DateTimeOffset> inputReceived = new TaskCompletionSource<DateTimeOffset>();
 
@@ -42,10 +40,6 @@ namespace Fishbowl.Net.Shared.GameEntities
 
         private Task? gameLoop;
 
-        private Task? timer;
-
-        private CancellationTokenSource? timerCts;
-
         public AsyncGame(GameOptions options, IEnumerable<Team> teams, IEnumerable<string> roundTypes, bool randomize = true) =>
             this.game = new Game(Guid.NewGuid(), options, teams, roundTypes, randomize);
 
@@ -53,8 +47,6 @@ namespace Fishbowl.Net.Shared.GameEntities
 
         public void Run()
         {
-            this.PeriodStarted += this.StartTimer;
-            this.PeriodFinished += _ => this.StopTimer();
             this.gameLoop = this.RunAsync();
         }
 
@@ -71,6 +63,10 @@ namespace Fishbowl.Net.Shared.GameEntities
         {
             this.game.StartPeriod(timestamp);
             this.SetInput(timestamp);
+
+            var period = this.game.CurrentRound.CurrentPeriod;
+            this.timer = new PeriodTimer(
+                this.TimerUpdate, period.StartedAt!.Value, period.Length);
         }
 
         public void FinishPeriod(DateTimeOffset timestamp)
@@ -161,41 +157,9 @@ namespace Fishbowl.Net.Shared.GameEntities
             
             await this.GetWords(period);
 
+            this.timer?.Dispose();
+
             this.PeriodFinished?.Invoke(period);
-        }
-
-        private void StartTimer(Period period)
-        {
-            this.timerCts = new();
-            this.timer = this.RunTimer(period, this.timerCts.Token);
-        }
-
-        private void StopTimer()
-        {
-            this.timerCts?.Cancel();
-        }
-
-        private async Task RunTimer(Period period, CancellationToken cancellationToken)
-        {
-            var previous = Remaining();
-            var current = previous;
-
-            while (!cancellationToken.IsCancellationRequested)
-            {
-                current = Remaining();
-
-                this.TimerUpdate?.Invoke(current);
-
-                if (current <= TimeSpan.Zero && previous > TimeSpan.Zero)
-                {
-                    this.TimerExpired?.Invoke();
-                }
-                previous = current;
-
-                await Task.Delay(250);
-            };
-
-            TimeSpan Remaining() => period.StartedAt!.Value + period.Length - DateTimeOffset.UtcNow;
         }
 
         private async Task GetWords(Period period)

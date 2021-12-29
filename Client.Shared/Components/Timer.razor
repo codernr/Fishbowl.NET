@@ -1,7 +1,3 @@
-@inherits Fluxor.Blazor.Web.Components.FluxorComponent
-@inject IStringLocalizer<Resources> L
-@inject IState<TimerState> State;
-
 <MudCard Class="@($"timer {this.Classes}")">
     <MudCardContent>
         <MudText Typo="Typo.h4">@this.TimeFormat</MudText>

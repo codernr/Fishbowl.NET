@@ -10,13 +10,13 @@
     </MudContainer>
 
     <MudContainer Class="my-10">
-        <Timer />
+        <Timer Remaining="this.PeriodState.Value.Remaining" />
     </MudContainer>
 
     @if (this.GamePlayState.Value.Team.Players.Any(p => p.Username == this.PeriodState.Value.Running.Player.Username))
     {
         <MudContainer>
-            @if(!this.PeriodState.Value.Expired)
+            @if(this.PeriodState.Value.Remaining > TimeSpan.Zero)
             {
                 <MudAlert Severity="Severity.Info">
                     @L["Components.States.PeriodWatch.YourTurn"]

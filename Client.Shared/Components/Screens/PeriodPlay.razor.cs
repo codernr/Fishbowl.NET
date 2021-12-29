@@ -1,3 +1,4 @@
+using System;
 using Fishbowl.Net.Client.Shared.Store;
 using Fishbowl.Net.Shared.Actions;
 using Fishbowl.Net.Shared.ViewModels;
@@ -9,6 +10,8 @@ namespace Fishbowl.Net.Client.Shared.Components.Screens
         public PeriodRunningViewModel Period => this.State.Value.Running;
 
         protected override string Title => this.Period.Round.Type;
+
+        private bool Expired => this.State.Value.Remaining < TimeSpan.Zero;
 
         private void AddScore() =>
             this.Dispatcher.Dispatch(new AddScoreAction(this.State.Value.Word!));

@@ -44,8 +44,6 @@ namespace Fishbowl.Net.Shared.Actions
 
     public record ReceiveTimerUpdateAction(TimeSpan Remaining);
 
-    public record ReceiveTimerExpiredAction();
-    
     public record JoinGameContextAction(string Password, string Username);
 
     public record CreateGameContextAction(JoinGameContextAction GameContextJoin, GameSetupViewModel GameSetup);
