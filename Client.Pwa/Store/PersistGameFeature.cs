@@ -24,7 +24,7 @@ namespace Fishbowl.Net.Client.Pwa.Store
 
         public Task HandleAsync(object action, IDispatcher dispatcher)
         {
-            this.persistedGame.Value = this.state.Value.Game?.Game;
+            this.persistedGame.Value = this.state.Value.Game;
             return Task.CompletedTask;
         }
 

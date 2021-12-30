@@ -58,7 +58,7 @@ namespace Fishbowl.Net.Shared.GameEntities
                 .ToList());
         }
 
-        private void StartGame()
+        public void Start()
         {
             this.GameStarted?.Invoke(this);
             this.Teams.MoveNext();

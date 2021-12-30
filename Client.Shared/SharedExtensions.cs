@@ -1,11 +1,9 @@
 using System;
 using System.Reflection;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Fishbowl.Net.Client.Shared.Components;
 using Fishbowl.Net.Client.Shared.Services;
 using Fishbowl.Net.Client.Shared.Store;
-using Fishbowl.Net.Shared.Serialization;
 using Fluxor;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,19 +18,6 @@ namespace Fishbowl.Net.Client.Shared
                 .AddFluxor(options =>
                     options.ScanAssemblies(typeof(SharedExtensions).Assembly, projectAssembly)
                     .AddMiddleware<LoggingMiddleware>());
-
-        public static IServiceCollection AddJsonSerializationOptions(this IServiceCollection services) =>
-            services.AddSingleton<JsonSerializerOptions>(services =>
-            {
-                JsonSerializerOptions options = new(JsonSerializerDefaults.Web);
-                options.Converters.Add(new GameConverter());
-                options.Converters.Add(new TeamConverter());
-                options.Converters.Add(new RoundConverter());
-                options.Converters.Add(new ShuffleEnumeratorConverter());
-                options.Converters.Add(new TimeSpanConverter());
-
-                return options;
-            });
 
         public static Task InitializeInteropServicesAsync(this WebAssemblyHost host) =>
             Task.WhenAll(

@@ -26,7 +26,7 @@ namespace Fishbowl.Net.Client.Pwa.Store
         
         public List<Team> Teams { get; init; } = new();
 
-        public AsyncGame Game { get; init; } = default!;
+        public Game Game { get; init; } = default!;
     }
 
     public record StartNewGameAction();
@@ -73,11 +73,12 @@ namespace Fishbowl.Net.Client.Pwa.Store
 
         [ReducerMethod(typeof(StartGameAction))]
         public static GamePlayState OnStartGame(GamePlayState state) =>
-            state with { Game = new(new(), state.Teams, state.GameSetup.RoundTypes) };
+            state with { Game = new(
+                Guid.NewGuid(), new(), state.Teams, state.GameSetup.RoundTypes, words => new ShuffleList<Word>(words)) };
 
         [ReducerMethod]
         public static GamePlayState OnSetRestoredGame(GamePlayState state, SetRestoredGameAction action) =>
-            state with { Game = new(action.Game) };
+            state with { Game = action.Game };
     }
 
     public class GamePlayEffects
@@ -88,7 +89,7 @@ namespace Fishbowl.Net.Client.Pwa.Store
 
         private readonly IStringLocalizer<Resources> localizer;
 
-        private AsyncGame Game => this.state.Value.Game;
+        private Game Game => this.state.Value.Game;
 
         public GamePlayEffects(
             IState<GamePlayState> state,
@@ -154,7 +155,7 @@ namespace Fishbowl.Net.Client.Pwa.Store
         {
             this.SetEventHandlers(dispatcher);
 
-            this.Game.Run();
+            this.Game.Start();
 
             return Task.CompletedTask;
         }
@@ -171,8 +172,6 @@ namespace Fishbowl.Net.Client.Pwa.Store
         {
             this.Game.AddScore(new(action.Word.Map(), DateTimeOffset.UtcNow));
 
-            this.Game.NextWord(DateTimeOffset.UtcNow);
-
             return Task.CompletedTask;
         }
 
@@ -186,8 +185,6 @@ namespace Fishbowl.Net.Client.Pwa.Store
         [EffectMethod(typeof(RevokeLastScoreAction))]
         public Task OnRevokeLastScore(IDispatcher dispatcher)
         {
-            var score = this.Game.Game.CurrentRound.CurrentPeriod.Scores.Last();
-            
             this.Game.RevokeLastScore();
 
             return Task.CompletedTask;
@@ -235,10 +232,10 @@ namespace Fishbowl.Net.Client.Pwa.Store
             this.Game.RoundFinished += round => dispatcher.Dispatch<ReceiveRoundFinishedAction>(round.MapSummary());
 
             this.Game.PeriodSetup += period => dispatcher.Dispatch<ReceivePeriodSetupAction>(
-                    new(period.Map(this.Game.Game.CurrentRound)));
+                    new(period.Map(this.Game.Rounds.Current)));
 
             this.Game.PeriodStarted += period => dispatcher.Dispatch<ReceivePeriodStartedAction>(
-                    new(period.MapRunning(this.Game.Game.CurrentRound)));
+                    new(period.MapRunning(this.Game.Rounds.Current)));
 
             this.Game.PeriodFinished += period => dispatcher.Dispatch<ReceivePeriodFinishedAction>(
                     new(period.Map()));
