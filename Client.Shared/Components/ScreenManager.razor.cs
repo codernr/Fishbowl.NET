@@ -34,11 +34,8 @@ namespace Fishbowl.Net.Client.Shared.Components
         {
             await this.DisableAsync();
 
-            if (this.type == screen)
-            {
-                this.type = null;
-                this.StateHasChanged();
-            }
+            this.type = null;
+            this.StateHasChanged();
 
             if (interceptorAction is not null)
             {
