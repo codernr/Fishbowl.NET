@@ -37,9 +37,6 @@ namespace Fishbowl.Net.Server.Hubs
         public StatusResponse StartPeriod() =>
             this.CallContext(context => context.Game.StartPeriod(DateTimeOffset.UtcNow));
 
-        public StatusResponse NextWord() =>
-            this.CallContext(context => context.Game.NextWord(DateTimeOffset.UtcNow));
-
         public StatusResponse AddScore(AddScoreAction score) =>
             this.CallContext(context => context.Game.AddScore(new Score(score.Word.Map(), DateTimeOffset.UtcNow)));
 

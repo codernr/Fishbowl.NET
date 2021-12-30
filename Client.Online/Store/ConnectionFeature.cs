@@ -125,7 +125,6 @@ namespace Fishbowl.Net.Client.Online.Store
         public async Task OnAddScore(AddScoreAction action, IDispatcher dispatcher)
         {
             await this.SendAsync("AddScore", action);
-            await this.SendAsync("NextWord");
         }
 
         [EffectMethod(typeof(RevokeLastScoreAction))]
