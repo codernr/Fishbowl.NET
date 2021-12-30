@@ -56,7 +56,7 @@ namespace Fishbowl.Net.Shared.ViewModels
     {
         public static PlayerViewModel Map(this Player player) => new(player.Username);
 
-        public static TeamViewModel Map(this Team team) => new(team.Id, team.Players
+        public static TeamViewModel Map(this Team team) => new(team.Id, team.Players.List
             .Select(player => player.Map()).ToList(), team.Name);
 
         public static RoundViewModel Map(this Round round) => new(round.Type);
@@ -73,7 +73,7 @@ namespace Fishbowl.Net.Shared.ViewModels
         public static ScoreViewModel Map(this Score score) => new(score.Word.Map(), score.Timestamp);
 
         public static PlayerSummaryViewModel Map(this Player player, Game game) =>
-            new(player.Username, game.Rounds
+            new(player.Username, game.Rounds.List
                 .SelectMany(round => round.Periods)
                 .Where(period => period.Player.Username == player.Username)
                 .SelectMany(period => period.MapScores())
@@ -84,7 +84,7 @@ namespace Fishbowl.Net.Shared.ViewModels
 
         public static TeamSummaryViewModel Map(this Team team, Game game)
         {
-            var players = team.Players.Select(player => player.Map(game)).ToList();
+            var players = team.Players.List.Select(player => player.Map(game)).ToList();
             return new(team.Id, team.Name!, players, 
                 players.Sum(player => player.Scores.Count()),
                 new TimeSpan(players.Sum(player => player.Scores.Sum(score => score.GuessedTime.Ticks))));
@@ -101,7 +101,7 @@ namespace Fishbowl.Net.Shared.ViewModels
             new(period.Player.Map(), period.Scores.Select(score =>
                 new ScoreViewModel(new(score.Word.Id, score.Word.Value), score.Timestamp)).ToList());
 
-        public static GameSummaryViewModel Map(this Game game) => new(game.Teams
+        public static GameSummaryViewModel Map(this Game game) => new(game.Teams.List
             .Select(team => team.Map(game))
             .OrderByDescending(team => team.TotalScoreCount)
             .ThenBy(team => team.TotalTime)
