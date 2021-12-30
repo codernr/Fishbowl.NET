@@ -13,6 +13,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services
     .AddLocalization()
+    .AddJsonSerializationOptions()
     .AddSingleton<GameProperty>()
     .AddMudServices()
     .AddSharedServices(typeof(Program).Assembly);

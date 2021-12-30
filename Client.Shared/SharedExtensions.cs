@@ -1,9 +1,13 @@
 using System;
 using System.Reflection;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Fishbowl.Net.Client.Shared.Components;
 using Fishbowl.Net.Client.Shared.Services;
 using Fishbowl.Net.Client.Shared.Store;
+using Fishbowl.Net.Shared.Collections;
+using Fishbowl.Net.Shared.GameEntities;
+using Fishbowl.Net.Shared.Serialization;
 using Fluxor;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,6 +22,18 @@ namespace Fishbowl.Net.Client.Shared
                 .AddFluxor(options =>
                     options.ScanAssemblies(typeof(SharedExtensions).Assembly, projectAssembly)
                     .AddMiddleware<LoggingMiddleware>());
+
+        public static IServiceCollection AddJsonSerializationOptions(this IServiceCollection services) =>
+            services.AddSingleton<JsonSerializerOptions>(_ =>
+            {
+                JsonSerializerOptions options = new(JsonSerializerDefaults.Web);
+                options.Converters.Add(new TypeConverter<IGameList<Team>, CircularList<Team>>());
+                options.Converters.Add(new TypeConverter<IGameList<Round>, SimpleList<Round>>());
+                options.Converters.Add(new TypeConverter<IGameList<Player>, CircularList<Player>>());
+                options.Converters.Add(new TypeConverter<IRewindList<Word>, ShuffleList<Word>>());
+
+                return options;
+            });
 
         public static Task InitializeInteropServicesAsync(this WebAssemblyHost host) =>
             Task.WhenAll(
