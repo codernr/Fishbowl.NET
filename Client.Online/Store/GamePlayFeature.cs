@@ -190,8 +190,8 @@ namespace Fishbowl.Net.Client.Online.Store
         [EffectMethod]
         public Task OnReceivePeriodSetup(ReceivePeriodSetupAction action, IDispatcher dispatcher) =>
             action.Setup.Player.Username == this.state.Value.Username ?
-            dispatcher.DispatchTransition<PeriodSetupPlay>() :
-            dispatcher.DispatchTransition<PeriodSetupWatch>();
+            dispatcher.DispatchTransition<PeriodSetupPlay, IncrementPeriodCurrentIdAction>(new()) :
+            dispatcher.DispatchTransition<PeriodSetupWatch, IncrementPeriodCurrentIdAction>(new());
 
         [EffectMethod]
         public Task OnReceivePeriodStarted(ReceivePeriodStartedAction action, IDispatcher dispatcher) =>

@@ -1,22 +1,22 @@
 @inherits Screen
-@inject IState<PeriodState> PeriodState
+@inject IState<PeriodStateCollection> PeriodState
 @inject IState<GamePlayState> GamePlayState
 
 <ScreenContainer>
     <MudContainer>
         <MudText Typo="Typo.h5">
-            @L["Components.States.PeriodWatch.Playing"]: @this.PeriodState.Value.Running.Player.Username
+            @L["Components.States.PeriodWatch.Playing"]: @this.PeriodState.Value.Current.Running.Player.Username
         </MudText>
     </MudContainer>
 
     <MudContainer Class="my-10">
-        <Timer Remaining="this.PeriodState.Value.Remaining" />
+        <Timer Remaining="this.PeriodState.Value.Current.Remaining" />
     </MudContainer>
 
-    @if (this.GamePlayState.Value.Team.Players.Any(p => p.Username == this.PeriodState.Value.Running.Player.Username))
+    @if (this.GamePlayState.Value.Team.Players.Any(p => p.Username == this.PeriodState.Value.Current.Running.Player.Username))
     {
         <MudContainer>
-            @if(this.PeriodState.Value.Remaining > TimeSpan.Zero)
+            @if(this.PeriodState.Value.Current.Remaining > TimeSpan.Zero)
             {
                 <MudAlert Severity="Severity.Info">
                     @L["Components.States.PeriodWatch.YourTurn"]

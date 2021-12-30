@@ -1,5 +1,5 @@
 @inherits Screen
-@inject IState<PeriodState> State
+@inject IState<PeriodStateCollection> State
 
 <ScreenContainer>
     <MudContainer Class="mb-3">
@@ -7,20 +7,20 @@
             Variant="Variant.Filled"
             Color="Color.Error"
             FullWidth="true"
-            Disabled="!this.State.Value.ShowRevoke"
+            Disabled="!this.State.Value.Current.ShowRevoke"
             @onclick="this.Revoke">
             @L["Components.States.PeriodPlay.RevokeButton"]
         </MudButton>
     </MudContainer>
 
     <MudContainer Class="my-3">
-        <Timer Remaining="this.State.Value.Remaining" />
+        <Timer Remaining="this.State.Value.Current.Remaining" />
     </MudContainer>
 
     <MudContainer Class="my-3">
         <MudCard Class="mud-theme-primary">
             <MudCardContent>
-                <MudText Typo="Typo.h4">@(this.State.Value.Word?.Value ?? string.Empty)</MudText>
+                <MudText Typo="Typo.h4">@(this.State.Value.Current.Word?.Value ?? string.Empty)</MudText>
             </MudCardContent>
         </MudCard>
     </MudContainer>
@@ -31,7 +31,7 @@
             Color="Color.Success"
             Size="Size.Large"
             FullWidth="true"
-            Disabled="@(this.State.Value.Word is null)"
+            Disabled="@(this.State.Value.Current.Word is null)"
             @onclick="this.AddScore">
             @L["Components.States.PeriodPlay.GuessedButton"]
         </MudButton>

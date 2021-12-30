@@ -193,34 +193,55 @@ namespace Fishbowl.Net.Client.Pwa.Store
             return Task.CompletedTask;
         }
 
-        private void SetEventHandlers(IDispatcher dispatcher)
-        {
-            this.Game.GameStarted += game => dispatcher.DispatchTransition<Info, SetInfoAction>(
+        [EffectMethod(typeof(ReceiveGameStartedAction))]
+        public Task OnReceiveGameStarted(IDispatcher dispatcher) => dispatcher.DispatchTransition<Info, SetInfoAction>(
                 new(Title: this.localizer["Pages.Play.GameStartedTitle"], Loading: true), TimeSpan.FromSeconds(2));
 
-            this.Game.GameFinished += game =>
-                dispatcher.DispatchTransition<GameFinished, ReceiveGameFinishedAction>(new(game.Map()));
+        [EffectMethod(typeof(ReceiveGameFinishedAction))]
+        public Task OnReceiveGameFinished(IDispatcher dispatcher) =>
+            dispatcher.DispatchTransition<GameFinished>();
 
-            this.Game.RoundStarted += round => dispatcher.DispatchTransition<Info, SetInfoAction>(new(
-                Title: $"{this.localizer["Pages.Play.RoundStartedTitle"]}: {round.Type}",
-                Message: this.localizer[$"Components.States.Common.RoundTypes.{round.Type}.Description"],
+        [EffectMethod]
+        public Task OnReceiveRoundStarted(ReceiveRoundStartedAction action, IDispatcher dispatcher) =>
+            dispatcher.DispatchTransition<Info, SetInfoAction>(new(
+                Title: $"{this.localizer["Pages.Play.RoundStartedTitle"]}: {action.Type}",
+                Message: this.localizer[$"Components.States.Common.RoundTypes.{action.Type}.Description"],
                 Loading: true), TimeSpan.FromSeconds(2));
 
-            this.Game.RoundFinished += round =>
-                dispatcher.DispatchTransition<RoundFinished, ReceiveRoundFinishedAction>(
-                    round.MapSummary(), TimeSpan.FromSeconds(5));
+        [EffectMethod(typeof(ReceiveRoundFinishedAction))]
+        public Task OnReceiveRoundFinished(IDispatcher dispatcher) =>
+            dispatcher.DispatchTransition<RoundFinished>(TimeSpan.FromSeconds(5));
 
-            this.Game.PeriodSetup += period =>
-                dispatcher.DispatchTransition<PeriodSetupPlay, ReceivePeriodSetupAction>(
+        [EffectMethod]
+        public Task OnReceivePeriodSetup(ReceivePeriodSetupAction action, IDispatcher dispatcher) =>
+            dispatcher.DispatchTransition<PeriodSetupPlay, IncrementPeriodCurrentIdAction>(new());
+
+        [EffectMethod]
+        public Task OnReceivePeriodStarted(ReceivePeriodStartedAction action, IDispatcher dispatcher) =>
+            dispatcher.DispatchTransition<PeriodPlay>();
+
+        [EffectMethod(typeof(ReceivePeriodFinishedAction))]
+        public Task OnReceivePeriodFinished(IDispatcher dispatcher) =>
+            dispatcher.DispatchTransition<PeriodFinished>(TimeSpan.FromSeconds(5));
+
+        private void SetEventHandlers(IDispatcher dispatcher)
+        {
+            this.Game.GameStarted += game => dispatcher.Dispatch<ReceiveGameStartedAction>(new());
+
+            this.Game.GameFinished += game => dispatcher.Dispatch<ReceiveGameFinishedAction>(new(game.Map()));
+
+            this.Game.RoundStarted += round => dispatcher.Dispatch<ReceiveRoundStartedAction>(new(round.Type));
+
+            this.Game.RoundFinished += round => dispatcher.Dispatch<ReceiveRoundFinishedAction>(round.MapSummary());
+
+            this.Game.PeriodSetup += period => dispatcher.Dispatch<ReceivePeriodSetupAction>(
                     new(period.Map(this.Game.Game.CurrentRound)));
 
-            this.Game.PeriodStarted += period =>
-                dispatcher.DispatchTransition<PeriodPlay, ReceivePeriodStartedAction>(
+            this.Game.PeriodStarted += period => dispatcher.Dispatch<ReceivePeriodStartedAction>(
                     new(period.MapRunning(this.Game.Game.CurrentRound)));
 
-            this.Game.PeriodFinished += period =>
-                dispatcher.DispatchTransition<PeriodFinished, ReceivePeriodFinishedAction>(
-                    new(period.Map()), TimeSpan.FromSeconds(5));
+            this.Game.PeriodFinished += period => dispatcher.Dispatch<ReceivePeriodFinishedAction>(
+                    new(period.Map()));
 
             this.Game.WordSetup += (player, word) => dispatcher.Dispatch<ReceiveWordSetupAction>(
                 new(word.Map()));

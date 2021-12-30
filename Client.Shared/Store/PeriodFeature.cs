@@ -1,6 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Collections.Immutable;
+using System.Text.Json.Serialization;
 using Fishbowl.Net.Shared.Actions;
 using Fishbowl.Net.Shared.ViewModels;
 using Fluxor;
@@ -8,6 +8,19 @@ using Fluxor;
 namespace Fishbowl.Net.Client.Shared.Store
 {
     [FeatureState]
+    public record PeriodStateCollection
+    {
+        public int CurrentId { get; init; } = -1;
+
+        public ImmutableList<PeriodState> PeriodStates = ImmutableList<PeriodState>.Empty;
+
+        [JsonIgnore]
+        public PeriodState Current => this.PeriodStates[this.CurrentId];
+
+        [JsonIgnore]
+        public PeriodState Last => this.PeriodStates[this.PeriodStates.Count - 1];
+    }
+
     public record PeriodState
     {
         public PeriodSetupViewModel Setup { get; init; } = default!;
@@ -16,10 +29,12 @@ namespace Fishbowl.Net.Client.Shared.Store
         public bool ShowRevoke { get; init; } = false;
         public WordViewModel? Word { get; init; } = null;
         public PeriodSummaryViewModel Summary { get; init; } = default!;
-        public List<ScoreViewModel> Scores { get; init; } = default!;
+        public ImmutableList<ScoreViewModel> Scores { get; init; } = ImmutableList<ScoreViewModel>.Empty;
     }
 
     public record StartPeriodAction();
+
+    public record IncrementPeriodCurrentIdAction();
 
     public record RevokeLastScoreAction();
 
@@ -28,45 +43,43 @@ namespace Fishbowl.Net.Client.Shared.Store
     public static class PeriodReducers
     {
         [ReducerMethod]
-        public static PeriodState OnReceivePeriodSetup(PeriodState state, ReceivePeriodSetupAction action) =>
-            state with
-            { 
-                Setup = action.Setup,
-                ShowRevoke = false,
-                Word = null,
-                Remaining = action.Setup.Length
-            };
+        public static PeriodStateCollection OnReceivePeriodSetup(PeriodStateCollection state, ReceivePeriodSetupAction action) =>
+            state with { PeriodStates = state.PeriodStates.Add(new() { Setup = action.Setup, Remaining = action.Setup.Length }) };
+
+        [ReducerMethod(typeof(IncrementPeriodCurrentIdAction))]
+        public static PeriodStateCollection OnIncrementPeriodCurrentIdAction(PeriodStateCollection state) =>
+            state with { CurrentId = state.CurrentId + 1 };
 
         [ReducerMethod]
-        public static PeriodState OnReceivePeriodStarted(PeriodState state, ReceivePeriodStartedAction action) =>
-            state with { Running = action.Period, Scores = new() };
+        public static PeriodStateCollection OnReceivePeriodStarted(PeriodStateCollection state, ReceivePeriodStartedAction action) =>
+            state.Update(state.Last with { Running = action.Period });
 
         [ReducerMethod]
-        public static PeriodState ReceiveTimerUpdate(PeriodState state, ReceiveTimerUpdateAction action) =>
-            state with { Remaining = action.Remaining };
+        public static PeriodStateCollection ReceiveTimerUpdate(PeriodStateCollection state, ReceiveTimerUpdateAction action) =>
+           state.Update(state.Last with { Remaining = action.Remaining });
 
         [ReducerMethod]
-        public static PeriodState OnReceiveScoreAdded(PeriodState state, ReceiveScoreAddedAction action)
-        {
-            state.Scores.Add(action.Score);
-            return state with { Scores = new(state.Scores), ShowRevoke = true };
-        }
+        public static PeriodStateCollection OnReceiveScoreAdded(PeriodStateCollection state, ReceiveScoreAddedAction action) =>
+            state.Update(state.Last with { Scores = state.Last.Scores.Add(action.Score), ShowRevoke = true });
 
         [ReducerMethod]
-        public static PeriodState OnReceiveLastScoreRevoked(PeriodState state, ReceiveLastScoreRevokedAction action) =>
-            state with
+        public static PeriodStateCollection OnReceiveLastScoreRevoked(PeriodStateCollection state, ReceiveLastScoreRevokedAction action) =>
+            state.Update(state.Last with
             {
-                Scores = state.Scores.Where(score => score.Word.Id != action.Score.Word.Id ).ToList(),
+                Scores = state.Last.Scores.Remove(action.Score),
                 ShowRevoke = false,
                 Word = action.Score.Word
-            };
+            });
 
         [ReducerMethod]
-        public static PeriodState OnReceiveWordSetup(PeriodState state, ReceiveWordSetupAction action) =>
-            state with { Word = action.Word };
+        public static PeriodStateCollection OnReceiveWordSetup(PeriodStateCollection state, ReceiveWordSetupAction action) =>
+            state.Update(state.Last with { Word = action.Word });
 
         [ReducerMethod]
-        public static PeriodState OnReceivePeriodFinished(PeriodState state, ReceivePeriodFinishedAction action) =>
-            state with { Summary = action.Summary };
+        public static PeriodStateCollection OnReceivePeriodFinished(PeriodStateCollection state, ReceivePeriodFinishedAction action) =>
+            state.Update(state.Last with { Summary = action.Summary });
+
+        public static PeriodStateCollection Update(this PeriodStateCollection state, PeriodState newState) =>
+            state with { PeriodStates = state.PeriodStates.Replace(state.Last, newState) };
     }
 }
