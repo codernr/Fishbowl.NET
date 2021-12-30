@@ -1,28 +1,32 @@
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 using Fishbowl.Net.Shared.Collections;
 
 namespace Fishbowl.Net.Shared.GameEntities
 {
     public class Round
     {
-        public IShuffleEnumerator<Word> WordEnumerator { get; private set; }
+        [JsonInclude]
+        public IRewindList<Word> Words { get; private set; } = default!;
 
-        public string Type { get; private set; }
+        [JsonInclude]
+        public string Type { get; private set; } = default!;
 
-        public List<Period> Periods { get; } = new();
+        [JsonInclude]
+        public List<Period> Periods { get; private set; } = new();
 
+        [JsonIgnore]
         public Period CurrentPeriod => this.Periods[this.Periods.Count - 1];
 
-        public Round(string type, IShuffleEnumerator<Word> wordEnumerator) =>
-            (this.Type, this.WordEnumerator) = (type, wordEnumerator);
+        public Round() {}
 
-        public Round(string type, IShuffleEnumerator<Word> wordEnumerator, List<Period> periods) : this(type, wordEnumerator) =>
-            this.Periods = periods;
+        public Round(string type, IRewindList<Word> words) =>
+            (this.Type, this.Words) = (type, words);
 
         public bool NextPeriod(TimeSpan length, Player player)
         {
-            if (this.WordEnumerator.MoveNext())
+            if (this.Words.NextItems.Count > 0)
             {
                 this.Periods.Add(new Period(length, player));
                 return true;

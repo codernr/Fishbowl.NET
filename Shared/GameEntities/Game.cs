@@ -1,142 +1,189 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using Fishbowl.Net.Shared.Collections;
 
 namespace Fishbowl.Net.Shared.GameEntities
 {
     public class Game
     {
+        public event Action<Game>? GameStarted;
+        public event Action<Game>? GameFinished;
+        public event Action<Round>? RoundStarted;
+        public event Action<Round>? RoundFinished;
+        public event Action<Period>? PeriodSetup;
+        public event Action<Period>? PeriodStarted;
+        public event Action<Period>? PeriodFinished;
+        public event Action<Score>? ScoreAdded;
+        public event Action<Score>? LastScoreRevoked;
+        public event Action<Player, Word>? WordSetup;
+        public event Action<TimeSpan>? TimerUpdate;
+
+        [JsonInclude]
         public Guid Id { get; private set; }
 
-        public List<Team> Teams { get; private set; }
+        [JsonInclude]
+        public IGameList<Team> Teams { get; private set; } = default!;
         
-        public List<Round> Rounds { get; private set; }
-        
-        public Round CurrentRound => this.roundEnumerator.Current;
-        
-        public Word CurrentWord => this.roundEnumerator.Current.WordEnumerator.Current;
+        [JsonInclude]
+        public IGameList<Round> Rounds { get; private set; } = default!;
 
-        public CircularEnumerator<Team> TeamEnumerator { get; private set; }= default!;
-
-        private readonly IEnumerator<Round> roundEnumerator = default!;
-
-        public readonly TimeSpan periodLength;
-
-        public readonly TimeSpan periodThreshold;
+        [JsonInclude]
+        public GameOptions Options { get; private set; } = new();
 
         private TimeSpan? remaining;
 
-        private bool randomize = true;
+        private PeriodTimer? timer;
 
-        public Game(Guid id, GameOptions options, IEnumerable<Team> teams, IEnumerable<string> roundTypes, bool randomize = true)
-        {
-            this.Id = id;
-
-            this.periodLength = TimeSpan.FromSeconds(options.PeriodLengthInSeconds);
-            this.periodThreshold = TimeSpan.FromSeconds(options.PeriodThresholdInSeconds);
-
-            this.Teams = teams.ToList();
-            this.TeamEnumerator = new CircularEnumerator<Team>(this.Teams);
-
-            var words = this.Teams
-                .SelectMany(team => team.Players)
-                .SelectMany(player => player.Words);
-
-            this.Rounds = roundTypes
-                .Select(type => new Round(
-                    type,
-                    new ShuffleEnumerator<Word>(randomize ? words.Randomize() : words)))
-                .ToList();
-
-            this.roundEnumerator = this.Rounds.GetEnumerator();
-
-            this.randomize = randomize;
-        }
+        public Game() {}
 
         public Game(
             Guid id,
-            CircularEnumerator<Team> teamEnumerator,
-            List<Round> rounds,
-            IEnumerator<Round> roundEnumerator,
-            TimeSpan periodLength,
-            TimeSpan periodThreshold) =>
-            (this.Id, this.Teams, this.Rounds, this.TeamEnumerator, this.roundEnumerator, this.periodLength, this.periodThreshold) =
-            (id, teamEnumerator.List.ToList(), rounds, teamEnumerator, roundEnumerator, periodLength, periodThreshold);
-
-        public IEnumerable<Round> RoundLoop()
+            GameOptions options,
+            IList<Team> teams,
+            IEnumerable<string> roundTypes,
+            Func<IEnumerable<Word>, IRewindList<Word>> wordListFactory)
         {
-            while(this.roundEnumerator.MoveNext())
+            this.Id = id;
+            this.Options = options;
+            this.Teams = new CircularList<Team>(teams);
+
+            var words = this.Teams.List
+                .SelectMany(team => team.Players.List)
+                .SelectMany(player => player.Words);
+
+            this.Rounds = new SimpleList<Round>(roundTypes
+                .Select(type => new Round(type, wordListFactory(words)))
+                .ToList());
+        }
+
+        private void StartGame()
+        {
+            this.GameStarted?.Invoke(this);
+            this.Teams.MoveNext();
+            this.Teams.Current.Players.MoveNext();
+            this.RunNextRound();
+        }
+
+        private void RunNextRound()
+        {
+            if (this.Rounds.MoveNext())
             {
-                yield return this.roundEnumerator.Current;
+                this.RoundStarted?.Invoke(this.Rounds.Current);
+                this.RunNextPeriod();
+            }
+            else
+            {
+                this.GameFinished?.Invoke(this);
             }
         }
 
-        public IEnumerable<Period> PeriodLoop()
+        private void RunNextPeriod()
         {
-            while (this.roundEnumerator.Current.NextPeriod(
-                this.remaining ?? this.periodLength,
-                this.TeamEnumerator.Current.PlayerEnumerator.Current))
+            if (this.Rounds.Current.NextPeriod(this.remaining ?? this.Options.PeriodLength, this.Teams.Current.Players.Current))
             {
-                yield return this.roundEnumerator.Current.CurrentPeriod;
+                this.PeriodSetup?.Invoke(this.Rounds.Current.CurrentPeriod);
+            }
+            else
+            {
+                this.RoundFinished?.Invoke(this.Rounds.Current);
+                this.RunNextRound();
             }
         }
 
         public void StartPeriod(DateTimeOffset timestamp)
         {
-            this.roundEnumerator.Current.CurrentPeriod.StartedAt = timestamp;
-            if (this.randomize) this.CurrentRound.WordEnumerator.Shuffle();
+            var period = this.Rounds.Current.CurrentPeriod;
+
+            period.StartedAt = timestamp;
+            this.PeriodStarted?.Invoke(period);
+
+            this.timer = new PeriodTimer(
+                this.TimerUpdate, period.StartedAt!.Value, period.Length);
+
+            this.NextWord(timestamp);
+            this.WordSetup?.Invoke(period.Player, this.Rounds.Current.Words.Current);
         }
 
-        public void FinishPeriod(DateTimeOffset timestamp) =>
-            this.FinishPeriod(timestamp, true);
-
-        public void FinishPeriod(DateTimeOffset timestamp, bool rewindWord)
+        public void AddScore(Score score)
         {
-            this.roundEnumerator.Current.CurrentPeriod.FinishedAt = timestamp;
-            this.remaining = null;
-            this.TeamEnumerator.Current.PlayerEnumerator.MoveNext();
-            this.TeamEnumerator.MoveNext();
+            this.ScoreAdded?.Invoke(score);
 
-            if (rewindWord)
+            this.NextWord(score.Timestamp);
+        }
+
+        private void NextWord(DateTimeOffset timestamp)
+        {
+            var period = this.Rounds.Current.CurrentPeriod;
+
+            if (timestamp >= period.StartedAt + period.Length - this.Options.PeriodThreshold)
             {
-                this.CurrentRound.WordEnumerator.MovePrevious();
+                this.FinishPeriod(timestamp, true, false);
+                return;
             }
+
+            if (!this.Rounds.Current.Words.MoveNext())
+            {
+                this.FinishPeriod(timestamp, false, false, period.StartedAt + period.Length - timestamp);
+                return;
+            }
+
+            this.WordSetup?.Invoke(period.Player, this.Rounds.Current.Words.Current);
+
         }
 
-        public void AddScore(Score score) => this.roundEnumerator.Current.CurrentPeriod.Scores.Add(score);
+        public void FinishPeriod(DateTimeOffset timestamp) => this.FinishPeriod(timestamp, true, true);
 
-        public Score? RevokeLastScore()
+        private void FinishPeriod(DateTimeOffset timestamp, bool newPlayer, bool rewind, TimeSpan? remaining = null)
         {
-            var score = this.CurrentRound.CurrentPeriod.RevokeLastScore();
+            this.Rounds.Current.CurrentPeriod.FinishedAt = timestamp;
+            this.remaining = remaining;
+            
+            if (newPlayer)
+            {
+                this.Teams.MoveNext();
+                this.Teams.Current.Players.MoveNext();
+            }
+
+            if (rewind)
+            {
+                this.Rounds.Current.Words.MovePrevious();
+            }
+
+            this.PeriodFinished?.Invoke(this.Rounds.Current.CurrentPeriod);
+
+            this.RunNextPeriod();
+        }
+
+        public void RevokeLastScore()
+        {
+            var score = this.Rounds.Current.CurrentPeriod.RevokeLastScore();
 
             if (score is not null)
             {
-                if (this.randomize) this.CurrentRound.WordEnumerator.Shuffle();
-                this.CurrentRound.WordEnumerator.MovePrevious();
+                this.Rounds.Current.Words.MovePrevious();
+                this.LastScoreRevoked?.Invoke(score);
             }
-
-            return score;
         }
 
-        public bool NextWord(DateTimeOffset timestamp)
+        public void Restore()
         {
-            var period = this.roundEnumerator.Current.CurrentPeriod;
+            this.GameStarted?.Invoke(this);
 
-            if (timestamp >= period.StartedAt + period.Length - this.periodThreshold)
+            this.RoundStarted?.Invoke(this.Rounds.Current);
+
+            var period = this.Rounds.Current.CurrentPeriod;
+
+            if (period.StartedAt is null)
             {
-                this.FinishPeriod(timestamp, false);
-                return false;
+                this.PeriodSetup?.Invoke(period);
             }
-
-            if (!this.roundEnumerator.Current.WordEnumerator.MoveNext())
+            else
             {
-                period.FinishedAt = timestamp;
-                this.remaining = period.StartedAt + period.Length - timestamp;
-                return false;
+                this.PeriodStarted?.Invoke(period);
+                this.WordSetup?.Invoke(period.Player, this.Rounds.Current.Words.Current);
             }
-
-            return true;
         }
     }
 }
