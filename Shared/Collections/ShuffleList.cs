@@ -10,13 +10,15 @@ namespace Fishbowl.Net.Shared.GameEntities
         public Stack<T> PreviousItems { get; private set; } = new();
 
         [JsonInclude]
-        public Stack<T> NextItems { get; private set; }
+        public Stack<T> NextItems { get; private set; } = default!;
 
         [JsonIgnore]
         public T Current => this.PreviousItems.Peek();
 
         [JsonInclude]
         public bool Rewound { get; private set; } = false;
+
+        public ShuffleList() {}
 
         public ShuffleList(IEnumerable<T> items) => this.NextItems = this.GetNextItems(items);
 

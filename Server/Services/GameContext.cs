@@ -298,6 +298,7 @@ namespace Fishbowl.Net.Server.Services
 
             this.isDisposing = true;
             
+            this.game?.Dispose();
             await this.timer.DisposeAsync();
             await this.groupHubContext.DisposeAsync();
         }

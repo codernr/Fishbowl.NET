@@ -20,8 +20,13 @@ namespace Fishbowl.Net.Shared.Collections
 
         public virtual bool MoveNext()
         {
-            this.CurrentId = (this.CurrentId + 1) % this.List.Count;
-            return true;
+            if (this.CurrentId < this.List.Count - 1)
+            {
+                this.CurrentId++;
+                return true;
+            }
+
+            return false;
         }
     }
 }

@@ -6,7 +6,7 @@ using Fishbowl.Net.Shared.Collections;
 
 namespace Fishbowl.Net.Shared.GameEntities
 {
-    public class Game
+    public class Game : IDisposable
     {
         public event Action<Game>? GameStarted;
         public event Action<Game>? GameFinished;
@@ -103,11 +103,11 @@ namespace Fishbowl.Net.Shared.GameEntities
                 this.TimerUpdate, period.StartedAt!.Value, period.Length);
 
             this.NextWord(timestamp);
-            this.WordSetup?.Invoke(period.Player, this.Rounds.Current.Words.Current);
         }
 
         public void AddScore(Score score)
         {
+            this.Rounds.Current.CurrentPeriod.Scores.Add(score);
             this.ScoreAdded?.Invoke(score);
 
             this.NextWord(score.Timestamp);
@@ -137,6 +137,7 @@ namespace Fishbowl.Net.Shared.GameEntities
 
         private void FinishPeriod(DateTimeOffset timestamp, bool newPlayer, bool rewind, TimeSpan? remaining = null)
         {
+            this.timer?.Dispose();
             this.Rounds.Current.CurrentPeriod.FinishedAt = timestamp;
             this.remaining = remaining;
             
@@ -184,6 +185,11 @@ namespace Fishbowl.Net.Shared.GameEntities
                 this.PeriodStarted?.Invoke(period);
                 this.WordSetup?.Invoke(period.Player, this.Rounds.Current.Words.Current);
             }
+        }
+
+        public void Dispose()
+        {
+            this.timer?.Dispose();
         }
     }
 }
